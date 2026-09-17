@@ -17,6 +17,7 @@
     "knownErrors",
     "changeReceipts",
     "recurrences",
+    "proseAttestation",
     "coverage",
     "authority",
     "handoff"
@@ -38,7 +39,7 @@
     },
     "evidence": {
       "type": "array",
-      "minItems": 17,
+      "minItems": 19,
       "maxItems": 64,
       "uniqueItems": true,
       "items": {
@@ -107,6 +108,9 @@
         "$ref": "#/$defs/recurrence"
       }
     },
+    "proseAttestation": {
+      "$ref": "#/$defs/proseAttestation"
+    },
     "coverage": {
       "$ref": "#/$defs/coverage"
     },
@@ -160,6 +164,9 @@
       "required": [
         "id",
         "revision",
+        "predecessorArtifactDigest",
+        "predecessorRevisionRef",
+        "declarationEvidenceRef",
         "title",
         "serviceRefs",
         "declaredByRef",
@@ -172,6 +179,15 @@
         },
         "revision": {
           "$ref": "#/$defs/digest"
+        },
+        "predecessorArtifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "predecessorRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "declarationEvidenceRef": {
+          "$ref": "#/$defs/id"
         },
         "title": {
           "$ref": "#/$defs/nonEmptyString"
@@ -197,6 +213,7 @@
         "id",
         "kind",
         "displayName",
+        "identityCredentialRef",
         "scopes"
       ],
       "properties": {
@@ -212,6 +229,16 @@
         },
         "displayName": {
           "$ref": "#/$defs/nonEmptyString"
+        },
+        "identityCredentialRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "scopes": {
           "type": "array",
@@ -258,6 +285,8 @@
           "enum": [
             "incident-membership-declaration",
             "incident-membership-manifest-signature",
+            "problem-revision-declaration",
+            "owner-prose-receipt",
             "incident-record",
             "public-observation",
             "hypothesis-observation",
@@ -308,6 +337,8 @@
         "incidentRevision",
         "followUpRef",
         "followUpIdentityKey",
+        "ownerArtifactDigest",
+        "ownerSchemaDigest",
         "declaredByRef",
         "declarationEvidenceRef",
         "incidentRecordEvidenceRef",
@@ -334,6 +365,12 @@
           "$ref": "#/$defs/id"
         },
         "followUpIdentityKey": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerArtifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerSchemaDigest": {
           "$ref": "#/$defs/digest"
         },
         "declaredByRef": {
@@ -465,6 +502,8 @@
         "problemRevision",
         "hypothesisRef",
         "hypothesisRevisionRef",
+        "ownerArtifactDigest",
+        "ownerSchemaDigest",
         "qaArtifactRef",
         "testRunRef",
         "buildId",
@@ -488,6 +527,12 @@
           "$ref": "#/$defs/id"
         },
         "hypothesisRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerArtifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerSchemaDigest": {
           "$ref": "#/$defs/digest"
         },
         "qaArtifactRef": {
@@ -644,6 +689,9 @@
         "problemRevision",
         "changePlanRef",
         "planDigest",
+        "ownerArtifactDigest",
+        "ownerSchemaDigest",
+        "ownerPlanDigest",
         "executionReceiptRef",
         "linkEvidenceRef",
         "executedByRef",
@@ -668,6 +716,16 @@
         },
         "planDigest": {
           "$ref": "#/$defs/digest"
+        },
+        "ownerArtifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerSchemaDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerPlanDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "executionReceiptRef": {
           "$ref": "#/$defs/id"
@@ -763,6 +821,7 @@
         "knownErrorRevisionRefs",
         "changeReceiptRefs",
         "recurrenceRefs",
+        "proseAttestationRevisionRef",
         "publicTrustEvidenceRefs"
       ],
       "properties": {
@@ -802,8 +861,47 @@
         "recurrenceRefs": {
           "$ref": "#/$defs/idList"
         },
+        "proseAttestationRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
         "publicTrustEvidenceRefs": {
           "$ref": "#/$defs/idList"
+        }
+      }
+    },
+    "proseAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "ownerRef",
+        "surfaceDigest",
+        "receiptEvidenceRef",
+        "signedAt",
+        "policy"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "surfaceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "receiptEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "policy": {
+          "const": "owner-authored-non-authoritative"
         }
       }
     },

@@ -1,12 +1,24 @@
-import { createHash } from "node:crypto";
+import {
+  createHash,
+  createPublicKey,
+  verify as verifySignature,
+} from "node:crypto";
 import { readFileSync } from "node:fs";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import {
+  deriveIncidentArtifact,
+  digest as computeOwnerArtifactDigest,
+  OWNER_CONTRACTS,
+} from "./composition-adapter.mjs";
+import { validateArtifactSemantics } from "../../../scripts/artifact-semantics.mjs";
 
 export const PROBLEM_KNOWN_ERROR_SCHEMA_VERSION =
   "awesomeClaws.problemKnownErrorCandidate.v1";
 export const PUBLIC_TRUST_SCHEMA_VERSION =
   "awesomeClaws.problemKnownErrorPublicTrust.v1";
+export const TRUST_KEYRING_SCHEMA_VERSION =
+  "awesomeClaws.problemKnownErrorTrustKeyring.v1";
 
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
@@ -26,18 +38,114 @@ const validatePublicTrustSchema = ajv.compile(
     ),
   ),
 );
+const validateTrustKeyringSchema = ajv.compile(
+  JSON.parse(
+    readFileSync(
+      new URL(
+        "./problem-known-error-trust-keyring.schema.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  ),
+);
+const incidentOwnerArtifact = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../../sources/incident-response/fixtures/incident-state.example.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const incidentOwnerSchema = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../../sources/incident-response/schemas/incident-state.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const qaOwnerArtifact = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../../sources/quality-assurance-lead/fixtures/test-evidence.example.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const qaOwnerSchema = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../../sources/quality-assurance-lead/schemas/test-evidence.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const changeOwnerArtifact = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../../sources/change-control-operator/fixtures/change-plan.example.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const changeOwnerSchema = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../../sources/change-control-operator/schemas/change-plan.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+);
+const validateIncidentOwnerSchema = ajv.compile(incidentOwnerSchema);
+const validateQaOwnerSchema = ajv.compile(qaOwnerSchema);
+const validateChangeOwnerSchema = ajv.compile(changeOwnerSchema);
+const QA_OWNER_ARTIFACT_REF =
+  "sources/quality-assurance-lead/fixtures/test-evidence.example.json";
+const incidentOwnerContractValid =
+  computeOwnerArtifactDigest(incidentOwnerArtifact) ===
+    OWNER_CONTRACTS["incident-response"].artifactDigest &&
+  computeOwnerArtifactDigest(incidentOwnerSchema) ===
+    OWNER_CONTRACTS["incident-response"].schemaDigest &&
+  validateIncidentOwnerSchema(incidentOwnerArtifact) &&
+  validateArtifactSemantics(
+    "incident-response",
+    incidentOwnerArtifact,
+  ).length === 0;
+const qaOwnerContractValid =
+  computeOwnerArtifactDigest(qaOwnerArtifact) ===
+    OWNER_CONTRACTS["quality-assurance-lead"].artifactDigest &&
+  computeOwnerArtifactDigest(qaOwnerSchema) ===
+    OWNER_CONTRACTS["quality-assurance-lead"].schemaDigest &&
+  validateQaOwnerSchema(qaOwnerArtifact) &&
+  validateArtifactSemantics(
+    "quality-assurance-lead",
+    qaOwnerArtifact,
+  ).length === 0;
+const changeOwnerContractValid =
+  computeOwnerArtifactDigest(changeOwnerArtifact) ===
+    OWNER_CONTRACTS["change-control-operator"].artifactDigest &&
+  computeOwnerArtifactDigest(changeOwnerSchema) ===
+    OWNER_CONTRACTS["change-control-operator"].schemaDigest &&
+  validateChangeOwnerSchema(changeOwnerArtifact) &&
+  validateArtifactSemantics(
+    "change-control-operator",
+    changeOwnerArtifact,
+  ).length === 0;
 const MAX_ARTIFACT_BYTES = 256 * 1024;
 const MAX_DEPTH = 16;
 const MAX_STRING_LENGTH = 4096;
 const MAX_COLLECTION_LENGTH = 256;
 const MAX_OBJECT_PROPERTIES = 64;
 const MAX_NODE_COUNT = 4096;
-const NON_HUMAN_ID =
-  /(?:^|[-_.:])(?:agent|automated|automation|bot|claw|package|service-account|system)(?:$|[-_.:])|(?:agent|bot|claw|package|system)$/iu;
-const NON_HUMAN_DISPLAY_NAME =
-  /^(?:agent|bot|claw|package|system)\b|(?:agent|bot|claw|package|system)$|\b(?:automated|automation|chatbot|service account)\b/iu;
 const GOVERNED_ACTION =
-  "(?:accept|acceptance|accepted|accepts|approve|approval|approved|approves|authorization|authorize|authorized|authorizes|closure|close|closed|closes|correlation|declaration|declare|declared|declares|deploy|deployed|deployment|deploys|execute|executed|executes|execution|inference|mutate|mutated|mutates|mutation|publication|publish|published|publishes)";
+  "(?:accept|acceptance|accepted|accepts|approve|approval|approved|approves|authorization|authorize|authorized|authorizes|closure|close|closed|closes|correlation|declaration|declare|declared|declares|deploy|deployed|deployment|deploys|execute|executed|executes|execution|green[ -]?(?:light|lights|lighting|lit)|inference|mutate|mutated|mutates|mutation|publication|publish|published|publishes|sign(?:s|ed|ing)?[ -]?off)";
 const GOVERNED_OBJECT =
   "(?:workarounds?|known[ -]?errors?|production|changes?|incidents?|problems?|tickets?|risks?)";
 const PROHIBITED_ACTION = new RegExp(
@@ -49,7 +157,7 @@ const NEGATED_PROHIBITED_ACTION = new RegExp(
   "giu",
 );
 const CLAW_ACTOR =
-  /\b(?:agent|assistant|automation|bot|chatbot|claw|coordinator|package|system|we|i)\b/iu;
+  /\b(?:agent|assistant|automation|bot|chatbot|claw|coordinator|copilot|package|system|we|i)\b/iu;
 const OWNER_ACTOR =
   /\b(?:problem|service|known-error|change|incident|risk|ticket)\s+owner\b/iu;
 const NAMED_HUMAN_SUBJECT =
@@ -275,17 +383,18 @@ function boundedInputFindings(value, rootPath) {
   return findings;
 }
 
-function isNamedHuman(principal) {
+export function isVerifiedHumanPrincipal(principal) {
   return (
     principal?.kind === "named-human" &&
-    !NON_HUMAN_ID.test(principal.id ?? "") &&
-    !NON_HUMAN_DISPLAY_NAME.test(principal.displayName ?? "")
+    typeof principal.identityCredentialRef === "string" &&
+    principal.identityCredentialRef.length > 0
   );
 }
 
-function hasScope(principal, scope) {
+function hasScope(principal, scope, verifiedHumanRefs) {
   return (
-    isNamedHuman(principal) &&
+    isVerifiedHumanPrincipal(principal) &&
+    verifiedHumanRefs.has(principal.id) &&
     Array.isArray(principal.scopes) &&
     principal.scopes.includes(scope)
   );
@@ -365,21 +474,126 @@ export function computeAuthorityGrantDigest(grant) {
   });
 }
 
+export function computeIdentityCredentialDigest(credential) {
+  const row = object(credential);
+  return digest({
+    id: row.id,
+    principalRef: row.principalRef,
+    principalRecordDigest: row.principalRecordDigest,
+    assurance: row.assurance,
+    subjectKeyId: row.subjectKeyId,
+    issuerRef: row.issuerRef,
+    validFrom: row.validFrom,
+    expiresAt: row.expiresAt,
+  });
+}
+
+export function computeEvidenceClaimDigest(record) {
+  const row = object(record);
+  return digest({
+    evidenceRef: row.evidenceRef,
+    evidenceRecordDigest: row.evidenceRecordDigest,
+    issuerRef: row.issuerRef,
+  });
+}
+
 export function computeSourceAttestationDigest(record) {
   const row = object(record);
   return digest({
     evidenceRef: row.evidenceRef,
     sourceRef: row.sourceRef,
     sourceBytesDigest: row.sourceBytesDigest,
+    evidenceRecordDigest: row.evidenceRecordDigest,
     observedAt: row.observedAt,
     issuerRef: row.issuerRef,
   });
+}
+
+export function computeOwnerReceiptDigest(receipt) {
+  const row = object(receipt);
+  return digest({
+    id: row.id,
+    evidenceRef: row.evidenceRef,
+    evidenceRecordDigest: row.evidenceRecordDigest,
+    ownerRef: row.ownerRef,
+    consumedRevisionRefs: sorted(
+      Array.isArray(row.consumedRevisionRefs)
+        ? row.consumedRevisionRefs
+        : [],
+    ),
+    issuedAt: row.issuedAt,
+    issuerRef: row.issuerRef,
+    signerKeyId: row.signerKeyId,
+  });
+}
+
+export function signedCollectionPayload(kind, recordsValue) {
+  return Buffer.from(
+    canonicalJson({
+      kind,
+      digest: digest(recordsValue),
+    }),
+    "utf8",
+  );
+}
+
+function verifiesDigestSignature(key, kind, digestValue, signature) {
+  if (
+    key?.algorithm !== "ed25519" ||
+    typeof key.publicKeyPem !== "string" ||
+    typeof signature !== "string"
+  ) {
+    return false;
+  }
+  try {
+    const parsedKey = createPublicKey(key.publicKeyPem);
+    if (parsedKey.asymmetricKeyType !== "ed25519") {
+      return false;
+    }
+    return verifySignature(
+      null,
+      Buffer.from(canonicalJson({ kind, digest: digestValue }), "utf8"),
+      parsedKey,
+      Buffer.from(signature, "base64"),
+    );
+  } catch {
+    return false;
+  }
+}
+
+function publicKeyFingerprint(key) {
+  if (key?.algorithm !== "ed25519" || typeof key.publicKeyPem !== "string") {
+    return null;
+  }
+  try {
+    const parsedKey = createPublicKey(key.publicKeyPem);
+    if (parsedKey.asymmetricKeyType !== "ed25519") {
+      return null;
+    }
+    return `sha256:${createHash("sha256")
+      .update(
+        parsedKey.export({
+          type: "spki",
+          format: "der",
+        }),
+      )
+      .digest("hex")}`;
+  } catch {
+    return null;
+  }
+}
+
+function verifiesCollectionSignature(key, kind, rows, signature) {
+  return verifiesDigestSignature(key, kind, digest(rows), signature);
 }
 
 export function computeProblemRevision(problem) {
   const row = object(problem);
   return digest({
     id: row.id,
+    predecessorArtifactDigest: row.predecessorArtifactDigest,
+    predecessorRevisionRef: row.predecessorRevisionRef,
+    declarationEvidenceRef: row.declarationEvidenceRef,
     title: row.title,
     serviceRefs: sorted(Array.isArray(row.serviceRefs) ? row.serviceRefs : []),
     declaredByRef: row.declaredByRef,
@@ -428,6 +642,8 @@ export function computeIncidentMembershipRevision(membership) {
     incidentRevision: row.incidentRevision,
     followUpRef: row.followUpRef,
     followUpIdentityKey: row.followUpIdentityKey,
+    ownerArtifactDigest: row.ownerArtifactDigest,
+    ownerSchemaDigest: row.ownerSchemaDigest,
     declaredByRef: row.declaredByRef,
     declarationEvidenceRef: row.declarationEvidenceRef,
     incidentRecordEvidenceRef: row.incidentRecordEvidenceRef,
@@ -460,6 +676,8 @@ export function computeTestRevision(test) {
     problemRevision: row.problemRevision,
     hypothesisRef: row.hypothesisRef,
     hypothesisRevisionRef: row.hypothesisRevisionRef,
+    ownerArtifactDigest: row.ownerArtifactDigest,
+    ownerSchemaDigest: row.ownerSchemaDigest,
     qaArtifactRef: row.qaArtifactRef,
     testRunRef: row.testRunRef,
     buildId: row.buildId,
@@ -514,6 +732,9 @@ export function computeChangeReceiptRevision(changeReceipt) {
     problemRevision: row.problemRevision,
     changePlanRef: row.changePlanRef,
     planDigest: row.planDigest,
+    ownerArtifactDigest: row.ownerArtifactDigest,
+    ownerSchemaDigest: row.ownerSchemaDigest,
+    ownerPlanDigest: row.ownerPlanDigest,
     executionReceiptRef: row.executionReceiptRef,
     linkEvidenceRef: row.linkEvidenceRef,
     executedByRef: row.executedByRef,
@@ -542,6 +763,40 @@ export function computeRecurrenceRevision(recurrence) {
     observedByRef: row.observedByRef,
     observedAt: row.observedAt,
     state: row.state,
+  });
+}
+
+function proseSurface(value) {
+  return {
+    problemTitle: object(value.problem).title,
+    hypothesisStatements: records(value.hypotheses).map((row) => ({
+      id: row.id,
+      statement: row.statement,
+    })),
+    workaroundInstructions: records(value.workarounds).map((row) => ({
+      id: row.id,
+      instructions: row.instructions,
+    })),
+    handoff: {
+      summary: object(value.handoff).summary,
+      nextDecision: object(value.handoff).nextDecision,
+    },
+  };
+}
+
+export function computeProseSurfaceDigest(value) {
+  return digest(proseSurface(value));
+}
+
+export function computeProseAttestationRevision(attestation) {
+  const row = object(attestation);
+  return digest({
+    id: row.id,
+    ownerRef: row.ownerRef,
+    surfaceDigest: row.surfaceDigest,
+    receiptEvidenceRef: row.receiptEvidenceRef,
+    signedAt: row.signedAt,
+    policy: row.policy,
   });
 }
 
@@ -580,6 +835,13 @@ export function resealProblemKnownErrorArtifact(value) {
   for (const recurrence of records(artifact.recurrences)) {
     recurrence.revision = computeRecurrenceRevision(recurrence);
   }
+  const proseAttestation = object(artifact.proseAttestation);
+  if (Object.keys(proseAttestation).length > 0) {
+    proseAttestation.surfaceDigest =
+      computeProseSurfaceDigest(artifact);
+    proseAttestation.revision =
+      computeProseAttestationRevision(proseAttestation);
+  }
   return artifact;
 }
 
@@ -602,6 +864,12 @@ export function problemKnownErrorFindings(value, options = {}) {
           options.publicTrustInput,
           "$context.publicTrustInput",
         )),
+    ...(options.trustKeyring === undefined
+      ? []
+      : boundedInputFindings(
+          options.trustKeyring,
+          "$context.trustKeyring",
+        )),
   ];
   if (boundedFindings.length > 0) {
     return boundedFindings.sort(
@@ -616,6 +884,7 @@ export function problemKnownErrorFindings(value, options = {}) {
   const add = (code, path, message) => findings.push({ code, path, message });
   const cutoff = time(options.cutoff);
   const trust = object(options.publicTrustInput);
+  const trustKeyring = object(options.trustKeyring);
   if (!validateCandidateSchema(value)) {
     add(
       "invalid_schema",
@@ -630,6 +899,13 @@ export function problemKnownErrorFindings(value, options = {}) {
       `Public trust schema validation failed: ${ajv.errorsText(validatePublicTrustSchema.errors)}`,
     );
   }
+  if (!validateTrustKeyringSchema(trustKeyring)) {
+    add(
+      "invalid_trust_keyring",
+      "$context.trustKeyring",
+      `Trust keyring schema validation failed: ${ajv.errorsText(validateTrustKeyringSchema.errors)}`,
+    );
+  }
   const problem = object(value.problem);
   const principals = records(value.principals);
   const evidence = records(value.evidence);
@@ -641,6 +917,7 @@ export function problemKnownErrorFindings(value, options = {}) {
   const knownErrors = records(value.knownErrors);
   const changes = records(value.changeReceipts);
   const recurrences = records(value.recurrences);
+  const proseAttestation = object(value.proseAttestation);
   const coverage = object(value.coverage);
   const authority = object(value.authority);
   const handoff = object(value.handoff);
@@ -650,6 +927,7 @@ export function problemKnownErrorFindings(value, options = {}) {
   const hypothesisById = mapById(hypotheses);
   const testById = mapById(tests);
   const changeById = mapById(changes);
+  const verifiedHumanRefs = new Set();
 
   if (value.schemaVersion !== PROBLEM_KNOWN_ERROR_SCHEMA_VERSION) {
     add("invalid_schema_version", "schemaVersion", "The candidate schema version is not supported.");
@@ -671,14 +949,26 @@ export function problemKnownErrorFindings(value, options = {}) {
   }
   if (
     cutoff === null ||
+    trustKeyring.schemaVersion !== TRUST_KEYRING_SCHEMA_VERSION ||
+    !Array.isArray(trustKeyring.allowedIssuerRefs) ||
+    !Array.isArray(trustKeyring.keys) ||
     trust.schemaVersion !== PUBLIC_TRUST_SCHEMA_VERSION ||
     typeof trust.id !== "string" ||
     typeof trust.publisher !== "string" ||
     !Array.isArray(trust.records) ||
+    !Array.isArray(trust.identityCredentials) ||
     !Array.isArray(trust.authorityGrants) ||
     !Array.isArray(trust.evidenceRecords) ||
     !Array.isArray(trust.sourceRecords) ||
-    ["records", "authorityGrants", "evidenceRecords", "sourceRecords"].some(
+    !Array.isArray(trust.ownerReceipts) ||
+    [
+      "records",
+      "identityCredentials",
+      "authorityGrants",
+      "evidenceRecords",
+      "sourceRecords",
+      "ownerReceipts",
+    ].some(
       (field) => records(trust[field]).length !== trust[field].length,
     )
   ) {
@@ -718,7 +1008,8 @@ export function problemKnownErrorFindings(value, options = {}) {
       !["named-human", "external-system", "claw"].includes(principal.kind) ||
       !Array.isArray(principal.scopes) ||
       principal.scopes.length === 0 ||
-      (principal.kind === "named-human" && !isNamedHuman(principal))
+      (principal.kind === "named-human" &&
+        !isVerifiedHumanPrincipal(principal))
     ) {
       add(
         "invalid_typed_authority",
@@ -739,18 +1030,50 @@ export function problemKnownErrorFindings(value, options = {}) {
     }
   }
   if (
+    Array.isArray(trust.identityCredentials) &&
     Array.isArray(trust.authorityGrants) &&
     Array.isArray(trust.evidenceRecords) &&
-    Array.isArray(trust.sourceRecords)
+    Array.isArray(trust.sourceRecords) &&
+    Array.isArray(trust.ownerReceipts) &&
+    Array.isArray(trustKeyring.allowedIssuerRefs) &&
+    Array.isArray(trustKeyring.keys)
   ) {
+    const identityCredentials = records(trust.identityCredentials);
     const authorityPrincipals = principals.filter((row) => row.kind !== "claw");
     const authorityGrants = records(trust.authorityGrants);
     const trustedEvidence = records(trust.evidenceRecords);
     const sourceRecords = records(trust.sourceRecords);
+    const ownerReceipts = records(trust.ownerReceipts);
+    const credentialIdIndex = indexedBy(identityCredentials, "id");
+    const credentialPrincipalIndex = indexedBy(
+      identityCredentials,
+      "principalRef",
+    );
     const authorityIndex = indexedBy(authorityGrants, "principalRef");
     const trustedEvidenceIndex = indexedBy(trustedEvidence, "evidenceRef");
     const sourceIndex = indexedBy(sourceRecords, "evidenceRef");
+    const ownerReceiptIdIndex = indexedBy(ownerReceipts, "id");
+    const ownerReceiptEvidenceIndex = indexedBy(ownerReceipts, "evidenceRef");
     const trustIssuer = object(trust.issuer);
+    const trustKeys = records(trustKeyring.keys);
+    const trustKeyIndex = indexedBy(trustKeys, "id");
+    const principalKeyIndex = indexedBy(
+      trustKeys.filter((key) => key.kind === "principal"),
+      "principalRef",
+    );
+    const keyFingerprints = trustKeys.map(publicKeyFingerprint);
+    const issuerKey = trustKeyIndex.map.get(trustIssuer.keyId);
+    const trustAnchorMatches =
+      trustKeyIndex.duplicates.size === 0 &&
+      principalKeyIndex.duplicates.size === 0 &&
+      keyFingerprints.every((fingerprint) => fingerprint !== null) &&
+      new Set(keyFingerprints).size === keyFingerprints.length &&
+      trustKeyring.allowedIssuerRefs.includes(trustIssuer.id) &&
+      issuerKey?.kind === "issuer" &&
+      issuerKey?.principalRef === null &&
+      issuerKey?.issuerRef === trustIssuer.id &&
+      issuerKey?.keyRef === trustIssuer.keyRef &&
+      issuerKey?.algorithm === trustIssuer.algorithm;
     const governedUses = [
       { principalRef: problem.declaredByRef, at: problem.declaredAt },
       ...memberships.map((row) => ({
@@ -790,6 +1113,56 @@ export function problemKnownErrorFindings(value, options = {}) {
         at: row.observedAt,
       })),
     ];
+    const signaturesValid = [
+      ["identityCredentials", identityCredentials],
+      ["authorityGrants", authorityGrants],
+      ["evidenceRecords", trustedEvidence],
+      ["sourceRecords", sourceRecords],
+      ["ownerReceipts", ownerReceipts],
+    ].every(([kind, rows]) =>
+      verifiesCollectionSignature(
+        issuerKey,
+        kind,
+        rows,
+        object(trust.signatures)[kind],
+      ),
+    );
+    const humanPrincipals = principals.filter(
+      (principal) => principal.kind === "named-human",
+    );
+    const credentialsMatch =
+      humanPrincipals.length === identityCredentials.length &&
+      credentialIdIndex.duplicates.size === 0 &&
+      credentialPrincipalIndex.duplicates.size === 0 &&
+      humanPrincipals.every((principal) => {
+        const credential = credentialPrincipalIndex.map.get(principal.id);
+        const firstUse = Math.min(
+          ...governedUses
+            .filter((use) => use.principalRef === principal.id)
+            .map((use) => time(use.at))
+            .filter((value) => value !== null),
+        );
+        const subjectKey = trustKeyIndex.map.get(
+          credential?.subjectKeyId,
+        );
+        const valid =
+          credential?.id === principal.identityCredentialRef &&
+          credential?.principalRecordDigest === digest(principal) &&
+          credential?.assurance === "verified-human" &&
+          subjectKey?.kind === "principal" &&
+          subjectKey?.principalRef === principal.id &&
+          subjectKey?.issuerRef === trustIssuer.id &&
+          credential?.issuerRef === trustIssuer.id &&
+          credential?.credentialDigest ===
+            computeIdentityCredentialDigest(credential) &&
+          time(credential?.validFrom) !== null &&
+          time(credential?.validFrom) <= firstUse &&
+          time(credential?.expiresAt) !== null &&
+          cutoff !== null &&
+          time(credential?.expiresAt) > cutoff;
+        if (valid) verifiedHumanRefs.add(principal.id);
+        return valid;
+      });
     const authorityMatches =
       authorityPrincipals.length === authorityGrants.length &&
       authorityIndex.duplicates.size === 0 &&
@@ -818,7 +1191,11 @@ export function problemKnownErrorFindings(value, options = {}) {
       trustedEvidenceIndex.duplicates.size === 0 &&
       evidence.every((row) => {
         const trusted = trustedEvidenceIndex.map.get(row.id);
-        return trusted?.evidenceRecordDigest === digest(row);
+        return (
+          trusted?.evidenceRecordDigest === digest(row) &&
+          trusted?.issuerRef === trustIssuer.id &&
+          trusted?.claimDigest === computeEvidenceClaimDigest(trusted)
+        );
       });
     const sourceBytesMatch =
       evidence.length === sourceRecords.length &&
@@ -828,28 +1205,184 @@ export function problemKnownErrorFindings(value, options = {}) {
         return (
           source?.sourceRef === row.sourceRef &&
           source?.sourceBytesDigest === row.recordDigest &&
+          source?.evidenceRecordDigest === digest(row) &&
           source?.observedAt === row.observedAt &&
           source?.issuerRef === trustIssuer.id &&
           source?.attestationDigest ===
             computeSourceAttestationDigest(source)
         );
       });
-    if (!authorityMatches || !evidenceMatchesTrust || !sourceBytesMatch) {
+    const ownerReceiptExpectations = [
+      {
+        evidenceRef: problem.declarationEvidenceRef,
+        ownerRef: problem.declaredByRef,
+        consumedRevisionRefs: [
+          problem.revision,
+          problem.predecessorArtifactDigest,
+          problem.predecessorRevisionRef,
+        ],
+        consumedAt: problem.declaredAt,
+      },
+      ...memberships.map((row) => ({
+        evidenceRef: row.declarationEvidenceRef,
+        ownerRef: row.declaredByRef,
+        consumedRevisionRefs: [row.revision],
+        consumedAt: row.declaredAt,
+      })),
+      {
+        evidenceRef: incidentManifest.signatureEvidenceRef,
+        ownerRef: incidentManifest.signedByRef,
+        consumedRevisionRefs: [incidentManifest.revision],
+        consumedAt: incidentManifest.signedAt,
+      },
+      ...hypotheses.flatMap((row) =>
+        (Array.isArray(row.observationEvidenceRefs)
+          ? row.observationEvidenceRefs
+          : []
+        ).map((evidenceRef) => ({
+          evidenceRef,
+          ownerRef: row.ownerRef,
+          consumedRevisionRefs: [row.dispositionRevision],
+          consumedAt: row.revisedAt,
+        })),
+      ),
+      ...tests.map((row) => ({
+        evidenceRef: row.evidenceRef,
+        ownerRef: row.executedByRef,
+        consumedRevisionRefs: [row.revision],
+        consumedAt: row.executedAt,
+      })),
+      ...workarounds.map((row) => ({
+        evidenceRef: row.approvalEvidenceRef,
+        ownerRef: row.approvedByRef,
+        consumedRevisionRefs: [row.revision],
+        consumedAt: row.approvedAt,
+      })),
+      ...knownErrors.map((row) => ({
+        evidenceRef: row.declarationEvidenceRef,
+        ownerRef: row.declaredByRef,
+        consumedRevisionRefs: [row.revision],
+        consumedAt: row.declaredAt,
+      })),
+      ...changes.flatMap((row) => [
+        {
+          evidenceRef: row.executionReceiptRef,
+          ownerRef: row.executedByRef,
+          consumedRevisionRefs: [row.planDigest, row.ownerArtifactDigest],
+          consumedAt: row.executedAt,
+        },
+        {
+          evidenceRef: row.linkEvidenceRef,
+          ownerRef: problem.declaredByRef,
+          consumedRevisionRefs: [row.revision],
+          consumedAt: row.linkedAt,
+        },
+        ...(Array.isArray(row.verificationEvidenceRefs)
+          ? row.verificationEvidenceRefs.map((evidenceRef) => ({
+              evidenceRef,
+              ownerRef: evidenceById.get(evidenceRef)?.producedByRef,
+              consumedRevisionRefs: [row.planDigest, row.ownerArtifactDigest],
+              consumedAt: evidenceById.get(evidenceRef)?.observedAt,
+            }))
+          : []),
+      ]),
+      ...recurrences.map((row) => ({
+        evidenceRef: row.evidenceRef,
+        ownerRef: row.observedByRef,
+        consumedRevisionRefs: [row.revision],
+        consumedAt: row.observedAt,
+      })),
+      {
+        evidenceRef: proseAttestation.receiptEvidenceRef,
+        ownerRef: proseAttestation.ownerRef,
+        consumedRevisionRefs: [proseAttestation.revision],
+        consumedAt: proseAttestation.signedAt,
+      },
+    ];
+    const ownerReceiptsMatch =
+      ownerReceipts.length === ownerReceiptExpectations.length &&
+      ownerReceiptIdIndex.duplicates.size === 0 &&
+      ownerReceiptEvidenceIndex.duplicates.size === 0 &&
+      ownerReceiptExpectations.every((expected) => {
+        const receipt = ownerReceiptEvidenceIndex.map.get(
+          expected.evidenceRef,
+        );
+        const evidenceRecord = evidenceById.get(expected.evidenceRef);
+        const ownerPrincipal = principalById.get(receipt?.ownerRef);
+        const expectedSignerKeyId =
+          ownerPrincipal?.kind === "named-human"
+            ? credentialPrincipalIndex.map.get(receipt?.ownerRef)
+                ?.subjectKeyId
+            : principalKeyIndex.map.get(receipt?.ownerRef)?.id;
+        return (
+          evidenceRecord !== undefined &&
+          receipt?.ownerRef === expected.ownerRef &&
+          receipt?.issuerRef === trustIssuer.id &&
+          receipt?.evidenceRecordDigest === digest(evidenceRecord) &&
+          receipt?.signerKeyId !== issuerKey?.id &&
+          receipt?.signerKeyId === expectedSignerKeyId &&
+          trustKeyIndex.map.get(receipt?.signerKeyId)?.kind ===
+            "principal" &&
+          trustKeyIndex.map.get(receipt?.signerKeyId)?.principalRef ===
+            receipt?.ownerRef &&
+          trustKeyIndex.map.get(receipt?.signerKeyId)?.issuerRef ===
+            trustIssuer.id &&
+          exactSet(
+            receipt?.consumedRevisionRefs,
+            expected.consumedRevisionRefs,
+          ) &&
+          receipt?.receiptDigest === computeOwnerReceiptDigest(receipt) &&
+          verifiesDigestSignature(
+            trustKeyIndex.map.get(receipt?.signerKeyId),
+            "ownerReceipt",
+            receipt?.receiptDigest,
+            receipt?.signature,
+          ) &&
+          time(receipt?.issuedAt) !== null &&
+          time(receipt?.issuedAt) > time(expected.consumedAt) &&
+          time(receipt?.issuedAt) >= time(evidenceRecord?.observedAt) &&
+          cutoff !== null &&
+          time(receipt?.issuedAt) <= cutoff
+        );
+      });
+    if (
+      !signaturesValid ||
+      !trustAnchorMatches ||
+      !credentialsMatch ||
+      !authorityMatches ||
+      !evidenceMatchesTrust ||
+      !sourceBytesMatch ||
+      !ownerReceiptsMatch
+    ) {
       add(
         "invalid_caller_trust_input",
         "$context.publicTrustInput",
-        "Caller trust must use unique issuer-scoped grants and bind every evidence record and source byte digest exactly.",
+        "Caller trust must verify human credentials, scoped grants, evidence claims, and source bytes with an allowlisted issuer key, plus each later owner receipt with its credential-bound principal key.",
       );
     }
   }
 
   const problemOwner = principalById.get(problem.declaredByRef);
+  const problemDeclaration = evidenceById.get(problem.declarationEvidenceRef);
   if (
     problem.revision !== computeProblemRevision(problem) ||
-    !hasScope(problemOwner, "problem-owner") ||
-    !hasScope(problemOwner, "incident-membership-declarer") ||
+    problem.predecessorArtifactDigest === problem.revision ||
+    problem.predecessorRevisionRef === problem.revision ||
+    !hasScope(problemOwner, "problem-owner", verifiedHumanRefs) ||
+    !hasScope(
+      problemOwner,
+      "incident-membership-declarer",
+      verifiedHumanRefs,
+    ) ||
     problem.state !== "open" ||
     time(problem.declaredAt) === null ||
+    !evidenceMatches(problemDeclaration, {
+      kind: "problem-revision-declaration",
+      subjectRef: problem.id,
+      subjectRevision: problem.revision,
+      producedByRef: problem.declaredByRef,
+    }) ||
+    time(problemDeclaration?.observedAt) <= time(problem.declaredAt) ||
     (cutoff !== null && time(problem.declaredAt) > cutoff)
   ) {
     add(
@@ -927,6 +1460,7 @@ export function problemKnownErrorFindings(value, options = {}) {
     !hasScope(
       principalById.get(incidentManifest.signedByRef),
       "incident-membership-declarer",
+      verifiedHumanRefs,
     ) ||
     !exactSet(
       incidentManifest.membershipRevisionRefs,
@@ -939,7 +1473,7 @@ export function problemKnownErrorFindings(value, options = {}) {
       producedByRef: incidentManifest.signedByRef,
     }) ||
     time(incidentManifest.signedAt) === null ||
-    time(incidentManifestEvidence?.observedAt) !==
+    time(incidentManifestEvidence?.observedAt) <=
       time(incidentManifest.signedAt) ||
     time(incidentManifest.signedAt) <= latestMembershipDeclaration ||
     (cutoff !== null && time(incidentManifest.signedAt) > cutoff)
@@ -966,12 +1500,42 @@ export function problemKnownErrorFindings(value, options = {}) {
   for (const [index, membership] of memberships.entries()) {
     const declaration = evidenceById.get(membership.declarationEvidenceRef);
     const incidentRecord = evidenceById.get(membership.incidentRecordEvidenceRef);
+    const membershipIdentityValid = [
+      membership.incidentRef,
+      membership.followUpRef,
+      membership.followUpIdentityKey,
+    ].every((value) => typeof value === "string");
+    const ownerArtifact = membershipIdentityValid
+      ? deriveIncidentArtifact(incidentOwnerArtifact, membership)
+      : null;
+    const ownerArtifactDigest = ownerArtifact
+      ? computeOwnerArtifactDigest(ownerArtifact)
+      : null;
+    const ownerArtifactResolved =
+      ownerArtifact !== null &&
+      incidentOwnerContractValid &&
+      validateIncidentOwnerSchema(ownerArtifact) &&
+      validateArtifactSemantics("incident-response", ownerArtifact)
+        .length === 0 &&
+      ownerArtifact.incident.id === membership.incidentRef &&
+      ownerArtifact.followUps[0].id === membership.followUpRef &&
+      ownerArtifact.followUps[0].identityKey ===
+        membership.followUpIdentityKey;
     if (
       membership.problemRevision !== problem.revision ||
       membership.revision !== computeIncidentMembershipRevision(membership) ||
+      !ownerArtifactResolved ||
+      membership.ownerArtifactDigest !== ownerArtifactDigest ||
+      membership.ownerSchemaDigest !==
+        OWNER_CONTRACTS["incident-response"].schemaDigest ||
+      membership.incidentRevision !== ownerArtifactDigest ||
       membership.state !== "declared-by-owner" ||
       membership.declaredByRef !== problem.declaredByRef ||
-      !hasScope(principalById.get(membership.declaredByRef), "incident-membership-declarer") ||
+      !hasScope(
+        principalById.get(membership.declaredByRef),
+        "incident-membership-declarer",
+        verifiedHumanRefs,
+      ) ||
       !evidenceMatches(declaration, {
         kind: "incident-membership-declaration",
         subjectRef: membership.id,
@@ -994,7 +1558,7 @@ export function problemKnownErrorFindings(value, options = {}) {
       time(membership.declaredAt) < time(problem.declaredAt) ||
       (cutoff !== null && time(membership.declaredAt) > cutoff) ||
       time(incidentRecord?.observedAt) > time(membership.declaredAt) ||
-      time(declaration?.observedAt) !== time(membership.declaredAt)
+      time(declaration?.observedAt) <= time(membership.declaredAt)
     ) {
       add(
         "invalid_incident_membership_authority",
@@ -1033,7 +1597,7 @@ export function problemKnownErrorFindings(value, options = {}) {
           subjectRevision: hypothesis.dispositionRevision,
           producedByRef: hypothesis.ownerRef,
         }) &&
-        time(evidenceById.get(ref)?.observedAt) === time(hypothesis.revisedAt),
+        time(evidenceById.get(ref)?.observedAt) > time(hypothesis.revisedAt),
       );
     const outcomes = new Set(linkedTests.map((row) => row.outcome));
     const latestTestEvidence = Math.max(
@@ -1050,7 +1614,11 @@ export function problemKnownErrorFindings(value, options = {}) {
       hypothesis.revision !== computeHypothesisRevision(hypothesis) ||
       hypothesis.dispositionRevision !==
         computeHypothesisDispositionRevision(hypothesis) ||
-      !hasScope(principalById.get(hypothesis.ownerRef), "hypothesis-owner") ||
+      !hasScope(
+        principalById.get(hypothesis.ownerRef),
+        "hypothesis-owner",
+        verifiedHumanRefs,
+      ) ||
       !exactSet(
         hypothesis.testRefs,
         linkedTests.map((row) => row.id),
@@ -1092,14 +1660,33 @@ export function problemKnownErrorFindings(value, options = {}) {
       "The matrix requires exactly one supporting and one refuting test.",
     );
   }
+  const qaRunById = mapById(qaOwnerArtifact.testRuns);
   for (const [index, row] of tests.entries()) {
     const hypothesis = hypothesisById.get(row.hypothesisRef);
     const result = evidenceById.get(row.evidenceRef);
+    const ownerRun = qaRunById.get(row.testRunRef);
     if (
       row.problemRevision !== problem.revision ||
       row.hypothesisRevisionRef !== hypothesis?.revision ||
+      !qaOwnerContractValid ||
+      row.ownerArtifactDigest !==
+        OWNER_CONTRACTS["quality-assurance-lead"].artifactDigest ||
+      row.ownerSchemaDigest !==
+        OWNER_CONTRACTS["quality-assurance-lead"].schemaDigest ||
+      row.qaArtifactRef !== QA_OWNER_ARTIFACT_REF ||
+      !ownerRun ||
+      row.buildId !== ownerRun?.buildId ||
+      row.environment !== ownerRun?.environment ||
+      row.executedAt !== ownerRun?.executedAt ||
+      row.executedByRef !== ownerRun?.executedById ||
+      row.outcome !==
+        (ownerRun?.result === "passed" ? "supports" : "refutes") ||
       row.revision !== computeTestRevision(row) ||
-      !hasScope(principalById.get(row.executedByRef), "test-executor") ||
+      !hasScope(
+        principalById.get(row.executedByRef),
+        "test-executor",
+        verifiedHumanRefs,
+      ) ||
       !evidenceMatches(result, {
         kind: "test-result",
         subjectRef: row.id,
@@ -1142,7 +1729,11 @@ export function problemKnownErrorFindings(value, options = {}) {
       workaroundHypothesis?.dispositionRevision ||
     workaroundHypothesis?.state !== "supported" ||
     workaround?.revision !== computeWorkaroundRevision(workaround) ||
-    !hasScope(principalById.get(workaround?.approvedByRef), "workaround-approver") ||
+    !hasScope(
+      principalById.get(workaround?.approvedByRef),
+      "workaround-approver",
+      verifiedHumanRefs,
+    ) ||
     !evidenceMatches(workaroundApproval, {
       kind: "workaround-approval",
       subjectRef: workaround?.id,
@@ -1150,7 +1741,7 @@ export function problemKnownErrorFindings(value, options = {}) {
       producedByRef: workaround?.approvedByRef,
     }) ||
     time(workaround?.approvedAt) === null ||
-    time(workaroundApproval?.observedAt) !== time(workaround?.approvedAt) ||
+    time(workaroundApproval?.observedAt) <= time(workaround?.approvedAt) ||
     time(workaround?.approvedAt) <= latestWorkaroundInput ||
     time(workaround?.expiresAt) === null ||
     (cutoff !== null &&
@@ -1188,8 +1779,16 @@ export function problemKnownErrorFindings(value, options = {}) {
   if (
     cause?.state !== "supported" ||
     knownError?.causeState !== "declared-by-owner" ||
-    !hasScope(principalById.get(knownError?.declaredByRef), "known-error-authority") ||
-    !hasScope(principalById.get(knownError?.declaredByRef), "root-cause-declarer") ||
+    !hasScope(
+      principalById.get(knownError?.declaredByRef),
+      "known-error-authority",
+      verifiedHumanRefs,
+    ) ||
+    !hasScope(
+      principalById.get(knownError?.declaredByRef),
+      "root-cause-declarer",
+      verifiedHumanRefs,
+    ) ||
     !evidenceMatches(knownErrorDeclaration, {
       kind: "known-error-declaration",
       subjectRef: knownError?.id,
@@ -1197,7 +1796,7 @@ export function problemKnownErrorFindings(value, options = {}) {
       producedByRef: knownError?.declaredByRef,
     }) ||
     time(knownError?.declaredAt) === null ||
-    time(knownErrorDeclaration?.observedAt) !== time(knownError?.declaredAt) ||
+    time(knownErrorDeclaration?.observedAt) <= time(knownError?.declaredAt) ||
     time(knownError?.declaredAt) <= time(workaround?.approvedAt)
   ) {
     add(
@@ -1222,7 +1821,11 @@ export function problemKnownErrorFindings(value, options = {}) {
           subjectRevision: change?.planDigest,
           producedByRef: row?.producedByRef,
         }) &&
-        hasScope(principalById.get(row?.producedByRef), "test-executor") &&
+        hasScope(
+          principalById.get(row?.producedByRef),
+          "test-executor",
+          verifiedHumanRefs,
+        ) &&
         time(row?.observedAt) > time(change?.executedAt)
       );
     });
@@ -1234,9 +1837,21 @@ export function problemKnownErrorFindings(value, options = {}) {
   if (
     changes.length !== 1 ||
     change?.problemRevision !== problem.revision ||
+    !changeOwnerContractValid ||
+    change?.ownerArtifactDigest !==
+      OWNER_CONTRACTS["change-control-operator"].artifactDigest ||
+    change?.ownerSchemaDigest !==
+      OWNER_CONTRACTS["change-control-operator"].schemaDigest ||
+    change?.changePlanRef !== changeOwnerArtifact.plan.id ||
+    change?.ownerPlanDigest !== changeOwnerArtifact.plan.digest ||
+    change?.planDigest !== `sha256:${changeOwnerArtifact.plan.digest}` ||
     change?.revision !== computeChangeReceiptRevision(change) ||
     change?.state !== "owner-executed" ||
-    !hasScope(principalById.get(change?.executedByRef), "change-executor") ||
+    !hasScope(
+      principalById.get(change?.executedByRef),
+      "change-executor",
+      verifiedHumanRefs,
+    ) ||
     !evidenceMatches(executionReceipt, {
       kind: "change-execution-receipt",
       subjectRef: change?.id,
@@ -1250,10 +1865,10 @@ export function problemKnownErrorFindings(value, options = {}) {
       producedByRef: problem.declaredByRef,
     }) ||
     time(change?.executedAt) === null ||
-    time(executionReceipt?.observedAt) !== time(change?.executedAt) ||
+    time(executionReceipt?.observedAt) <= time(change?.executedAt) ||
     time(change?.executedAt) <= time(knownError?.declaredAt) ||
     time(change?.linkedAt) === null ||
-    time(linkEvidence?.observedAt) !== time(change?.linkedAt) ||
+    time(linkEvidence?.observedAt) <= time(change?.linkedAt) ||
     time(change?.linkedAt) <= time(change?.executedAt) ||
     time(change?.linkedAt) < time(problem.declaredAt) ||
     (cutoff !== null && time(change?.linkedAt) > cutoff) ||
@@ -1308,7 +1923,7 @@ export function problemKnownErrorFindings(value, options = {}) {
       producedByRef: recurrence?.observedByRef,
     }) ||
     time(recurrence?.observedAt) === null ||
-    time(recurrenceEvidence?.observedAt) !== time(recurrence?.observedAt) ||
+    time(recurrenceEvidence?.observedAt) <= time(recurrence?.observedAt) ||
     time(recurrence?.observedAt) <= time(recurrenceChange?.executedAt) ||
     time(recurrence?.observedAt) <= changeFinalizedAt ||
     time(recurrenceIncidentEvidence?.observedAt) <=
@@ -1327,7 +1942,9 @@ export function problemKnownErrorFindings(value, options = {}) {
   }
 
   const lifecycleEvidenceRefs = [
+    problem.declarationEvidenceRef,
     incidentManifest.signatureEvidenceRef,
+    proseAttestation.receiptEvidenceRef,
     ...memberships.flatMap((row) => [
       row.declarationEvidenceRef,
       row.incidentRecordEvidenceRef,
@@ -1373,6 +1990,7 @@ export function problemKnownErrorFindings(value, options = {}) {
     knownErrorRevisionRefs: knownErrors.map((row) => row.revision),
     changeReceiptRefs: changes.map((row) => row.id),
     recurrenceRefs: recurrences.map((row) => row.id),
+    proseAttestationRevisionRef: proseAttestation.revision,
     publicTrustEvidenceRefs: evidence
       .filter((row) => row.trust === "public")
       .map((row) => row.id),
@@ -1400,6 +2018,33 @@ export function problemKnownErrorFindings(value, options = {}) {
       "invalid_coverage",
       "coverage",
       "Exact closed coverage must equal every supplied principal, evidence, and lifecycle universe.",
+    );
+  }
+
+  const proseReceipt = evidenceById.get(
+    proseAttestation.receiptEvidenceRef,
+  );
+  if (
+    proseAttestation.surfaceDigest !== computeProseSurfaceDigest(value) ||
+    proseAttestation.revision !==
+      computeProseAttestationRevision(proseAttestation) ||
+    proseAttestation.ownerRef !== problem.declaredByRef ||
+    proseAttestation.policy !== "owner-authored-non-authoritative" ||
+    !evidenceMatches(proseReceipt, {
+      kind: "owner-prose-receipt",
+      subjectRef: proseAttestation.id,
+      subjectRevision: proseAttestation.revision,
+      producedByRef: proseAttestation.ownerRef,
+    }) ||
+    time(proseAttestation.signedAt) === null ||
+    time(proseReceipt?.observedAt) <= time(proseAttestation.signedAt) ||
+    (cutoff !== null && time(proseReceipt?.observedAt) > cutoff) ||
+    coverage.proseAttestationRevisionRef !== proseAttestation.revision
+  ) {
+    add(
+      "invalid_prose_attestation",
+      "proseAttestation",
+      "Every narrative surface must be content-addressed and followed by a trusted owner receipt.",
     );
   }
 
@@ -1442,6 +2087,7 @@ export function problemKnownErrorFindings(value, options = {}) {
     !hasScope(
       principalById.get(handoff.ownerRef),
       "problem-closure-authority",
+      verifiedHumanRefs,
     ) ||
     principalById.get(handoff.coordinatorRef)?.kind !== "claw" ||
     !hasTypedScope(

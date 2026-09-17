@@ -50,6 +50,15 @@ projections only from those artifacts, and explicitly anchors Incident
 `followUps[].id`, `identityKey`, and `incidentRef`. It never copies proposal
 records into nominal owner slices.
 
+The verdict calculation uses normalized, content-addressed typed nodes and
+edges with graph reachability and authority assurance. A closed optional
+typed-control input can add future owner capabilities. Five independent
+synthetic controls each clear exactly one current loss while retaining exact
+identity, revision, authority, endpoint, and closure checks.
+Every preserved result must be satisfied by one coherent anchor subgraph;
+disconnected manifests, lineage fragments, or authority nodes cannot be
+combined into a false positive.
+
 For the three proposed memberships, the probe coherently substitutes each
 incident and follow-up identity into the real Incident Response fixture,
 recomputes every affected action, cadence, recovery, closure, communication,
@@ -89,6 +98,14 @@ The candidate adds only the missing cross-owner contract:
   both the change and later incident membership;
 - caller-injected source-byte attestations and unique issuer-scoped,
   time-bounded authority grants;
+- a caller-supplied issuer allowlist and keyring kept outside the accepted
+  trust payload;
+- issuer signatures over credentials, grants, evidence claims, source
+  attestations, and the receipt set, plus a distinct principal-key signature on
+  every owner receipt;
+- rejection of reused public-key fingerprints across issuer and principal
+  roles;
+- caller-verified human credentials rather than name-based identity heuristics;
 - exact closed coverage across the complete supplied universe;
 - schema-first, total, resource-bounded validation;
 - negation-aware rejection of prohibited authority claims across every
@@ -98,6 +115,14 @@ The candidate adds only the missing cross-owner contract:
 rewrites evidence, authority, coverage, or downstream revision bindings, so a
 legitimate content revision exposes stale receipts instead of silently
 repairing them.
+
+The issuer can attest which principal keys are trusted, but cannot author an
+owner receipt: each receipt must name the expected lifecycle owner and verify
+under the exact `subjectKeyId` in that owner's verified-human credential.
+External-system receipts bind the unique principal key selected by the caller
+keyring. Replacing the issuer key in the public trust payload, even with fully
+recomputed collection signatures, does not alter the caller's allowlist or
+keyring.
 
 ## Internal analogue classification
 

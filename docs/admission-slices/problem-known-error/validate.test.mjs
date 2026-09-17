@@ -1,25 +1,37 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
+import { createHash, generateKeyPairSync, sign } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import {
+  deriveIncidentArtifact,
+  digest as computeOwnerArtifactDigest,
+} from "./composition-adapter.mjs";
 
 import {
   canonicalJson,
   computeAuthorityGrantDigest,
   computeChangeReceiptRevision,
+  computeEvidenceClaimDigest,
   computeHypothesisDispositionRevision,
   computeHypothesisRevision,
   computeIncidentManifestRevision,
   computeIncidentMembershipRevision,
+  computeIdentityCredentialDigest,
   computeKnownErrorRevision,
+  computeOwnerReceiptDigest,
+  computeProblemRevision,
+  computeProseAttestationRevision,
+  computeProseSurfaceDigest,
   computeRecurrenceRevision,
   computeSourceAttestationDigest,
   computeTestRevision,
   computeWorkaroundRevision,
+  isVerifiedHumanPrincipal,
   problemKnownErrorFindings,
   resealProblemKnownErrorArtifact,
+  signedCollectionPayload,
 } from "./validate.mjs";
 
 async function json(relative) {
@@ -29,10 +41,12 @@ async function json(relative) {
 const [
   accepted,
   publicTrustInput,
+  trustKeyring,
   revisionDrift,
   missingCoverage,
   candidateSchema,
   publicTrustSchema,
+  trustKeyringSchema,
   caseSchema,
   caseFixture,
   incidentSchema,
@@ -40,10 +54,12 @@ const [
 ] = await Promise.all([
   json("./accepted.json"),
   json("./public-trust-input.json"),
+  json("./trust-keyring.json"),
   json("./revision-drift.json"),
   json("./missing-coverage.json"),
   json("./problem-known-error.schema.json"),
   json("./problem-known-error-public-trust.schema.json"),
+  json("./problem-known-error-trust-keyring.schema.json"),
   json("../../../sources/case-continuity-coordinator/schemas/case-checkpoint.schema.json"),
   json("../../../sources/case-continuity-coordinator/fixtures/case-checkpoint.example.json"),
   json("../../../sources/incident-response/schemas/incident-state.schema.json"),
@@ -55,6 +71,7 @@ const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateCandidateSchema = ajv.compile(candidateSchema);
 const validatePublicTrustSchema = ajv.compile(publicTrustSchema);
+const validateTrustKeyringSchema = ajv.compile(trustKeyringSchema);
 const validateCaseSchema = ajv.compile(caseSchema);
 const validateIncidentSchema = ajv.compile(incidentSchema);
 
@@ -66,6 +83,7 @@ function findings(value, options = {}) {
   return problemKnownErrorFindings(value, {
     cutoff: CUTOFF,
     publicTrustInput,
+    trustKeyring,
     ...options,
   });
 }
@@ -89,15 +107,31 @@ function refreshedTrust(value, input = publicTrustInput) {
       grant.grantDigest = computeAuthorityGrantDigest(grant);
     }
   }
-  trust.evidenceRecords = value.evidence.map((row) => ({
-    evidenceRef: row.id,
-    evidenceRecordDigest: digest(row),
-  }));
+  for (const credential of trust.identityCredentials) {
+    const principal = principalById.get(credential.principalRef);
+    if (principal) {
+      credential.principalRecordDigest = digest(principal);
+      credential.credentialDigest =
+        computeIdentityCredentialDigest(credential);
+    }
+  }
+  trust.evidenceRecords = value.evidence.map((row) => {
+    const claim = {
+      evidenceRef: row.id,
+      evidenceRecordDigest: digest(row),
+      issuerRef: trust.issuer.id,
+    };
+    return {
+      ...claim,
+      claimDigest: computeEvidenceClaimDigest(claim),
+    };
+  });
   trust.sourceRecords = value.evidence.map((row) => {
     const source = {
       evidenceRef: row.id,
       sourceRef: row.sourceRef,
       sourceBytesDigest: row.recordDigest,
+      evidenceRecordDigest: digest(row),
       observedAt: row.observedAt,
       issuerRef: trust.issuer.id,
     };
@@ -115,6 +149,172 @@ function refreshedTrust(value, input = publicTrustInput) {
       publishedAt: row.observedAt,
     }));
   return trust;
+}
+
+function coherentlyReseal(value) {
+  const artifact = structuredClone(value);
+  const updateEvidence = (kind, subjectRef, subjectRevision) => {
+    for (const row of artifact.evidence) {
+      if (row.kind === kind && row.subjectRef === subjectRef) {
+        row.subjectRevision = subjectRevision;
+      }
+    }
+  };
+
+  artifact.problem.revision = computeProblemRevision(artifact.problem);
+  updateEvidence(
+    "problem-revision-declaration",
+    artifact.problem.id,
+    artifact.problem.revision,
+  );
+  for (const membership of artifact.incidentMemberships) {
+    membership.problemRevision = artifact.problem.revision;
+    membership.revision = computeIncidentMembershipRevision(membership);
+    updateEvidence(
+      "incident-membership-declaration",
+      membership.id,
+      membership.revision,
+    );
+  }
+  artifact.incidentManifest.problemRevision = artifact.problem.revision;
+  artifact.incidentManifest.membershipRevisionRefs =
+    artifact.incidentMemberships.map((row) => row.revision).sort();
+  artifact.incidentManifest.revision = computeIncidentManifestRevision(
+    artifact.incidentManifest,
+  );
+  updateEvidence(
+    "incident-membership-manifest-signature",
+    artifact.incidentManifest.id,
+    artifact.incidentManifest.revision,
+  );
+  for (const hypothesis of artifact.hypotheses) {
+    hypothesis.problemRevision = artifact.problem.revision;
+    hypothesis.revision = computeHypothesisRevision(hypothesis);
+  }
+  for (const candidateTest of artifact.tests) {
+    const hypothesis = artifact.hypotheses.find(
+      (row) => row.id === candidateTest.hypothesisRef,
+    );
+    candidateTest.problemRevision = artifact.problem.revision;
+    candidateTest.hypothesisRevisionRef = hypothesis.revision;
+    candidateTest.revision = computeTestRevision(candidateTest);
+    updateEvidence("test-result", candidateTest.id, candidateTest.revision);
+  }
+  for (const hypothesis of artifact.hypotheses) {
+    hypothesis.testRevisionRefs = hypothesis.testRefs
+      .map(
+        (testRef) =>
+          artifact.tests.find((row) => row.id === testRef).revision,
+      )
+      .sort();
+    hypothesis.dispositionRevision =
+      computeHypothesisDispositionRevision(hypothesis);
+    updateEvidence(
+      "hypothesis-observation",
+      hypothesis.id,
+      hypothesis.dispositionRevision,
+    );
+  }
+  for (const workaround of artifact.workarounds) {
+    const hypothesis = artifact.hypotheses.find(
+      (row) => row.id === workaround.hypothesisRef,
+    );
+    workaround.problemRevision = artifact.problem.revision;
+    workaround.hypothesisDispositionRevisionRef =
+      hypothesis.dispositionRevision;
+    workaround.revision = computeWorkaroundRevision(workaround);
+    updateEvidence(
+      "workaround-approval",
+      workaround.id,
+      workaround.revision,
+    );
+  }
+  for (const knownError of artifact.knownErrors) {
+    const hypothesis = artifact.hypotheses.find(
+      (row) => row.id === knownError.causeHypothesisRef,
+    );
+    const workaround = artifact.workarounds.find(
+      (row) => row.id === knownError.workaroundRef,
+    );
+    knownError.problemRevision = artifact.problem.revision;
+    knownError.causeHypothesisDispositionRevisionRef =
+      hypothesis.dispositionRevision;
+    knownError.workaroundRevisionRef = workaround.revision;
+    knownError.revision = computeKnownErrorRevision(knownError);
+    updateEvidence(
+      "known-error-declaration",
+      knownError.id,
+      knownError.revision,
+    );
+  }
+  for (const change of artifact.changeReceipts) {
+    change.problemRevision = artifact.problem.revision;
+    change.revision = computeChangeReceiptRevision(change);
+    updateEvidence(
+      "change-execution-receipt",
+      change.id,
+      change.planDigest,
+    );
+    updateEvidence("change-verification", change.id, change.planDigest);
+    updateEvidence("problem-change-link", change.id, change.revision);
+  }
+  for (const recurrence of artifact.recurrences) {
+    const membership = artifact.incidentMemberships.find(
+      (row) => row.id === recurrence.incidentMembershipRef,
+    );
+    const change = artifact.changeReceipts.find(
+      (row) => row.id === recurrence.changeReceiptRef,
+    );
+    recurrence.problemRevision = artifact.problem.revision;
+    recurrence.incidentMembershipRevisionRef = membership.revision;
+    recurrence.changeReceiptRevisionRef = change.revision;
+    recurrence.revision = computeRecurrenceRevision(recurrence);
+    updateEvidence(
+      "recurrence-observation",
+      recurrence.id,
+      recurrence.revision,
+    );
+  }
+  artifact.proseAttestation.surfaceDigest =
+    computeProseSurfaceDigest(artifact);
+  artifact.proseAttestation.revision =
+    computeProseAttestationRevision(artifact.proseAttestation);
+  updateEvidence(
+    "owner-prose-receipt",
+    artifact.proseAttestation.id,
+    artifact.proseAttestation.revision,
+  );
+  artifact.coverage.principalRefs = artifact.principals
+    .map((row) => row.id)
+    .sort();
+  artifact.coverage.evidenceRefs = artifact.evidence
+    .map((row) => row.id)
+    .sort();
+  artifact.coverage.incidentMembershipRefs =
+    artifact.incidentMemberships.map((row) => row.id).sort();
+  artifact.coverage.incidentManifestRevisionRef =
+    artifact.incidentManifest.revision;
+  artifact.coverage.hypothesisRevisionRefs = artifact.hypotheses
+    .map((row) => row.revision)
+    .sort();
+  artifact.coverage.hypothesisDispositionRevisionRefs =
+    artifact.hypotheses.map((row) => row.dispositionRevision).sort();
+  artifact.coverage.testRefs = artifact.tests.map((row) => row.id).sort();
+  artifact.coverage.workaroundRevisionRefs = artifact.workarounds
+    .map((row) => row.revision)
+    .sort();
+  artifact.coverage.knownErrorRevisionRefs = artifact.knownErrors
+    .map((row) => row.revision)
+    .sort();
+  artifact.coverage.changeReceiptRefs = artifact.changeReceipts
+    .map((row) => row.id)
+    .sort();
+  artifact.coverage.recurrenceRefs = artifact.recurrences
+    .map((row) => row.id)
+    .sort();
+  artifact.coverage.proseAttestationRevisionRef =
+    artifact.proseAttestation.revision;
+  return artifact;
 }
 
 function setPath(value, path, replacement) {
@@ -136,8 +336,13 @@ test("accepted candidate is strict-schema valid and semantically clean", () => {
     true,
     ajv.errorsText(validatePublicTrustSchema.errors),
   );
+  assert.equal(
+    validateTrustKeyringSchema(trustKeyring),
+    true,
+    ajv.errorsText(validateTrustKeyringSchema.errors),
+  );
   assert.deepEqual(findings(accepted), []);
-  assert.equal(accepted.evidence.length, 17);
+  assert.equal(accepted.evidence.length, 19);
   assert.equal(accepted.incidentMemberships.length, 3);
   assert.equal(accepted.incidentManifest.state, "owner-signed");
   assert.equal(accepted.hypotheses.length, 2);
@@ -706,6 +911,16 @@ test("owner-signed incident manifest seals coherent incident substitutions", () 
   membership.followUpRef = "follow-up-inc-009-timeout";
   membership.followUpIdentityKey =
     "sha256:9292929292929292929292929292929292929292929292929292929292929292";
+  const substitutedOwnerArtifact = deriveIncidentArtifact(
+    incidentFixture,
+    membership,
+  );
+  membership.followUpIdentityKey =
+    substitutedOwnerArtifact.followUps[0].identityKey;
+  membership.ownerArtifactDigest = computeOwnerArtifactDigest(
+    substitutedOwnerArtifact,
+  );
+  membership.incidentRevision = membership.ownerArtifactDigest;
   source.subjectRef = membership.incidentRef;
   source.subjectRevision = membership.incidentRevision;
   source.recordDigest =
@@ -778,9 +993,319 @@ test("caller trust uses unique issuer-scoped time-bounded grants and source byte
       ),
     );
   }
+
+  for (const field of [
+    "identityCredentials",
+    "authorityGrants",
+    "evidenceRecords",
+    "sourceRecords",
+    "ownerReceipts",
+  ]) {
+    const trust = structuredClone(publicTrustInput);
+    trust.signatures[field] =
+      `${trust.signatures[field][0] === "A" ? "B" : "A"}${trust.signatures[field].slice(1)}`;
+    assert.ok(
+      codes(accepted, { publicTrustInput: trust }).has(
+        "invalid_caller_trust_input",
+      ),
+      field,
+    );
+  }
+
+  const ownerSignature = structuredClone(publicTrustInput);
+  ownerSignature.ownerReceipts[0].signature =
+    `${ownerSignature.ownerReceipts[0].signature[0] === "A" ? "B" : "A"}${ownerSignature.ownerReceipts[0].signature.slice(1)}`;
+  assert.ok(
+    codes(accepted, { publicTrustInput: ownerSignature }).has(
+      "invalid_caller_trust_input",
+    ),
+  );
+
+  const issuerAsOwner = structuredClone(publicTrustInput);
+  issuerAsOwner.ownerReceipts[0].signerKeyId =
+    issuerAsOwner.issuer.keyId;
+  issuerAsOwner.ownerReceipts[0].receiptDigest =
+    computeOwnerReceiptDigest(issuerAsOwner.ownerReceipts[0]);
+  assert.ok(
+    codes(accepted, { publicTrustInput: issuerAsOwner }).has(
+      "invalid_caller_trust_input",
+    ),
+  );
+
+  const attacker = generateKeyPairSync("ed25519");
+  const selfDeclared = structuredClone(publicTrustInput);
+  selfDeclared.issuer.keyId = "key-attacker";
+  selfDeclared.issuer.keyRef =
+    "https://attacker.example/keys/self-declared";
+  selfDeclared.issuer.publicKeyPem = attacker.publicKey.export({
+    type: "spki",
+    format: "pem",
+  });
+  for (const [field, rows] of Object.entries({
+    identityCredentials: selfDeclared.identityCredentials,
+    authorityGrants: selfDeclared.authorityGrants,
+    evidenceRecords: selfDeclared.evidenceRecords,
+    sourceRecords: selfDeclared.sourceRecords,
+    ownerReceipts: selfDeclared.ownerReceipts,
+  })) {
+    selfDeclared.signatures[field] = sign(
+      null,
+      signedCollectionPayload(field, rows),
+      attacker.privateKey,
+    ).toString("base64");
+  }
+  assert.ok(
+    codes(accepted, { publicTrustInput: selfDeclared }).has(
+      "invalid_caller_trust_input",
+    ),
+  );
+  assert.ok(
+    codes(accepted, { publicTrustInput: selfDeclared }).has(
+      "invalid_public_trust_schema",
+    ),
+  );
+  assert.ok(
+    codes(accepted, { trustKeyring: undefined }).has(
+      "invalid_validation_context",
+    ),
+  );
 });
 
-test("agent and package identities cannot exercise human authority", () => {
+test("trusted issuer signatures cannot impersonate a different receipt owner", () => {
+  const attacker = generateKeyPairSync("ed25519");
+  const keyring = structuredClone(trustKeyring);
+  const issuerKey = keyring.keys.find((row) => row.kind === "issuer");
+  issuerKey.publicKeyPem = attacker.publicKey.export({
+    type: "spki",
+    format: "pem",
+  });
+
+  const trust = structuredClone(publicTrustInput);
+  const receipt = trust.ownerReceipts[0];
+  receipt.ownerRef = "principal-investigator";
+  receipt.signerKeyId = issuerKey.id;
+  receipt.receiptDigest = computeOwnerReceiptDigest(receipt);
+  receipt.signature = sign(
+    null,
+    Buffer.from(
+      canonicalJson({
+        kind: "ownerReceipt",
+        digest: receipt.receiptDigest,
+      }),
+      "utf8",
+    ),
+    attacker.privateKey,
+  ).toString("base64");
+  for (const [field, rows] of Object.entries({
+    identityCredentials: trust.identityCredentials,
+    authorityGrants: trust.authorityGrants,
+    evidenceRecords: trust.evidenceRecords,
+    sourceRecords: trust.sourceRecords,
+    ownerReceipts: trust.ownerReceipts,
+  })) {
+    trust.signatures[field] = sign(
+      null,
+      signedCollectionPayload(field, rows),
+      attacker.privateKey,
+    ).toString("base64");
+  }
+
+  assert.ok(
+    codes(accepted, {
+      publicTrustInput: trust,
+      trustKeyring: keyring,
+    }).has("invalid_caller_trust_input"),
+  );
+});
+
+test("issuer re-signing cannot substitute owner-authored evidence", () => {
+  const candidate = clone();
+  candidate.evidence.find(
+    (row) => row.id === "evidence-membership-inc-001",
+  ).recordDigest =
+    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+  const trust = refreshedTrust(candidate);
+  const attacker = generateKeyPairSync("ed25519");
+  const keyring = structuredClone(trustKeyring);
+  keyring.keys.find((row) => row.kind === "issuer").publicKeyPem =
+    attacker.publicKey.export({ type: "spki", format: "pem" });
+  for (const [field, rows] of Object.entries({
+    identityCredentials: trust.identityCredentials,
+    authorityGrants: trust.authorityGrants,
+    evidenceRecords: trust.evidenceRecords,
+    sourceRecords: trust.sourceRecords,
+    ownerReceipts: trust.ownerReceipts,
+  })) {
+    trust.signatures[field] = sign(
+      null,
+      signedCollectionPayload(field, rows),
+      attacker.privateKey,
+    ).toString("base64");
+  }
+  assert.ok(
+    codes(candidate, {
+      publicTrustInput: trust,
+      trustKeyring: keyring,
+    }).has("invalid_caller_trust_input"),
+  );
+});
+
+test("issuer key material cannot be aliased as a principal key", () => {
+  const attacker = generateKeyPairSync("ed25519");
+  const attackerPublicKey = attacker.publicKey.export({
+    type: "spki",
+    format: "pem",
+  });
+  const keyring = structuredClone(trustKeyring);
+  const issuerKey = keyring.keys.find((row) => row.kind === "issuer");
+  const principalKey = keyring.keys.find(
+    (row) => row.principalRef === "principal-problem-owner",
+  );
+  issuerKey.publicKeyPem = attackerPublicKey;
+  principalKey.publicKeyPem = attackerPublicKey;
+
+  const trust = structuredClone(publicTrustInput);
+  for (const receipt of trust.ownerReceipts.filter(
+    (row) => row.signerKeyId === principalKey.id,
+  )) {
+    receipt.signature = sign(
+      null,
+      Buffer.from(
+        canonicalJson({
+          kind: "ownerReceipt",
+          digest: receipt.receiptDigest,
+        }),
+        "utf8",
+      ),
+      attacker.privateKey,
+    ).toString("base64");
+  }
+  for (const [field, rows] of Object.entries({
+    identityCredentials: trust.identityCredentials,
+    authorityGrants: trust.authorityGrants,
+    evidenceRecords: trust.evidenceRecords,
+    sourceRecords: trust.sourceRecords,
+    ownerReceipts: trust.ownerReceipts,
+  })) {
+    trust.signatures[field] = sign(
+      null,
+      signedCollectionPayload(field, rows),
+      attacker.privateKey,
+    ).toString("base64");
+  }
+
+  assert.ok(
+    codes(accepted, {
+      publicTrustInput: trust,
+      trustKeyring: keyring,
+    }).has("invalid_caller_trust_input"),
+  );
+
+  const duplicatePrincipal = structuredClone(trustKeyring);
+  duplicatePrincipal.keys.push({
+    ...structuredClone(principalKey),
+    id: "key-problem-owner-extra",
+    publicKeyPem: generateKeyPairSync("ed25519").publicKey.export({
+      type: "spki",
+      format: "pem",
+    }),
+  });
+  assert.ok(
+    codes(accepted, { trustKeyring: duplicatePrincipal }).has(
+      "invalid_caller_trust_input",
+    ),
+  );
+
+  const ecdsa = generateKeyPairSync("ec", { namedCurve: "P-256" });
+  const wrongKeyType = structuredClone(trustKeyring);
+  const wrongIssuerKey = wrongKeyType.keys.find(
+    (row) => row.kind === "issuer",
+  );
+  wrongIssuerKey.publicKeyPem = ecdsa.publicKey.export({
+    type: "spki",
+    format: "pem",
+  });
+  const ecdsaTrust = structuredClone(publicTrustInput);
+  for (const [field, rows] of Object.entries({
+    identityCredentials: ecdsaTrust.identityCredentials,
+    authorityGrants: ecdsaTrust.authorityGrants,
+    evidenceRecords: ecdsaTrust.evidenceRecords,
+    sourceRecords: ecdsaTrust.sourceRecords,
+    ownerReceipts: ecdsaTrust.ownerReceipts,
+  })) {
+    ecdsaTrust.signatures[field] = sign(
+      "sha256",
+      signedCollectionPayload(field, rows),
+      ecdsa.privateKey,
+    ).toString("base64");
+  }
+  assert.ok(
+    codes(accepted, {
+      publicTrustInput: ecdsaTrust,
+      trustKeyring: wrongKeyType,
+    }).has("invalid_caller_trust_input"),
+  );
+});
+
+test("candidate records resolve exact complete owner artifacts", () => {
+  const unresolvedMembership = clone();
+  unresolvedMembership.incidentMemberships[0].ownerArtifactDigest =
+    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+  assert.ok(
+    codes(unresolvedMembership).has("invalid_incident_membership_authority"),
+  );
+
+  const invalidOwnerArtifact = clone();
+  const invalidMembership = invalidOwnerArtifact.incidentMemberships[0];
+  invalidMembership.followUpRef = "follow-up.invalid";
+  invalidMembership.ownerArtifactDigest = computeOwnerArtifactDigest(
+    deriveIncidentArtifact(incidentFixture, invalidMembership),
+  );
+  invalidMembership.incidentRevision =
+    invalidMembership.ownerArtifactDigest;
+  invalidMembership.revision =
+    computeIncidentMembershipRevision(invalidMembership);
+  invalidOwnerArtifact.evidence.find(
+    (row) => row.id === invalidMembership.declarationEvidenceRef,
+  ).subjectRevision = invalidMembership.revision;
+  assert.ok(
+    codes(invalidOwnerArtifact).has(
+      "invalid_incident_membership_authority",
+    ),
+  );
+
+  const unresolvedTest = clone();
+  unresolvedTest.tests[0].testRunRef = "run-missing";
+  assert.ok(codes(unresolvedTest).has("invalid_hypothesis_test"));
+
+  const misleadingQaArtifact = clone();
+  misleadingQaArtifact.tests[0].qaArtifactRef =
+    "sources/quality-assurance-lead/fixtures/missing.json";
+  assert.ok(codes(misleadingQaArtifact).has("invalid_hypothesis_test"));
+
+  const unresolvedChange = clone();
+  unresolvedChange.changeReceipts[0].ownerPlanDigest =
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+  assert.ok(codes(unresolvedChange).has("invalid_change_receipt"));
+});
+
+test("coherent graph reseal cannot mint fresh external receipts or signatures", () => {
+  const candidate = clone();
+  candidate.workarounds[0].instructions =
+    "The service owner may use the revised recovery procedure.";
+  const resealed = coherentlyReseal(candidate);
+  const trust = refreshedTrust(resealed);
+  assert.deepEqual(
+    trust.sourceRecords.map((row) => row.sourceBytesDigest),
+    publicTrustInput.sourceRecords.map((row) => row.sourceBytesDigest),
+  );
+  const actual = codes(resealed, { publicTrustInput: trust });
+  assert.ok(actual.has("invalid_caller_trust_input"));
+  assert.equal(actual.has("invalid_workaround_revision_binding"), false);
+  assert.equal(actual.has("invalid_known_error_revision_binding"), false);
+});
+
+test("caller-verified human credentials reject agent and package substitutions", () => {
   for (const displayName of [
     "Problem Owner Agent",
     "Problem Owner Package",
@@ -796,7 +1321,7 @@ test("agent and package identities cannot exercise human authority", () => {
     assert.ok(
       codes(candidate, {
         publicTrustInput: refreshedTrust(candidate),
-      }).has("invalid_typed_authority"),
+      }).has("invalid_caller_trust_input"),
       displayName,
     );
   }
@@ -808,22 +1333,28 @@ test("agent and package identities cannot exercise human authority", () => {
   assert.ok(
     codes(agentId, {
       publicTrustInput: refreshedTrust(agentId),
-    }).has("invalid_typed_authority"),
+    }).has("invalid_caller_trust_input"),
   );
 
-  for (const displayName of [
-    "Alice Abbott",
-    "Assistant Director Alice",
-  ]) {
-    const candidate = clone();
-    candidate.principals.find(
-      (row) => row.id === "principal-problem-owner",
-    ).displayName = displayName;
+  const copilot = clone();
+  copilot.principals.find(
+    (row) => row.id === "principal-problem-owner",
+  ).displayName = "GitHub Copilot";
+  assert.ok(
+    codes(copilot, {
+      publicTrustInput: refreshedTrust(copilot),
+    }).has("invalid_caller_trust_input"),
+  );
+
+  for (const displayName of ["Alice Abbott", "Assistant Director Alice"]) {
     assert.equal(
-      codes(candidate, {
-        publicTrustInput: refreshedTrust(candidate),
-      }).has("invalid_typed_authority"),
-      false,
+      isVerifiedHumanPrincipal({
+        id: "principal-alice",
+        kind: "named-human",
+        displayName,
+        identityCredentialRef: "credential-alice",
+      }),
+      true,
       displayName,
     );
   }
@@ -897,6 +1428,20 @@ test("prohibited narrative claims are detected without rejecting negation", () =
   systemActor.problem.title =
     "This system approves production changes.";
   assert.ok(codes(systemActor).has("prohibited_authority_claim"));
+
+  for (const title of [
+    "Copilot signed off on the workaround.",
+    "Copilot is signing off on the workaround.",
+    "The Claw green-lit the production change.",
+    "The Claw greenlights the production change.",
+  ]) {
+    const candidate = clone();
+    candidate.problem.title = title;
+    assert.ok(
+      codes(candidate).has("prohibited_authority_claim"),
+      title,
+    );
+  }
 
   const unrelatedNegation = clone();
   unrelatedNegation.problem.title =
@@ -1030,14 +1575,14 @@ test("fresh lifecycle events strictly follow the revisions they consume", () => 
 
   const recurrenceBeforeFinalization = clone();
   const laterChange = recurrenceBeforeFinalization.changeReceipts[0];
-  laterChange.linkedAt = "2026-08-19T10:10:00Z";
+  laterChange.linkedAt = "2026-09-06T10:10:00Z";
   const laterLink = recurrenceBeforeFinalization.evidence.find(
     (row) => row.id === laterChange.linkEvidenceRef,
   );
   laterLink.observedAt = laterChange.linkedAt;
   recurrenceBeforeFinalization.evidence.find(
     (row) => row.id === laterChange.verificationEvidenceRefs[0],
-  ).observedAt = "2026-08-19T10:05:00Z";
+  ).observedAt = "2026-09-06T10:05:00Z";
   laterChange.revision = computeChangeReceiptRevision(laterChange);
   laterLink.subjectRevision = laterChange.revision;
   const recurrence = recurrenceBeforeFinalization.recurrences[0];
@@ -1057,6 +1602,15 @@ test("schema-first validation is total and resource bounded", () => {
   const schemaInvalid = clone();
   delete schemaInvalid.problem.title;
   assert.ok(codes(schemaInvalid).has("invalid_schema"));
+
+  const malformedMembershipIdentity = clone();
+  malformedMembershipIdentity.incidentMemberships[0].incidentRef = null;
+  assert.doesNotThrow(() => findings(malformedMembershipIdentity));
+  assert.ok(
+    codes(malformedMembershipIdentity).has(
+      "invalid_incident_membership_authority",
+    ),
+  );
 
   const oversizedString = clone();
   oversizedString.problem.title = "x".repeat(4097);
@@ -1114,6 +1668,21 @@ test("schema-first validation is total and resource bounded", () => {
   assert.ok(
     codes(accepted, { publicTrustInput: bigintTrust }).has(
       "invalid_structure",
+    ),
+  );
+
+  const danglingEvidence = clone();
+  danglingEvidence.problem.declarationEvidenceRef = "evidence-missing";
+  const danglingTrust = structuredClone(publicTrustInput);
+  danglingTrust.ownerReceipts[0].evidenceRef = "evidence-missing";
+  danglingTrust.ownerReceipts[0].receiptDigest =
+    computeOwnerReceiptDigest(danglingTrust.ownerReceipts[0]);
+  assert.doesNotThrow(() =>
+    findings(danglingEvidence, { publicTrustInput: danglingTrust }),
+  );
+  assert.ok(
+    codes(danglingEvidence, { publicTrustInput: danglingTrust }).has(
+      "invalid_caller_trust_input",
     ),
   );
 

@@ -1,4 +1,14 @@
 import { createHash } from "node:crypto";
+import Ajv2020 from "ajv/dist/2020.js";
+import addFormats from "ajv-formats";
+import {
+  evaluateTypedCompositionGraph,
+  normalizeTypedControlInput,
+} from "./typed-composition-graph.mjs";
+import {
+  artifactSemanticValidationOptions,
+  validateArtifactSemantics,
+} from "../../../scripts/artifact-semantics.mjs";
 
 export const COMPOSITION_SCHEMA_VERSION =
   "awesomeClaws.problemKnownErrorCompositionProbe.v1";
@@ -35,57 +45,16 @@ export const OWNER_CONTRACTS = Object.freeze({
       "sha256:c1eb950921665cbe0a1692f3a559341396636e276268bdd42bf04abdefb306f7",
   }),
 });
-
-const REQUIRED_NATIVE_INVARIANTS = Object.freeze([
-  Object.freeze({
-    id: "owner-signed-cross-incident-manifest",
-    ownerContracts: Object.freeze([
-      "incident-response",
-      "case-continuity-coordinator",
-    ]),
-    reason:
-      "Incident Response owns one incident and one follow-up identity per artifact, but no owner contract signs one revision over the complete cross-incident membership universe.",
-  }),
-  Object.freeze({
-    id: "hypothesis-proposal-disposition-lineage",
-    ownerContracts: Object.freeze([
-      "incident-response",
-      "quality-assurance-lead",
-    ]),
-    reason:
-      "Incident hypotheses and QA runs do not natively bind a test to an immutable problem-level proposal revision and then bind the resulting disposition revision.",
-  }),
-  Object.freeze({
-    id: "known-error-workaround-lineage",
-    ownerContracts: Object.freeze([
-      "incident-response",
-      "case-continuity-coordinator",
-    ]),
-    reason:
-      "No owner contract has a typed known-error revision that jointly binds the declared cause disposition and the current expiring workaround revision.",
-  }),
-  Object.freeze({
-    id: "post-change-recurrence-lineage",
-    ownerContracts: Object.freeze([
-      "incident-response",
-      "change-control-operator",
-    ]),
-    reason:
-      "The owner contracts do not join a later incident membership revision to the exact externally executed change receipt revision.",
-  }),
-  Object.freeze({
-    id: "closed-problem-lifecycle-coverage",
-    ownerContracts: Object.freeze([
-      "repository-compliance-program-manager",
-      "case-continuity-coordinator",
-    ]),
-    reason:
-      "Repository Compliance has exact domain coverage, but its schema cannot enumerate the problem-specific lifecycle revision universe.",
-  }),
-]);
+const ownerValidationCache = new Set();
+const schemaValidatorCache = new Map();
+const derivedIncidentValidationCache = new Set();
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function records(value) {
+  return Array.isArray(value) ? value.filter(isRecord) : [];
 }
 
 function fail(message) {
@@ -148,8 +117,8 @@ export function deriveIncidentArtifact(baseArtifact, membership) {
   const originalIncidentRef = baseArtifact.incident.id;
   const originalFollowUpRef = baseArtifact.followUps[0].id;
   const artifact = replaceStrings(baseArtifact, [
-    [originalIncidentRef, membership.incidentRef],
     [originalIncidentRef.toLowerCase(), membership.incidentRef.toLowerCase()],
+    [originalIncidentRef, membership.incidentRef],
     [originalFollowUpRef, membership.followUpRef],
   ]);
   const actionRevision = (action) =>
@@ -424,6 +393,27 @@ function verifiedSources(sources) {
     ) {
       fail(`Owner source ${id} drifted from its complete pinned contract.`);
     }
+    const validationKey = `${id}:${artifactDigest}:${schemaDigest}`;
+    if (!ownerValidationCache.has(validationKey)) {
+      let validateSchema = schemaValidatorCache.get(schemaDigest);
+      if (!validateSchema) {
+        const ajv = new Ajv2020({ allErrors: true, strict: true });
+        addFormats(ajv);
+        validateSchema = ajv.compile(source.schema);
+        schemaValidatorCache.set(schemaDigest, validateSchema);
+      }
+      if (
+        !validateSchema(source.artifact) ||
+        validateArtifactSemantics(
+          id,
+          source.artifact,
+          artifactSemanticValidationOptions(id),
+        ).length > 0
+      ) {
+        fail(`Owner source ${id} is not schema and semantic valid.`);
+      }
+      ownerValidationCache.add(validationKey);
+    }
     bindings[id] = {
       artifactDigest,
       schemaDigest,
@@ -433,223 +423,437 @@ function verifiedSources(sources) {
   return bindings;
 }
 
-function operationalInvariantComparisons(
-  sources,
-  proposal,
-  incidentVariants,
-) {
-  const incident = sources["incident-response"].artifact;
-  const qa = sources["quality-assurance-lead"].artifact;
-  const change = sources["change-control-operator"].artifact;
-  const compliance =
-    sources["repository-compliance-program-manager"].artifact;
-  const continuity = sources["case-continuity-coordinator"].artifact;
-  const incidentHypotheses = incidentVariants.flatMap(
-    (variant) => variant.artifact.hypotheses ?? [],
-  );
-  const incidentFollowUps = incidentVariants.map(
-    (variant) => variant.artifact.followUps[0],
-  );
-  const qaRun = qa.testRuns?.[0];
-  const proposalMemberships = Array.isArray(proposal.incidentMemberships)
-    ? proposal.incidentMemberships
-    : [];
-  const matchingMemberships = proposalMemberships.filter((membership) => {
-    const variant = incidentVariants.find(
-      (candidate) => candidate.membershipRef === membership.id,
-    );
-    const followUp = variant?.artifact.followUps[0];
-    return (
-      membership.incidentRef === variant?.artifact.incident.id &&
-      membership.followUpRef === followUp?.id &&
-      membership.followUpIdentityKey === followUp?.identityKey
-    );
-  });
-  const proposalHypotheses = Array.isArray(proposal.hypotheses)
-    ? proposal.hypotheses
-    : [];
-  const matchingHypotheses = proposalHypotheses.filter((hypothesis) =>
-    incidentHypotheses.some(
-      (ownerHypothesis) =>
-        hypothesis.id === ownerHypothesis.id &&
-        hypothesis.state === ownerHypothesis.state &&
-        hypothesis.ownerRef === ownerHypothesis.ownerId,
-    ),
-  );
-  const proposalTests = Array.isArray(proposal.tests) ? proposal.tests : [];
-  const matchingTests = proposalTests.filter((candidateTest) =>
-    qa.testRuns?.some(
-      (run) =>
-        run.id === candidateTest.testRunRef &&
-        run.buildId === candidateTest.buildId &&
-        run.environment === candidateTest.environment &&
-        run.executedAt === candidateTest.executedAt &&
-        run.executedById === candidateTest.executedByRef &&
-        (run.result === "passed" ? "supports" : "refutes") ===
-          candidateTest.outcome,
-    ),
-  );
-  const proposalChange = Array.isArray(proposal.changeReceipts)
-    ? proposal.changeReceipts[0]
-    : undefined;
-  const proposalRecurrence = Array.isArray(proposal.recurrences)
-    ? proposal.recurrences[0]
-    : undefined;
-  const recurrenceMembership = proposalMemberships.find(
-    (membership) => membership.id === proposalRecurrence?.incidentMembershipRef,
-  );
+function graphNode(id, type, identity, revision, authority = {}) {
+  const normalizedIdentity = { ...identity, id, type };
+  const normalizedAuthority = {
+    kind: authority.kind ?? "owner-contract",
+    scopes: [...(authority.scopes ?? [])].sort(),
+    humanAssurance: authority.humanAssurance ?? null,
+  };
+  return {
+    id,
+    type,
+    identity: normalizedIdentity,
+    identityDigest: digest(normalizedIdentity),
+    revision,
+    revisionDigest: digest(revision),
+    authorityDigest: digest(normalizedAuthority),
+    authority: normalizedAuthority,
+  };
+}
 
-  const checks = {
-    "owner-signed-cross-incident-manifest": {
-      preserved:
-        matchingMemberships.length === proposalMemberships.length &&
-        Array.isArray(incident.incidentMemberships) &&
-        isRecord(incident.incidentManifest) &&
-        Array.isArray(incident.incidentManifest.membershipRevisionRefs) &&
-        typeof incident.incidentManifest.signedByRef === "string",
-      observedOwnerEvidence: {
-        incidents: incidentVariants.map((variant) => ({
-          membershipRef: variant.membershipRef,
-          artifactDigest: variant.artifactDigest,
-          incidentRef: variant.artifact.incident.id,
-          followUpRef: variant.artifact.followUps[0].id,
-          followUpIdentityKey: variant.artifact.followUps[0].identityKey,
-        })),
-        continuityCheckpointRefs: continuity.checkpoints?.map((row) => row.id),
+function graphEdge(id, from, to, type, revision, authority = {}) {
+  return {
+    id,
+    from,
+    to,
+    type,
+    identity: { id, from, to, type },
+    identityDigest: digest({ id, from, to, type }),
+    revision,
+    revisionDigest: digest(revision),
+    authority,
+    authorityDigest: digest(authority),
+  };
+}
+
+export function buildCandidateUniverse(proposal) {
+  const node = (id, type, identity, revision, authority) =>
+    graphNode(id, type, identity, revision, authority);
+  const all = {
+    "incident-manifest": [
+      node(
+        `candidate:incident-manifest:${proposal.incidentManifest.id}`,
+        "incident-manifest",
+        {
+          recordId: proposal.incidentManifest.id,
+        },
+        {
+          revision: proposal.incidentManifest.revision,
+          membershipRevisionRefs:
+            proposal.incidentManifest.membershipRevisionRefs,
+        },
+        {
+          kind: "verified-human",
+          scopes: ["incident-membership-declarer"],
+          humanAssurance: "verified-human",
+        },
+      ),
+    ],
+    "incident-membership": records(proposal.incidentMemberships).map((row) =>
+      node(
+        `candidate:incident-membership:${row.id}`,
+        "incident-membership",
+        {
+          recordId: row.id,
+          incidentRef: row.incidentRef,
+          followUpRef: row.followUpRef,
+          followUpIdentityKey: row.followUpIdentityKey,
+        },
+        {
+          revision: row.revision,
+          incidentRevision: row.incidentRevision,
+          ownerArtifactDigest: row.ownerArtifactDigest,
+        },
+        {
+          kind: "verified-human",
+          scopes: ["incident-membership-declarer"],
+          humanAssurance: "verified-human",
+        },
+      ),
+    ),
+    "hypothesis-proposal": records(proposal.hypotheses).map((row) =>
+      node(
+        `candidate:hypothesis-proposal:${row.id}`,
+        "hypothesis-proposal",
+        { recordId: row.id, problemRevision: row.problemRevision },
+        { revision: row.revision, proposedAt: row.proposedAt },
+        {
+          kind: "verified-human",
+          scopes: ["hypothesis-owner"],
+          humanAssurance: "verified-human",
+        },
+      ),
+    ),
+    "hypothesis-disposition": records(proposal.hypotheses).map((row) =>
+      node(
+        `candidate:hypothesis-disposition:${row.id}`,
+        "hypothesis-disposition",
+        { recordId: row.id, proposalRevision: row.revision },
+        {
+          revision: row.dispositionRevision,
+          testRevisionRefs: row.testRevisionRefs,
+          revisedAt: row.revisedAt,
+        },
+        {
+          kind: "verified-human",
+          scopes: ["hypothesis-owner"],
+          humanAssurance: "verified-human",
+        },
+      ),
+    ),
+    "test-result": records(proposal.tests).map((row) =>
+      node(
+        `candidate:test-result:${row.id}`,
+        "test-result",
+        {
+          recordId: row.id,
+          hypothesisRef: row.hypothesisRef,
+          testRunRef: row.testRunRef,
+        },
+        {
+          revision: row.revision,
+          hypothesisRevisionRef: row.hypothesisRevisionRef,
+          ownerArtifactDigest: row.ownerArtifactDigest,
+          executedAt: row.executedAt,
+        },
+        {
+          kind: "verified-human",
+          scopes: ["test-executor"],
+          humanAssurance: "verified-human",
+        },
+      ),
+    ),
+    workaround: records(proposal.workarounds).map((row) =>
+      node(
+        `candidate:workaround:${row.id}`,
+        "workaround",
+        { recordId: row.id, hypothesisRef: row.hypothesisRef },
+        {
+          revision: row.revision,
+          hypothesisDispositionRevisionRef:
+            row.hypothesisDispositionRevisionRef,
+          approvedAt: row.approvedAt,
+          expiresAt: row.expiresAt,
+        },
+        {
+          kind: "verified-human",
+          scopes: ["workaround-approver"],
+          humanAssurance: "verified-human",
+        },
+      ),
+    ),
+    "known-error": records(proposal.knownErrors).map((row) =>
+      node(
+        `candidate:known-error:${row.id}`,
+        "known-error",
+        {
+          recordId: row.id,
+          causeHypothesisRef: row.causeHypothesisRef,
+          workaroundRef: row.workaroundRef,
+        },
+        {
+          revision: row.revision,
+          causeHypothesisDispositionRevisionRef:
+            row.causeHypothesisDispositionRevisionRef,
+          workaroundRevisionRef: row.workaroundRevisionRef,
+          declaredAt: row.declaredAt,
+        },
+        {
+          kind: "verified-human",
+          scopes: ["known-error-authority"],
+          humanAssurance: "verified-human",
+        },
+      ),
+    ),
+    "change-receipt": records(proposal.changeReceipts).map((row) =>
+      node(
+        `candidate:change-receipt:${row.id}`,
+        "change-receipt",
+        { recordId: row.id, changePlanRef: row.changePlanRef },
+        {
+          revision: row.revision,
+          planDigest: row.planDigest,
+          ownerArtifactDigest: row.ownerArtifactDigest,
+          executedAt: row.executedAt,
+          linkedAt: row.linkedAt,
+        },
+        {
+          kind: "verified-human",
+          scopes: ["change-executor"],
+          humanAssurance: "verified-human",
+        },
+      ),
+    ),
+    recurrence: records(proposal.recurrences).map((row) =>
+      node(
+        `candidate:recurrence:${row.id}`,
+        "recurrence",
+        {
+          recordId: row.id,
+          incidentMembershipRef: row.incidentMembershipRef,
+          changeReceiptRef: row.changeReceiptRef,
+        },
+        {
+          revision: row.revision,
+          incidentMembershipRevisionRef:
+            row.incidentMembershipRevisionRef,
+          changeReceiptRevisionRef: row.changeReceiptRevisionRef,
+          observedAt: row.observedAt,
+        },
+        {
+          kind: "external-system",
+          scopes: ["incident-record-authority"],
+          humanAssurance: null,
+        },
+      ),
+    ),
+    "lifecycle-coverage": [
+      node(
+        "candidate:lifecycle-coverage",
+        "lifecycle-coverage",
+        { state: proposal.coverage?.state },
+        { coverage: proposal.coverage },
+        {
+          kind: "verified-human",
+          scopes: ["problem-owner"],
+          humanAssurance: "verified-human",
+        },
+      ),
+    ],
+  };
+  const select = (type, ids) =>
+    all[type].filter((candidate) =>
+      ids.includes(candidate.identity.recordId),
+    );
+  const knownErrors = records(proposal.knownErrors);
+  const recurrences = records(proposal.recurrences);
+  const recurrenceMembershipIds = recurrences.map(
+    (row) => row.incidentMembershipRef,
+  );
+  const recurrenceChangeIds = recurrences.map(
+    (row) => row.changeReceiptRef,
+  );
+  return {
+    ...all,
+    $requirements: {
+      "owner-signed-cross-incident-manifest": {
+        "incident-manifest": all["incident-manifest"],
+        "incident-membership": all["incident-membership"],
       },
-      proposalEvidence: {
-        membershipCount: proposalMemberships.length,
-        unmatchedMemberships: proposalMemberships
-          .filter((row) => !matchingMemberships.includes(row))
-          .map((row) => ({
-            id: row.id,
-            incidentRef: row.incidentRef,
-            followUpRef: row.followUpRef,
-            followUpIdentityKey: row.followUpIdentityKey,
-          })),
+      "hypothesis-proposal-disposition-lineage": {
+        "hypothesis-proposal": all["hypothesis-proposal"],
+        "test-result": all["test-result"],
+        "hypothesis-disposition": all["hypothesis-disposition"],
       },
-    },
-    "hypothesis-proposal-disposition-lineage": {
-      preserved:
-        matchingHypotheses.length === proposalHypotheses.length &&
-        matchingTests.length === proposalTests.length &&
-        incidentHypotheses.length > 0 &&
-        incidentHypotheses.every(
-          (row) =>
-            typeof row.revision === "string" &&
-            typeof row.dispositionRevision === "string" &&
-            Array.isArray(row.testRevisionRefs),
-        ) &&
-        typeof qaRun?.hypothesisRevisionRef === "string",
-      observedOwnerEvidence: {
-        incidentHypotheses: incidentHypotheses.map((row) => ({
-          id: row.id,
-          state: row.state,
-          evidenceRefs: row.evidenceRefs,
-          updatedAt: row.updatedAt,
-        })),
-        qaRun: qaRun
-          ? {
-              id: qaRun.id,
-              testCaseRef: qaRun.testCaseRef,
-              evidenceRef: qaRun.evidenceRef,
-              executedAt: qaRun.executedAt,
-            }
-          : null,
-      },
-      proposalEvidence: {
-        matchedTestRefs: matchingTests.map((row) => row.id),
-        unmatchedHypothesisRefs: proposalHypotheses
-          .filter((row) => !matchingHypotheses.includes(row))
-          .map((row) => row.id),
-        unmatchedTestRefs: proposalTests
-          .filter((row) => !matchingTests.includes(row))
-          .map((row) => row.id),
-      },
-    },
-    "known-error-workaround-lineage": {
-      preserved:
-        Array.isArray(proposal.workarounds) &&
-        proposal.workarounds.length > 0 &&
-        Array.isArray(proposal.knownErrors) &&
-        proposal.knownErrors.length > 0 &&
-        Array.isArray(incident.workarounds) &&
-        Array.isArray(incident.knownErrors) &&
-        incident.knownErrors.some(
-          (row) =>
-            typeof row.causeHypothesisDispositionRevisionRef === "string" &&
-            typeof row.workaroundRevisionRef === "string",
+      "known-error-workaround-lineage": {
+        "known-error": all["known-error"],
+        workaround: select(
+          "workaround",
+          knownErrors.map((row) => row.workaroundRef),
         ),
-      observedOwnerEvidence: {
-        incidentActionRefs: incident.actions?.map((row) => row.id),
-        continuityActionRefs: continuity.actions?.map((row) => row.id),
-      },
-      proposalEvidence: {
-        workaroundRefs: proposal.workarounds?.map((row) => row.id),
-        knownErrorRefs: proposal.knownErrors?.map((row) => row.id),
-      },
-    },
-    "post-change-recurrence-lineage": {
-      preserved:
-        proposalChange?.planDigest === change.plan?.digest &&
-        proposalChange?.executedAt === change.execution?.executedAt &&
-        incidentFollowUps.some(
-          (followUp) =>
-            recurrenceMembership?.followUpRef === followUp.id &&
-            recurrenceMembership?.followUpIdentityKey ===
-              followUp.identityKey,
-        ) &&
-        typeof change.execution?.executedAt === "string" &&
-        Array.isArray(incident.recurrences) &&
-        incident.recurrences.some(
-          (row) =>
-            typeof row.changeReceiptRevisionRef === "string" &&
-            typeof row.incidentMembershipRevisionRef === "string",
+        "hypothesis-disposition": select(
+          "hypothesis-disposition",
+          knownErrors.map((row) => row.causeHypothesisRef),
         ),
-      observedOwnerEvidence: {
-        changePlanDigest: change.plan?.digest,
-        changeExecutionState: change.execution?.state,
-        incidentFollowUpRefs: incidentFollowUps.map((row) => row.id),
       },
-      proposalEvidence: {
-        changeReceiptRef: proposalChange?.id,
-        planDigest: proposalChange?.planDigest,
-        executedAt: proposalChange?.executedAt,
-        recurrenceRef: proposalRecurrence?.id,
-        recurrenceMembershipRef: proposalRecurrence?.incidentMembershipRef,
-        resolvedMembershipFollowUpRef: recurrenceMembership?.followUpRef,
-        resolvedMembershipFollowUpIdentityKey:
-          recurrenceMembership?.followUpIdentityKey,
+      "post-change-recurrence-lineage": {
+        recurrence: all.recurrence,
+        "change-receipt": select(
+          "change-receipt",
+          recurrenceChangeIds,
+        ),
+        "incident-membership": select(
+          "incident-membership",
+          recurrenceMembershipIds,
+        ),
       },
-    },
-    "closed-problem-lifecycle-coverage": {
-      preserved:
-        isRecord(proposal.coverage) &&
-        Array.isArray(compliance.coverage?.hypothesisDispositionRevisionRefs) &&
-        Array.isArray(compliance.coverage?.workaroundRevisionRefs) &&
-        Array.isArray(compliance.coverage?.knownErrorRevisionRefs) &&
-        Array.isArray(compliance.coverage?.changeReceiptRefs) &&
-        Array.isArray(compliance.coverage?.recurrenceRefs),
-      observedOwnerEvidence: {
-        complianceCoverage: compliance.coverage,
-        continuityCheckpointCoverage: continuity.checkpoints?.map((row) => ({
-          checkpointRef: row.id,
-          evidenceRefs: row.evidenceRefs,
-        })),
-      },
-      proposalEvidence: {
-        coverage: proposal.coverage,
+      "closed-problem-lifecycle-coverage": {
+        "lifecycle-coverage": all["lifecycle-coverage"],
+        "incident-membership": all["incident-membership"],
+        "hypothesis-disposition": all["hypothesis-disposition"],
+        workaround: all.workaround,
+        "known-error": all["known-error"],
+        "change-receipt": all["change-receipt"],
+        recurrence: all.recurrence,
       },
     },
   };
-
-  return REQUIRED_NATIVE_INVARIANTS.map((invariant) => ({
-    ...structuredClone(invariant),
-    ...checks[invariant.id],
-  }));
 }
 
-export function buildStrongestCompositionProbe(proposal, sources) {
+function buildOwnerGraph(sources, incidentVariants) {
+  const nodes = [];
+  const edges = [];
+  for (const variant of incidentVariants) {
+    const incidentId = `incident:${variant.membershipRef}`;
+    const followUpId = `follow-up:${variant.membershipRef}`;
+    nodes.push(
+      graphNode(
+        incidentId,
+        "incident-record",
+        {
+          incidentRef: variant.artifact.incident.id,
+          timelineSnapshotRef: variant.artifact.incident.timelineSnapshotRef,
+        },
+        { artifactDigest: variant.artifactDigest },
+      ),
+      graphNode(
+        followUpId,
+        "incident-follow-up",
+        {
+          id: variant.artifact.followUps[0].id,
+          identityKey: variant.artifact.followUps[0].identityKey,
+          incidentRef: variant.artifact.followUps[0].incidentRef,
+        },
+        { artifactDigest: variant.artifactDigest },
+      ),
+    );
+    edges.push(
+      graphEdge(
+        `edge:${incidentId}:follow-up`,
+        incidentId,
+        followUpId,
+        "has-follow-up",
+        { artifactDigest: variant.artifactDigest },
+      ),
+    );
+  }
+
+  const qa = sources["quality-assurance-lead"].artifact;
+  for (const run of qa.testRuns) {
+    nodes.push(
+      graphNode(
+        `qa-run:${run.id}`,
+        "qa-run",
+        {
+          id: run.id,
+          testCaseRef: run.testCaseRef,
+          evidenceRef: run.evidenceRef,
+        },
+        {
+          ownerArtifactDigest:
+            OWNER_CONTRACTS["quality-assurance-lead"].artifactDigest,
+          buildId: run.buildId,
+          environment: run.environment,
+          executedAt: run.executedAt,
+          result: run.result,
+        },
+      ),
+    );
+  }
+
+  const change = sources["change-control-operator"].artifact;
+  nodes.push(
+    graphNode(
+      `change-plan:${change.plan.id}`,
+      "change-plan",
+      { id: change.plan.id, targets: change.plan.targets },
+      { planDigest: change.plan.digest },
+    ),
+    graphNode(
+      `change-execution:${change.plan.id}`,
+      "change-execution",
+      { planRef: change.plan.id, state: change.execution.state },
+      {
+        artifactDigest:
+          OWNER_CONTRACTS["change-control-operator"].artifactDigest,
+        planDigest: change.execution.planDigest,
+      },
+    ),
+  );
+  edges.push(
+    graphEdge(
+      `edge:change-plan:${change.plan.id}:execution`,
+      `change-plan:${change.plan.id}`,
+      `change-execution:${change.plan.id}`,
+      "owner-executed",
+      { planDigest: change.plan.digest },
+    ),
+  );
+
+  const compliance =
+    sources["repository-compliance-program-manager"].artifact;
+  nodes.push(
+    graphNode(
+      `compliance-coverage:${compliance.run.currentCheckpointRef}`,
+      "domain-coverage",
+      {
+        checkpointRef: compliance.run.currentCheckpointRef,
+        coverage: compliance.coverage,
+      },
+      {
+        checkpointDigest: compliance.run.currentCheckpointDigest,
+        predecessorCheckpointRef: compliance.run.predecessorCheckpointRef,
+      },
+    ),
+  );
+
+  const continuity = sources["case-continuity-coordinator"].artifact;
+  for (const checkpoint of continuity.checkpoints) {
+    const checkpointId = `continuity:${checkpoint.id}`;
+    nodes.push(
+      graphNode(
+        checkpointId,
+        "continuity-checkpoint",
+        { id: checkpoint.id, version: checkpoint.version },
+        {
+          previousRef: checkpoint.previousRef,
+          recordedAt: checkpoint.recordedAt,
+          evidenceRefs: checkpoint.evidenceRefs,
+        },
+      ),
+    );
+    if (checkpoint.previousRef !== null) {
+      edges.push(
+        graphEdge(
+          `edge:${checkpointId}:previous`,
+          checkpointId,
+          `continuity:${checkpoint.previousRef}`,
+          "predecessor",
+          { recordedAt: checkpoint.recordedAt },
+        ),
+      );
+    }
+  }
+  return { nodes, edges };
+}
+
+export function buildStrongestCompositionProbe(
+  proposal,
+  sources,
+  typedControlInput,
+  typedControlKeyring,
+) {
   const sourceBindings = verifiedSources(sources);
   const proposalMemberships = Array.isArray(proposal.incidentMemberships)
     ? proposal.incidentMemberships
@@ -659,10 +863,36 @@ export function buildStrongestCompositionProbe(proposal, sources) {
       sources["incident-response"].artifact,
       membership,
     );
+    const artifactDigest = digest(artifact);
+    if (!derivedIncidentValidationCache.has(artifactDigest)) {
+      const schemaDigest =
+        OWNER_CONTRACTS["incident-response"].schemaDigest;
+      const validateSchema = schemaValidatorCache.get(schemaDigest);
+      if (
+        !validateSchema?.(artifact) ||
+        validateArtifactSemantics("incident-response", artifact).length >
+          0
+      ) {
+        fail(
+          `Derived Incident Response artifact for ${membership.id} is not schema and semantic valid.`,
+        );
+      }
+      derivedIncidentValidationCache.add(artifactDigest);
+    }
+    if (
+      artifact.incident.id !== membership.incidentRef ||
+      artifact.followUps[0].id !== membership.followUpRef ||
+      artifact.followUps[0].identityKey !==
+        membership.followUpIdentityKey
+    ) {
+      fail(
+        `Derived Incident Response artifact for ${membership.id} does not preserve membership identity.`,
+      );
+    }
     return {
       membershipRef: membership.id,
       artifact,
-      artifactDigest: digest(artifact),
+      artifactDigest,
     };
   });
   sourceBindings["incident-response"].derivedArtifacts =
@@ -671,10 +901,24 @@ export function buildStrongestCompositionProbe(proposal, sources) {
       artifactDigest,
       anchor: ownerAnchor("incident-response", artifact),
     }));
-  const operationalComparisons = operationalInvariantComparisons(
-    sources,
-    proposal,
-    incidentVariants,
+  const baseGraph = buildOwnerGraph(sources, incidentVariants);
+  const typedControls = normalizeTypedControlInput(
+    typedControlInput,
+    baseGraph.nodes,
+    baseGraph.edges.map((edge) => edge.id),
+    digest,
+    typedControlKeyring,
+  );
+  const graph = {
+    nodes: [...baseGraph.nodes, ...typedControls.nodes],
+    edges: [...baseGraph.edges, ...typedControls.edges],
+    nodeLossIds: typedControls.nodeLossIds,
+    edgeLossIds: typedControls.edgeLossIds,
+  };
+  const universeNodes = buildCandidateUniverse(proposal);
+  const operationalComparisons = evaluateTypedCompositionGraph(
+    graph,
+    universeNodes,
   );
   const lostTypedInvariants = operationalComparisons.filter(
     (comparison) => !comparison.preserved,
@@ -696,6 +940,10 @@ export function buildStrongestCompositionProbe(proposal, sources) {
     sourceProjection,
     sourceProjectionDigest: digest(sourceProjection),
     proposalDigest: digest(proposal),
+    typedControlDigest: typedControls.digest,
+    graph,
+    graphDigest: digest(graph),
+    universeNodes,
     operationalComparisons,
     lostTypedInvariants,
     authorityMode: "owner-artifacts-remain-authoritative",
@@ -706,7 +954,13 @@ export function buildStrongestCompositionProbe(proposal, sources) {
   };
 }
 
-export function roundTripOwnerProjection(probe, sources) {
+export function roundTripOwnerProjection(
+  probe,
+  sources,
+  proposal,
+  typedControlInput,
+  typedControlKeyring,
+) {
   const { probeDigest, ...body } = probe;
   if (
     probe.schemaVersion !== COMPOSITION_SCHEMA_VERSION ||
@@ -749,6 +1003,19 @@ export function roundTripOwnerProjection(probe, sources) {
   );
   if (digest(projection) !== probe.sourceProjectionDigest) {
     fail("Composition identity, revision, chronology, coverage, or authority drifted.");
+  }
+  const currentProbe = buildStrongestCompositionProbe(
+    proposal,
+    sources,
+    typedControlInput,
+    typedControlKeyring,
+  );
+  if (
+    currentProbe.graphDigest !== probe.graphDigest ||
+    currentProbe.typedControlDigest !== probe.typedControlDigest ||
+    currentProbe.proposalDigest !== probe.proposalDigest
+  ) {
+    fail("Composition graph, controls, or proposal binding drifted.");
   }
   return projection;
 }
