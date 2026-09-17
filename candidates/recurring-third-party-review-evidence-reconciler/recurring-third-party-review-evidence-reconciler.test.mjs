@@ -24,6 +24,7 @@ import {
   ownerManifestPayload,
   renderReviewProof,
   sourceAuthorityPayload,
+  syntheticCompositionPayload,
 } from "./recurring-third-party-review-evidence-reconciler.mjs";
 import {
   artifactSemanticValidationOptions,
@@ -1483,6 +1484,7 @@ test("actual Compliance plus Contract composition fails the admission falsificat
     contractSemanticValidator: contractObligationTrackerFindings,
     contractValidationContext: { asOf },
     contractResealer: resealContractObligationTracker,
+    candidatePublicTrust: publicTrust,
     asOf,
   };
   const assessment =
@@ -1574,15 +1576,108 @@ test("actual Compliance plus Contract composition fails the admission falsificat
     ],
   );
 
-  const synthetic = createAuthoritySafeSyntheticComposition(fixture, { asOf });
+  const { privateKey: compositionPrivateKey, publicKey: compositionPublicKey } =
+    generateKeyPairSync("ed25519");
+  const compositionAuthority = {
+    ownerRef: "principal-independent-composition-validator",
+    signingKeyId: "key-independent-composition-validator",
+    issuedAt: asOf,
+    signature: "placeholder",
+  };
+  const synthetic = createAuthoritySafeSyntheticComposition(fixture, {
+    asOf,
+    authority: compositionAuthority,
+  });
+  const signSynthetic = (value) => {
+    value.authority.signature = signPayload(
+      null,
+      syntheticCompositionPayload(value),
+      compositionPrivateKey,
+    ).toString("base64");
+    return value;
+  };
+  signSynthetic(synthetic);
+  const syntheticCompositionTrust = {
+    schemaVersion:
+      "awesomeClaws.recurringThirdPartyReviewEvidenceReconcilerPublicTrust.v1",
+    signers: [
+      {
+        ownerRef: compositionAuthority.ownerRef,
+        signingKeyId: compositionAuthority.signingKeyId,
+        algorithm: "Ed25519",
+        publicKeyPem: compositionPublicKey.export({
+          type: "spki",
+          format: "pem",
+        }),
+        validFrom: "2026-09-16T00:00:00Z",
+        validUntil: "2027-09-16T00:00:00Z",
+      },
+    ],
+  };
   const syntheticAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
     syntheticComposition: synthetic,
+    syntheticCompositionTrust,
   });
   assert.equal(syntheticAssessment.proofValid, true);
   assert.equal(syntheticAssessment.projectionAuthority.safe, true);
   assert.equal(syntheticAssessment.preservesAllInvariants, true);
   assert.equal(syntheticAssessment.verdict, "reject-candidate");
+
+  const untrustedSynthetic = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    syntheticComposition: synthetic,
+  });
+  assert.equal(untrustedSynthetic.proofValid, false);
+  assert.equal(untrustedSynthetic.projectionAuthority.safe, false);
+  assert.equal(untrustedSynthetic.verdict, "composition-proof-invalid");
+
+  const aliasedCandidateTrust = structuredClone(publicTrust);
+  aliasedCandidateTrust.signers.find(
+    (item) => item.signingKeyId === fixture.sourceAuthority.signingKeyId,
+  ).publicKeyPem = syntheticCompositionTrust.signers[0].publicKeyPem;
+  const aliasedAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    candidatePublicTrust: aliasedCandidateTrust,
+    syntheticComposition: synthetic,
+    syntheticCompositionTrust,
+  });
+  assert.equal(aliasedAssessment.proofValid, false);
+  assert.equal(aliasedAssessment.projectionAuthority.safe, false);
+  assert.equal(aliasedAssessment.verdict, "composition-proof-invalid");
+
+  const decoyCandidateTrust = structuredClone(publicTrust);
+  decoyCandidateTrust.signers = decoyCandidateTrust.signers.filter(
+    (item) => item.signingKeyId !== fixture.sourceAuthority.signingKeyId,
+  );
+  const decoyAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    candidatePublicTrust: decoyCandidateTrust,
+    syntheticComposition: synthetic,
+    syntheticCompositionTrust,
+  });
+  assert.equal(decoyAssessment.proofValid, false);
+  assert.equal(decoyAssessment.projectionAuthority.safe, false);
+  assert.equal(decoyAssessment.verdict, "composition-proof-invalid");
+
+  const internallyAliasedTrust = structuredClone(syntheticCompositionTrust);
+  internallyAliasedTrust.signers.push({
+    ...structuredClone(internallyAliasedTrust.signers[0]),
+    ownerRef: "principal-reviewer-riley",
+    signingKeyId: "key-aliased-candidate-owner",
+  });
+  const internallyAliasedAssessment =
+    assessStrongestComplianceContractComposition({
+      ...compositionOptions,
+      syntheticComposition: synthetic,
+      syntheticCompositionTrust: internallyAliasedTrust,
+    });
+  assert.equal(internallyAliasedAssessment.proofValid, false);
+  assert.equal(internallyAliasedAssessment.projectionAuthority.safe, false);
+  assert.equal(
+    internallyAliasedAssessment.verdict,
+    "composition-proof-invalid",
+  );
 
   const detachedSynthetic = structuredClone(synthetic);
   detachedSynthetic.sourceInputDigest =
@@ -1590,6 +1685,7 @@ test("actual Compliance plus Contract composition fails the admission falsificat
   const detachedAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
     syntheticComposition: detachedSynthetic,
+    syntheticCompositionTrust,
   });
   assert.equal(detachedAssessment.proofValid, false);
   assert.equal(detachedAssessment.verdict, "composition-proof-invalid");
@@ -1598,11 +1694,13 @@ test("actual Compliance plus Contract composition fails the admission falsificat
     assessStrongestComplianceContractComposition({
       ...compositionOptions,
       syntheticComposition: {},
+      syntheticCompositionTrust,
     }),
   );
   const malformedAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
     syntheticComposition: {},
+    syntheticCompositionTrust,
   });
   assert.equal(malformedAssessment.proofValid, false);
   assert.equal(malformedAssessment.projectionAuthority.safe, false);
@@ -1613,9 +1711,11 @@ test("actual Compliance plus Contract composition fails the admission falsificat
     ...extraRecord.expiryRecords[0],
     evidenceRef: "evidence-alpine-security-questionnaire",
   });
+  signSynthetic(extraRecord);
   const extraAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
     syntheticComposition: extraRecord,
+    syntheticCompositionTrust,
   });
   assert.equal(extraAssessment.proofValid, true);
   assert.equal(extraAssessment.projectionAuthority.safe, false);
@@ -1628,9 +1728,11 @@ test("actual Compliance plus Contract composition fails the admission falsificat
   duplicateRecord.reopeningRecords.push(
     structuredClone(duplicateRecord.reopeningRecords[0]),
   );
+  signSynthetic(duplicateRecord);
   const duplicateAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
     syntheticComposition: duplicateRecord,
+    syntheticCompositionTrust,
   });
   assert.equal(duplicateAssessment.proofValid, true);
   assert.equal(duplicateAssessment.projectionAuthority.safe, false);

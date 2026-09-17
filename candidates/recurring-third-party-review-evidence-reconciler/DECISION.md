@@ -87,10 +87,11 @@ does not own. It still cannot round-trip effective expiry or
 predecessor-linked reopening. Because verdict eligibility now requires an
 authority-safe projection, this lossy adapter cannot reject the candidate. A
 strict synthetic future composition sourced entirely from candidate fields
-round-trips all four invariants without inventions and deterministically returns
-`reject-candidate`. The verdict is therefore derived from executed typed graph
-relationships, exact round trips, and the authority gate—not editable
-capability labels.
+round-trips all four invariants without inventions. It can return
+`reject-candidate` only when signed by an independently trusted composition key
+that is disjoint from every authenticated candidate key. The verdict is
+therefore derived from executed typed graph relationships, exact round trips,
+and the authority gate—not editable capability labels.
 
 1. owner-declared service applicability;
 2. requirement catalog and cell-index revisions;

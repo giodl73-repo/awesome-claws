@@ -10,7 +10,8 @@
     "freshnessRuleRevision",
     "applicabilityRecords",
     "expiryRecords",
-    "reopeningRecords"
+    "reopeningRecords",
+    "authority"
   ],
   "properties": {
     "schemaVersion": {
@@ -51,6 +52,9 @@
       "items": {
         "$ref": "#/$defs/reopening"
       }
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
     }
   },
   "$defs": {
@@ -126,6 +130,25 @@
         "predecessorDecisionRef": { "$ref": "#/$defs/id" },
         "decisionType": { "const": "evidence-expired-reopened" },
         "expiredEvidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ownerRef",
+        "signingKeyId",
+        "issuedAt",
+        "signature"
+      ],
+      "properties": {
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "signingKeyId": { "$ref": "#/$defs/id" },
+        "issuedAt": { "$ref": "#/$defs/timestamp" },
+        "signature": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]{86}==$"
+        }
       }
     }
   }

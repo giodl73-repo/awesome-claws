@@ -429,6 +429,33 @@ function containsPrivateKeyMaterial(value, seen = new Set()) {
   );
 }
 
+function publicKeyFingerprint(signer) {
+  try {
+    return sha256ByteDigest(
+      createPublicKey(signer.publicKeyPem).export({
+        type: "spki",
+        format: "der",
+      }),
+    );
+  } catch {
+    return null;
+  }
+}
+
+function hasCrossOwnerKeyReuse(trustStore) {
+  const ownersByKeyFingerprint = new Map();
+  for (const signer of records(trustStore?.signers)) {
+    const fingerprint = publicKeyFingerprint(signer);
+    if (fingerprint === null) continue;
+    const owners = ownersByKeyFingerprint.get(fingerprint) ?? new Set();
+    owners.add(signer.ownerRef);
+    ownersByKeyFingerprint.set(fingerprint, owners);
+  }
+  return [...ownersByKeyFingerprint.values()].some(
+    (owners) => owners.size > 1,
+  );
+}
+
 function schemaFindings(input) {
   if (validateSchema(input)) return [];
   return (validateSchema.errors ?? []).map((error) =>
@@ -494,25 +521,7 @@ function publicTrustFindings(input, trustStore, asOf) {
       ),
     );
   }
-  const ownersByKeyFingerprint = new Map();
-  for (const signer of trustStore.signers) {
-    try {
-      const fingerprint = sha256ByteDigest(
-        createPublicKey(signer.publicKeyPem).export({
-          type: "spki",
-          format: "der",
-        }),
-      );
-      const owners = ownersByKeyFingerprint.get(fingerprint) ?? new Set();
-      owners.add(signer.ownerRef);
-      ownersByKeyFingerprint.set(fingerprint, owners);
-    } catch {
-      // The signer-specific parse finding below reports malformed public keys.
-    }
-  }
-  if (
-    [...ownersByKeyFingerprint.values()].some((owners) => owners.size > 1)
-  ) {
+  if (hasCrossOwnerKeyReuse(trustStore)) {
     return [
       finding(
         "non-independent-public-trust-key",
@@ -2574,15 +2583,25 @@ function expectedCompositionFacts(input, asOf) {
   };
 }
 
-export function createAuthoritySafeSyntheticComposition(input, { asOf } = {}) {
+export function syntheticCompositionPayload(composition) {
+  const value = structuredClone(composition);
+  delete value.authority.signature;
+  return Buffer.from(canonicalJson(value), "utf8");
+}
+
+export function createAuthoritySafeSyntheticComposition(
+  input,
+  { asOf, authority } = {},
+) {
   const instant = timestamp(asOf);
-  if (instant === null) {
+  if (instant === null || !isRecord(authority)) {
     throw new TypeError("Synthetic composition proof requires caller-controlled asOf.");
   }
   return {
     schemaVersion: "awesomeClaws.strongestCompositionProof.v1",
     sourceInputDigest: sha256Digest(input),
     ...expectedCompositionFacts(input, instant),
+    authority: structuredClone(authority),
   };
 }
 
@@ -2598,6 +2617,8 @@ export function assessStrongestComplianceContractComposition({
   contractResealer,
   asOf,
   syntheticComposition = null,
+  syntheticCompositionTrust = null,
+  candidatePublicTrust = null,
 }) {
   if (
     typeof complianceSemanticValidator !== "function" ||
@@ -2741,8 +2762,63 @@ export function assessStrongestComplianceContractComposition({
     syntheticComposition === null ||
     (validateStrongestCompositionProofSchema(syntheticComposition) &&
       syntheticComposition.sourceInputDigest === sha256Digest(candidateInput));
+  const candidateTrustValid =
+    syntheticComposition === null ||
+    (validatePublicTrustSchema(candidatePublicTrust) &&
+      !containsPrivateKeyMaterial(candidatePublicTrust) &&
+      publicTrustFindings(
+        candidateInput,
+        candidatePublicTrust,
+        compositionAsOf,
+      ).length === 0);
+  const syntheticTrustValid =
+    syntheticComposition === null ||
+    (candidateTrustValid &&
+      validatePublicTrustSchema(syntheticCompositionTrust) &&
+      !containsPrivateKeyMaterial(syntheticCompositionTrust) &&
+      !hasCrossOwnerKeyReuse(syntheticCompositionTrust) &&
+      !syntheticCompositionTrust.signers.some((syntheticSigner) => {
+        const syntheticFingerprint = publicKeyFingerprint(syntheticSigner);
+        return candidatePublicTrust.signers.some(
+          (candidateSigner) =>
+            syntheticFingerprint !== null &&
+            publicKeyFingerprint(candidateSigner) === syntheticFingerprint,
+        );
+      }));
+  const syntheticAuthorityFindings =
+    syntheticComposition === null
+      ? []
+      : syntheticSchemaValid &&
+          syntheticTrustValid &&
+          !candidateInput.principals.some(
+            (item) => item.id === syntheticComposition.authority.ownerRef,
+          )
+        ? detachedSignatureFindings(
+            syntheticComposition.authority,
+            syntheticCompositionPayload(syntheticComposition),
+            syntheticCompositionTrust,
+            {
+              code: "invalid-synthetic-composition-authority",
+              path: "$.syntheticComposition.authority",
+              message:
+                "A deletion proof requires an independently trusted composition authority.",
+              ownerRef: syntheticComposition.authority.ownerRef,
+              notBefore: timestamp(candidateInput.sourceAuthority.issuedAt),
+              notAfter: compositionAsOf,
+            },
+          )
+        : [
+            finding(
+              "invalid-synthetic-composition-authority",
+              "$.syntheticComposition.authority",
+              "A deletion proof requires an independently trusted composition authority.",
+            ),
+          ];
   const useSyntheticComposition =
-    syntheticComposition !== null && syntheticSchemaValid;
+    syntheticComposition !== null &&
+    syntheticSchemaValid &&
+    syntheticTrustValid &&
+    syntheticAuthorityFindings.length === 0;
   const representedApplicability =
     useSyntheticComposition
       ? syntheticComposition.applicabilityRecords
@@ -2859,7 +2935,9 @@ export function assessStrongestComplianceContractComposition({
     complianceOutcomes.length === candidateInput.vendorServices.length &&
     complianceOutcomes.every((item) => item.valid) &&
     contractOutcome.valid &&
-    syntheticSchemaValid;
+    syntheticSchemaValid &&
+    syntheticTrustValid &&
+    syntheticAuthorityFindings.length === 0;
   const preservesAllInvariants =
     proofValid &&
     projectionAuthority.safe &&
@@ -2870,6 +2948,7 @@ export function assessStrongestComplianceContractComposition({
     analogueValidation: {
       complianceProjections: complianceOutcomes,
       contractProjection: contractOutcome,
+      syntheticAuthorityFindings,
     },
     projectionAuthority,
     preservesAllInvariants,
