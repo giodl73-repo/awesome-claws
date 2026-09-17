@@ -5,9 +5,49 @@
       "ownerRef": "principal-program-owner-ava",
       "signingKeyId": "key-third-party-review-2026",
       "algorithm": "Ed25519",
-      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA++1Dks+bSKm/YGpksmrxusCDQ9QAQrZFwaX0/DqkX4U=\n-----END PUBLIC KEY-----\n",
-      "validFrom": "2026-07-01T00:00:00Z",
-      "validUntil": "2027-06-30T23:59:59Z"
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAXvWoevluHN6eoqEbuA/rc798sf9GauoOZq/JUfKptDI=\n-----END PUBLIC KEY-----\n",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validUntil": "2027-12-31T23:59:59Z"
+    },
+    {
+      "ownerRef": "principal-program-owner-ava",
+      "signingKeyId": "key-third-party-review-predecessor-2026",
+      "algorithm": "Ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAGe7V3elbSJlWmvUq5zIW3OHyPvEFVV9H1M8+9aJ7a/o=\n-----END PUBLIC KEY-----\n",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validUntil": "2027-12-31T23:59:59Z"
+    },
+    {
+      "ownerRef": "principal-catalog-owner-morgan",
+      "signingKeyId": "key-catalog-owner-2026",
+      "algorithm": "Ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAa6bZIFI1drYQL14lf+cDFUhFGNB6s0fAz8WDUHZGpFU=\n-----END PUBLIC KEY-----\n",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validUntil": "2027-12-31T23:59:59Z"
+    },
+    {
+      "ownerRef": "principal-service-owner-olivia",
+      "signingKeyId": "key-service-owner-olivia-2026",
+      "algorithm": "Ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAosh2VznDGavNr33tFAJgsKo1+JG4CJBhsUJ1ODNXQyw=\n-----END PUBLIC KEY-----\n",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validUntil": "2027-12-31T23:59:59Z"
+    },
+    {
+      "ownerRef": "principal-service-owner-ethan",
+      "signingKeyId": "key-service-owner-ethan-2026",
+      "algorithm": "Ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAM0jG0ceMzow7g8Zpj4EZNq8Jzsjq4QaTb9902s3DxTY=\n-----END PUBLIC KEY-----\n",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validUntil": "2027-12-31T23:59:59Z"
+    },
+    {
+      "ownerRef": "principal-evidence-custodian-priya",
+      "signingKeyId": "key-source-receipts-2026",
+      "algorithm": "Ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAqX1npo621nkYLHuDFIRcaNEQNGnVDFNjrYGPA206gTk=\n-----END PUBLIC KEY-----\n",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validUntil": "2027-12-31T23:59:59Z"
     }
   ]
 }

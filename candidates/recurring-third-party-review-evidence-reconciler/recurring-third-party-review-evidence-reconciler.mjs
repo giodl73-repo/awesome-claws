@@ -18,6 +18,11 @@ export const SLICE_LIMITS = Object.freeze({
   inputBytes: 1024 * 1024,
   evidenceRecords: 24,
   publicTrustSigners: 8,
+  maxDepth: 32,
+  maxNodes: 4096,
+  maxArrayItems: 64,
+  maxObjectProperties: 128,
+  validationContextBytes: 2 * 1024 * 1024,
 });
 
 const TIMESTAMP_PATTERN =
@@ -55,13 +60,116 @@ const schema = JSON.parse(
 const publicTrustSchema = JSON.parse(
   readFileSync(new URL("./schemas/public-trust.schema.json", import.meta.url), "utf8"),
 );
+const sourceReceiptsSchema = JSON.parse(
+  readFileSync(new URL("./schemas/source-receipts.schema.json", import.meta.url), "utf8"),
+);
+const strongestCompositionProofSchema = JSON.parse(
+  readFileSync(
+    new URL("./schemas/strongest-composition-proof.schema.json", import.meta.url),
+    "utf8",
+  ),
+);
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
 const validatePublicTrustSchema = ajv.compile(publicTrustSchema);
+const validateSourceReceiptsSchema = ajv.compile(sourceReceiptsSchema);
+const validateStrongestCompositionProofSchema = ajv.compile(
+  strongestCompositionProofSchema,
+);
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function normalizeJsonValue(value, limits) {
+  const active = new WeakSet();
+  let bytes = 0;
+  let nodes = 0;
+  const fail = (code) => ({ value: null, error: code });
+  const countBytes = (text) => {
+    bytes += Buffer.byteLength(text, "utf8") + 2;
+    return bytes <= limits.maxBytes;
+  };
+  const visit = (node, depth) => {
+    nodes += 1;
+    if (nodes > limits.maxNodes) return fail("node-limit-exceeded");
+    if (depth > limits.maxDepth) return fail("depth-limit-exceeded");
+    if (node === null || typeof node === "boolean") {
+      if (!countBytes(String(node))) return fail("byte-limit-exceeded");
+      return { value: node, error: null };
+    }
+    if (typeof node === "string") {
+      if (!countBytes(node)) return fail("byte-limit-exceeded");
+      return { value: node, error: null };
+    }
+    if (typeof node === "number") {
+      if (!Number.isFinite(node)) return fail("non-json-number");
+      if (!countBytes(String(node))) return fail("byte-limit-exceeded");
+      return { value: node, error: null };
+    }
+    if (typeof node !== "object") return fail("non-json-value");
+    if (active.has(node)) return fail("cycle");
+    active.add(node);
+    let descriptors;
+    let prototype;
+    try {
+      descriptors = Object.getOwnPropertyDescriptors(node);
+      prototype = Object.getPrototypeOf(node);
+    } catch {
+      return fail("unreadable-object");
+    }
+    if (
+      prototype !== Object.prototype &&
+      prototype !== Array.prototype &&
+      prototype !== null
+    ) {
+      return fail("non-json-object");
+    }
+    if (Array.isArray(node)) {
+      const arrayLength = descriptors.length?.value;
+      if (!Number.isInteger(arrayLength) || arrayLength < 0) {
+        return fail("invalid-array-length");
+      }
+      if (arrayLength > limits.maxArrayItems) return fail("array-limit-exceeded");
+      const extraEnumerable = Object.keys(descriptors).filter(
+        (key) =>
+          descriptors[key].enumerable &&
+          (!/^(?:0|[1-9][0-9]*)$/u.test(key) || Number(key) >= arrayLength),
+      );
+      if (extraEnumerable.length > 0) return fail("array-extra-property");
+      const copy = [];
+      for (let index = 0; index < arrayLength; index += 1) {
+        const descriptor = descriptors[String(index)];
+        if (!descriptor || descriptor.get || descriptor.set) {
+          return fail("accessor-or-sparse-array");
+        }
+        const nested = visit(descriptor.value, depth + 1);
+        if (nested.error !== null) return nested;
+        copy.push(nested.value);
+      }
+      active.delete(node);
+      return { value: copy, error: null };
+    }
+    const keys = Object.keys(descriptors).filter(
+      (key) => descriptors[key].enumerable,
+    );
+    if (keys.length > limits.maxObjectProperties) {
+      return fail("object-property-limit-exceeded");
+    }
+    const copy = Object.create(null);
+    for (const key of keys) {
+      const descriptor = descriptors[key];
+      if (descriptor.get || descriptor.set) return fail("accessor-property");
+      if (!countBytes(key)) return fail("byte-limit-exceeded");
+      const nested = visit(descriptor.value, depth + 1);
+      if (nested.error !== null) return nested;
+      copy[key] = nested.value;
+    }
+    active.delete(node);
+    return { value: copy, error: null };
+  };
+  return visit(value, 0);
 }
 
 function records(value) {
@@ -141,6 +249,36 @@ export function sha256Digest(value) {
   return `sha256:${createHash("sha256").update(canonicalJson(value)).digest("hex")}`;
 }
 
+function sha256ByteDigest(value) {
+  return `sha256:${createHash("sha256").update(value).digest("hex")}`;
+}
+
+export function computeCellDigest(cell) {
+  return sha256Digest({
+    kind: "third-party-review-requirement-cell",
+    id: cell?.id,
+    vendorServiceRef: cell?.vendorServiceRef,
+    requirementRef: cell?.requirementRef,
+    ownerRef: cell?.ownerRef,
+    applicability: cell?.applicability,
+    declaredAt: cell?.declaredAt,
+    declarationEvidenceRef: cell?.declarationEvidenceRef,
+  });
+}
+
+export function computeVendorServiceDigest(service) {
+  return sha256Digest({
+    kind: "third-party-review-vendor-service",
+    id: service?.id,
+    vendorId: service?.vendorId,
+    vendorName: service?.vendorName,
+    serviceId: service?.serviceId,
+    serviceName: service?.serviceName,
+    ownerRef: service?.ownerRef,
+    subprocessorRefs: [...(service?.subprocessorRefs ?? [])].sort(compareText),
+  });
+}
+
 export function computeRequirementCatalogRevision(catalog) {
   return sha256Digest({
     kind: "third-party-review-requirement-catalog",
@@ -188,6 +326,43 @@ export function computeExceptionScopeDigest(exception) {
 export function sourceAuthorityPayload(input) {
   const value = structuredClone(input);
   if (isRecord(value.sourceAuthority)) delete value.sourceAuthority.signature;
+  return Buffer.from(canonicalJson(value), "utf8");
+}
+
+export function computePredecessorArtifactDigest(
+  predecessorCycle,
+  evidenceRecords = [],
+) {
+  const value = structuredClone(predecessorCycle);
+  delete value.artifactDigest;
+  delete value.sourceAuthority;
+  const evidenceRefs = new Set(
+    records(value.decisions).flatMap((item) => item.evidenceRefs ?? []),
+  );
+  return sha256Digest({
+    kind: "third-party-review-predecessor-cycle",
+    artifact: value,
+    evidence: records(evidenceRecords)
+      .filter((item) => evidenceRefs.has(item.id))
+      .sort((left, right) => compareText(left.id, right.id)),
+  });
+}
+
+export function predecessorAuthorityPayload(predecessorCycle) {
+  const value = structuredClone(predecessorCycle);
+  if (isRecord(value.sourceAuthority)) delete value.sourceAuthority.signature;
+  return Buffer.from(canonicalJson(value), "utf8");
+}
+
+export function ownerManifestPayload(manifest) {
+  const value = structuredClone(manifest);
+  delete value.signature;
+  return Buffer.from(canonicalJson(value), "utf8");
+}
+
+export function sourceReceiptsPayload(receipts) {
+  const value = structuredClone(receipts);
+  delete value.signature;
   return Buffer.from(canonicalJson(value), "utf8");
 }
 
@@ -254,23 +429,6 @@ function containsPrivateKeyMaterial(value, seen = new Set()) {
   );
 }
 
-function jsonSerialization(value) {
-  try {
-    const serialized = JSON.stringify(value);
-    return typeof serialized === "string"
-      ? { serialized, error: null }
-      : {
-          serialized: null,
-          error: "JSON.stringify returned no JSON text.",
-        };
-  } catch (error) {
-    return {
-      serialized: null,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
-}
-
 function schemaFindings(input) {
   if (validateSchema(input)) return [];
   return (validateSchema.errors ?? []).map((error) =>
@@ -317,16 +475,6 @@ function globalIdentityFindings(input) {
 
 function publicTrustFindings(input, trustStore, asOf) {
   const findings = [];
-  const serialization = jsonSerialization(trustStore);
-  if (serialization.error !== null) {
-    return [
-      finding(
-        "invalid-public-trust-input",
-        "$.validationContext.publicTrust",
-        `Public trust input must serialize to JSON text: ${serialization.error}`,
-      ),
-    ];
-  }
   if (containsPrivateKeyMaterial(trustStore)) {
     return [
       finding(
@@ -345,6 +493,33 @@ function publicTrustFindings(input, trustStore, asOf) {
         `${error.keyword}: ${error.message ?? "public trust schema validation failed"}`,
       ),
     );
+  }
+  const ownersByKeyFingerprint = new Map();
+  for (const signer of trustStore.signers) {
+    try {
+      const fingerprint = sha256ByteDigest(
+        createPublicKey(signer.publicKeyPem).export({
+          type: "spki",
+          format: "der",
+        }),
+      );
+      const owners = ownersByKeyFingerprint.get(fingerprint) ?? new Set();
+      owners.add(signer.ownerRef);
+      ownersByKeyFingerprint.set(fingerprint, owners);
+    } catch {
+      // The signer-specific parse finding below reports malformed public keys.
+    }
+  }
+  if (
+    [...ownersByKeyFingerprint.values()].some((owners) => owners.size > 1)
+  ) {
+    return [
+      finding(
+        "non-independent-public-trust-key",
+        "$.validationContext.publicTrust.signers",
+        "Distinct authority owners must not share the same public key material.",
+      ),
+    ];
   }
   const matching = trustStore.signers.filter(
     (signer) =>
@@ -436,44 +611,67 @@ function publicTrustFindings(input, trustStore, asOf) {
   return findings;
 }
 
-function inputLimitFindings(input) {
-  if (!isRecord(input)) {
-    return [
-      finding(
-        "invalid-json-input",
-        "$",
-        "The candidate input must be a JSON object.",
-      ),
-    ];
-  }
-  const serialization = jsonSerialization(input);
-  if (serialization.error !== null) {
-    return [
-      finding(
-        "invalid-json-input",
-        "$",
-        `The candidate input must serialize to JSON text: ${serialization.error}`,
-      ),
-    ];
-  }
-  const byteLength = Buffer.byteLength(serialization.serialized, "utf8");
-  const evidenceCount = Array.isArray(input?.evidence) ? input.evidence.length : 0;
+function detachedSignatureFindings(
+  authority,
+  payload,
+  trustStore,
+  {
+    code,
+    path,
+    message,
+    ownerRef,
+    notBefore,
+    notAfter,
+  },
+) {
   const findings = [];
-  if (byteLength > SLICE_LIMITS.inputBytes) {
-    findings.push(
+  const matching = trustStore.signers.filter(
+    (signer) =>
+      signer.ownerRef === authority.ownerRef &&
+      signer.signingKeyId === authority.signingKeyId &&
+      signer.algorithm === "Ed25519",
+  );
+  const issuedAt = timestamp(authority.issuedAt);
+  const signer = matching[0];
+  if (
+    matching.length !== 1 ||
+    authority.ownerRef !== ownerRef ||
+    issuedAt === null ||
+    issuedAt < notBefore ||
+    issuedAt > notAfter ||
+    issuedAt < timestamp(signer?.validFrom) ||
+    issuedAt > timestamp(signer?.validUntil)
+  ) {
+    return [
       finding(
-        "input-limit-exceeded",
-        "$",
-        `Candidate input is ${byteLength} bytes; the bounded slice limit is ${SLICE_LIMITS.inputBytes}.`,
+        code,
+        path,
+        message,
+        [authority.ownerRef, authority.signingKeyId],
       ),
-    );
+    ];
   }
-  if (evidenceCount > SLICE_LIMITS.evidenceRecords) {
+  try {
+    const publicKey = createPublicKey(signer.publicKeyPem);
+    const signature = Buffer.from(authority.signature, "base64");
+    if (
+      publicKey.asymmetricKeyType !== "ed25519" ||
+      !verifySignature(null, payload, publicKey, signature)
+    ) {
+      findings.push(
+        finding(code, path, message, [
+          authority.ownerRef,
+          authority.signingKeyId,
+        ]),
+      );
+    }
+  } catch {
     findings.push(
       finding(
-        "evidence-limit-exceeded",
-        "$.evidence",
-        `Candidate input has ${evidenceCount} evidence records; the bounded slice limit is ${SLICE_LIMITS.evidenceRecords}.`,
+        code,
+        path,
+        message,
+        [authority.ownerRef, authority.signingKeyId],
       ),
     );
   }
@@ -495,7 +693,104 @@ function evidenceState(evidence, rule, asOf) {
   return expiry < asOf ? "expired" : "current";
 }
 
-function semanticFindings(input, asOf) {
+function sourceReceiptFindings(input, sourceReceipts, trustStore, asOf) {
+  if (!validateSourceReceiptsSchema(sourceReceipts)) {
+    return (validateSourceReceiptsSchema.errors ?? []).map((error) =>
+      finding(
+        "invalid-source-receipt",
+        `$.validationContext.sourceReceipts${error.instancePath}`,
+        `${error.keyword}: ${error.message ?? "source receipt schema validation failed"}`,
+      ),
+    );
+  }
+  const evidenceCustodians = input.principals.filter(
+    (item) => item.role === "evidence-custodian",
+  );
+  const receiptOwner = evidenceCustodians[0];
+  const findings = [];
+  if (
+    evidenceCustodians.length !== 1 ||
+    sourceReceipts.ownerRef !== receiptOwner?.id
+  ) {
+    findings.push(
+      finding(
+        "invalid-source-receipt-authority",
+        "$.validationContext.sourceReceipts.ownerRef",
+        "The source receipt manifest must be issued by the one typed evidence custodian.",
+        [sourceReceipts.ownerRef],
+      ),
+    );
+  }
+  findings.push(...detachedSignatureFindings(
+    sourceReceipts,
+    sourceReceiptsPayload(sourceReceipts),
+    trustStore,
+    {
+      code: "invalid-source-receipt-authority",
+      path: "$.validationContext.sourceReceipts",
+      message:
+        "The source receipt manifest requires an independently trusted evidence custodian signature.",
+      ownerRef: receiptOwner?.id,
+      notBefore: Math.max(
+        timestamp(receiptOwner?.authorityObservedAt) ??
+          Number.POSITIVE_INFINITY,
+        ...input.evidence.map((item) => timestamp(item.observedAt)),
+      ),
+      notAfter: Math.min(
+        asOf,
+        timestamp(input.sourceAuthority.issuedAt) ??
+          Number.NEGATIVE_INFINITY,
+      ),
+    },
+  ));
+  const evidenceById = mapById(input.evidence);
+  const receiptByEvidence = new Map(
+    sourceReceipts.receipts.map((item) => [item.evidenceRef, item]),
+  );
+  if (
+    receiptByEvidence.size !== sourceReceipts.receipts.length ||
+    !sameSet([...receiptByEvidence.keys()], [...evidenceById.keys()])
+  ) {
+    findings.push(
+      finding(
+        "inexact-source-receipt-closure",
+        "$.validationContext.sourceReceipts.receipts",
+        "Every evidence row requires exactly one independently signed source receipt.",
+        [...evidenceById.keys()],
+      ),
+    );
+  }
+  for (const [index, receipt] of sourceReceipts.receipts.entries()) {
+    const evidenceItem = evidenceById.get(receipt.evidenceRef);
+    let bytes = null;
+    try {
+      const decoded = Buffer.from(receipt.contentBase64, "base64");
+      if (decoded.toString("base64") === receipt.contentBase64) bytes = decoded;
+    } catch {
+      bytes = null;
+    }
+    if (
+      !evidenceItem ||
+      receipt.sourceRef !== evidenceItem.sourceRef ||
+      receipt.sourceVersion !== evidenceItem.sourceVersion ||
+      receipt.contentDigest !== evidenceItem.sourceContentDigest ||
+      bytes === null ||
+      sha256ByteDigest(bytes) !== receipt.contentDigest
+    ) {
+      findings.push(
+        finding(
+          "invalid-source-receipt",
+          `$.validationContext.sourceReceipts.receipts[${index}]`,
+          "Each receipt must bind the exact source reference, version, bytes, and digest of one evidence row.",
+          [receipt.evidenceRef],
+        ),
+      );
+    }
+  }
+  return findings;
+}
+
+function semanticFindings(input, asOf, trustStore) {
   const findings = [...globalIdentityFindings(input)];
   const principals = mapById(input.principals);
   const vendorServices = mapById(input.vendorServices);
@@ -520,6 +815,89 @@ function semanticFindings(input, asOf) {
   };
   const add = (code, path, message, refs = []) =>
     findings.push(finding(code, path, message, refs));
+
+  const catalogManifest = input.ownerManifests.find(
+    (item) =>
+      item.kind === "requirement-catalog" &&
+      item.subjectRef === input.requirementCatalog.id,
+  );
+  const serviceManifests = input.ownerManifests.filter(
+    (item) => item.kind === "vendor-service-applicability",
+  );
+  const serviceManifestRefs = serviceManifests.map((item) => item.subjectRef);
+  const vendorServiceRefs = input.vendorServices.map((item) => item.id);
+  if (
+    input.ownerManifests.length !== 3 ||
+    !catalogManifest ||
+    serviceManifests.length !== input.vendorServices.length ||
+    !sameSet(serviceManifestRefs, vendorServiceRefs) ||
+    duplicateValues(serviceManifestRefs).length > 0
+  ) {
+    add(
+      "inexact-owner-manifest-closure",
+      "$.ownerManifests",
+      "The catalog and each vendor service require exactly one independent owner manifest.",
+    );
+  }
+  for (const [index, manifest] of input.ownerManifests.entries()) {
+    const principal = principals.get(manifest.ownerRef);
+    const service = vendorServices.get(manifest.subjectRef);
+    const serviceCells = input.requirementCatalog.cells
+      .filter((cell) => cell.vendorServiceRef === manifest.subjectRef)
+      .sort((left, right) => compareText(left.id, right.id));
+    const expectedCellRefs = serviceCells.map((cell) => cell.id);
+    const expectedCellDigests = serviceCells.map(computeCellDigest).sort(compareText);
+    const isCatalog = manifest.kind === "requirement-catalog";
+    const semanticValid = isCatalog
+      ? manifest.subjectRef === input.requirementCatalog.id &&
+        manifest.ownerRef === input.requirementCatalog.approvedByRef &&
+        principal?.role === "requirement-catalog-owner" &&
+        manifest.subjectDigest === input.requirementCatalog.revision &&
+        manifest.cellRefs.length === 0 &&
+        manifest.cellDigests.length === 0
+      : service &&
+        manifest.ownerRef === service.ownerRef &&
+        principal?.role === "vendor-service-owner" &&
+        manifest.subjectDigest === computeVendorServiceDigest(service) &&
+        sameSet(manifest.cellRefs, expectedCellRefs) &&
+        sameSet(manifest.cellDigests, expectedCellDigests);
+    if (!semanticValid) {
+      add(
+        "invalid-owner-manifest",
+        `$.ownerManifests[${index}]`,
+        "Each independently signed owner manifest must bind its exact catalog or service applicability graph.",
+        [manifest.subjectRef, manifest.ownerRef],
+      );
+    }
+    findings.push(
+      ...detachedSignatureFindings(
+        manifest,
+        ownerManifestPayload(manifest),
+        trustStore,
+        {
+          code: "invalid-owner-manifest-signature",
+          path: `$.ownerManifests[${index}].signature`,
+          message:
+            "Each owner manifest requires an independently trusted owner signature.",
+          ownerRef: manifest.ownerRef,
+          notBefore: Math.max(
+            timestamp(principal?.authorityObservedAt) ??
+              Number.POSITIVE_INFINITY,
+            isCatalog
+              ? timestamp(input.requirementCatalog.approvedAt)
+              : Math.max(
+                  ...serviceCells.map((cell) => timestamp(cell.declaredAt)),
+                ),
+          ),
+          notAfter: Math.min(
+            asOf,
+            timestamp(input.sourceAuthority.issuedAt) ??
+              Number.NEGATIVE_INFINITY,
+          ),
+        },
+      ),
+    );
+  }
 
   for (const [index, principal] of input.principals.entries()) {
     if (timestamp(principal.authorityObservedAt) > asOf) {
@@ -771,6 +1149,37 @@ function semanticFindings(input, asOf) {
       [cycle.id, predecessor.id],
     );
   }
+  if (
+    predecessor.artifactDigest !==
+    computePredecessorArtifactDigest(predecessor, input.evidence)
+  ) {
+    add(
+      "invalid-predecessor-artifact-digest",
+      "$.predecessorCycle.artifactDigest",
+      "The predecessor artifact digest must bind its exact revisions, cells, decisions, and evidence references.",
+      [predecessor.id],
+    );
+  }
+  findings.push(
+    ...detachedSignatureFindings(
+      predecessor.sourceAuthority,
+      predecessorAuthorityPayload(predecessor),
+      trustStore,
+      {
+        code: "invalid-predecessor-artifact-signature",
+        path: "$.predecessorCycle.sourceAuthority.signature",
+        message:
+          "The predecessor cycle requires an independent trusted program-owner signature.",
+        ownerRef: cycle.approvedByRef,
+        notBefore: Math.max(
+          predecessorClosedAt,
+          timestamp(principals.get(cycle.approvedByRef)?.authorityObservedAt) ??
+            Number.POSITIVE_INFINITY,
+        ),
+        notAfter: cycleOpensAt,
+      },
+    ),
+  );
   if (
     !principalWithRoleAt(
       cycle.approvedByRef,
@@ -1050,6 +1459,11 @@ function semanticFindings(input, asOf) {
         exception.evidenceRef === predecessorExceptionEvidence?.id,
     );
     if (
+      item.requirementCatalogRevision !==
+        predecessor.requirementCatalogRevision ||
+      item.cellIndexRevision !== predecessor.cellIndexRevision ||
+      item.freshnessRuleRevision !== predecessor.freshnessRuleRevision ||
+      item.cellDigest !== computeCellDigest(cell) ||
       !principalWithRoleAt(item.decidedByRef, "reviewer", item.decidedAt) ||
       decidedAt < timestamp(catalog.approvedAt) ||
       decidedAt > predecessorClosedAt ||
@@ -1150,6 +1564,10 @@ function semanticFindings(input, asOf) {
       .filter(Boolean);
     if (
       !cell ||
+      item.requirementCatalogRevision !== cycle.requirementCatalogRevision ||
+      item.cellIndexRevision !== cycle.cellIndexRevision ||
+      item.freshnessRuleRevision !== cycle.freshnessRuleRevision ||
+      item.cellDigest !== computeCellDigest(cell) ||
       !principalWithRoleAt(item.decidedByRef, "reviewer", item.decidedAt) ||
       predecessorDecision?.cellRef !== item.cellRef ||
       timestamp(item.decidedAt) < cycleOpensAt ||
@@ -1500,10 +1918,86 @@ function resultFor(input, findings, asOf) {
 }
 
 export function evaluateRecurringThirdPartyReview(input, options = {}) {
-  const context = isRecord(options) ? options : {};
-  const findings = [...inputLimitFindings(input)];
-  if (findings.some((item) => item.code === "invalid-json-input")) {
-    return { valid: false, findings, result: null };
+  if (!isRecord(input)) {
+    return {
+      valid: false,
+      findings: [
+        finding(
+          "invalid-json-input",
+          "$",
+          "The candidate input must be a bounded JSON object.",
+        ),
+      ],
+      result: null,
+    };
+  }
+  const normalizedInput = normalizeJsonValue(input, {
+    ...SLICE_LIMITS,
+    maxBytes: SLICE_LIMITS.inputBytes,
+  });
+  if (normalizedInput.error !== null) {
+    return {
+      valid: false,
+      findings: [
+        finding(
+          normalizedInput.error.includes("limit")
+            ? "input-limit-exceeded"
+            : "invalid-json-input",
+          "$",
+          "The candidate input could not be safely normalized within bounded JSON limits.",
+        ),
+      ],
+      result: null,
+    };
+  }
+  const candidate = normalizedInput.value;
+  if (containsPrivateKeyMaterial(candidate)) {
+    return {
+      valid: false,
+      findings: [
+        finding(
+          "private-key-material-prohibited",
+          "$",
+          "The candidate envelope must never contain private key material.",
+        ),
+      ],
+      result: null,
+    };
+  }
+  const rawContext = isRecord(options) ? options : {};
+  const normalizedContext = normalizeJsonValue(rawContext, {
+    ...SLICE_LIMITS,
+    maxBytes: SLICE_LIMITS.validationContextBytes,
+  });
+  if (normalizedContext.error !== null) {
+    return {
+      valid: false,
+      findings: [
+        finding(
+          "invalid-validation-context",
+          "$.validationContext",
+          "The validation context could not be safely normalized within bounded JSON limits.",
+        ),
+      ],
+      result: null,
+    };
+  }
+  const context = normalizedContext.value;
+  const findings = [];
+  const nonTrustContext = { ...context };
+  delete nonTrustContext.publicTrust;
+  if (containsPrivateKeyMaterial(nonTrustContext)) {
+    return {
+      valid: false,
+      findings: [
+        finding(
+          "invalid-validation-context",
+          "$.validationContext",
+          "The validation context must never contain private key material.",
+        ),
+      ],
+      result: null,
+    };
   }
   const asOf = timestamp(context.asOf);
   if (asOf === null) {
@@ -1515,11 +2009,31 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
       ),
     );
   }
-  const structuralFindings = schemaFindings(input);
+  const structuralFindings = schemaFindings(candidate);
   findings.push(...structuralFindings);
   if (structuralFindings.length === 0 && asOf !== null) {
-    findings.push(...publicTrustFindings(input, context.publicTrust, asOf));
-    findings.push(...semanticFindings(input, asOf));
+    const trustFindings = publicTrustFindings(
+      candidate,
+      context.publicTrust,
+      asOf,
+    );
+    findings.push(...trustFindings);
+    if (
+      !containsPrivateKeyMaterial(context.publicTrust) &&
+      validatePublicTrustSchema(context.publicTrust)
+    ) {
+      findings.push(
+        ...sourceReceiptFindings(
+          candidate,
+          context.sourceReceipts,
+          context.publicTrust,
+          asOf,
+        ),
+      );
+      findings.push(
+        ...semanticFindings(candidate, asOf, context.publicTrust),
+      );
+    }
   }
   const orderedFindings = uniqueSortedFindings(findings);
   return {
@@ -1527,7 +2041,7 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
     findings: orderedFindings,
     result:
       structuralFindings.length === 0 && asOf !== null
-        ? resultFor(input, orderedFindings, asOf)
+        ? resultFor(candidate, orderedFindings, asOf)
         : null,
   };
 }
@@ -1565,10 +2079,10 @@ function typedComplianceProjections(input, template, asOf) {
     artifact.review = {
       id: `review-${service.id}`,
       framework: input.requirementCatalog.id,
-      frameworkVersion: input.requirementCatalog.version,
+      frameworkVersion: input.requirementCatalog.revision,
       systemBoundary: service.id,
       reviewPeriod: input.cycle.id,
-      snapshotRef: `snapshot-${service.id}-${input.cycle.id}`,
+      snapshotRef: input.cycle.cellIndexRevision,
       requestedAt: new Date(
         Math.min(
           ...cells.flatMap((cell) => {
@@ -1580,9 +2094,22 @@ function typedComplianceProjections(input, template, asOf) {
         ),
       ).toISOString(),
     };
-    const controlOwnerId = artifact.principals.find((item) =>
+    const priorControlOwnerId = artifact.principals.find((item) =>
       item.scopes.includes("control-owner"),
     ).id;
+    const sourceOwner = input.principals.find(
+      (item) => item.id === service.ownerRef,
+    );
+    artifact.principals = artifact.principals.map((item) =>
+      item.id === priorControlOwnerId
+        ? {
+            id: sourceOwner.id,
+            name: sourceOwner.name,
+            scopes: ["control-owner"],
+          }
+        : item,
+    );
+    const controlOwnerId = sourceOwner.id;
     const mappedEvidence = new Map();
     artifact.requirements = cells.map((cell) => {
       const decision = decisionsByCell.get(cell.id);
@@ -1594,7 +2121,7 @@ function typedComplianceProjections(input, template, asOf) {
         const source = evidenceById.get(ref);
         mappedEvidence.set(ref, {
           id: ref,
-          kind: "requirement-evidence",
+          kind: source.kind,
           requirementRef: cell.requirementRef,
           snapshotRef: artifact.review.snapshotRef,
           sourceRef: `controlled://third-party-review-composition/${ref}`,
@@ -1694,7 +2221,6 @@ function typedContractProjection(input, template, contractResealer) {
   const registerOwnerRef = artifact.register.confirmedByRef;
   const registerSystemRef = artifact.register.sourceSystemRef;
   const rosterCustodianRef = artifact.authorityRoster.custodianRef;
-  const obligationOwnerRef = artifact.obligations[0].responsibleOwnerRef;
   const performanceSupplierRef =
     artifact.obligations[0].performanceEvidenceSupplierRef;
   const destinationApproverRef = artifact.round.destinationApproverRef;
@@ -1708,6 +2234,17 @@ function typedContractProjection(input, template, contractResealer) {
   const opensAt = timestamp(input.cycle.opensAt);
   const registerConfirmedAt = new Date(opensAt - 7_200_000).toISOString();
   const rosterIssuedAt = new Date(opensAt - 3_600_000).toISOString();
+  for (const service of input.vendorServices) {
+    const owner = input.principals.find((item) => item.id === service.ownerRef);
+    if (!artifact.principals.some((item) => item.id === owner.id)) {
+      artifact.principals.push({
+        id: owner.id,
+        name: owner.name,
+        kind: "named-human",
+        scopes: ["obligation-owner"],
+      });
+    }
+  }
   const agreements = input.vendorServices.map((service) => {
     const suffix = service.id.replace(/^vendor-service-/u, "");
     return {
@@ -1729,16 +2266,13 @@ function typedContractProjection(input, template, contractResealer) {
   const obligations = input.requirementCatalog.cells.map((cell, index) => ({
     id: cell.id,
     agreementVersionRef: agreementByService.get(cell.vendorServiceRef),
-    responsibleOwnerRef: obligationOwnerRef,
+    responsibleOwnerRef: cell.ownerRef,
     clauseLocator: `R${index + 1}`,
     clauseDigest: sha256Digest({
       kind: "proof-only-synthetic-clause",
       requirementRef: cell.requirementRef,
     }),
-    obligationDigest: sha256Digest({
-      kind: "proof-only-synthetic-obligation",
-      cellRef: cell.id,
-    }),
+    obligationDigest: computeCellDigest(cell),
     dueAt: input.cycle.closesAt,
     performanceEvidenceSupplierRef: performanceSupplierRef,
     requiredEvidenceRefs: [
@@ -1771,7 +2305,7 @@ function typedContractProjection(input, template, contractResealer) {
         obligationRef: obligation.id,
         category: "source-evidence-missing",
         detectedAt: decision.decidedAt,
-        ownerRef: obligationOwnerRef,
+        ownerRef: obligation.responsibleOwnerRef,
         exactMissingEvidenceRefs: obligation.requiredEvidenceRefs,
         evidenceRef: `evidence-blocker-${suffix}`,
       };
@@ -1782,7 +2316,7 @@ function typedContractProjection(input, template, contractResealer) {
           kind: "blocker-record",
           roundRef: input.cycle.id,
           observedAt: blocker.detectedAt,
-          suppliedByRef: obligationOwnerRef,
+          suppliedByRef: obligation.responsibleOwnerRef,
           subjectRefs: [
             blocker.id,
             blocker.obligationRef,
@@ -1802,7 +2336,7 @@ function typedContractProjection(input, template, contractResealer) {
       agreementVersionRef: obligation.agreementVersionRef,
       clauseDigest: obligation.clauseDigest,
       obligationDigest: obligation.obligationDigest,
-      ownerRef: obligationOwnerRef,
+      ownerRef: obligation.responsibleOwnerRef,
       state: "owner-confirmation-pending",
       dueState: "due",
       observedAt: decision.decidedAt,
@@ -1825,7 +2359,7 @@ function typedContractProjection(input, template, contractResealer) {
         kind: "obligation-observation-record",
         roundRef: input.cycle.id,
         observedAt: observation.observedAt,
-        suppliedByRef: obligationOwnerRef,
+        suppliedByRef: obligation.responsibleOwnerRef,
         subjectRefs: [observation.id, obligation.id],
       }),
     );
@@ -1975,6 +2509,83 @@ function recordMatches(expected, actual, fields) {
   );
 }
 
+function exactRecordSet(expectedRecords, actualRecords, fields) {
+  if (expectedRecords.length !== actualRecords.length) return false;
+  const actualKeys = actualRecords.map((item) =>
+    canonicalJson(
+      Object.fromEntries(fields.map((field) => [field, item[field]])),
+    ),
+  );
+  if (duplicateValues(actualKeys).length > 0) return false;
+  return expectedRecords.every((expected) =>
+    actualRecords.some((actual) => recordMatches(expected, actual, fields)),
+  );
+}
+
+function expectedCompositionFacts(input, asOf) {
+  const applicabilityRecords = input.requirementCatalog.cells
+    .map((cell) => ({
+      cellRef: cell.id,
+      vendorServiceRef: cell.vendorServiceRef,
+      requirementRef: cell.requirementRef,
+      ownerRef: cell.ownerRef,
+      declarationEvidenceRef: cell.declarationEvidenceRef,
+      cellDigest: computeCellDigest(cell),
+    }))
+    .sort((left, right) => compareText(left.cellRef, right.cellRef));
+  const freshnessByKind = new Map(
+    input.freshnessRules.map((item) => [item.evidenceKind, item]),
+  );
+  const expiryRecords = input.evidence
+    .map((item) => {
+      const rule = freshnessByKind.get(item.kind);
+      const expiresAt = effectiveExpiry(item, rule);
+      return {
+        evidenceRef: item.id,
+        validUntil: item.validUntil,
+        maxAgeDays: rule?.maxAgeDays,
+        effectiveExpiresAt:
+          expiresAt === null ? null : new Date(expiresAt).toISOString(),
+        state: evidenceState(item, rule, asOf),
+      };
+    })
+    .filter((item) => item.state === "expired")
+    .sort((left, right) => compareText(left.evidenceRef, right.evidenceRef));
+  const reopeningRecords = input.decisions
+    .filter((item) => item.decisionType === "evidence-expired-reopened")
+    .map((item) => ({
+      cellRef: item.cellRef,
+      predecessorDecisionRef: item.predecessorDecisionRef,
+      decisionType: item.decisionType,
+      expiredEvidenceRefs: item.evidenceRefs
+        .filter((ref) =>
+          expiryRecords.some((evidenceItem) => evidenceItem.evidenceRef === ref),
+        )
+        .sort(compareText),
+    }))
+    .sort((left, right) => compareText(left.cellRef, right.cellRef));
+  return {
+    requirementCatalogRevision: input.requirementCatalog.revision,
+    cellIndexRevision: input.cycle.cellIndexRevision,
+    freshnessRuleRevision: input.cycle.freshnessRuleRevision,
+    applicabilityRecords,
+    expiryRecords,
+    reopeningRecords,
+  };
+}
+
+export function createAuthoritySafeSyntheticComposition(input, { asOf } = {}) {
+  const instant = timestamp(asOf);
+  if (instant === null) {
+    throw new TypeError("Synthetic composition proof requires caller-controlled asOf.");
+  }
+  return {
+    schemaVersion: "awesomeClaws.strongestCompositionProof.v1",
+    sourceInputDigest: sha256Digest(input),
+    ...expectedCompositionFacts(input, instant),
+  };
+}
+
 export function assessStrongestComplianceContractComposition({
   candidateInput,
   complianceSchema,
@@ -1986,6 +2597,7 @@ export function assessStrongestComplianceContractComposition({
   contractValidationContext,
   contractResealer,
   asOf,
+  syntheticComposition = null,
 }) {
   if (
     typeof complianceSemanticValidator !== "function" ||
@@ -2030,29 +2642,53 @@ export function assessStrongestComplianceContractComposition({
     contractProjection.artifact,
     contractValidationContext,
   );
-  const expectedApplicability = candidateInput.requirementCatalog.cells.map(
-    (cell) => ({
-      cellRef: cell.id,
-      vendorServiceRef: cell.vendorServiceRef,
-      requirementRef: cell.requirementRef,
-      ownerRef: cell.ownerRef,
-      declarationEvidenceRef: cell.declarationEvidenceRef,
-    }),
-  );
+  const expected = expectedCompositionFacts(candidateInput, compositionAsOf);
   const complianceApplicability = complianceProjections.flatMap(({ artifact }) =>
-    artifact.requirements.map((requirement) => ({
-      vendorServiceRef: artifact.review.systemBoundary,
-      requirementRef: requirement.id,
-      ownerRef: requirement.controlOwnerId,
-    })),
+    artifact.requirements.map((requirement) => {
+      const declaration = artifact.evidence.find(
+        (item) =>
+          item.requirementRef === requirement.id &&
+          item.kind === "applicability-declaration",
+      );
+      return {
+        vendorServiceRef: artifact.review.systemBoundary,
+        requirementRef: requirement.id,
+        ownerRef: requirement.controlOwnerId,
+        declarationEvidenceRef: declaration?.id,
+      };
+    }),
   );
   const agreementById = mapById(contractProjection.artifact.agreements);
-  const contractApplicability = contractProjection.artifact.obligations.map(
-    (obligation) => ({
+  const complianceByServiceRequirement = new Map(
+    complianceApplicability.map((item) => [
+      `${item.vendorServiceRef}\u0000${item.requirementRef}`,
+      item,
+    ]),
+  );
+  const actualApplicability = contractProjection.artifact.obligations.map(
+    (obligation) => {
+      const vendorServiceRef = agreementById.get(
+        obligation.agreementVersionRef,
+      )?.agreementId;
+      const requirementRef = candidateInput.requirementCatalog.requirements.find(
+        (requirement) =>
+          sha256Digest({
+            kind: "proof-only-synthetic-clause",
+            requirementRef: requirement.id,
+          }) === obligation.clauseDigest,
+      )?.id;
+      const complianceRecord = complianceByServiceRequirement.get(
+        `${vendorServiceRef}\u0000${requirementRef}`,
+      );
+      return {
       cellRef: obligation.id,
-      vendorServiceRef: agreementById.get(obligation.agreementVersionRef)?.agreementId,
+        vendorServiceRef,
+        requirementRef,
       ownerRef: obligation.responsibleOwnerRef,
-    }),
+        declarationEvidenceRef: complianceRecord?.declarationEvidenceRef,
+        cellDigest: obligation.obligationDigest,
+      };
+    },
   );
   const applicabilityFields = [
     "cellRef",
@@ -2060,30 +2696,9 @@ export function assessStrongestComplianceContractComposition({
     "requirementRef",
     "ownerRef",
     "declarationEvidenceRef",
+    "cellDigest",
   ];
-  const applicabilityMatches = expectedApplicability.filter((expected) =>
-    [...complianceApplicability, ...contractApplicability].some((actual) =>
-      recordMatches(expected, actual, applicabilityFields),
-    ),
-  );
-  const freshnessByKind = new Map(
-    candidateInput.freshnessRules.map((item) => [item.evidenceKind, item]),
-  );
-  const expectedExpiry = candidateInput.evidence
-    .map((item) => {
-      const rule = freshnessByKind.get(item.kind);
-      const expiresAt = effectiveExpiry(item, rule);
-      return {
-        evidenceRef: item.id,
-        validUntil: item.validUntil,
-        maxAgeDays: rule?.maxAgeDays,
-        effectiveExpiresAt:
-          expiresAt === null ? null : new Date(expiresAt).toISOString(),
-        state: evidenceState(item, rule, compositionAsOf),
-      };
-    })
-    .filter((item) => item.state === "expired");
-  const typedExpiry = complianceProjections.flatMap(({ artifact, evidenceStates }) =>
+  const actualExpiry = complianceProjections.flatMap(({ artifact, evidenceStates }) =>
     artifact.evidence.map((item) => ({
       evidenceRef: item.id,
       collectedAt: item.collectedAt,
@@ -2097,22 +2712,7 @@ export function assessStrongestComplianceContractComposition({
     "effectiveExpiresAt",
     "state",
   ];
-  const expiryMatches = expectedExpiry.filter((expected) =>
-    typedExpiry.some((actual) => recordMatches(expected, actual, expiryFields)),
-  );
-  const expectedReopening = candidateInput.decisions
-    .filter((item) => item.decisionType === "evidence-expired-reopened")
-    .map((item) => ({
-      cellRef: item.cellRef,
-      predecessorDecisionRef: item.predecessorDecisionRef,
-      decisionType: item.decisionType,
-      expiredEvidenceRefs: item.evidenceRefs
-        .filter((ref) =>
-          expectedExpiry.some((evidenceItem) => evidenceItem.evidenceRef === ref),
-        )
-        .sort(compareText),
-    }));
-  const typedReopening = [
+  const actualReopening = [
     ...complianceProjections.flatMap(({ artifact }) =>
       artifact.findings.map((item) => ({
         requirementRef: item.requirementRef,
@@ -2131,77 +2731,147 @@ export function assessStrongestComplianceContractComposition({
     "decisionType",
     "expiredEvidenceRefs",
   ];
-  const reopeningMatches = expectedReopening.filter((expected) =>
-    typedReopening.some((actual) => recordMatches(expected, actual, reopeningFields)),
-  );
-  const representedRevisions = [
+  const actualRevisions = [
     ...complianceProjections.map(
       ({ artifact }) => artifact.review.frameworkVersion,
     ),
     contractProjection.artifact.register.contentDigest,
   ];
+  const syntheticSchemaValid =
+    syntheticComposition === null ||
+    (validateStrongestCompositionProofSchema(syntheticComposition) &&
+      syntheticComposition.sourceInputDigest === sha256Digest(candidateInput));
+  const useSyntheticComposition =
+    syntheticComposition !== null && syntheticSchemaValid;
+  const representedApplicability =
+    useSyntheticComposition
+      ? syntheticComposition.applicabilityRecords
+      : actualApplicability;
+  const representedExpiry =
+    useSyntheticComposition ? syntheticComposition.expiryRecords : actualExpiry;
+  const representedReopening =
+    useSyntheticComposition
+      ? syntheticComposition.reopeningRecords
+      : actualReopening;
+  const representedRevisions =
+    !useSyntheticComposition
+      ? actualRevisions
+      : [
+          syntheticComposition.requirementCatalogRevision,
+          syntheticComposition.cellIndexRevision,
+          syntheticComposition.freshnessRuleRevision,
+        ];
+  const applicabilityMatches = expected.applicabilityRecords.filter(
+    (expectedRecord) =>
+      representedApplicability.some((actual) =>
+        recordMatches(expectedRecord, actual, applicabilityFields),
+      ),
+  );
+  const expiryMatches = expected.expiryRecords.filter((expectedRecord) =>
+    representedExpiry.some((actual) =>
+      recordMatches(expectedRecord, actual, expiryFields),
+    ),
+  );
+  const reopeningMatches = expected.reopeningRecords.filter((expectedRecord) =>
+    representedReopening.some((actual) =>
+      recordMatches(expectedRecord, actual, reopeningFields),
+    ),
+  );
+  const projectionAuthority = {
+    safe:
+      useSyntheticComposition &&
+      exactRecordSet(
+        expected.applicabilityRecords,
+        representedApplicability,
+        applicabilityFields,
+      ) &&
+      exactRecordSet(expected.expiryRecords, representedExpiry, expiryFields) &&
+      exactRecordSet(
+        expected.reopeningRecords,
+        representedReopening,
+        reopeningFields,
+      ) &&
+      syntheticComposition.requirementCatalogRevision ===
+        expected.requirementCatalogRevision &&
+      syntheticComposition.cellIndexRevision === expected.cellIndexRevision &&
+      syntheticComposition.freshnessRuleRevision ===
+        expected.freshnessRuleRevision,
+    inventedSemanticFields:
+      !useSyntheticComposition
+        ? [
+            "compliance.review.frameworkVersion",
+            "compliance.findings[].severity",
+            "compliance.findings[].state",
+            ...contractProjection.inventedSemanticFields.map(
+              (path) => `contract.${path}`,
+            ),
+          ]
+        : [],
+  };
   const invariants = [
     {
       id: "owner-declared-service-applicability",
-      preserved: applicabilityMatches.length === expectedApplicability.length,
-      expectedRecords: expectedApplicability.length,
+      preserved: exactRecordSet(
+        expected.applicabilityRecords,
+        representedApplicability,
+        applicabilityFields,
+      ),
+      expectedRecords: expected.applicabilityRecords.length,
       matchedTypedRecords: applicabilityMatches.length,
       requiredFields: applicabilityFields,
-      typedFragments: {
-        compliance: complianceApplicability,
-        contract: contractApplicability,
-      },
+      typedRecords: representedApplicability,
     },
     {
       id: "requirement-catalog-revision",
       preserved: representedRevisions.includes(
-        candidateInput.requirementCatalog.revision,
+        expected.requirementCatalogRevision,
       ),
-      expectedRevision: candidateInput.requirementCatalog.revision,
+      expectedRevision: expected.requirementCatalogRevision,
       representedRevisions,
     },
     {
       id: "evidence-expiry",
-      preserved: expiryMatches.length === expectedExpiry.length,
-      expectedRecords: expectedExpiry.length,
+      preserved: exactRecordSet(
+        expected.expiryRecords,
+        representedExpiry,
+        expiryFields,
+      ),
+      expectedRecords: expected.expiryRecords.length,
       matchedTypedRecords: expiryMatches.length,
       requiredFields: expiryFields,
-      typedFragments: typedExpiry,
+      typedRecords: representedExpiry,
     },
     {
       id: "predecessor-reopening",
-      preserved: reopeningMatches.length === expectedReopening.length,
-      expectedRecords: expectedReopening.length,
+      preserved: exactRecordSet(
+        expected.reopeningRecords,
+        representedReopening,
+        reopeningFields,
+      ),
+      expectedRecords: expected.reopeningRecords.length,
       matchedTypedRecords: reopeningMatches.length,
       requiredFields: reopeningFields,
-      typedFragments: typedReopening,
+      typedRecords: representedReopening,
     },
   ];
   const proofValid =
-    expectedApplicability.length === 6 &&
+    expected.applicabilityRecords.length === 6 &&
     complianceOutcomes.length === candidateInput.vendorServices.length &&
     complianceOutcomes.every((item) => item.valid) &&
-    contractOutcome.valid;
+    contractOutcome.valid &&
+    syntheticSchemaValid;
   const preservesAllInvariants =
-    proofValid && invariants.every((item) => item.preserved);
+    proofValid &&
+    projectionAuthority.safe &&
+    invariants.every((item) => item.preserved);
   return {
     proofValid,
-    exactCellRefs: expectedApplicability.map((item) => item.cellRef).sort(compareText),
+    exactCellRefs: expected.applicabilityRecords.map((item) => item.cellRef),
     analogueValidation: {
       complianceProjections: complianceOutcomes,
       contractProjection: contractOutcome,
     },
-    projectionAuthority: {
-      safe: false,
-      inventedSemanticFields: [
-        "compliance.requirements[].controlOwnerId",
-        "compliance.findings[].severity",
-        "compliance.findings[].state",
-        ...contractProjection.inventedSemanticFields.map(
-          (path) => `contract.${path}`,
-        ),
-      ],
-    },
+    projectionAuthority,
     preservesAllInvariants,
     verdict: !proofValid
       ? "composition-proof-invalid"
@@ -2259,19 +2929,22 @@ purchase, and mutation claims are structurally \`false\`.
 }
 
 async function runCli() {
-  const [inputPath, asOf, publicTrustPath] = process.argv.slice(2);
-  if (!inputPath || !asOf || !publicTrustPath) {
+  const [inputPath, asOf, publicTrustPath, sourceReceiptsPath] =
+    process.argv.slice(2);
+  if (!inputPath || !asOf || !publicTrustPath || !sourceReceiptsPath) {
     process.stderr.write(
-      "Usage: node recurring-third-party-review-evidence-reconciler.mjs <input.json> <asOf> <public-trust.json>\n",
+      "Usage: node recurring-third-party-review-evidence-reconciler.mjs <input.json> <asOf> <public-trust.json> <source-receipts.json>\n",
     );
     process.exitCode = 2;
     return;
   }
   const input = JSON.parse(readFileSync(inputPath, "utf8"));
   const publicTrust = JSON.parse(readFileSync(publicTrustPath, "utf8"));
+  const sourceReceipts = JSON.parse(readFileSync(sourceReceiptsPath, "utf8"));
   const evaluation = evaluateRecurringThirdPartyReview(input, {
     asOf,
     publicTrust,
+    sourceReceipts,
   });
   process.stdout.write(`${JSON.stringify(evaluation, null, 2)}\n`);
   if (!evaluation.valid) process.exitCode = 1;

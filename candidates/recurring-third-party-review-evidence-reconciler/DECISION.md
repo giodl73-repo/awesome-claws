@@ -2,7 +2,7 @@
 
 Status: **NEW CLAW proven by a bounded candidate slice; not a catalog contribution**
 
-Confidence: **high (0.98)**
+Confidence: **high (0.94)**
 
 This directory is deliberately candidate-only. It does not add or change a
 catalog entry, contribution record, regression case, Experience case,
@@ -80,14 +80,17 @@ The strongest-composition adapter projects the exact six-cell fixture into
 actual typed Compliance Reviewer and Contract Obligation Tracker fields. It
 builds two service-scoped Compliance assessments and one resealed six-obligation
 Contract artifact, then executes both current schemas and both real semantic
-validators. Every projection validates, but typed round-trip extraction still
-cannot produce one complete owner-declared cell record, the content-bound
-catalog revision, an effective evidence-expiry record, or a predecessor-linked
-reopening record. The Contract projection also requires invented agreement,
-clause, and due-date semantics that the candidate input does not own. The
-verdict is therefore derived from executed typed outputs and exact field
-comparisons, not editable capability labels. The four invariants the composition
-does not preserve are:
+validators. The validated graph can round-trip the six cell relationships and
+catalog revision only by encoding requirement links into Contract clause fields
+and inventing agreement, clause, and due-date semantics that the candidate input
+does not own. It still cannot round-trip effective expiry or
+predecessor-linked reopening. Because verdict eligibility now requires an
+authority-safe projection, this lossy adapter cannot reject the candidate. A
+strict synthetic future composition sourced entirely from candidate fields
+round-trips all four invariants without inventions and deterministically returns
+`reject-candidate`. The verdict is therefore derived from executed typed graph
+relationships, exact round trips, and the authority gate—not editable
+capability labels.
 
 1. owner-declared service applicability;
 2. requirement catalog and cell-index revisions;
@@ -148,19 +151,32 @@ The candidate contains:
 - `fixtures/approved-review-cycle.input.json`: the exact two-service,
   six-cell, shared-subprocessor cycle with one predecessor, one expired public
   assurance report, one open remediation, one external exception, and one
-  preserved unauthorized risk-acceptance attempt;
+  preserved unauthorized risk-acceptance attempt; every current and predecessor
+  decision binds the catalog, cell-index, freshness-rule, and immutable cell
+  digests, while the predecessor, catalog, and two service applicability
+  manifests carry independent signatures;
 - `fixtures/public-trust.test.json`: an explicitly injected,
-  owner-and-key-scoped Ed25519 public key with no private key or production
-  trust default;
+  bounded set of owner-and-key-scoped Ed25519 public keys with no private key or
+  production trust default;
+- `fixtures/source-receipts.test.json`: independently signed receipts containing
+  the exact deterministic source bytes, reference, version, and SHA-256 digest
+  for every evidence row;
 - `schemas/public-trust.schema.json`: a closed root and signer contract that
   rejects unknown fields before trust resolution;
+- `schemas/source-receipts.schema.json`: a closed receipt-manifest and source-byte
+  contract;
+- `schemas/strongest-composition-proof.schema.json`: the strict future-composition
+  shape used to prove that an authority-safe complete graph would delete this
+  candidate;
 - `recurring-third-party-review-evidence-reconciler.mjs`: strict schema
-  validation, canonical catalog/cell/exception digests, full-input signature
-  verification, post-close and caller-time-bounded source issuance, exact
-  identity and coverage checks, deterministic freshness, predecessor reopening,
-  typed-human authority validation, recursive private-key rejection, total
-  context handling, executed strongest-composition falsification, a pure
-  derived result, and Markdown proof rendering;
+  validation, bounded descriptor-based normalization, canonical
+  catalog/cell/exception digests, independently signed owner manifests and
+  predecessor artifact, signed source-byte receipt verification, full-input
+  signature verification, post-close and caller-time-bounded source issuance,
+  exact identity and coverage checks, deterministic freshness, predecessor
+  reopening, typed-human authority validation, recursive private-key rejection,
+  executed strongest-composition falsification, a pure derived result, and
+  Markdown proof rendering;
 - `expected/blocked-handoff.expected.json`: the accepted deterministic result
   summary;
 - `expected/prohibited-score.failure.json`: the structured strict-schema
@@ -169,8 +185,11 @@ The candidate contains:
 - `recurring-third-party-review-evidence-reconciler.test.mjs`: accepted,
   structured-failure, tamper, identity, authority, chronology, applicability,
   exact coverage, expiry/reopening, source-envelope issuance, public trust,
-  hostile serialization, subprocessor, remediation, exception, risk-attempt,
-  no-action, actual-analogue, executable composition-deletion, and CLI proof.
+  hostile getters/serialization/size/depth/cardinality, source receipt bytes,
+  owner-manifest omission/service reassignment, decision revision/cell binding,
+  independent predecessor authentication, subprocessor, remediation, exception,
+  risk-attempt, no-action, actual-analogue, authority-safe synthetic deletion,
+  and CLI proof.
 
 The public signature covers every result-driving field in the candidate input.
 The private fixture key was discarded and is not stored. The public trust entry
@@ -191,11 +210,11 @@ node --test `
 
 Candidate-only result:
 
-- **30 passed, 0 failed, 0 skipped**.
+- **35 passed, 0 failed, 0 skipped**.
 
 Candidate plus focused analogue result:
 
-- **278 passed, 0 failed, 0 skipped**.
+- **283 passed, 0 failed, 0 skipped**.
 
 ## Verdict
 
@@ -207,13 +226,12 @@ Manager provide useful lifecycle and freshness patterns but have different
 authoritative universes and decisions. The strengthened source-envelope proof
 also requires the program owner to sign no earlier than cycle close and no later
 than caller-controlled `asOf`, while every signed evidence observation remains
-bounded at or before issuance. The executed strongest-composition adapter shows
-that even valid service-scoped Compliance assessments plus a valid resealed
-six-obligation Contract artifact cannot round-trip the complete
-service-applicability record, catalog revision, evidence-expiry rule and state,
-or predecessor-linked reopening. The Contract projection additionally depends
-on proof-only invented agreement and clause facts, so it is not an
-authority-safe substitute.
+bounded at or before issuance. The executed strongest-composition adapter can
+round-trip service applicability and catalog revision only through an
+authority-unsafe Contract reinterpretation. Neither analogue can round-trip the
+effective evidence-expiry rule/state or predecessor-linked reopening. The
+authority-safe synthetic control proves that a complete typed composition would
+return `reject-candidate`.
 
 The distinct repeatable job is:
 
@@ -245,13 +263,15 @@ candidate should be rejected and deleted if the composition test ever returns
 - This is a fixed falsification slice, not a generalized vendor-risk platform:
   two vendor/services, four requirements, six cells, one predecessor, one
   subprocessor, one remediation, one exception, and at most one risk attempt.
-- The owner envelope proves that the supplied metadata was signed by the
-  injected test key. It does not retrieve source bytes, authenticate a public
-  trust-center site, validate an assurance report, or prove external source
-  truth.
-- `sourceContentDigest` values are owner-supplied signed bindings in this
-  slice. A full contribution must define controlled source-byte or receipt
-  verification and explicit unavailable-source behavior.
+- The proof verifies deterministic fixture bytes through an independently signed
+  receipt manifest. It does not perform live retrieval, authenticate a real
+  trust-center session, validate assurance-report substance, or prove external
+  source truth. A full contribution must define production receipt issuance,
+  retrieval failure, key rotation/revocation, and unavailable-source behavior.
+- The strongest current analogue mapping is intentionally proof-only: it must
+  invent executed-agreement, clause, and due-date facts to populate Contract
+  Obligation Tracker. Those fields make the projection authority-unsafe and
+  cannot be shipped as an interpretation of the owner inputs.
 - Requirement statements and applicability declarations are opaque
   owner-controlled inputs. The candidate does not map frameworks, interpret
   contracts, assess control effectiveness, score risk, or determine whether

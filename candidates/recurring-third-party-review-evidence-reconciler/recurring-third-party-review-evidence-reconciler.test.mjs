@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { generateKeyPairSync, sign as signPayload } from "node:crypto";
+import {
+  createHash,
+  generateKeyPairSync,
+  sign as signPayload,
+} from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,10 +14,14 @@ import addFormats from "ajv-formats";
 import {
   assessStrongestComplianceContractComposition,
   computeCellIndexRevision,
+  computeCellDigest,
   computeExceptionScopeDigest,
   computeFreshnessRuleRevision,
+  computePredecessorArtifactDigest,
   computeRequirementCatalogRevision,
+  createAuthoritySafeSyntheticComposition,
   evaluateRecurringThirdPartyReview,
+  ownerManifestPayload,
   renderReviewProof,
   sourceAuthorityPayload,
 } from "./recurring-third-party-review-evidence-reconciler.mjs";
@@ -35,6 +43,9 @@ const fixture = JSON.parse(
 const publicTrust = JSON.parse(
   await readFile(resolve(here, "fixtures", "public-trust.test.json"), "utf8"),
 );
+const sourceReceipts = JSON.parse(
+  await readFile(resolve(here, "fixtures", "source-receipts.test.json"), "utf8"),
+);
 const expected = JSON.parse(
   await readFile(resolve(here, "expected", "blocked-handoff.expected.json"), "utf8"),
 );
@@ -47,31 +58,31 @@ const evaluate = (input = fixture, options = {}) =>
   evaluateRecurringThirdPartyReview(input, {
     asOf,
     publicTrust,
+    sourceReceipts,
     ...options,
   });
 
 function signWithEphemeralTrust(input) {
   const { privateKey, publicKey } = generateKeyPairSync("ed25519");
-  input.sourceAuthority.signingKeyId = "key-adversarial-chronology";
+  input.sourceAuthority.signingKeyId = "key-adversarial-current";
   input.sourceAuthority.signature = signPayload(
     null,
     sourceAuthorityPayload(input),
     privateKey,
   ).toString("base64");
-  return {
-    schemaVersion:
-      "awesomeClaws.recurringThirdPartyReviewEvidenceReconcilerPublicTrust.v1",
-    signers: [
-      {
-        ownerRef: input.sourceAuthority.ownerRef,
-        signingKeyId: input.sourceAuthority.signingKeyId,
-        algorithm: "Ed25519",
-        publicKeyPem: publicKey.export({ type: "spki", format: "pem" }),
-        validFrom: "2026-07-01T00:00:00Z",
-        validUntil: "2027-06-30T23:59:59Z",
-      },
-    ],
-  };
+  const trust = structuredClone(publicTrust);
+  trust.signers = trust.signers.filter(
+    (item) => item.signingKeyId !== "key-third-party-review-2026",
+  );
+  trust.signers.push({
+    ownerRef: input.sourceAuthority.ownerRef,
+    signingKeyId: input.sourceAuthority.signingKeyId,
+    algorithm: "Ed25519",
+    publicKeyPem: publicKey.export({ type: "spki", format: "pem" }),
+    validFrom: "2026-07-01T00:00:00Z",
+    validUntil: "2027-06-30T23:59:59Z",
+  });
+  return trust;
 }
 
 function resultSummary(evaluation) {
@@ -189,9 +200,107 @@ test("validator normalizes null and non-record contexts and hostile trust serial
       evaluateRecurringThirdPartyReview(fixture, {
         asOf,
         publicTrust: publicTrustValue,
-      }).findings.some((item) => item.code === "invalid-public-trust-input"),
+      }).findings.some((item) => item.code === "invalid-validation-context"),
     );
   }
+  let getterRead = false;
+  const getterContext = { asOf, sourceReceipts };
+  Object.defineProperty(getterContext, "publicTrust", {
+    enumerable: true,
+    get() {
+      getterRead = true;
+      throw new Error("context getter executed");
+    },
+  });
+  assert.doesNotThrow(() =>
+    evaluateRecurringThirdPartyReview(fixture, getterContext),
+  );
+  assert.equal(getterRead, false);
+  assert.ok(
+    evaluateRecurringThirdPartyReview(fixture, getterContext).findings.some(
+      (item) => item.code === "invalid-validation-context",
+    ),
+  );
+});
+
+test("normalization rejects private keys and pre-read resource attacks without echo", () => {
+  const privateValue =
+    "-----BEGIN OPENSSH PRIVATE KEY-----\nsecret-material\n-----END OPENSSH PRIVATE KEY-----";
+  const privateEnvelope = clone();
+  privateEnvelope.privateKeyMaterial = privateValue;
+  const privateResult = evaluate(privateEnvelope);
+  assert.equal(privateResult.valid, false);
+  assert.equal(privateResult.findings[0].code, "private-key-material-prohibited");
+  assert.doesNotMatch(JSON.stringify(privateResult), /secret-material/u);
+
+  let getterRead = false;
+  const getterEnvelope = clone();
+  Object.defineProperty(getterEnvelope, "hostile", {
+    enumerable: true,
+    get() {
+      getterRead = true;
+      throw new Error("candidate getter executed");
+    },
+  });
+  assert.doesNotThrow(() => evaluate(getterEnvelope));
+  assert.equal(getterRead, false);
+  assert.equal(evaluate(getterEnvelope).findings[0].code, "invalid-json-input");
+
+  const deep = clone();
+  let cursor = {};
+  deep.excessiveDepth = cursor;
+  for (let index = 0; index < 40; index += 1) {
+    cursor.next = {};
+    cursor = cursor.next;
+  }
+  assert.equal(evaluate(deep).findings[0].code, "input-limit-exceeded");
+
+  const oversized = clone();
+  oversized.oversized = "x".repeat(1024 * 1024);
+  let lateGetterRead = false;
+  Object.defineProperty(oversized, "lateGetter", {
+    enumerable: true,
+    get() {
+      lateGetterRead = true;
+      throw new Error("late getter executed");
+    },
+  });
+  assert.equal(evaluate(oversized).findings[0].code, "input-limit-exceeded");
+  assert.equal(lateGetterRead, false);
+
+  const excessiveCardinality = clone();
+  excessiveCardinality.excessive = Array.from({ length: 65 }, () => null);
+  assert.equal(
+    evaluate(excessiveCardinality).findings[0].code,
+    "input-limit-exceeded",
+  );
+
+  const excessiveProperties = clone();
+  excessiveProperties.excessive = Object.fromEntries(
+    Array.from({ length: 129 }, (_, index) => [`field${index}`, index]),
+  );
+  assert.equal(
+    evaluate(excessiveProperties).findings[0].code,
+    "input-limit-exceeded",
+  );
+
+  let lengthRead = false;
+  const proxyArray = new Proxy([], {
+    get(target, property, receiver) {
+      if (property === "length") {
+        lengthRead = true;
+        throw new Error("array length getter executed");
+      }
+      return Reflect.get(target, property, receiver);
+    },
+  });
+  const proxyInput = clone();
+  proxyInput.evidence = proxyArray;
+  assert.doesNotThrow(() => evaluate(proxyInput));
+  assert.equal(lengthRead, false);
+  assert.ok(
+    evaluate(proxyInput).findings.some((item) => item.code === "schema-invalid"),
+  );
 });
 
 test("fixture contains the exact requested bounded evidence slice", () => {
@@ -203,6 +312,28 @@ test("fixture contains the exact requested bounded evidence slice", () => {
   assert.equal(fixture.remediations.length, 1);
   assert.equal(fixture.exceptions.length, 1);
   assert.equal(fixture.riskAcceptanceAttempts.length, 1);
+  assert.equal(fixture.ownerManifests.length, 3);
+  assert.equal(sourceReceipts.receipts.length, fixture.evidence.length);
+  assert.equal(
+    fixture.predecessorCycle.artifactDigest,
+    computePredecessorArtifactDigest(
+      fixture.predecessorCycle,
+      fixture.evidence,
+    ),
+  );
+  for (const decision of [
+    ...fixture.predecessorCycle.decisions,
+    ...fixture.decisions,
+  ]) {
+    assert.equal(
+      decision.cellDigest,
+      computeCellDigest(
+        fixture.requirementCatalog.cells.find(
+          (cell) => cell.id === decision.cellRef,
+        ),
+      ),
+    );
+  }
   assert.equal(
     fixture.evidence.filter((item) => item.sourceClass === "public-trust").length,
     1,
@@ -383,7 +514,7 @@ test("public trust is injected, owner-and-key scoped, and has no private key", (
   assert.doesNotThrow(() => evaluate(fixture, { publicTrust: cyclicTrust }));
   assert.ok(
     evaluate(fixture, { publicTrust: cyclicTrust }).findings.some(
-      (item) => item.code === "invalid-public-trust-input",
+      (item) => item.code === "invalid-validation-context",
     ),
   );
 });
@@ -412,6 +543,19 @@ test("public trust is strict and rejects every private PEM label anywhere", () =
       (item) =>
         item.code === "invalid-public-trust-input" &&
         item.message.includes("additional properties"),
+    ),
+  );
+
+  const tooManySigners = structuredClone(publicTrust);
+  while (tooManySigners.signers.length < 9) {
+    tooManySigners.signers.push({
+      ...structuredClone(tooManySigners.signers[0]),
+      signingKeyId: `key-extra-${tooManySigners.signers.length}`,
+    });
+  }
+  assert.ok(
+    evaluate(fixture, { publicTrust: tooManySigners }).findings.some(
+      (item) => item.code === "invalid-public-trust-input",
     ),
   );
 
@@ -484,6 +628,302 @@ test("the public signature covers every result-driving input", () => {
       ),
     );
   }
+});
+
+test("decisions bind immutable cell and revision context", () => {
+  for (const field of [
+    "requirementCatalogRevision",
+    "cellIndexRevision",
+    "freshnessRuleRevision",
+    "cellDigest",
+  ]) {
+    const current = clone();
+    current.decisions[0][field] =
+      "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+    const currentTrust = signWithEphemeralTrust(current);
+    const currentResult = evaluate(current, { publicTrust: currentTrust });
+    assert.equal(
+      currentResult.findings.some(
+        (item) => item.code === "source-envelope-signature-invalid",
+      ),
+      false,
+    );
+    assert.ok(
+      currentResult.findings.some(
+        (item) => item.code === "invalid-typed-human-decision",
+      ),
+      field,
+    );
+
+    const predecessor = clone();
+    predecessor.predecessorCycle.decisions[0][field] =
+      "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+    predecessor.predecessorCycle.artifactDigest =
+      computePredecessorArtifactDigest(
+        predecessor.predecessorCycle,
+        predecessor.evidence,
+      );
+    const predecessorTrust = signWithEphemeralTrust(predecessor);
+    const predecessorResult = evaluate(predecessor, {
+      publicTrust: predecessorTrust,
+    });
+    assert.equal(
+      predecessorResult.findings.some(
+        (item) => item.code === "source-envelope-signature-invalid",
+      ),
+      false,
+    );
+    assert.ok(
+      predecessorResult.findings.some(
+        (item) => item.code === "invalid-predecessor-artifact-signature",
+      ),
+      field,
+    );
+    assert.ok(
+      predecessorResult.findings.some(
+        (item) => item.code === "invalid-predecessor-decision",
+      ),
+      field,
+    );
+  }
+
+  const backdatedAuthority = clone();
+  backdatedAuthority.principals.find(
+    (item) => item.id === "principal-program-owner-ava",
+  ).authorityObservedAt = "2026-07-02T12:00:00Z";
+  const backdatedTrust = signWithEphemeralTrust(backdatedAuthority);
+  const backdatedResult = evaluate(backdatedAuthority, {
+    publicTrust: backdatedTrust,
+  });
+  assert.equal(
+    backdatedResult.findings.some(
+      (item) => item.code === "source-envelope-signature-invalid",
+    ),
+    false,
+  );
+  assert.ok(
+    backdatedResult.findings.some(
+      (item) => item.code === "invalid-predecessor-artifact-signature",
+    ),
+  );
+});
+
+test("owner manifests independently reject omission and service reassignment", () => {
+  const omitted = clone();
+  omitted.ownerManifests.find(
+    (item) => item.subjectRef === "vendor-service-alpine-support",
+  ).cellRefs.pop();
+  const omittedTrust = signWithEphemeralTrust(omitted);
+  const omittedResult = evaluate(omitted, { publicTrust: omittedTrust });
+  assert.equal(
+    omittedResult.findings.some(
+      (item) => item.code === "source-envelope-signature-invalid",
+    ),
+    false,
+  );
+  assert.ok(
+    omittedResult.findings.some(
+      (item) =>
+        item.code === "invalid-owner-manifest" ||
+        item.code === "invalid-owner-manifest-signature",
+    ),
+  );
+
+  const swapped = clone();
+  const cell = swapped.requirementCatalog.cells.find(
+    (item) => item.id === "cell-alpine-security",
+  );
+  cell.vendorServiceRef = "vendor-service-brightpay-payroll";
+  cell.ownerRef = "principal-service-owner-ethan";
+  swapped.cycle.cellIndexRevision = computeCellIndexRevision(
+    swapped.requirementCatalog,
+  );
+  swapped.predecessorCycle.cellIndexRevision = swapped.cycle.cellIndexRevision;
+  for (const decision of swapped.decisions) {
+    decision.cellIndexRevision = swapped.cycle.cellIndexRevision;
+    decision.cellDigest = computeCellDigest(
+      swapped.requirementCatalog.cells.find(
+        (candidate) => candidate.id === decision.cellRef,
+      ),
+    );
+  }
+  for (const decision of swapped.predecessorCycle.decisions) {
+    decision.cellIndexRevision = swapped.predecessorCycle.cellIndexRevision;
+    decision.cellDigest = computeCellDigest(
+      swapped.requirementCatalog.cells.find(
+        (candidate) => candidate.id === decision.cellRef,
+      ),
+    );
+  }
+  swapped.predecessorCycle.artifactDigest =
+    computePredecessorArtifactDigest(
+      swapped.predecessorCycle,
+      swapped.evidence,
+    );
+  const swappedTrust = signWithEphemeralTrust(swapped);
+  const swappedResult = evaluate(swapped, { publicTrust: swappedTrust });
+  assert.ok(
+    swappedResult.findings.some(
+      (item) => item.code === "invalid-owner-manifest",
+    ),
+  );
+
+  const duplicateService = clone();
+  duplicateService.ownerManifests[2] = structuredClone(
+    duplicateService.ownerManifests[1],
+  );
+  const duplicateTrust = signWithEphemeralTrust(duplicateService);
+  const duplicateResult = evaluate(duplicateService, {
+    publicTrust: duplicateTrust,
+  });
+  assert.ok(
+    duplicateResult.findings.some(
+      (item) => item.code === "inexact-owner-manifest-closure",
+    ),
+  );
+
+  const late = clone();
+  const lateManifest = late.ownerManifests.find(
+    (item) => item.subjectRef === "vendor-service-alpine-support",
+  );
+  const { privateKey, publicKey } = generateKeyPairSync("ed25519");
+  lateManifest.signingKeyId = "key-adversarial-late-owner";
+  lateManifest.issuedAt = "2026-09-16T19:30:00Z";
+  lateManifest.signature = signPayload(
+    null,
+    ownerManifestPayload(lateManifest),
+    privateKey,
+  ).toString("base64");
+  const lateTrust = signWithEphemeralTrust(late);
+  lateTrust.signers = lateTrust.signers.filter(
+    (item) => item.ownerRef !== lateManifest.ownerRef,
+  );
+  lateTrust.signers.push({
+    ownerRef: lateManifest.ownerRef,
+    signingKeyId: lateManifest.signingKeyId,
+    algorithm: "Ed25519",
+    publicKeyPem: publicKey.export({ type: "spki", format: "pem" }),
+    validFrom: "2026-01-01T00:00:00Z",
+    validUntil: "2027-01-01T00:00:00Z",
+  });
+  const lateResult = evaluate(late, { publicTrust: lateTrust });
+  assert.equal(
+    lateResult.findings.some(
+      (item) => item.code === "source-envelope-signature-invalid",
+    ),
+    false,
+  );
+  assert.ok(
+    lateResult.findings.some(
+      (item) => item.code === "invalid-owner-manifest-signature",
+    ),
+  );
+});
+
+test("independent owners cannot share public key material", () => {
+  const changed = clone();
+  const changedTrust = structuredClone(publicTrust);
+  const { privateKey, publicKey } = generateKeyPairSync("ed25519");
+  const publicKeyPem = publicKey.export({ type: "spki", format: "pem" });
+  for (const signingKeyId of [
+    changed.sourceAuthority.signingKeyId,
+    "key-catalog-owner-2026",
+  ]) {
+    changedTrust.signers.find(
+      (item) => item.signingKeyId === signingKeyId,
+    ).publicKeyPem = publicKeyPem;
+  }
+  const catalogManifest = changed.ownerManifests.find(
+    (item) => item.kind === "requirement-catalog",
+  );
+  catalogManifest.signature = signPayload(
+    null,
+    ownerManifestPayload(catalogManifest),
+    privateKey,
+  ).toString("base64");
+  changed.sourceAuthority.signature = signPayload(
+    null,
+    sourceAuthorityPayload(changed),
+    privateKey,
+  ).toString("base64");
+  const evaluation = evaluate(changed, { publicTrust: changedTrust });
+  assert.ok(
+    evaluation.findings.some(
+      (item) => item.code === "non-independent-public-trust-key",
+    ),
+  );
+});
+
+test("signed source receipts reject HTTPS digest substitution", () => {
+  const changed = clone();
+  changed.evidence.find(
+    (item) => item.id === "evidence-alpine-assurance-report",
+  ).sourceContentDigest =
+    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+  const changedTrust = signWithEphemeralTrust(changed);
+  const evaluation = evaluate(changed, { publicTrust: changedTrust });
+  assert.equal(
+    evaluation.findings.some(
+      (item) => item.code === "source-envelope-signature-invalid",
+    ),
+    false,
+  );
+  assert.ok(
+    evaluation.findings.some(
+      (item) => item.code === "invalid-source-receipt",
+    ),
+  );
+
+  const changedReceipts = structuredClone(sourceReceipts);
+  changedReceipts.receipts.find(
+    (item) => item.evidenceRef === "evidence-alpine-assurance-report",
+  ).contentBase64 = Buffer.from("attacker-controlled bytes").toString("base64");
+  const receiptResult = evaluate(fixture, {
+    sourceReceipts: changedReceipts,
+  });
+  assert.ok(
+    receiptResult.findings.some(
+      (item) =>
+        item.code === "invalid-source-receipt" ||
+        item.code === "invalid-source-receipt-authority",
+    ),
+  );
+
+  const coherentInput = clone();
+  const coherentReceipts = structuredClone(sourceReceipts);
+  const attackerBytes = Buffer.from("attacker-controlled https response");
+  const attackerDigest = `sha256:${createHash("sha256")
+    .update(attackerBytes)
+    .digest("hex")}`;
+  coherentInput.evidence.find(
+    (item) => item.id === "evidence-alpine-assurance-report",
+  ).sourceContentDigest = attackerDigest;
+  const attackerReceipt = coherentReceipts.receipts.find(
+    (item) => item.evidenceRef === "evidence-alpine-assurance-report",
+  );
+  attackerReceipt.contentBase64 = attackerBytes.toString("base64");
+  attackerReceipt.contentDigest = attackerDigest;
+  coherentInput.predecessorCycle.artifactDigest =
+    computePredecessorArtifactDigest(
+      coherentInput.predecessorCycle,
+      coherentInput.evidence,
+    );
+  const coherentTrust = signWithEphemeralTrust(coherentInput);
+  const coherentResult = evaluate(coherentInput, {
+    publicTrust: coherentTrust,
+    sourceReceipts: coherentReceipts,
+  });
+  assert.equal(
+    coherentResult.findings.some(
+      (item) => item.code === "source-envelope-signature-invalid",
+    ),
+    false,
+  );
+  assert.ok(
+    coherentResult.findings.some(
+      (item) => item.code === "invalid-source-receipt-authority",
+    ),
+  );
 });
 
 test("exact current and predecessor cell coverage rejects omissions and duplicates", () => {
@@ -1032,7 +1472,7 @@ test("actual Compliance plus Contract composition fails the admission falsificat
       "utf8",
     ),
   );
-  const assessment = assessStrongestComplianceContractComposition({
+  const compositionOptions = {
     candidateInput: fixture,
     complianceSchema,
     complianceArtifact: complianceFixture,
@@ -1044,7 +1484,9 @@ test("actual Compliance plus Contract composition fails the admission falsificat
     contractValidationContext: { asOf },
     contractResealer: resealContractObligationTracker,
     asOf,
-  });
+  };
+  const assessment =
+    assessStrongestComplianceContractComposition(compositionOptions);
   assert.equal(assessment.proofValid, true);
   assert.equal(assessment.preservesAllInvariants, false);
   assert.equal(
@@ -1053,12 +1495,7 @@ test("actual Compliance plus Contract composition fails the admission falsificat
   );
   assert.deepEqual(
     assessment.invariants.filter((item) => !item.preserved).map((item) => item.id),
-    [
-      "owner-declared-service-applicability",
-      "requirement-catalog-revision",
-      "evidence-expiry",
-      "predecessor-reopening",
-    ],
+    ["evidence-expiry", "predecessor-reopening"],
   );
   assert.deepEqual(
     assessment.exactCellRefs,
@@ -1080,12 +1517,28 @@ test("actual Compliance plus Contract composition fails the admission falsificat
       "contract.obligations[].clauseLocator",
     ),
   );
-  for (const invariant of assessment.invariants) {
-    assert.equal(invariant.preserved, false);
-    if ("matchedTypedRecords" in invariant) {
-      assert.equal(invariant.matchedTypedRecords, 0);
-    }
-  }
+  assert.equal(
+    assessment.invariants.find(
+      (item) => item.id === "owner-declared-service-applicability",
+    ).matchedTypedRecords,
+    6,
+  );
+  assert.equal(
+    assessment.invariants.find(
+      (item) => item.id === "requirement-catalog-revision",
+    ).preserved,
+    true,
+  );
+  assert.equal(
+    assessment.invariants.find((item) => item.id === "evidence-expiry")
+      .matchedTypedRecords,
+    0,
+  );
+  assert.equal(
+    assessment.invariants.find((item) => item.id === "predecessor-reopening")
+      .matchedTypedRecords,
+    0,
+  );
   assert.deepEqual(
     assessment.invariants.find(
       (item) => item.id === "owner-declared-service-applicability",
@@ -1096,6 +1549,7 @@ test("actual Compliance plus Contract composition fails the admission falsificat
       "requirementRef",
       "ownerRef",
       "declarationEvidenceRef",
+      "cellDigest",
     ],
   );
   assert.deepEqual(
@@ -1119,6 +1573,71 @@ test("actual Compliance plus Contract composition fails the admission falsificat
       "expiredEvidenceRefs",
     ],
   );
+
+  const synthetic = createAuthoritySafeSyntheticComposition(fixture, { asOf });
+  const syntheticAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    syntheticComposition: synthetic,
+  });
+  assert.equal(syntheticAssessment.proofValid, true);
+  assert.equal(syntheticAssessment.projectionAuthority.safe, true);
+  assert.equal(syntheticAssessment.preservesAllInvariants, true);
+  assert.equal(syntheticAssessment.verdict, "reject-candidate");
+
+  const detachedSynthetic = structuredClone(synthetic);
+  detachedSynthetic.sourceInputDigest =
+    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+  const detachedAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    syntheticComposition: detachedSynthetic,
+  });
+  assert.equal(detachedAssessment.proofValid, false);
+  assert.equal(detachedAssessment.verdict, "composition-proof-invalid");
+
+  assert.doesNotThrow(() =>
+    assessStrongestComplianceContractComposition({
+      ...compositionOptions,
+      syntheticComposition: {},
+    }),
+  );
+  const malformedAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    syntheticComposition: {},
+  });
+  assert.equal(malformedAssessment.proofValid, false);
+  assert.equal(malformedAssessment.projectionAuthority.safe, false);
+  assert.equal(malformedAssessment.verdict, "composition-proof-invalid");
+
+  const extraRecord = structuredClone(synthetic);
+  extraRecord.expiryRecords.push({
+    ...extraRecord.expiryRecords[0],
+    evidenceRef: "evidence-alpine-security-questionnaire",
+  });
+  const extraAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    syntheticComposition: extraRecord,
+  });
+  assert.equal(extraAssessment.proofValid, true);
+  assert.equal(extraAssessment.projectionAuthority.safe, false);
+  assert.equal(
+    extraAssessment.verdict,
+    "reject-compliance-plus-contract-composition",
+  );
+
+  const duplicateRecord = structuredClone(synthetic);
+  duplicateRecord.reopeningRecords.push(
+    structuredClone(duplicateRecord.reopeningRecords[0]),
+  );
+  const duplicateAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    syntheticComposition: duplicateRecord,
+  });
+  assert.equal(duplicateAssessment.proofValid, true);
+  assert.equal(duplicateAssessment.projectionAuthority.safe, false);
+  assert.equal(
+    duplicateAssessment.verdict,
+    "reject-compliance-plus-contract-composition",
+  );
 });
 
 test("candidate CLI accepts the trusted fixture but reports a blocked handoff", () => {
@@ -1129,6 +1648,7 @@ test("candidate CLI accepts the trusted fixture but reports a blocked handoff", 
       resolve(here, "fixtures", "approved-review-cycle.input.json"),
       asOf,
       resolve(here, "fixtures", "public-trust.test.json"),
+      resolve(here, "fixtures", "source-receipts.test.json"),
     ],
     { cwd: root, encoding: "utf8" },
   );

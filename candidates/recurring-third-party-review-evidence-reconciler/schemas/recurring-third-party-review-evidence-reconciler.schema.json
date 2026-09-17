@@ -19,6 +19,7 @@
     "remediations",
     "exceptions",
     "riskAcceptanceAttempts",
+    "ownerManifests",
     "sourceAuthority"
   ],
   "properties": {
@@ -106,6 +107,14 @@
       "maxItems": 1,
       "items": {
         "$ref": "#/$defs/riskAcceptanceAttempt"
+      }
+    },
+    "ownerManifests": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/ownerManifest"
       }
     },
     "sourceAuthority": {
@@ -508,7 +517,9 @@
         "cellIndexRevision",
         "freshnessRuleRevision",
         "closedAt",
-        "decisions"
+        "decisions",
+        "artifactDigest",
+        "sourceAuthority"
       ],
       "properties": {
         "id": {
@@ -536,6 +547,12 @@
           "items": {
             "$ref": "#/$defs/predecessorDecision"
           }
+        },
+        "artifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "sourceAuthority": {
+          "$ref": "#/$defs/sourceAuthority"
         }
       }
     },
@@ -548,7 +565,11 @@
         "decisionType",
         "decidedByRef",
         "decidedAt",
-        "evidenceRefs"
+        "evidenceRefs",
+        "requirementCatalogRevision",
+        "cellIndexRevision",
+        "freshnessRuleRevision",
+        "cellDigest"
       ],
       "properties": {
         "id": {
@@ -571,6 +592,18 @@
         },
         "evidenceRefs": {
           "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "requirementCatalogRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "cellIndexRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "freshnessRuleRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "cellDigest": {
+          "$ref": "#/$defs/digest"
         }
       }
     },
@@ -660,7 +693,11 @@
         "evidenceRefs",
         "predecessorDecisionRef",
         "remediationRef",
-        "exceptionRef"
+        "exceptionRef",
+        "requirementCatalogRevision",
+        "cellIndexRevision",
+        "freshnessRuleRevision",
+        "cellDigest"
       ],
       "properties": {
         "id": {
@@ -693,6 +730,18 @@
         },
         "exceptionRef": {
           "$ref": "#/$defs/nullableId"
+        },
+        "requirementCatalogRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "cellIndexRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "freshnessRuleRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "cellDigest": {
+          "$ref": "#/$defs/digest"
         }
       }
     },
@@ -813,6 +862,58 @@
         },
         "requestedDisposition": {
           "const": "accept-risk"
+        }
+      }
+    },
+    "ownerManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "subjectRef",
+        "ownerRef",
+        "signingKeyId",
+        "issuedAt",
+        "subjectDigest",
+        "cellRefs",
+        "cellDigests",
+        "signature"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "requirement-catalog",
+            "vendor-service-applicability"
+          ]
+        },
+        "subjectRef": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signingKeyId": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "subjectDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "cellRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "cellDigests": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "signature": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]{86}==$"
         }
       }
     },
