@@ -2701,6 +2701,20 @@ test("effective plugin inventory permits only bundled GitHub Copilot", () => {
       /effective plugin inventory must contain only/u,
     );
   }
+  assert.throws(
+    () =>
+      assertEffectivePluginInventory({
+        plugins: [
+          {
+            id: "memory-core",
+            origin: "bundled",
+            enabled: true,
+            status: "loaded",
+          },
+        ],
+      }),
+    /active=.*memory-core/u,
+  );
 });
 
 test("isolated Gateway helper waits for readiness and stops the child", async () => {

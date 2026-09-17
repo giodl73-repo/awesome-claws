@@ -694,8 +694,16 @@ export function assertEffectivePluginInventory(payload) {
     active[0].enabled !== true ||
     active[0].status !== "loaded"
   ) {
+    const summary = active
+      .map((plugin) => ({
+        id: typeof plugin.id === "string" ? plugin.id : null,
+        origin: typeof plugin.origin === "string" ? plugin.origin : null,
+        enabled: plugin.enabled === true,
+        status: typeof plugin.status === "string" ? plugin.status : null,
+      }))
+      .sort((left, right) => String(left.id).localeCompare(String(right.id)));
     throw new Error(
-      "OpenClaw effective plugin inventory must contain only the bundled github-copilot provider.",
+      `OpenClaw effective plugin inventory must contain only the bundled github-copilot provider; active=${canonicalJson(summary)}.`,
     );
   }
   return active[0];
@@ -2899,6 +2907,7 @@ async function liveAttempt({
       );
     } else if (operationError) {
       operationError.cleanupProvenSafe = true;
+      operationError.cleanupWasRequired = installed;
     }
   }
 }
@@ -3343,7 +3352,11 @@ async function executeTrial({
           durableArtifactObserved: false,
           safeCleanup: error?.cleanupProvenSafe === true,
           cleanupStatus:
-            error?.cleanupProvenSafe === true ? "not-required" : "failed",
+            error?.cleanupProvenSafe === true
+              ? error?.cleanupWasRequired === true
+                ? "proven-safe"
+                : "not-required"
+              : "failed",
           userMarkerUnchanged: error?.cleanupProvenSafe === true,
         },
       };
