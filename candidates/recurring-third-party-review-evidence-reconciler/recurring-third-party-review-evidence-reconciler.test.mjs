@@ -8,7 +8,7 @@ import { test } from "node:test";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import {
-  assessComplianceContractComposition,
+  assessStrongestComplianceContractComposition,
   computeCellIndexRevision,
   computeExceptionScopeDigest,
   computeFreshnessRuleRevision,
@@ -21,7 +21,10 @@ import {
   artifactSemanticValidationOptions,
   validateArtifactSemantics,
 } from "../../scripts/artifact-semantics.mjs";
-import { contractObligationTrackerFindings } from "../../scripts/contract-obligation-tracker.mjs";
+import {
+  contractObligationTrackerFindings,
+  resealContractObligationTracker,
+} from "../../scripts/contract-obligation-tracker.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..", "..");
@@ -37,12 +40,6 @@ const expected = JSON.parse(
 );
 const expectedFailure = JSON.parse(
   await readFile(resolve(here, "expected", "prohibited-score.failure.json"), "utf8"),
-);
-const compositionAudit = JSON.parse(
-  await readFile(
-    resolve(here, "fixtures", "compliance-contract-composition-audit.json"),
-    "utf8",
-  ),
 );
 const proof = await readFile(resolve(here, "proof", "blocked-handoff.md"), "utf8");
 const clone = () => structuredClone(fixture);
@@ -134,6 +131,67 @@ test("validator is total over non-JSON direct inputs", () => {
       (item) => item.code === "invalid-json-input",
     ),
   );
+
+  for (const hostile of [
+    {
+      toJSON() {
+        throw new Error("hostile input toJSON");
+      },
+    },
+    {
+      toJSON() {
+        return undefined;
+      },
+    },
+  ]) {
+    assert.doesNotThrow(() => evaluateRecurringThirdPartyReview(hostile));
+    assert.ok(
+      evaluateRecurringThirdPartyReview(hostile).findings.some(
+        (item) => item.code === "invalid-json-input",
+      ),
+    );
+  }
+});
+
+test("validator normalizes null and non-record contexts and hostile trust serialization", () => {
+  for (const context of [null, [], "not-a-context", 42]) {
+    assert.doesNotThrow(() =>
+      evaluateRecurringThirdPartyReview(fixture, context),
+    );
+    const evaluation = evaluateRecurringThirdPartyReview(fixture, context);
+    assert.equal(evaluation.valid, false);
+    assert.equal(evaluation.result, null);
+    assert.ok(
+      evaluation.findings.some(
+        (item) => item.code === "invalid-validation-context",
+      ),
+    );
+  }
+  for (const publicTrustValue of [
+    {
+      toJSON() {
+        throw new Error("hostile public trust toJSON");
+      },
+    },
+    {
+      toJSON() {
+        return undefined;
+      },
+    },
+  ]) {
+    assert.doesNotThrow(() =>
+      evaluateRecurringThirdPartyReview(fixture, {
+        asOf,
+        publicTrust: publicTrustValue,
+      }),
+    );
+    assert.ok(
+      evaluateRecurringThirdPartyReview(fixture, {
+        asOf,
+        publicTrust: publicTrustValue,
+      }).findings.some((item) => item.code === "invalid-public-trust-input"),
+    );
+  }
 });
 
 test("fixture contains the exact requested bounded evidence slice", () => {
@@ -326,6 +384,71 @@ test("public trust is injected, owner-and-key scoped, and has no private key", (
   assert.ok(
     evaluate(fixture, { publicTrust: cyclicTrust }).findings.some(
       (item) => item.code === "invalid-public-trust-input",
+    ),
+  );
+});
+
+test("public trust is strict and rejects every private PEM label anywhere", () => {
+  const crlfTrust = structuredClone(publicTrust);
+  crlfTrust.signers[0].publicKeyPem =
+    crlfTrust.signers[0].publicKeyPem.replaceAll("\n", "\r\n");
+  const crlfResult = evaluate(fixture, { publicTrust: crlfTrust });
+  assert.equal(crlfResult.valid, true, JSON.stringify(crlfResult.findings));
+
+  const rootExtra = structuredClone(publicTrust);
+  rootExtra.metadata = "not trusted";
+  assert.ok(
+    evaluate(fixture, { publicTrust: rootExtra }).findings.some(
+      (item) =>
+        item.code === "invalid-public-trust-input" &&
+        item.message.includes("additional properties"),
+    ),
+  );
+
+  const signerExtra = structuredClone(publicTrust);
+  signerExtra.signers[0].metadata = "not trusted";
+  assert.ok(
+    evaluate(fixture, { publicTrust: signerExtra }).findings.some(
+      (item) =>
+        item.code === "invalid-public-trust-input" &&
+        item.message.includes("additional properties"),
+    ),
+  );
+
+  for (const label of [
+    "RSA PRIVATE KEY",
+    "EC PRIVATE KEY",
+    "OPENSSH PRIVATE KEY",
+    "ENCRYPTED PRIVATE KEY",
+    "PRIVATE KEY",
+  ]) {
+    const changed = structuredClone(publicTrust);
+    changed.signers[0].publicKeyPem =
+      `-----BEGIN ${label}-----\nZmFrZQ==\n-----END ${label}-----\n`;
+    const evaluation = evaluate(fixture, { publicTrust: changed });
+    assert.ok(
+      evaluation.findings.some(
+        (item) => item.code === "invalid-public-trust-key",
+      ),
+      label,
+    );
+  }
+
+  const nestedPrivateMaterial = structuredClone(publicTrust);
+  nestedPrivateMaterial.signers[0].metadata = {
+    note: "-----BEGIN RSA PRIVATE KEY-----\nZmFrZQ==\n-----END RSA PRIVATE KEY-----",
+  };
+  assert.ok(
+    evaluate(fixture, { publicTrust: nestedPrivateMaterial }).findings.some(
+      (item) => item.code === "invalid-public-trust-key",
+    ),
+  );
+
+  const privateProperty = structuredClone(publicTrust);
+  privateProperty.signers[0].privateKeyMaterial = "redacted";
+  assert.ok(
+    evaluate(fixture, { publicTrust: privateProperty }).findings.some(
+      (item) => item.code === "invalid-public-trust-key",
     ),
   );
 });
@@ -885,33 +1008,44 @@ test("actual Compliance plus Contract composition fails the admission falsificat
       "utf8",
     ),
   );
-  const artifactSemanticsSource = await readFile(
-    resolve(root, "scripts", "artifact-semantics.mjs"),
-    "utf8",
+  const complianceFixture = JSON.parse(
+    await readFile(
+      resolve(
+        root,
+        "sources",
+        "compliance-reviewer",
+        "fixtures",
+        "control-assessment.example.json",
+      ),
+      "utf8",
+    ),
   );
-  const complianceStart = artifactSemanticsSource.indexOf(
-    "function complianceAssessmentFindings",
+  const contractFixture = JSON.parse(
+    await readFile(
+      resolve(
+        root,
+        "sources",
+        "contract-obligation-tracker",
+        "fixtures",
+        "contract-obligation-tracker.example.json",
+      ),
+      "utf8",
+    ),
   );
-  const complianceEnd = artifactSemanticsSource.indexOf(
-    "\nfunction apiIntegrationReadinessFindings",
-    complianceStart,
-  );
-  const complianceValidatorSource = artifactSemanticsSource.slice(
-    complianceStart,
-    complianceEnd,
-  );
-  const contractValidatorSource = await readFile(
-    resolve(root, "scripts", "contract-obligation-tracker.mjs"),
-    "utf8",
-  );
-  const assessment = assessComplianceContractComposition({
+  const assessment = assessStrongestComplianceContractComposition({
+    candidateInput: fixture,
     complianceSchema,
-    complianceValidatorSource,
+    complianceArtifact: complianceFixture,
+    complianceSemanticValidator: (artifact) =>
+      validateArtifactSemantics("compliance-reviewer", artifact),
     contractSchema,
-    contractValidatorSource,
-    capabilityAudit: compositionAudit,
+    contractArtifact: contractFixture,
+    contractSemanticValidator: contractObligationTrackerFindings,
+    contractValidationContext: { asOf },
+    contractResealer: resealContractObligationTracker,
+    asOf,
   });
-  assert.equal(assessment.auditValid, true);
+  assert.equal(assessment.proofValid, true);
   assert.equal(assessment.preservesAllInvariants, false);
   assert.equal(
     assessment.verdict,
@@ -926,37 +1060,65 @@ test("actual Compliance plus Contract composition fails the admission falsificat
       "predecessor-reopening",
     ],
   );
-
-  const futureAudit = structuredClone(compositionAudit);
-  for (const invariant of futureAudit.invariants) {
-    invariant.compliance = "preserved";
-    invariant.contract = "preserved";
-    invariant.composition = "preserved";
-    invariant.rationale = "Future source-backed composition proof.";
+  assert.deepEqual(
+    assessment.exactCellRefs,
+    fixture.requirementCatalog.cells.map((item) => item.id).sort(),
+  );
+  assert.equal(
+    assessment.analogueValidation.complianceProjections.length,
+    fixture.vendorServices.length,
+  );
+  assert.ok(
+    assessment.analogueValidation.complianceProjections.every(
+      (item) => item.valid,
+    ),
+  );
+  assert.equal(assessment.analogueValidation.contractProjection.valid, true);
+  assert.equal(assessment.projectionAuthority.safe, false);
+  assert.ok(
+    assessment.projectionAuthority.inventedSemanticFields.includes(
+      "contract.obligations[].clauseLocator",
+    ),
+  );
+  for (const invariant of assessment.invariants) {
+    assert.equal(invariant.preserved, false);
+    if ("matchedTypedRecords" in invariant) {
+      assert.equal(invariant.matchedTypedRecords, 0);
+    }
   }
-  const futureComposition = assessComplianceContractComposition({
-    complianceSchema,
-    complianceValidatorSource,
-    contractSchema,
-    contractValidatorSource,
-    capabilityAudit: futureAudit,
-  });
-  assert.equal(futureComposition.auditValid, true);
-  assert.equal(futureComposition.preservesAllInvariants, true);
-  assert.equal(futureComposition.verdict, "reject-candidate");
-
-  const staleAudit = structuredClone(compositionAudit);
-  staleAudit.sources.contractValidator =
-    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-  const staleAssessment = assessComplianceContractComposition({
-    complianceSchema,
-    complianceValidatorSource,
-    contractSchema,
-    contractValidatorSource,
-    capabilityAudit: staleAudit,
-  });
-  assert.equal(staleAssessment.auditValid, false);
-  assert.equal(staleAssessment.verdict, "reaudit-required");
+  assert.deepEqual(
+    assessment.invariants.find(
+      (item) => item.id === "owner-declared-service-applicability",
+    ).requiredFields,
+    [
+      "cellRef",
+      "vendorServiceRef",
+      "requirementRef",
+      "ownerRef",
+      "declarationEvidenceRef",
+    ],
+  );
+  assert.deepEqual(
+    assessment.invariants.find((item) => item.id === "evidence-expiry")
+      .requiredFields,
+    [
+      "evidenceRef",
+      "validUntil",
+      "maxAgeDays",
+      "effectiveExpiresAt",
+      "state",
+    ],
+  );
+  assert.deepEqual(
+    assessment.invariants.find((item) => item.id === "predecessor-reopening")
+      .requiredFields,
+    [
+      "cellRef",
+      "predecessorDecisionRef",
+      "decisionType",
+      "expiredEvidenceRefs",
+    ],
+  );
 });
 
 test("candidate CLI accepts the trusted fixture but reports a blocked handoff", () => {

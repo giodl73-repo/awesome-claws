@@ -52,9 +52,13 @@ const schema = JSON.parse(
     "utf8",
   ),
 );
+const publicTrustSchema = JSON.parse(
+  readFileSync(new URL("./schemas/public-trust.schema.json", import.meta.url), "utf8"),
+);
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
+const validatePublicTrustSchema = ajv.compile(publicTrustSchema);
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -233,7 +237,7 @@ function duplicateValues(values) {
 
 function containsPrivateKeyMaterial(value, seen = new Set()) {
   if (typeof value === "string") {
-    return /-----BEGIN (?:ENCRYPTED )?PRIVATE KEY-----/u.test(value);
+    return /-----BEGIN(?: [A-Z0-9]+)* PRIVATE KEY-----/iu.test(value);
   }
   if (Array.isArray(value)) {
     if (seen.has(value)) return false;
@@ -248,6 +252,23 @@ function containsPrivateKeyMaterial(value, seen = new Set()) {
       /private.*key|key.*private/iu.test(key) ||
       containsPrivateKeyMaterial(nested, seen),
   );
+}
+
+function jsonSerialization(value) {
+  try {
+    const serialized = JSON.stringify(value);
+    return typeof serialized === "string"
+      ? { serialized, error: null }
+      : {
+          serialized: null,
+          error: "JSON.stringify returned no JSON text.",
+        };
+  } catch (error) {
+    return {
+      serialized: null,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
 function schemaFindings(input) {
@@ -296,14 +317,13 @@ function globalIdentityFindings(input) {
 
 function publicTrustFindings(input, trustStore, asOf) {
   const findings = [];
-  try {
-    JSON.stringify(trustStore);
-  } catch (error) {
+  const serialization = jsonSerialization(trustStore);
+  if (serialization.error !== null) {
     return [
       finding(
         "invalid-public-trust-input",
         "$.validationContext.publicTrust",
-        `Public trust input must be JSON-serializable: ${error instanceof Error ? error.message : String(error)}.`,
+        `Public trust input must serialize to JSON text: ${serialization.error}`,
       ),
     ];
   }
@@ -317,20 +337,14 @@ function publicTrustFindings(input, trustStore, asOf) {
       ),
     ];
   }
-  if (
-    !isRecord(trustStore) ||
-    trustStore.schemaVersion !== PUBLIC_TRUST_SCHEMA_VERSION ||
-    !Array.isArray(trustStore.signers) ||
-    trustStore.signers.length === 0 ||
-    trustStore.signers.length > SLICE_LIMITS.publicTrustSigners
-  ) {
-    return [
+  if (!validatePublicTrustSchema(trustStore)) {
+    return (validatePublicTrustSchema.errors ?? []).map((error) =>
       finding(
         "invalid-public-trust-input",
-        "$.validationContext.publicTrust",
-        "Validation requires an explicitly injected bounded public signer trust input.",
+        `$.validationContext.publicTrust${error.instancePath}`,
+        `${error.keyword}: ${error.message ?? "public trust schema validation failed"}`,
       ),
-    ];
+    );
   }
   const matching = trustStore.signers.filter(
     (signer) =>
@@ -352,7 +366,7 @@ function publicTrustFindings(input, trustStore, asOf) {
   const signer = matching[0];
   if (
     typeof signer.publicKeyPem !== "string" ||
-    /-----BEGIN (?:ENCRYPTED )?PRIVATE KEY-----/u.test(signer.publicKeyPem)
+    /-----BEGIN(?: [A-Z0-9]+)* PRIVATE KEY-----/iu.test(signer.publicKeyPem)
   ) {
     return [
       finding(
@@ -432,19 +446,17 @@ function inputLimitFindings(input) {
       ),
     ];
   }
-  let serialized;
-  try {
-    serialized = JSON.stringify(input);
-  } catch (error) {
+  const serialization = jsonSerialization(input);
+  if (serialization.error !== null) {
     return [
       finding(
         "invalid-json-input",
         "$",
-        `The candidate input must be JSON-serializable: ${error instanceof Error ? error.message : String(error)}.`,
+        `The candidate input must serialize to JSON text: ${serialization.error}`,
       ),
     ];
   }
-  const byteLength = Buffer.byteLength(serialized, "utf8");
+  const byteLength = Buffer.byteLength(serialization.serialized, "utf8");
   const evidenceCount = Array.isArray(input?.evidence) ? input.evidence.length : 0;
   const findings = [];
   if (byteLength > SLICE_LIMITS.inputBytes) {
@@ -1488,11 +1500,12 @@ function resultFor(input, findings, asOf) {
 }
 
 export function evaluateRecurringThirdPartyReview(input, options = {}) {
+  const context = isRecord(options) ? options : {};
   const findings = [...inputLimitFindings(input)];
   if (findings.some((item) => item.code === "invalid-json-input")) {
     return { valid: false, findings, result: null };
   }
-  const asOf = timestamp(options.asOf);
+  const asOf = timestamp(context.asOf);
   if (asOf === null) {
     findings.push(
       finding(
@@ -1505,7 +1518,7 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
   const structuralFindings = schemaFindings(input);
   findings.push(...structuralFindings);
   if (structuralFindings.length === 0 && asOf !== null) {
-    findings.push(...publicTrustFindings(input, options.publicTrust, asOf));
+    findings.push(...publicTrustFindings(input, context.publicTrust, asOf));
     findings.push(...semanticFindings(input, asOf));
   }
   const orderedFindings = uniqueSortedFindings(findings);
@@ -1519,68 +1532,685 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
   };
 }
 
-export function assessComplianceContractComposition({
-  complianceSchema,
-  complianceValidatorSource,
-  contractSchema,
-  contractValidatorSource,
-  capabilityAudit,
-}) {
-  const currentSourceDigests = {
-    complianceSchema: sha256Digest(complianceSchema),
-    complianceValidator: sha256Digest(String(complianceValidatorSource)),
-    contractSchema: sha256Digest(contractSchema),
-    contractValidator: sha256Digest(String(contractValidatorSource)),
+function validationOutcome(validate, semanticValidator, artifact, context) {
+  const schemaValid = validate(artifact);
+  const schemaErrors = (validate.errors ?? []).map((error) => ({
+    instancePath: error.instancePath,
+    keyword: error.keyword,
+    params: error.params,
+  }));
+  const semanticFindings = semanticValidator(artifact, context);
+  return {
+    valid: schemaValid && semanticFindings.length === 0,
+    schemaValid,
+    schemaErrors,
+    semanticFindings,
   };
-  const auditRows = records(capabilityAudit?.invariants);
-  const auditIds = auditRows.map((item) => item.id);
-  const auditValid =
-    capabilityAudit?.schemaVersion ===
-      "awesomeClaws.complianceContractCompositionAudit.v1" &&
-    isRecord(capabilityAudit.sources) &&
-    canonicalJson(capabilityAudit.sources) === canonicalJson(currentSourceDigests) &&
-    sameSet(auditIds, COMPOSITION_INVARIANT_IDS) &&
-    duplicateValues(auditIds).length === 0 &&
-    auditRows.every(
-      (item) =>
-        ["preserved", "not-preserved"].includes(item.compliance) &&
-        ["preserved", "not-preserved"].includes(item.contract) &&
-        ["preserved", "not-preserved-without-sidecar"].includes(
-          item.composition,
-        ) &&
-        typeof item.rationale === "string" &&
-        item.rationale.length > 0 &&
-        Array.isArray(item.sourceRefs) &&
-        item.sourceRefs.length > 0,
+}
+
+function typedComplianceProjections(input, template, asOf) {
+  const evidenceById = mapById(input.evidence);
+  const requirementsById = mapById(input.requirementCatalog.requirements);
+  const decisionsByCell = new Map(
+    input.decisions.map((item) => [item.cellRef, item]),
+  );
+  const freshnessByKind = new Map(
+    input.freshnessRules.map((item) => [item.evidenceKind, item]),
+  );
+  return input.vendorServices.map((service) => {
+    const artifact = structuredClone(template);
+    const cells = input.requirementCatalog.cells.filter(
+      (cell) => cell.vendorServiceRef === service.id,
     );
-  const invariants = COMPOSITION_INVARIANT_IDS.map((id) => {
-    const audited = auditRows.find((item) => item.id === id);
+    artifact.review = {
+      id: `review-${service.id}`,
+      framework: input.requirementCatalog.id,
+      frameworkVersion: input.requirementCatalog.version,
+      systemBoundary: service.id,
+      reviewPeriod: input.cycle.id,
+      snapshotRef: `snapshot-${service.id}-${input.cycle.id}`,
+      requestedAt: new Date(
+        Math.min(
+          ...cells.flatMap((cell) => {
+            const decision = decisionsByCell.get(cell.id);
+            return [cell.declarationEvidenceRef, ...(decision?.evidenceRefs ?? [])]
+              .map((ref) => timestamp(evidenceById.get(ref)?.observedAt))
+              .filter((value) => value !== null);
+          }),
+        ),
+      ).toISOString(),
+    };
+    const controlOwnerId = artifact.principals.find((item) =>
+      item.scopes.includes("control-owner"),
+    ).id;
+    const mappedEvidence = new Map();
+    artifact.requirements = cells.map((cell) => {
+      const decision = decisionsByCell.get(cell.id);
+      const evidenceRefs = [
+        cell.declarationEvidenceRef,
+        ...(decision?.evidenceRefs ?? []),
+      ].filter((ref, index, values) => values.indexOf(ref) === index);
+      for (const ref of evidenceRefs) {
+        const source = evidenceById.get(ref);
+        mappedEvidence.set(ref, {
+          id: ref,
+          kind: "requirement-evidence",
+          requirementRef: cell.requirementRef,
+          snapshotRef: artifact.review.snapshotRef,
+          sourceRef: `controlled://third-party-review-composition/${ref}`,
+          collectedAt: source.observedAt,
+        });
+      }
+      return {
+        id: cell.requirementRef,
+        requirement: requirementsById.get(cell.requirementRef).statement,
+        controlOwnerId,
+        evidenceRefs,
+        findingRef: `finding-${cell.id}`,
+      };
+    });
+    artifact.evidence = [...mappedEvidence.values()];
+    artifact.findings = cells.map((cell) => ({
+      id: `finding-${cell.id}`,
+      requirementRef: cell.requirementRef,
+      severity: "medium",
+      state: "open",
+      summary: "The exact owner decision remains outside Compliance Reviewer authority.",
+    }));
+    artifact.compensatingControls = [];
+    artifact.remediation = [];
+    artifact.verifications = [];
+    artifact.limitations = [
+      "This proof projection does not certify compliance, interpret requirements, accept risk, or grant a waiver.",
+    ];
+    artifact.recommendation = null;
+    artifact.handoff = {
+      owner: artifact.owner,
+      state: "blocked",
+      prohibitedActions: [
+        "certify-compliance",
+        "issue-legal-conclusion",
+        "accept-risk",
+        "grant-waiver",
+        "issue-audit-opinion",
+      ],
+      summary:
+        "The typed projection is incomplete and remains blocked for accountable owner review.",
+    };
     return {
-      id,
-      compliance: audited?.compliance ?? "not-audited",
-      contract: audited?.contract ?? "not-audited",
-      composition: audited?.composition ?? "not-audited",
-      preserved: audited?.composition === "preserved",
-      rationale: audited?.rationale ?? "",
-      sourceRefs: Array.isArray(audited?.sourceRefs)
-        ? [...audited.sourceRefs]
-        : [],
+      artifact,
+      evidenceStates: cells.map((cell) => {
+        const decision = decisionsByCell.get(cell.id);
+        const source = evidenceById.get(decision.evidenceRefs[0]);
+        return {
+          requirementRef: cell.requirementRef,
+          evidenceRef: source.id,
+          state: evidenceState(source, freshnessByKind.get(source.kind), asOf),
+        };
+      }),
     };
   });
-  const preservesAllInvariants =
-    auditValid && invariants.every((item) => item.preserved);
+}
+
+function compositionSourceDigest(id) {
+  return sha256Digest({
+    kind: "strongest-composition-external-source",
+    id,
+  });
+}
+
+function contractEvidenceRow({
+  id,
+  kind,
+  roundRef,
+  observedAt,
+  suppliedByRef,
+  subjectRefs,
+}) {
   return {
-    auditValid,
-    currentSourceDigests,
+    id,
+    kind,
+    roundRef,
+    roundDigest:
+      "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    observedAt,
+    suppliedByRef,
+    subjectRefs,
+    sourceRecordDigest: compositionSourceDigest(id),
+    payloadDigest:
+      "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    recordDigest:
+      "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  };
+}
+
+function typedContractProjection(input, template, contractResealer) {
+  const artifact = structuredClone(template);
+  const evidenceById = mapById(input.evidence);
+  const decisionsByCell = new Map(
+    input.decisions.map((item) => [item.cellRef, item]),
+  );
+  const agreementRepositoryRef = artifact.agreements[0].repositoryRef;
+  const registerOwnerRef = artifact.register.confirmedByRef;
+  const registerSystemRef = artifact.register.sourceSystemRef;
+  const rosterCustodianRef = artifact.authorityRoster.custodianRef;
+  const obligationOwnerRef = artifact.obligations[0].responsibleOwnerRef;
+  const performanceSupplierRef =
+    artifact.obligations[0].performanceEvidenceSupplierRef;
+  const destinationApproverRef = artifact.round.destinationApproverRef;
+  const handoffOwnerRef = artifact.round.handoffOwnerRef;
+  const earliestEvidence = Math.min(
+    ...input.evidence
+      .map((item) => timestamp(item.observedAt))
+      .filter((value) => value !== null),
+  );
+  const executedAt = new Date(earliestEvidence - 86_400_000).toISOString();
+  const opensAt = timestamp(input.cycle.opensAt);
+  const registerConfirmedAt = new Date(opensAt - 7_200_000).toISOString();
+  const rosterIssuedAt = new Date(opensAt - 3_600_000).toISOString();
+  const agreements = input.vendorServices.map((service) => {
+    const suffix = service.id.replace(/^vendor-service-/u, "");
+    return {
+      id: `agreement-${suffix}-v1`,
+      agreementId: service.id,
+      version: "v1",
+      executedAt,
+      repositoryRef: agreementRepositoryRef,
+      contentDigest: compositionSourceDigest(`agreement-${service.id}`),
+      sourceEvidenceRef: `evidence-agreement-${suffix}`,
+    };
+  });
+  const agreementByService = new Map(
+    input.vendorServices.map((service, index) => [
+      service.id,
+      agreements[index].id,
+    ]),
+  );
+  const obligations = input.requirementCatalog.cells.map((cell, index) => ({
+    id: cell.id,
+    agreementVersionRef: agreementByService.get(cell.vendorServiceRef),
+    responsibleOwnerRef: obligationOwnerRef,
+    clauseLocator: `R${index + 1}`,
+    clauseDigest: sha256Digest({
+      kind: "proof-only-synthetic-clause",
+      requirementRef: cell.requirementRef,
+    }),
+    obligationDigest: sha256Digest({
+      kind: "proof-only-synthetic-obligation",
+      cellRef: cell.id,
+    }),
+    dueAt: input.cycle.closesAt,
+    performanceEvidenceSupplierRef: performanceSupplierRef,
+    requiredEvidenceRefs: [
+      `evidence-performance-${cell.id.replace(/^cell-/u, "")}`,
+    ],
+  }));
+  const obligationsById = mapById(obligations);
+  const observations = [];
+  const blockers = [];
+  const evidence = [];
+  for (const agreement of agreements) {
+    evidence.push(
+      contractEvidenceRow({
+        id: agreement.sourceEvidenceRef,
+        kind: "executed-agreement-copy",
+        roundRef: input.cycle.id,
+        observedAt: agreement.executedAt,
+        suppliedByRef: agreementRepositoryRef,
+        subjectRefs: [agreement.id],
+      }),
+    );
+  }
+  for (const cell of input.requirementCatalog.cells) {
+    const decision = decisionsByCell.get(cell.id);
+    const obligation = obligationsById.get(cell.id);
+    const suffix = cell.id.replace(/^cell-/u, "");
+    if (decision.decisionType === "evidence-expired-reopened") {
+      const blocker = {
+        id: `blocker-${suffix}`,
+        obligationRef: obligation.id,
+        category: "source-evidence-missing",
+        detectedAt: decision.decidedAt,
+        ownerRef: obligationOwnerRef,
+        exactMissingEvidenceRefs: obligation.requiredEvidenceRefs,
+        evidenceRef: `evidence-blocker-${suffix}`,
+      };
+      blockers.push(blocker);
+      evidence.push(
+        contractEvidenceRow({
+          id: blocker.evidenceRef,
+          kind: "blocker-record",
+          roundRef: input.cycle.id,
+          observedAt: blocker.detectedAt,
+          suppliedByRef: obligationOwnerRef,
+          subjectRefs: [
+            blocker.id,
+            blocker.obligationRef,
+            ...blocker.exactMissingEvidenceRefs,
+          ],
+        }),
+      );
+      continue;
+    }
+    const candidateEvidence = decision.evidenceRefs
+      .map((ref) => evidenceById.get(ref))
+      .find(Boolean);
+    const performanceEvidenceRef = obligation.requiredEvidenceRefs[0];
+    const observation = {
+      id: `observation-${suffix}`,
+      obligationRef: obligation.id,
+      agreementVersionRef: obligation.agreementVersionRef,
+      clauseDigest: obligation.clauseDigest,
+      obligationDigest: obligation.obligationDigest,
+      ownerRef: obligationOwnerRef,
+      state: "owner-confirmation-pending",
+      dueState: "due",
+      observedAt: decision.decidedAt,
+      reliedEvidenceRefs: [performanceEvidenceRef],
+      observationEvidenceRef: `evidence-observation-${suffix}`,
+      completion: null,
+    };
+    observations.push(observation);
+    evidence.push(
+      contractEvidenceRow({
+        id: performanceEvidenceRef,
+        kind: "performance-evidence",
+        roundRef: input.cycle.id,
+        observedAt: candidateEvidence.observedAt,
+        suppliedByRef: performanceSupplierRef,
+        subjectRefs: [obligation.id],
+      }),
+      contractEvidenceRow({
+        id: observation.observationEvidenceRef,
+        kind: "obligation-observation-record",
+        roundRef: input.cycle.id,
+        observedAt: observation.observedAt,
+        suppliedByRef: obligationOwnerRef,
+        subjectRefs: [observation.id, obligation.id],
+      }),
+    );
+  }
+  artifact.schemaVersion = "awesomeClaws.contractObligationTracker.v1";
+  artifact.artifactId = "artifact-third-party-review-composition";
+  artifact.round = {
+    id: input.cycle.id,
+    registerRef: "register-third-party-review",
+    registerVersion: input.requirementCatalog.version,
+    registerDigest:
+      "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    agreementVersionRefs: agreements.map((item) => item.id),
+    authorityRosterRef: artifact.authorityRoster.id,
+    authorityRosterDigest:
+      "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    opensAt: input.cycle.opensAt,
+    closesAt: input.cycle.closesAt,
+    destination: "contract-owner-review-queue",
+    destinationApproverRef,
+    handoffOwnerRef,
+    roundDigest:
+      "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  };
+  artifact.agreements = agreements;
+  artifact.register = {
+    id: artifact.round.registerRef,
+    version: artifact.round.registerVersion,
+    confirmedAt: registerConfirmedAt,
+    confirmedByRef: registerOwnerRef,
+    sourceSystemRef: registerSystemRef,
+    agreementVersionRefs: agreements.map((item) => item.id),
+    obligationRefs: obligations.map((item) => item.id),
+    contentDigest:
+      "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    evidenceRef: "evidence-third-party-review-register",
+  };
+  artifact.obligations = obligations;
+  artifact.authorityRoster = {
+    ...artifact.authorityRoster,
+    issuedAt: rosterIssuedAt,
+    principalRefs: artifact.principals.map((item) => item.id),
+    contentDigest:
+      "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  };
+  artifact.authorityGrants = [];
+  artifact.observations = observations;
+  artifact.blockers = blockers;
+  evidence.push(
+    contractEvidenceRow({
+      id: artifact.register.evidenceRef,
+      kind: "obligation-register-export",
+      roundRef: artifact.round.id,
+      observedAt: registerConfirmedAt,
+      suppliedByRef: registerOwnerRef,
+      subjectRefs: [artifact.register.id, ...artifact.register.obligationRefs],
+    }),
+    contractEvidenceRow({
+      id: artifact.authorityRoster.evidenceRef,
+      kind: "authority-roster-export",
+      roundRef: artifact.round.id,
+      observedAt: rosterIssuedAt,
+      suppliedByRef: rosterCustodianRef,
+      subjectRefs: [
+        artifact.authorityRoster.id,
+        ...artifact.authorityRoster.principalRefs,
+      ],
+    }),
+  );
+  artifact.coverage = {
+    registerRef: artifact.register.id,
+    registerVersion: artifact.register.version,
+    registerDigest: artifact.register.contentDigest,
+    entries: [
+      ...observations.map((item) => ({
+        obligationRef: item.obligationRef,
+        resolutionKind: "observation",
+        resolutionRef: item.id,
+      })),
+      ...blockers.map((item) => ({
+        obligationRef: item.obligationRef,
+        resolutionKind: "blocker",
+        resolutionRef: item.id,
+      })),
+    ],
+    contentDigest:
+      "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  };
+  artifact.destinationApproval = {
+    ...artifact.destinationApproval,
+    roundRef: artifact.round.id,
+    registerRef: artifact.register.id,
+    destination: artifact.round.destination,
+    approvedByRef: destinationApproverRef,
+    approvedAt: input.cycle.closesAt,
+    evidenceRef: "evidence-third-party-review-destination",
+  };
+  artifact.handoff = {
+    ...artifact.handoff,
+    roundRef: artifact.round.id,
+    registerRef: artifact.register.id,
+    destinationApprovalRef: artifact.destinationApproval.id,
+    state: blockers.length === 0 ? "ready-for-owner-review" : "blocked",
+    nextOwnerRef: handoffOwnerRef,
+    handedOffAt: input.sourceAuthority.issuedAt,
+    observationRefs: observations.map((item) => item.id),
+    blockerRefs: blockers.map((item) => item.id),
+    evidenceRef: "evidence-third-party-review-handoff",
+  };
+  evidence.push(
+    contractEvidenceRow({
+      id: artifact.destinationApproval.evidenceRef,
+      kind: "destination-approval-record",
+      roundRef: artifact.round.id,
+      observedAt: artifact.destinationApproval.approvedAt,
+      suppliedByRef: destinationApproverRef,
+      subjectRefs: [artifact.destinationApproval.id, destinationApproverRef],
+    }),
+    contractEvidenceRow({
+      id: artifact.handoff.evidenceRef,
+      kind: "handoff-record",
+      roundRef: artifact.round.id,
+      observedAt: artifact.handoff.handedOffAt,
+      suppliedByRef: handoffOwnerRef,
+      subjectRefs: [artifact.handoff.id, handoffOwnerRef],
+    }),
+  );
+  artifact.evidence = evidence;
+  return {
+    artifact: contractResealer(artifact, { resealRegister: true }),
+    inventedSemanticFields: [
+      "agreements[].executedAt",
+      "agreements[].agreementId",
+      "obligations[].clauseLocator",
+      "obligations[].clauseDigest",
+      "obligations[].obligationDigest",
+      "obligations[].dueAt",
+    ],
+  };
+}
+
+function recordMatches(expected, actual, fields) {
+  return fields.every(
+    (field) =>
+      Object.hasOwn(actual, field) &&
+      canonicalJson(actual[field]) === canonicalJson(expected[field]),
+  );
+}
+
+export function assessStrongestComplianceContractComposition({
+  candidateInput,
+  complianceSchema,
+  complianceArtifact,
+  complianceSemanticValidator,
+  contractSchema,
+  contractArtifact,
+  contractSemanticValidator,
+  contractValidationContext,
+  contractResealer,
+  asOf,
+}) {
+  if (
+    typeof complianceSemanticValidator !== "function" ||
+    typeof contractSemanticValidator !== "function" ||
+    typeof contractResealer !== "function"
+  ) {
+    throw new TypeError(
+      "The strongest composition proof requires both real semantic validators and the Contract resealer.",
+    );
+  }
+  const complianceAjv = new Ajv2020({ allErrors: true, strict: true });
+  const contractAjv = new Ajv2020({ allErrors: true, strict: true });
+  addFormats(complianceAjv);
+  addFormats(contractAjv);
+  const validateCompliance = complianceAjv.compile(complianceSchema);
+  const validateContract = contractAjv.compile(contractSchema);
+  const compositionAsOf = timestamp(asOf);
+  if (compositionAsOf === null) {
+    throw new TypeError("The strongest composition proof requires caller-controlled asOf.");
+  }
+  const complianceProjections = typedComplianceProjections(
+    candidateInput,
+    complianceArtifact,
+    compositionAsOf,
+  );
+  const complianceOutcomes = complianceProjections.map((projection) =>
+    validationOutcome(
+      validateCompliance,
+      complianceSemanticValidator,
+      projection.artifact,
+      {},
+    ),
+  );
+  const contractProjection = typedContractProjection(
+    candidateInput,
+    contractArtifact,
+    contractResealer,
+  );
+  const contractOutcome = validationOutcome(
+    validateContract,
+    contractSemanticValidator,
+    contractProjection.artifact,
+    contractValidationContext,
+  );
+  const expectedApplicability = candidateInput.requirementCatalog.cells.map(
+    (cell) => ({
+      cellRef: cell.id,
+      vendorServiceRef: cell.vendorServiceRef,
+      requirementRef: cell.requirementRef,
+      ownerRef: cell.ownerRef,
+      declarationEvidenceRef: cell.declarationEvidenceRef,
+    }),
+  );
+  const complianceApplicability = complianceProjections.flatMap(({ artifact }) =>
+    artifact.requirements.map((requirement) => ({
+      vendorServiceRef: artifact.review.systemBoundary,
+      requirementRef: requirement.id,
+      ownerRef: requirement.controlOwnerId,
+    })),
+  );
+  const agreementById = mapById(contractProjection.artifact.agreements);
+  const contractApplicability = contractProjection.artifact.obligations.map(
+    (obligation) => ({
+      cellRef: obligation.id,
+      vendorServiceRef: agreementById.get(obligation.agreementVersionRef)?.agreementId,
+      ownerRef: obligation.responsibleOwnerRef,
+    }),
+  );
+  const applicabilityFields = [
+    "cellRef",
+    "vendorServiceRef",
+    "requirementRef",
+    "ownerRef",
+    "declarationEvidenceRef",
+  ];
+  const applicabilityMatches = expectedApplicability.filter((expected) =>
+    [...complianceApplicability, ...contractApplicability].some((actual) =>
+      recordMatches(expected, actual, applicabilityFields),
+    ),
+  );
+  const freshnessByKind = new Map(
+    candidateInput.freshnessRules.map((item) => [item.evidenceKind, item]),
+  );
+  const expectedExpiry = candidateInput.evidence
+    .map((item) => {
+      const rule = freshnessByKind.get(item.kind);
+      const expiresAt = effectiveExpiry(item, rule);
+      return {
+        evidenceRef: item.id,
+        validUntil: item.validUntil,
+        maxAgeDays: rule?.maxAgeDays,
+        effectiveExpiresAt:
+          expiresAt === null ? null : new Date(expiresAt).toISOString(),
+        state: evidenceState(item, rule, compositionAsOf),
+      };
+    })
+    .filter((item) => item.state === "expired");
+  const typedExpiry = complianceProjections.flatMap(({ artifact, evidenceStates }) =>
+    artifact.evidence.map((item) => ({
+      evidenceRef: item.id,
+      collectedAt: item.collectedAt,
+      state: evidenceStates.find((state) => state.evidenceRef === item.id)?.state,
+    })),
+  );
+  const expiryFields = [
+    "evidenceRef",
+    "validUntil",
+    "maxAgeDays",
+    "effectiveExpiresAt",
+    "state",
+  ];
+  const expiryMatches = expectedExpiry.filter((expected) =>
+    typedExpiry.some((actual) => recordMatches(expected, actual, expiryFields)),
+  );
+  const expectedReopening = candidateInput.decisions
+    .filter((item) => item.decisionType === "evidence-expired-reopened")
+    .map((item) => ({
+      cellRef: item.cellRef,
+      predecessorDecisionRef: item.predecessorDecisionRef,
+      decisionType: item.decisionType,
+      expiredEvidenceRefs: item.evidenceRefs
+        .filter((ref) =>
+          expectedExpiry.some((evidenceItem) => evidenceItem.evidenceRef === ref),
+        )
+        .sort(compareText),
+    }));
+  const typedReopening = [
+    ...complianceProjections.flatMap(({ artifact }) =>
+      artifact.findings.map((item) => ({
+        requirementRef: item.requirementRef,
+        findingState: item.state,
+      })),
+    ),
+    ...contractProjection.artifact.blockers.map((item) => ({
+      cellRef: item.obligationRef,
+      blockerCategory: item.category,
+      missingEvidenceRefs: [...item.exactMissingEvidenceRefs].sort(compareText),
+    })),
+  ];
+  const reopeningFields = [
+    "cellRef",
+    "predecessorDecisionRef",
+    "decisionType",
+    "expiredEvidenceRefs",
+  ];
+  const reopeningMatches = expectedReopening.filter((expected) =>
+    typedReopening.some((actual) => recordMatches(expected, actual, reopeningFields)),
+  );
+  const representedRevisions = [
+    ...complianceProjections.map(
+      ({ artifact }) => artifact.review.frameworkVersion,
+    ),
+    contractProjection.artifact.register.contentDigest,
+  ];
+  const invariants = [
+    {
+      id: "owner-declared-service-applicability",
+      preserved: applicabilityMatches.length === expectedApplicability.length,
+      expectedRecords: expectedApplicability.length,
+      matchedTypedRecords: applicabilityMatches.length,
+      requiredFields: applicabilityFields,
+      typedFragments: {
+        compliance: complianceApplicability,
+        contract: contractApplicability,
+      },
+    },
+    {
+      id: "requirement-catalog-revision",
+      preserved: representedRevisions.includes(
+        candidateInput.requirementCatalog.revision,
+      ),
+      expectedRevision: candidateInput.requirementCatalog.revision,
+      representedRevisions,
+    },
+    {
+      id: "evidence-expiry",
+      preserved: expiryMatches.length === expectedExpiry.length,
+      expectedRecords: expectedExpiry.length,
+      matchedTypedRecords: expiryMatches.length,
+      requiredFields: expiryFields,
+      typedFragments: typedExpiry,
+    },
+    {
+      id: "predecessor-reopening",
+      preserved: reopeningMatches.length === expectedReopening.length,
+      expectedRecords: expectedReopening.length,
+      matchedTypedRecords: reopeningMatches.length,
+      requiredFields: reopeningFields,
+      typedFragments: typedReopening,
+    },
+  ];
+  const proofValid =
+    expectedApplicability.length === 6 &&
+    complianceOutcomes.length === candidateInput.vendorServices.length &&
+    complianceOutcomes.every((item) => item.valid) &&
+    contractOutcome.valid;
+  const preservesAllInvariants =
+    proofValid && invariants.every((item) => item.preserved);
+  return {
+    proofValid,
+    exactCellRefs: expectedApplicability.map((item) => item.cellRef).sort(compareText),
+    analogueValidation: {
+      complianceProjections: complianceOutcomes,
+      contractProjection: contractOutcome,
+    },
+    projectionAuthority: {
+      safe: false,
+      inventedSemanticFields: [
+        "compliance.requirements[].controlOwnerId",
+        "compliance.findings[].severity",
+        "compliance.findings[].state",
+        ...contractProjection.inventedSemanticFields.map(
+          (path) => `contract.${path}`,
+        ),
+      ],
+    },
     preservesAllInvariants,
-    verdict: !auditValid
-      ? "reaudit-required"
+    verdict: !proofValid
+      ? "composition-proof-invalid"
       : preservesAllInvariants
         ? "reject-candidate"
         : "reject-compliance-plus-contract-composition",
     invariants,
     deletionTarget:
-      "Delete this candidate when the strict Compliance Reviewer and Contract Obligation Tracker composition preserves every listed invariant without an untyped sidecar.",
+      "Delete this candidate when an authority-safe typed composition round-trips every required record without invented or encoded semantics.",
   };
 }
 

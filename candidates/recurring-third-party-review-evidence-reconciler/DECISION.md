@@ -2,7 +2,7 @@
 
 Status: **NEW CLAW proven by a bounded candidate slice; not a catalog contribution**
 
-Confidence: **high (0.96)**
+Confidence: **high (0.98)**
 
 This directory is deliberately candidate-only. It does not add or change a
 catalog entry, contribution record, regression case, Experience case,
@@ -76,9 +76,18 @@ machine result carries each of those authority claims as structural `false`.
 | Business Continuity Program Manager | Adapt | Current/predecessor revision binding, transitive recertification, separately owned remediation, externally approved time-bounded exceptions, and exact blockers (`sources/business-continuity-program-manager/schemas/business-continuity-program.schema.json`; `scripts/business-continuity-program-manager.mjs:467-573`; `scripts/business-continuity-program-manager.test.mjs`). | Its authoritative universe is critical processes, BIAs, dependencies, plans, exercises, and recertifications. Recasting vendor-service requirement cells as processes would lose applicability semantics and import continuity-specific authority. |
 | Supplier Capacity Assurance Manager | Adapt | Caller-supplied time, supplier/site identity, explicit source revisions, freshness windows, exclusion of stale evidence, typed checkpoints, and non-purchasing boundaries (`sources/supplier-capacity-assurance-manager/schemas/supplier-capacity-assurance.schema.json`; `scripts/supplier-capacity-assurance-manager.mjs:180-280,690-735`; `scripts/supplier-capacity-assurance-manager.test.mjs`). | Its exact partitions and freshness rules determine eligible quantities and allocation proposals. This candidate has no quantities, arithmetic, allocation, scoring, sourcing, or purchasing state. |
 
-The actual accepted analogue fixtures and semantic validators are executed by
-the candidate test, not inferred from catalog prose. They remain valid while
-the composition test reports all four candidate invariants missing:
+The strongest-composition adapter projects the exact six-cell fixture into
+actual typed Compliance Reviewer and Contract Obligation Tracker fields. It
+builds two service-scoped Compliance assessments and one resealed six-obligation
+Contract artifact, then executes both current schemas and both real semantic
+validators. Every projection validates, but typed round-trip extraction still
+cannot produce one complete owner-declared cell record, the content-bound
+catalog revision, an effective evidence-expiry record, or a predecessor-linked
+reopening record. The Contract projection also requires invented agreement,
+clause, and due-date semantics that the candidate input does not own. The
+verdict is therefore derived from executed typed outputs and exact field
+comparisons, not editable capability labels. The four invariants the composition
+does not preserve are:
 
 1. owner-declared service applicability;
 2. requirement catalog and cell-index revisions;
@@ -143,16 +152,15 @@ The candidate contains:
 - `fixtures/public-trust.test.json`: an explicitly injected,
   owner-and-key-scoped Ed25519 public key with no private key or production
   trust default;
-- `fixtures/compliance-contract-composition-audit.json`: a digest-pinned
-  capability audit over the exact Compliance Reviewer and Contract Obligation
-  Tracker schemas and validator sources; source drift forces re-audit rather
-  than silently preserving the verdict;
+- `schemas/public-trust.schema.json`: a closed root and signer contract that
+  rejects unknown fields before trust resolution;
 - `recurring-third-party-review-evidence-reconciler.mjs`: strict schema
   validation, canonical catalog/cell/exception digests, full-input signature
   verification, post-close and caller-time-bounded source issuance, exact
   identity and coverage checks, deterministic freshness, predecessor reopening,
-  typed-human authority validation, composition falsification, a pure derived
-  result, and Markdown proof rendering;
+  typed-human authority validation, recursive private-key rejection, total
+  context handling, executed strongest-composition falsification, a pure
+  derived result, and Markdown proof rendering;
 - `expected/blocked-handoff.expected.json`: the accepted deterministic result
   summary;
 - `expected/prohibited-score.failure.json`: the structured strict-schema
@@ -161,8 +169,8 @@ The candidate contains:
 - `recurring-third-party-review-evidence-reconciler.test.mjs`: accepted,
   structured-failure, tamper, identity, authority, chronology, applicability,
   exact coverage, expiry/reopening, source-envelope issuance, public trust,
-  subprocessor, remediation, exception, risk-attempt, no-action,
-  actual-analogue, composition-deletion, and CLI proof.
+  hostile serialization, subprocessor, remediation, exception, risk-attempt,
+  no-action, actual-analogue, executable composition-deletion, and CLI proof.
 
 The public signature covers every result-driving field in the candidate input.
 The private fixture key was discarded and is not stored. The public trust entry
@@ -183,11 +191,11 @@ node --test `
 
 Candidate-only result:
 
-- **28 passed, 0 failed, 0 skipped**.
+- **30 passed, 0 failed, 0 skipped**.
 
 Candidate plus focused analogue result:
 
-- **276 passed, 0 failed, 0 skipped**.
+- **278 passed, 0 failed, 0 skipped**.
 
 ## Verdict
 
@@ -199,7 +207,13 @@ Manager provide useful lifecycle and freshness patterns but have different
 authoritative universes and decisions. The strengthened source-envelope proof
 also requires the program owner to sign no earlier than cycle close and no later
 than caller-controlled `asOf`, while every signed evidence observation remains
-bounded at or before issuance.
+bounded at or before issuance. The executed strongest-composition adapter shows
+that even valid service-scoped Compliance assessments plus a valid resealed
+six-obligation Contract artifact cannot round-trip the complete
+service-applicability record, catalog revision, evidence-expiry rule and state,
+or predecessor-linked reopening. The Contract projection additionally depends
+on proof-only invented agreement and clause facts, so it is not an
+authority-safe substitute.
 
 The distinct repeatable job is:
 
