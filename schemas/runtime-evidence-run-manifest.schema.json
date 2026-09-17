@@ -60,7 +60,7 @@
       "properties": {
         "concurrency": { "type": "integer", "minimum": 1, "maximum": 16 },
         "trialTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 1800000 },
-        "cleanupTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 300000 },
+        "cleanupTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 900000 },
         "infrastructureRetries": { "type": "integer", "minimum": 0, "maximum": 2 },
         "maxInputTokensPerTrial": { "type": "integer", "minimum": 1 },
         "maxOutputTokensPerTrial": { "type": "integer", "minimum": 1 },

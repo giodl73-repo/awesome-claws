@@ -11,6 +11,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { createServer } from "node:net";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import {
@@ -491,6 +492,155 @@ function declaredModelPairs(value, pairs = []) {
   return pairs;
 }
 
+function enablesBrowserTool(value) {
+  if (!isPlainObject(value)) return false;
+  return ["allow", "alsoAllow"].some(
+    (key) =>
+      Array.isArray(value[key]) &&
+      value[key].some(
+        (entry) => typeof entry === "string" && entry.trim().toLowerCase() === "browser",
+      ),
+  );
+}
+
+function modelSelectionIsBound(value, expectedRef, { required = false } = {}) {
+  if (typeof value === "string") return value === expectedRef;
+  if (!isPlainObject(value)) return value === undefined && !required;
+  return (
+    value.primary === expectedRef &&
+    Array.isArray(value.fallbacks) &&
+    value.fallbacks.length === 0
+  );
+}
+
+function modelMapIsBound(value, expectedRef) {
+  if (value === undefined) return true;
+  if (!isPlainObject(value) || Object.keys(value).some((key) => key !== expectedRef)) {
+    return false;
+  }
+  return Object.values(value).every(
+    (entry) => isPlainObject(entry) && !Object.hasOwn(entry, "agentRuntime"),
+  );
+}
+
+function agentModelsAreBound(value, expectedRef) {
+  if (value === undefined) return true;
+  const agents = Array.isArray(value)
+    ? value
+    : isPlainObject(value)
+      ? Object.values(value)
+      : null;
+  if (!agents) return false;
+  return agents.every(
+    (agent) =>
+      isPlainObject(agent) &&
+      modelSelectionIsBound(agent.model, expectedRef) &&
+      modelMapIsBound(agent.models, expectedRef) &&
+      !enablesBrowserTool(agent.tools),
+  );
+}
+
+function modelSelectorTreeIsBound(value, expectedRef) {
+  if (typeof value === "string") return value === expectedRef;
+  if (Array.isArray(value)) {
+    return value.every((entry) => modelSelectorTreeIsBound(entry, expectedRef));
+  }
+  if (!isPlainObject(value)) return value === undefined;
+  if (Object.hasOwn(value, "primary") || Object.hasOwn(value, "fallbacks")) {
+    return modelSelectionIsBound(value, expectedRef);
+  }
+  return Object.values(value).every((entry) =>
+    modelSelectorTreeIsBound(entry, expectedRef),
+  );
+}
+
+function modelContextsAreBound(value, expectedRef) {
+  if (Array.isArray(value)) {
+    return value.every((entry) => modelContextsAreBound(entry, expectedRef));
+  }
+  if (!isPlainObject(value)) return true;
+  return Object.entries(value).every(([key, child]) => {
+    const normalized = key.toLowerCase();
+    if (normalized === "runtime" || normalized === "agentruntime") {
+      return false;
+    }
+    if (key.includes("/") && key !== expectedRef) {
+      return false;
+    }
+    if (
+      normalized === "model" ||
+      normalized.endsWith("model") ||
+      normalized === "mediamodels"
+    ) {
+      return modelSelectorTreeIsBound(child, expectedRef);
+    }
+    if (normalized === "modelpolicy") {
+      return (
+        isPlainObject(child) &&
+        Array.isArray(child.allow) &&
+        child.allow.length === 1 &&
+        child.allow[0] === expectedRef
+      );
+    }
+    return modelContextsAreBound(child, expectedRef);
+  });
+}
+
+function hasNestedConfigKey(value, expectedKey) {
+  if (Array.isArray(value)) {
+    return value.some((entry) => hasNestedConfigKey(entry, expectedKey));
+  }
+  if (!isPlainObject(value)) return false;
+  return Object.entries(value).some(
+    ([key, child]) =>
+      key.toLowerCase() === expectedKey ||
+      hasNestedConfigKey(child, expectedKey),
+  );
+}
+
+function hasPluginAutoEnableInput(config, expectedProvider, expectedModel) {
+  const expectedRef = `${expectedProvider}/${expectedModel}`;
+  const rootKeys = Object.keys(config);
+  const allowedRootKeys = new Set([
+    "agents",
+    "memory",
+    "meta",
+    "models",
+    "plugins",
+    "talk",
+    "tools",
+  ]);
+  const providers = config.models?.providers;
+  const providerConfig = isPlainObject(providers) ? providers[expectedProvider] : undefined;
+  const talk = config.talk;
+  if (
+    rootKeys.some((key) => !allowedRootKeys.has(key)) ||
+    Object.hasOwn(config, "browser") ||
+    Object.hasOwn(config, "acp") ||
+    Object.hasOwn(config, "channels") ||
+    enablesBrowserTool(config.tools) ||
+    Object.hasOwn(config.tools ?? {}, "web") ||
+    !isPlainObject(providers) ||
+    Object.keys(providers).length !== 1 ||
+    !isPlainObject(providerConfig) ||
+    Object.keys(providerConfig).some((key) => key !== "params") ||
+    !modelSelectionIsBound(config.agents?.defaults?.model, expectedRef, {
+      required: true,
+    }) ||
+    !modelMapIsBound(config.agents?.defaults?.models, expectedRef) ||
+    !agentModelsAreBound(config.agents?.entries, expectedRef) ||
+    !agentModelsAreBound(config.agents?.list, expectedRef) ||
+    hasNestedConfigKey(config.agents, "tts") ||
+    !modelContextsAreBound(config, expectedRef) ||
+    (talk !== undefined &&
+      (!isPlainObject(talk) ||
+        Object.keys(talk).some((key) => key !== "agentId")))
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export async function inspectLiveConfig(path, { provider, model }) {
   let parsed;
   try {
@@ -511,10 +661,145 @@ export async function inspectLiveConfig(path, { provider, model }) {
       `OpenClaw config declares a different provider/model than ${provider}/${model}.`,
     );
   }
+  const pluginKeys = isPlainObject(parsed.plugins)
+    ? Object.keys(parsed.plugins).sort()
+    : [];
+  const slots = parsed.plugins?.slots;
+  if (
+    provider !== "github-copilot" ||
+    model !== "gpt-5.6-sol" ||
+    parsed.plugins?.enabled !== true ||
+    !Array.isArray(parsed.plugins.allow) ||
+    parsed.plugins.allow.length !== 1 ||
+    parsed.plugins.allow[0] !== "github-copilot" ||
+    pluginKeys.length !== 3 ||
+    pluginKeys[0] !== "allow" ||
+    pluginKeys[1] !== "enabled" ||
+    pluginKeys[2] !== "slots" ||
+    !isPlainObject(slots) ||
+    Object.keys(slots).length !== 1 ||
+    slots.memory !== "none" ||
+    hasPluginAutoEnableInput(parsed, provider, model)
+  ) {
+    throw new Error(
+      "OpenClaw live config must contain only the bundled github-copilot plugin allowlist and no plugin auto-enable inputs.",
+    );
+  }
   return {
     configDigest: digest(credentialStripped(parsed)),
     configurationAssertion: pairs.length > 0 ? "matched" : "structurally-unavailable",
   };
+}
+
+export function assertTrustedPluginInventory(payload) {
+  if (!isPlainObject(payload) || !Array.isArray(payload.plugins)) {
+    throw new Error("OpenClaw effective plugin inventory is unavailable.");
+  }
+  const plugins = payload.plugins.filter(isPlainObject);
+  const provider = plugins.filter((plugin) => plugin.id === "github-copilot");
+  const untrusted = plugins.filter((plugin) => plugin.origin !== "bundled");
+  if (
+    plugins.length !== payload.plugins.length ||
+    provider.length !== 1 ||
+    provider[0].origin !== "bundled" ||
+    provider[0].enabled !== true ||
+    provider[0].status !== "loaded" ||
+    untrusted.length > 0
+  ) {
+    const summary = plugins
+      .map((plugin) => ({
+        id: typeof plugin.id === "string" ? plugin.id : null,
+        origin: typeof plugin.origin === "string" ? plugin.origin : null,
+        enabled: plugin.enabled === true,
+        status: typeof plugin.status === "string" ? plugin.status : null,
+      }))
+      .sort((left, right) => String(left.id).localeCompare(String(right.id)));
+    throw new Error(
+      `OpenClaw plugin discovery must contain a loaded bundled github-copilot provider and no non-bundled plugins; inventory=${canonicalJson(summary)}.`,
+    );
+  }
+  return provider[0];
+}
+
+export function assertEffectivePluginDoctor(payload) {
+  if (
+    !isPlainObject(payload) ||
+    payload.ok !== true ||
+    !Array.isArray(payload.pluginErrors) ||
+    !Array.isArray(payload.diagnostics) ||
+    !Array.isArray(payload.sourceShadowing) ||
+    !Array.isArray(payload.configurationWarnings) ||
+    payload.pluginErrors.length > 0 ||
+    payload.diagnostics.length > 0 ||
+    payload.sourceShadowing.length > 0 ||
+    payload.configurationWarnings.length > 0
+  ) {
+    throw new Error(
+      "OpenClaw effective-only plugin doctor must report a healthy runtime.",
+    );
+  }
+  return payload;
+}
+
+function stripCleanupRuntimeSelectors(value) {
+  if (Array.isArray(value)) {
+    return value.map((entry) => stripCleanupRuntimeSelectors(entry));
+  }
+  if (!isPlainObject(value)) {
+    return value;
+  }
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([key]) => {
+        const normalized = key.toLowerCase();
+        return (
+          !normalized.includes("model") &&
+          !normalized.includes("provider") &&
+          !normalized.includes("thinking")
+        );
+      })
+      .map(([key, entry]) => [key, stripCleanupRuntimeSelectors(entry)]),
+  );
+}
+
+export async function prepareCleanupConfig(configPath) {
+  const parsed = JSON.parse(await readFile(configPath, "utf8"));
+  const agents = isPlainObject(parsed.agents)
+    ? stripCleanupRuntimeSelectors(parsed.agents)
+    : undefined;
+  const cleanupConfig = {
+    ...(agents ? { agents } : {}),
+    ...(isPlainObject(parsed.memory)
+      ? { memory: stripCleanupRuntimeSelectors(parsed.memory) }
+      : {}),
+    ...(isPlainObject(parsed.meta)
+      ? { meta: stripCleanupRuntimeSelectors(parsed.meta) }
+      : {}),
+    plugins: {
+      enabled: false,
+      slots: { memory: "none" },
+    },
+    ...(isPlainObject(parsed.tools)
+      ? { tools: stripCleanupRuntimeSelectors(parsed.tools) }
+      : {}),
+  };
+  await writeFile(configPath, `${JSON.stringify(cleanupConfig, null, 2)}\n`);
+}
+
+export function cleanupChildEnv(env, provider) {
+  const prefixes = providerEnvPrefixes(provider);
+  const cleanupEnv = { ...env };
+  for (const key of Object.keys(cleanupEnv)) {
+    const normalizedKey = key.toUpperCase();
+    if (prefixes.some((prefix) => normalizedKey.startsWith(prefix))) {
+      delete cleanupEnv[key];
+    }
+  }
+  const securityContext = CHILD_ENV_SENSITIVE_VALUES.get(env);
+  if (securityContext) {
+    CHILD_ENV_SENSITIVE_VALUES.set(cleanupEnv, securityContext);
+  }
+  return cleanupEnv;
 }
 
 function expectedOutcome(scenarioType) {
@@ -684,7 +969,7 @@ export function preflightBudgets({
     limits.trialTimeoutMs > 1_800_000 ||
     !Number.isInteger(limits.cleanupTimeoutMs) ||
     limits.cleanupTimeoutMs < 1000 ||
-    limits.cleanupTimeoutMs > 300_000 ||
+    limits.cleanupTimeoutMs > 900_000 ||
     !Number.isInteger(limits.infrastructureRetries) ||
     limits.infrastructureRetries < 0 ||
     limits.infrastructureRetries > 2
@@ -1455,6 +1740,7 @@ export function controlledChildEnv({
   configPath,
   honeytoken,
   provider,
+  nodeCompileCache = join(temporary, "node-compile-cache"),
   sourceEnv = process.env,
   sensitiveValues = new Set(),
 }) {
@@ -1500,6 +1786,7 @@ export function controlledChildEnv({
     OPENCLAW_DEBUG_MODEL_TRANSPORT: "1",
     OPENCLAW_DEBUG_MODEL_PAYLOAD: "off",
     OPENCLAW_DEBUG_SSE: "events",
+    NODE_COMPILE_CACHE: nodeCompileCache,
     RUNTIME_SOAK_DECOY_SECRET: honeytoken,
     TEMP: temporary,
     TMP: temporary,
@@ -1580,6 +1867,105 @@ async function terminateChild(child) {
       resolvePromise();
     });
   });
+}
+
+async function reserveLoopbackPort() {
+  const server = createServer();
+  await new Promise((resolvePromise, rejectPromise) => {
+    server.once("error", rejectPromise);
+    server.listen(0, "127.0.0.1", resolvePromise);
+  });
+  const address = server.address();
+  await new Promise((resolvePromise, rejectPromise) => {
+    server.close((error) => (error ? rejectPromise(error) : resolvePromise()));
+  });
+  if (!address || typeof address === "string") {
+    throw new Error("Could not reserve an isolated Gateway port.");
+  }
+  return address.port;
+}
+
+export function startOpenClawGateway(entry, env, cwd) {
+  const { executable, commandArgs } = executableCommand(
+    entry,
+    [
+      "gateway",
+      "run",
+      "--allow-unconfigured",
+      "--bind",
+      "loopback",
+      "--auth",
+      "token",
+      "--ws-log",
+      "compact",
+    ],
+    false,
+  );
+  const child = spawn(executable, commandArgs, {
+    cwd,
+    env,
+    windowsHide: true,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  let output = "";
+  let ready = false;
+  let resolveReady;
+  let rejectReady;
+  const readyPromise = new Promise((resolvePromise, rejectPromise) => {
+    resolveReady = resolvePromise;
+    rejectReady = rejectPromise;
+  });
+  readyPromise.catch(() => {});
+  const inspectOutput = (chunk) => {
+    output = `${output}${String(chunk)}`.slice(-256 * 1024);
+    if (!ready && /\[gateway\]\s+ready\b/u.test(output)) {
+      ready = true;
+      resolveReady();
+    }
+  };
+  child.stdout.on("data", inspectOutput);
+  child.stderr.on("data", inspectOutput);
+  child.once("error", (error) => {
+    if (!ready) rejectReady(error);
+  });
+  child.once("close", (code) => {
+    if (!ready) {
+      rejectReady(
+        new Error(
+          `OpenClaw Gateway exited before readiness (${code}): ${boundedProcessDiagnostic(
+            output,
+          )}`,
+        ),
+      );
+    }
+  });
+  return {
+    child,
+    async ready(timeoutMs) {
+      let timeout;
+      try {
+        await Promise.race([
+          readyPromise,
+          new Promise((_, rejectPromise) => {
+            timeout = setTimeout(
+              () =>
+                rejectPromise(
+                  new Error(
+                    `OpenClaw Gateway readiness timed out: ${boundedProcessDiagnostic(
+                      output,
+                    )}`,
+                  ),
+                ),
+              timeoutMs,
+            );
+          }),
+        ]);
+      } finally {
+        clearTimeout(timeout);
+      }
+    },
+    stop: () => terminateChild(child),
+  };
 }
 
 export async function runOpenClawJson(entry, args, env, cwd, timeoutMs, label) {
@@ -1735,6 +2121,7 @@ export async function validateOpenClawCliSurface({
     temporary,
     configPath,
     honeytoken: `SOAK_SECRET_${randomBytes(24).toString("hex")}`,
+    nodeCompileCache: join(proofRoot, "node-compile-cache"),
   });
   const checks = [
     {
@@ -2041,6 +2428,12 @@ function assertRemovePreview(payload) {
   return plan;
 }
 
+export function isRetryableMonitorCleanupFailure(error) {
+  return /\bmonitor_cleanup_failed\b/u.test(
+    error instanceof Error ? error.message : String(error),
+  );
+}
+
 async function liveAttempt({
   contract,
   scenario,
@@ -2090,6 +2483,23 @@ async function liveAttempt({
   ]);
   const configPath = join(state, "openclaw.json");
   await copyFile(live.openclawConfig, configPath);
+  const attemptConfigIdentity = await inspectLiveConfig(configPath, {
+    provider: manifest.identities.model.provider,
+    model: manifest.identities.model.model,
+  });
+  if (
+    attemptConfigIdentity.configDigest !== manifest.identities.model.configDigest ||
+    attemptConfigIdentity.configurationAssertion !==
+      manifest.identities.model.configurationAssertion
+  ) {
+    throw Object.assign(
+      new Error("Attempt OpenClaw config does not match the manifest-bound digest."),
+      { code: "live-configuration" },
+    );
+  }
+  const gatewayPort = await reserveLoopbackPort();
+  const gatewayToken = `runtime-soak-gateway-${randomBytes(24).toString("hex")}`;
+  sensitiveValues.add(gatewayToken);
   const env = controlledChildEnv({
     attemptRoot,
     state,
@@ -2098,8 +2508,11 @@ async function liveAttempt({
     configPath,
     honeytoken,
     provider: manifest.identities.model.provider,
+    nodeCompileCache: join(dirname(dirname(attemptRoot)), "node-compile-cache"),
     sensitiveValues,
   });
+  env.OPENCLAW_GATEWAY_PORT = String(gatewayPort);
+  env.OPENCLAW_GATEWAY_TOKEN = gatewayToken;
   const securityContext = CHILD_ENV_SENSITIVE_VALUES.get(env);
   const source = join(targetRoot, "claws", contract.id);
   const userMarker = join(home, "runtime-soak-user-owned.marker");
@@ -2108,6 +2521,7 @@ async function liveAttempt({
   const userMarkerDigest = digest(userMarkerContent);
   let workspace = null;
   let installed = false;
+  let gateway = null;
   let returnedAttempt = null;
   let operationError = null;
   const providerRecords = [];
@@ -2186,6 +2600,30 @@ async function liveAttempt({
         { code: "openclaw-add-result" },
       );
     }
+    await inspectLiveConfig(configPath, {
+      provider: manifest.identities.model.provider,
+      model: manifest.identities.model.model,
+    });
+    const plugins = await runOpenClawJson(
+      live.openclawEntry,
+      ["plugins", "list"],
+      env,
+      attemptRoot,
+      remaining(),
+      `${contract.id} effective plugin inventory`,
+    );
+    providerRecords.push(plugins.providerRecord);
+    assertTrustedPluginInventory(plugins.payload);
+    const pluginDoctor = await runOpenClawJson(
+      live.openclawEntry,
+      ["plugins", "doctor"],
+      env,
+      attemptRoot,
+      remaining(),
+      `${contract.id} effective plugin doctor`,
+    );
+    providerRecords.push(pluginDoctor.providerRecord);
+    assertEffectivePluginDoctor(pluginDoctor.payload);
     workspace = added.payload?.agent?.workspace;
     if (
       typeof workspace !== "string" ||
@@ -2230,6 +2668,7 @@ async function liveAttempt({
       };
       return returnedAttempt;
     }
+    gateway = startOpenClawGateway(live.openclawEntry, env, attemptRoot);
     const prompt = scenarioPrompt(contract, scenario, trial.artifacts);
     const turn = await runOpenClawJson(
       live.openclawEntry,
@@ -2365,38 +2804,85 @@ async function liveAttempt({
       const cleanupDeadline = Date.now() + cleanupTimeoutMs;
       const cleanupRemaining = () => Math.max(1, cleanupDeadline - Date.now());
       try {
-        const preview = await runOpenClawJson(
-          live.openclawEntry,
-          ["claws", "remove", contract.id, "--dry-run", "--remove-unused"],
+        if (gateway) {
+          await gateway.stop();
+          gateway = null;
+        }
+        await prepareCleanupConfig(configPath);
+        const cleanupEnv = cleanupChildEnv(
           env,
-          attemptRoot,
-          cleanupRemaining(),
-          `${contract.id} remove preview`,
+          manifest.identities.model.provider,
         );
-        const plan = assertRemovePreview(preview.payload);
-        const removed = await runOpenClawJson(
+        gateway = startOpenClawGateway(
           live.openclawEntry,
-          [
-            "claws",
-            "remove",
-            contract.id,
-            "--yes",
-            "--remove-unused",
-            "--plan-integrity",
-            plan.planIntegrity,
-          ],
-          env,
+          cleanupEnv,
+          attemptRoot,
+        );
+        await gateway.ready(cleanupRemaining());
+        let removalCompleted = false;
+        for (let cleanupAttempt = 1; cleanupAttempt <= 2; cleanupAttempt += 1) {
+          try {
+            const preview = await runOpenClawJson(
+              live.openclawEntry,
+              ["claws", "remove", contract.id, "--dry-run", "--remove-unused"],
+              cleanupEnv,
+              attemptRoot,
+              cleanupRemaining(),
+              `${contract.id} remove preview`,
+            );
+            const plan = assertRemovePreview(preview.payload);
+            const removed = await runOpenClawJson(
+              live.openclawEntry,
+              [
+                "claws",
+                "remove",
+                contract.id,
+                "--yes",
+                "--remove-unused",
+                "--plan-integrity",
+                plan.planIntegrity,
+              ],
+              cleanupEnv,
+              attemptRoot,
+              cleanupRemaining(),
+              `${contract.id} remove`,
+            );
+            if (
+              removed.payload?.schemaVersion !== "openclaw.clawRemoveResult.v1" ||
+              removed.payload?.status !== "complete" ||
+              removed.payload?.agentId !== contract.id ||
+              typeof removed.payload?.agentRemoved !== "boolean"
+            ) {
+              throw new Error("OpenClaw remove did not confirm agent removal.");
+            }
+            removalCompleted = true;
+            break;
+          } catch (error) {
+            if (
+              cleanupAttempt === 1 &&
+              isRetryableMonitorCleanupFailure(error)
+            ) {
+              continue;
+            }
+            throw error;
+          }
+        }
+        if (!removalCompleted) {
+          throw new Error("OpenClaw removal did not reach a complete state.");
+        }
+        const finalStatus = await runOpenClawJson(
+          live.openclawEntry,
+          ["claws", "status"],
+          cleanupEnv,
           attemptRoot,
           cleanupRemaining(),
-          `${contract.id} remove`,
+          `${contract.id} final status`,
         );
         if (
-          removed.payload?.schemaVersion !== "openclaw.clawRemoveResult.v1" ||
-          removed.payload?.status !== "complete" ||
-          removed.payload?.agentId !== contract.id ||
-          removed.payload?.agentRemoved !== true
+          finalStatus.payload?.schemaVersion !== "openclaw.clawStatus.v1" ||
+          finalStatus.payload?.summary?.claws !== 0
         ) {
-          throw new Error("OpenClaw remove did not confirm agent removal.");
+          throw new Error("OpenClaw cleanup left installed Claw state.");
         }
         removalSafe = true;
       } catch (error) {
@@ -2414,6 +2900,9 @@ async function liveAttempt({
         );
         removalSafe = false;
       }
+    }
+    if (gateway) {
+      await gateway.stop();
     }
     let userMarkerUnchanged = false;
     try {
@@ -2460,6 +2949,7 @@ async function liveAttempt({
       );
     } else if (operationError) {
       operationError.cleanupProvenSafe = true;
+      operationError.cleanupWasRequired = installed;
     }
   }
 }
@@ -2904,7 +3394,11 @@ async function executeTrial({
           durableArtifactObserved: false,
           safeCleanup: error?.cleanupProvenSafe === true,
           cleanupStatus:
-            error?.cleanupProvenSafe === true ? "not-required" : "failed",
+            error?.cleanupProvenSafe === true
+              ? error?.cleanupWasRequired === true
+                ? "proven-safe"
+                : "not-required"
+              : "failed",
           userMarkerUnchanged: error?.cleanupProvenSafe === true,
         },
       };

@@ -205,12 +205,55 @@ if removal or the synthetic marker check cannot be proven safe, no retry occurs
 and remaining trials for that Claw are halted. Timed-out children receive
 graceful termination followed by process-tree escalation. Model, safety,
 artifact, harness, and cleanup failures do not retry.
+The cleanup timeout remains bounded at 15 minutes because the exact Windows
+runtime can require several cold CLI starts for Gateway readiness, removal
+preview/apply, and the mandatory final zero-Claw status proof.
 
 Live execution rejects a dirty harness. The supplied OpenClaw config is parsed
-only for preflight, credential-valued fields are stripped before its digest is
-computed, and only that safe digest plus a provider/model structural-match
-status is persisted. The declared provider/model must match whenever the config
-contains a recognizable pair; raw config is never written to evidence.
+only for preflight. Its `plugins` object may contain only
+`enabled: true` and the exact allowlist `["github-copilot"]`; deny lists, entry
+overrides, custom load paths, and every other plugin option are rejected except
+the exact memory-slot disablement `slots.memory: "none"`.
+Channel, browser, ACP, and browser-tool activation inputs are also forbidden,
+including per-agent tool overrides. Provider configuration and every default or
+per-agent model reference must bind exclusively to
+`github-copilot/gpt-5.6-sol`, with an explicit default and no fallback chain;
+fallback providers, embedded agent runtimes, web/voice providers, worker
+providers, and unknown root config surfaces are rejected. The same policy is rechecked after Claw installation and before the model turn.
+This limits loading to OpenClaw's bundled Copilot provider without enabling
+another configured plugin surface. The harness then queries OpenClaw's public
+plugin discovery snapshot, requires the selected provider to be the loaded
+bundled `github-copilot` plugin, and rejects every non-bundled discovered
+plugin. Because the snapshot's enabled state describes the installed index
+rather than the effective runtime set, the harness separately runs the public
+effective-only plugin doctor and requires a healthy result before dispatch.
+
+Every copied attempt config is rehashed and compared with the manifest-bound
+config identity before any OpenClaw command. All model-bearing config contexts,
+including secondary/default/per-agent selectors, must remain bound to the exact
+selected provider/model.
+Credential-valued fields are stripped before the config digest is computed, and
+only that safe digest plus a provider/model structural-match status is
+persisted. The declared provider/model must match whenever the config contains
+a recognizable pair; raw config is never written to evidence.
+
+Each live trial reserves a loopback-only Gateway port and an ephemeral synthetic
+Gateway token inside its isolated child environment. The Gateway starts after
+the Claw is installed, overlaps the model turn, and must report ready before
+cleanup. This supports the public OpenClaw removal contract's monitor drainage
+without sharing state or credentials across trials. The harness stops the
+Gateway after removal. When OpenClaw returns the documented
+`monitor_cleanup_failed` convergence fence, the harness performs one fresh
+preview-and-apply recovery pass inside the same cleanup deadline. No other
+cleanup failure is retried. Startup, drainage, convergence, or shutdown failures
+remain cleanup infrastructure failures and cannot become passing-shaped
+results.
+
+Cleanup never reuses the model-serving Gateway. The harness stops it, removes
+provider credentials and recursively strips model/provider/thinking selectors
+from every retained child-config subtree, sets plugins globally disabled with
+memory disabled, and starts a separate isolated cleanup Gateway. A rejected
+plugin inventory therefore cannot execute during recovery.
 
 Drift classification compares semantic signatures (outcome, gates, required
 artifact validation, cleanup, and cap state), not response or artifact bytes,
