@@ -1,0 +1,66 @@
+{
+  "description": "Both complete two-source partitions pass, but their composition requires splitting one invoice line across two PO lines, which the owner-approved three-way policy forbids.",
+  "purchaseOrderLines": [
+    {
+      "id": "po-line-a",
+      "quantity": "4",
+      "extendedMinorUnits": "400"
+    },
+    {
+      "id": "po-line-b",
+      "quantity": "6",
+      "extendedMinorUnits": "600"
+    }
+  ],
+  "receiptLines": [
+    {
+      "id": "receipt-line-a",
+      "quantity": "4"
+    },
+    {
+      "id": "receipt-line-b",
+      "quantity": "6"
+    }
+  ],
+  "invoiceLines": [
+    {
+      "id": "invoice-line-aggregate",
+      "quantity": "10",
+      "lineMinorUnits": "1000"
+    }
+  ],
+  "poReceiptGroups": [
+    {
+      "poLineRefs": [
+        "po-line-a"
+      ],
+      "receiptLineRefs": [
+        "receipt-line-a"
+      ]
+    },
+    {
+      "poLineRefs": [
+        "po-line-b"
+      ],
+      "receiptLineRefs": [
+        "receipt-line-b"
+      ]
+    }
+  ],
+  "poInvoiceGroups": [
+    {
+      "poLineRefs": [
+        "po-line-a",
+        "po-line-b"
+      ],
+      "invoiceLineRefs": [
+        "invoice-line-aggregate"
+      ]
+    }
+  ],
+  "expected": {
+    "poReceiptAccepted": true,
+    "poInvoiceAccepted": true,
+    "threeWayPartitionAccepted": false
+  }
+}
