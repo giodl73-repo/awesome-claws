@@ -4,54 +4,39 @@
   "additionalProperties": false,
   "required": [
     "schemaVersion",
-    "sourceInputDigest",
-    "requirementCatalogRevision",
-    "cellIndexRevision",
-    "freshnessRuleRevision",
-    "applicabilityRecords",
-    "expiryRecords",
-    "reopeningRecords",
+    "graphId",
+    "validatorArtifactDigest",
+    "sourceArtifacts",
+    "futureArtifacts",
+    "complianceArtifact",
+    "contractArtifact",
+    "execution",
     "authority"
   ],
   "properties": {
     "schemaVersion": {
-      "const": "awesomeClaws.strongestCompositionProof.v1"
+      "const": "awesomeClaws.futureThirdPartyReviewAnalogueGraph.v1"
     },
-    "sourceInputDigest": {
+    "graphId": {
+      "$ref": "#/$defs/id"
+    },
+    "validatorArtifactDigest": {
       "$ref": "#/$defs/digest"
     },
-    "requirementCatalogRevision": {
-      "$ref": "#/$defs/digest"
+    "sourceArtifacts": {
+      "$ref": "#/$defs/sourceArtifacts"
     },
-    "cellIndexRevision": {
-      "$ref": "#/$defs/digest"
+    "futureArtifacts": {
+      "$ref": "#/$defs/sourceArtifacts"
     },
-    "freshnessRuleRevision": {
-      "$ref": "#/$defs/digest"
+    "complianceArtifact": {
+      "$ref": "#/$defs/complianceArtifact"
     },
-    "applicabilityRecords": {
-      "type": "array",
-      "minItems": 6,
-      "maxItems": 6,
-      "items": {
-        "$ref": "#/$defs/applicability"
-      }
+    "contractArtifact": {
+      "$ref": "#/$defs/contractArtifact"
     },
-    "expiryRecords": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 24,
-      "items": {
-        "$ref": "#/$defs/expiry"
-      }
-    },
-    "reopeningRecords": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 6,
-      "items": {
-        "$ref": "#/$defs/reopening"
-      }
+    "execution": {
+      "$ref": "#/$defs/execution"
     },
     "authority": {
       "$ref": "#/$defs/authority"
@@ -76,6 +61,75 @@
       "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/id"
+      }
+    },
+    "sourceArtifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "complianceGraphDigest",
+        "contractGraphDigest"
+      ],
+      "properties": {
+        "complianceGraphDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "contractGraphDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "complianceArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "requirementCatalogRevision",
+        "cellIndexRevision",
+        "freshnessRuleRevision",
+        "applicabilityRecords",
+        "expiryRecords"
+      ],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/id" },
+        "requirementCatalogRevision": { "$ref": "#/$defs/digest" },
+        "cellIndexRevision": { "$ref": "#/$defs/digest" },
+        "freshnessRuleRevision": { "$ref": "#/$defs/digest" },
+        "applicabilityRecords": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": { "$ref": "#/$defs/applicability" }
+        },
+        "expiryRecords": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 24,
+          "items": { "$ref": "#/$defs/expiry" }
+        }
+      }
+    },
+    "contractArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "requirementCatalogRevision",
+        "cellIndexRevision",
+        "freshnessRuleRevision",
+        "reopeningRecords"
+      ],
+      "properties": {
+        "artifactId": { "$ref": "#/$defs/id" },
+        "requirementCatalogRevision": { "$ref": "#/$defs/digest" },
+        "cellIndexRevision": { "$ref": "#/$defs/digest" },
+        "freshnessRuleRevision": { "$ref": "#/$defs/digest" },
+        "reopeningRecords": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": { "$ref": "#/$defs/reopening" }
+        }
       }
     },
     "applicability": {
@@ -130,6 +184,22 @@
         "predecessorDecisionRef": { "$ref": "#/$defs/id" },
         "decisionType": { "const": "evidence-expired-reopened" },
         "expiredEvidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validatorArtifactDigest",
+        "inputGraphDigest",
+        "outputGraphDigest",
+        "executedAt"
+      ],
+      "properties": {
+        "validatorArtifactDigest": { "$ref": "#/$defs/digest" },
+        "inputGraphDigest": { "$ref": "#/$defs/digest" },
+        "outputGraphDigest": { "$ref": "#/$defs/digest" },
+        "executedAt": { "$ref": "#/$defs/timestamp" }
       }
     },
     "authority": {

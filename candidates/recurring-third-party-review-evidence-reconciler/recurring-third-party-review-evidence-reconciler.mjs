@@ -3,8 +3,9 @@ import {
   createPublicKey,
   verify as verifySignature,
 } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { closeSync, openSync, readFileSync, readSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { isProxy } from "node:util/types";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
@@ -23,6 +24,9 @@ export const SLICE_LIMITS = Object.freeze({
   maxArrayItems: 64,
   maxObjectProperties: 128,
   validationContextBytes: 2 * 1024 * 1024,
+  analogueSchemaBytes: 512 * 1024,
+  analogueArtifactBytes: 2 * 1024 * 1024,
+  cliFileBytes: 2 * 1024 * 1024,
 });
 
 const TIMESTAMP_PATTERN =
@@ -69,6 +73,12 @@ const strongestCompositionProofSchema = JSON.parse(
     "utf8",
   ),
 );
+const futureAnalogueValidatorSchema = JSON.parse(
+  readFileSync(
+    new URL("./schemas/future-analogue-validator.schema.json", import.meta.url),
+    "utf8",
+  ),
+);
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateSchema = ajv.compile(schema);
@@ -76,6 +86,9 @@ const validatePublicTrustSchema = ajv.compile(publicTrustSchema);
 const validateSourceReceiptsSchema = ajv.compile(sourceReceiptsSchema);
 const validateStrongestCompositionProofSchema = ajv.compile(
   strongestCompositionProofSchema,
+);
+const validateFutureAnalogueValidatorSchema = ajv.compile(
+  futureAnalogueValidatorSchema,
 );
 
 function isRecord(value) {
@@ -109,6 +122,7 @@ function normalizeJsonValue(value, limits) {
       return { value: node, error: null };
     }
     if (typeof node !== "object") return fail("non-json-value");
+    if (isProxy(node)) return fail("proxy-object");
     if (active.has(node)) return fail("cycle");
     active.add(node);
     let descriptors;
@@ -453,6 +467,20 @@ function hasCrossOwnerKeyReuse(trustStore) {
   }
   return [...ownersByKeyFingerprint.values()].some(
     (owners) => owners.size > 1,
+  );
+}
+
+function trustedSignerActiveAt(trustStore, authority, instant) {
+  const matching = records(trustStore?.signers).filter(
+    (signer) =>
+      signer.ownerRef === authority?.ownerRef &&
+      signer.signingKeyId === authority?.signingKeyId &&
+      signer.algorithm === "Ed25519",
+  );
+  return (
+    matching.length === 1 &&
+    timestamp(matching[0].validFrom) <= instant &&
+    timestamp(matching[0].validUntil) >= instant
   );
 }
 
@@ -1927,19 +1955,6 @@ function resultFor(input, findings, asOf) {
 }
 
 export function evaluateRecurringThirdPartyReview(input, options = {}) {
-  if (!isRecord(input)) {
-    return {
-      valid: false,
-      findings: [
-        finding(
-          "invalid-json-input",
-          "$",
-          "The candidate input must be a bounded JSON object.",
-        ),
-      ],
-      result: null,
-    };
-  }
   const normalizedInput = normalizeJsonValue(input, {
     ...SLICE_LIMITS,
     maxBytes: SLICE_LIMITS.inputBytes,
@@ -1960,6 +1975,19 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
     };
   }
   const candidate = normalizedInput.value;
+  if (!isRecord(candidate)) {
+    return {
+      valid: false,
+      findings: [
+        finding(
+          "invalid-json-input",
+          "$",
+          "The candidate input must be a bounded JSON object.",
+        ),
+      ],
+      result: null,
+    };
+  }
   if (containsPrivateKeyMaterial(candidate)) {
     return {
       valid: false,
@@ -1973,8 +2001,7 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
       result: null,
     };
   }
-  const rawContext = isRecord(options) ? options : {};
-  const normalizedContext = normalizeJsonValue(rawContext, {
+  const normalizedContext = normalizeJsonValue(options ?? {}, {
     ...SLICE_LIMITS,
     maxBytes: SLICE_LIMITS.validationContextBytes,
   });
@@ -1992,6 +2019,19 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
     };
   }
   const context = normalizedContext.value;
+  if (!isRecord(context)) {
+    return {
+      valid: false,
+      findings: [
+        finding(
+          "invalid-validation-context",
+          "$.validationContext",
+          "The validation context must be a bounded JSON object.",
+        ),
+      ],
+      result: null,
+    };
+  }
   const findings = [];
   const nonTrustContext = { ...context };
   delete nonTrustContext.publicTrust;
@@ -2062,7 +2102,10 @@ function validationOutcome(validate, semanticValidator, artifact, context) {
     keyword: error.keyword,
     params: error.params,
   }));
-  const semanticFindings = semanticValidator(artifact, context);
+  const semanticFindings = semanticValidator(
+    structuredClone(artifact),
+    structuredClone(context),
+  );
   return {
     valid: schemaValid && semanticFindings.length === 0,
     schemaValid,
@@ -2583,30 +2626,244 @@ function expectedCompositionFacts(input, asOf) {
   };
 }
 
-export function syntheticCompositionPayload(composition) {
-  const value = structuredClone(composition);
+function executeFutureAnalogueValidatorArtifact({
+  graph,
+  validatorArtifact,
+  sourceArtifacts,
+  expected,
+}) {
+  const applicabilityFields = [
+    "cellRef",
+    "vendorServiceRef",
+    "requirementRef",
+    "ownerRef",
+    "declarationEvidenceRef",
+    "cellDigest",
+  ];
+  const expiryFields = [
+    "evidenceRef",
+    "validUntil",
+    "maxAgeDays",
+    "effectiveExpiresAt",
+    "state",
+  ];
+  const reopeningFields = [
+    "cellRef",
+    "predecessorDecisionRef",
+    "decisionType",
+    "expiredEvidenceRefs",
+  ];
+  const output = futureAnalogueOutputRecord(graph);
+  const futureArtifacts = {
+    complianceGraphDigest: sha256Digest(graph.complianceArtifact),
+    contractGraphDigest: sha256Digest(graph.contractArtifact),
+  };
+  if (
+    !validateFutureAnalogueValidatorSchema(validatorArtifact) ||
+    validatorArtifact.graphSchemaDigest !==
+      sha256Digest(strongestCompositionProofSchema) ||
+    graph.validatorArtifactDigest !== sha256Digest(validatorArtifact) ||
+    graph.execution.validatorArtifactDigest !==
+      graph.validatorArtifactDigest ||
+    graph.execution.inputGraphDigest !==
+      sha256Digest(futureAnalogueInputRecord(graph)) ||
+    graph.execution.outputGraphDigest !==
+      sha256Digest(futureAnalogueOutputRecord(graph)) ||
+    graph.execution.executedAt !== graph.authority.issuedAt ||
+    canonicalJson(graph.sourceArtifacts) !== canonicalJson(sourceArtifacts) ||
+    canonicalJson(graph.futureArtifacts) !== canonicalJson(futureArtifacts) ||
+    output.requirementCatalogRevision !==
+      expected.requirementCatalogRevision ||
+    output.cellIndexRevision !== expected.cellIndexRevision ||
+    output.freshnessRuleRevision !== expected.freshnessRuleRevision ||
+    output.contractRevisions.requirementCatalogRevision !==
+      expected.requirementCatalogRevision ||
+    output.contractRevisions.cellIndexRevision !==
+      expected.cellIndexRevision ||
+    output.contractRevisions.freshnessRuleRevision !==
+      expected.freshnessRuleRevision ||
+    !exactRecordSet(
+      expected.applicabilityRecords,
+      output.applicabilityRecords,
+      applicabilityFields,
+    ) ||
+    !exactRecordSet(
+      expected.expiryRecords,
+      output.expiryRecords,
+      expiryFields,
+    ) ||
+    !exactRecordSet(
+      expected.reopeningRecords,
+      output.reopeningRecords,
+      reopeningFields,
+    )
+  ) {
+    return null;
+  }
+  return structuredClone(graph);
+}
+
+export function futureAnalogueGraphPayload(graph) {
+  const value = structuredClone(graph);
   delete value.authority.signature;
   return Buffer.from(canonicalJson(value), "utf8");
 }
 
-export function createAuthoritySafeSyntheticComposition(
-  input,
-  { asOf, authority } = {},
-) {
-  const instant = timestamp(asOf);
-  if (instant === null || !isRecord(authority)) {
-    throw new TypeError("Synthetic composition proof requires caller-controlled asOf.");
-  }
+function futureAnalogueInputRecord(graph) {
   return {
-    schemaVersion: "awesomeClaws.strongestCompositionProof.v1",
-    sourceInputDigest: sha256Digest(input),
-    ...expectedCompositionFacts(input, instant),
-    authority: structuredClone(authority),
+    schemaVersion: graph.schemaVersion,
+    graphId: graph.graphId,
+    validatorArtifactDigest: graph.validatorArtifactDigest,
+    sourceArtifacts: graph.sourceArtifacts,
+    futureArtifacts: graph.futureArtifacts,
+    complianceArtifact: graph.complianceArtifact,
+    contractArtifact: graph.contractArtifact,
   };
 }
 
-export function assessStrongestComplianceContractComposition({
+function futureAnalogueOutputRecord(graph) {
+  return {
+    requirementCatalogRevision:
+      graph.complianceArtifact.requirementCatalogRevision,
+    cellIndexRevision: graph.complianceArtifact.cellIndexRevision,
+    freshnessRuleRevision: graph.complianceArtifact.freshnessRuleRevision,
+    applicabilityRecords: graph.complianceArtifact.applicabilityRecords,
+    expiryRecords: graph.complianceArtifact.expiryRecords,
+    reopeningRecords: graph.contractArtifact.reopeningRecords,
+    contractRevisions: {
+      requirementCatalogRevision:
+        graph.contractArtifact.requirementCatalogRevision,
+      cellIndexRevision: graph.contractArtifact.cellIndexRevision,
+      freshnessRuleRevision: graph.contractArtifact.freshnessRuleRevision,
+    },
+  };
+}
+
+export function createAuthoritySafeFutureAnalogueGraph(
+  input,
+  {
+    asOf,
+    authority,
+    validatorArtifactDigest,
+    complianceGraphDigest,
+    contractGraphDigest,
+  } = {},
+) {
+  const instant = timestamp(asOf);
+  if (
+    instant === null ||
+    !isRecord(authority) ||
+    typeof validatorArtifactDigest !== "string" ||
+    typeof complianceGraphDigest !== "string" ||
+    typeof contractGraphDigest !== "string"
+  ) {
+    throw new TypeError("Future analogue graph requires complete bounded inputs.");
+  }
+  const facts = expectedCompositionFacts(input, instant);
+  const complianceArtifact = {
+    artifactId: "future-third-party-review-compliance-graph",
+    requirementCatalogRevision: facts.requirementCatalogRevision,
+    cellIndexRevision: facts.cellIndexRevision,
+    freshnessRuleRevision: facts.freshnessRuleRevision,
+    applicabilityRecords: facts.applicabilityRecords,
+    expiryRecords: facts.expiryRecords,
+  };
+  const contractArtifact = {
+    artifactId: "future-third-party-review-contract-graph",
+    requirementCatalogRevision: facts.requirementCatalogRevision,
+    cellIndexRevision: facts.cellIndexRevision,
+    freshnessRuleRevision: facts.freshnessRuleRevision,
+    reopeningRecords: facts.reopeningRecords,
+  };
+  const graph = {
+    schemaVersion: "awesomeClaws.futureThirdPartyReviewAnalogueGraph.v1",
+    graphId: "future-third-party-review-analogue-graph",
+    validatorArtifactDigest,
+    sourceArtifacts: {
+      complianceGraphDigest,
+      contractGraphDigest,
+    },
+    futureArtifacts: {
+      complianceGraphDigest: sha256Digest(complianceArtifact),
+      contractGraphDigest: sha256Digest(contractArtifact),
+    },
+    complianceArtifact,
+    contractArtifact,
+    execution: {
+      validatorArtifactDigest,
+      inputGraphDigest: "",
+      outputGraphDigest: "",
+      executedAt: authority.issuedAt,
+    },
+    authority: structuredClone(authority),
+  };
+  graph.execution.inputGraphDigest = sha256Digest(
+    futureAnalogueInputRecord(graph),
+  );
+  graph.execution.outputGraphDigest = sha256Digest(
+    futureAnalogueOutputRecord(graph),
+  );
+  return graph;
+}
+
+export function resealFutureAnalogueGraph(graph) {
+  const value = structuredClone(graph);
+  value.futureArtifacts = {
+    complianceGraphDigest: sha256Digest(value.complianceArtifact),
+    contractGraphDigest: sha256Digest(value.contractArtifact),
+  };
+  value.execution.inputGraphDigest = sha256Digest(
+    futureAnalogueInputRecord(value),
+  );
+  value.execution.outputGraphDigest = sha256Digest(
+    futureAnalogueOutputRecord(value),
+  );
+  return value;
+}
+
+export function createFutureAnalogueValidatorArtifact() {
+  return {
+    schemaVersion:
+      "awesomeClaws.futureThirdPartyReviewAnalogueValidator.v1",
+    validatorId: "future-third-party-review-analogue-validator",
+    graphSchemaDigest: sha256Digest(strongestCompositionProofSchema),
+    rules: [
+      "closed-graph-schema",
+      "exact-source-artifact-bindings",
+      "exact-applicability-closure",
+      "exact-expiry-closure",
+      "exact-reopening-closure",
+      "exact-revision-bindings",
+    ],
+  };
+}
+
+function compositionInvalidResult(code) {
+  return {
+    proofValid: false,
+    candidateEvaluation: { valid: false, findingCodes: [] },
+    exactCellRefs: [],
+    analogueValidation: {
+      complianceProjections: [],
+      contractProjection: null,
+      futureAnalogue: null,
+    },
+    projectionAuthority: {
+      safe: false,
+      inventedSemanticFields: [],
+    },
+    preservesAllInvariants: false,
+    verdict: "composition-proof-invalid",
+    invariants: [],
+    findingCodes: [code],
+    deletionTarget:
+      "Delete this candidate only when an authenticated, validated analogue graph preserves every invariant without invented semantics.",
+  };
+}
+
+function assessNormalizedComplianceContractComposition({
   candidateInput,
+  candidateEvaluationContext,
   complianceSchema,
   complianceArtifact,
   complianceSemanticValidator,
@@ -2616,9 +2873,10 @@ export function assessStrongestComplianceContractComposition({
   contractValidationContext,
   contractResealer,
   asOf,
-  syntheticComposition = null,
-  syntheticCompositionTrust = null,
-  candidatePublicTrust = null,
+  futureAnalogueSchema = null,
+  futureAnalogueValidatorArtifact = null,
+  futureAnalogueGraph = null,
+  futureAnalogueTrust = null,
 }) {
   if (
     typeof complianceSemanticValidator !== "function" ||
@@ -2637,7 +2895,20 @@ export function assessStrongestComplianceContractComposition({
   const validateContract = contractAjv.compile(contractSchema);
   const compositionAsOf = timestamp(asOf);
   if (compositionAsOf === null) {
-    throw new TypeError("The strongest composition proof requires caller-controlled asOf.");
+    return compositionInvalidResult("invalid-composition-context");
+  }
+  const candidateEvaluation = evaluateRecurringThirdPartyReview(
+    candidateInput,
+    candidateEvaluationContext,
+  );
+  if (!candidateEvaluation.valid) {
+    return {
+      ...compositionInvalidResult("invalid-candidate-proof"),
+      candidateEvaluation: {
+        valid: false,
+        findingCodes: candidateEvaluation.findings.map((item) => item.code),
+      },
+    };
   }
   const complianceProjections = typedComplianceProjections(
     candidateInput,
@@ -2758,84 +3029,146 @@ export function assessStrongestComplianceContractComposition({
     ),
     contractProjection.artifact.register.contentDigest,
   ];
-  const syntheticSchemaValid =
-    syntheticComposition === null ||
-    (validateStrongestCompositionProofSchema(syntheticComposition) &&
-      syntheticComposition.sourceInputDigest === sha256Digest(candidateInput));
-  const candidateTrustValid =
-    syntheticComposition === null ||
-    (validatePublicTrustSchema(candidatePublicTrust) &&
-      !containsPrivateKeyMaterial(candidatePublicTrust) &&
-      publicTrustFindings(
-        candidateInput,
-        candidatePublicTrust,
-        compositionAsOf,
-      ).length === 0);
-  const syntheticTrustValid =
-    syntheticComposition === null ||
-    (candidateTrustValid &&
-      validatePublicTrustSchema(syntheticCompositionTrust) &&
-      !containsPrivateKeyMaterial(syntheticCompositionTrust) &&
-      !hasCrossOwnerKeyReuse(syntheticCompositionTrust) &&
-      !syntheticCompositionTrust.signers.some((syntheticSigner) => {
-        const syntheticFingerprint = publicKeyFingerprint(syntheticSigner);
-        return candidatePublicTrust.signers.some(
-          (candidateSigner) =>
-            syntheticFingerprint !== null &&
-            publicKeyFingerprint(candidateSigner) === syntheticFingerprint,
-        );
-      }));
-  const syntheticAuthorityFindings =
-    syntheticComposition === null
-      ? []
-      : syntheticSchemaValid &&
-          syntheticTrustValid &&
-          !candidateInput.principals.some(
-            (item) => item.id === syntheticComposition.authority.ownerRef,
-          )
-        ? detachedSignatureFindings(
-            syntheticComposition.authority,
-            syntheticCompositionPayload(syntheticComposition),
-            syntheticCompositionTrust,
-            {
-              code: "invalid-synthetic-composition-authority",
-              path: "$.syntheticComposition.authority",
-              message:
-                "A deletion proof requires an independently trusted composition authority.",
-              ownerRef: syntheticComposition.authority.ownerRef,
-              notBefore: timestamp(candidateInput.sourceAuthority.issuedAt),
-              notAfter: compositionAsOf,
-            },
-          )
-        : [
-            finding(
-              "invalid-synthetic-composition-authority",
-              "$.syntheticComposition.authority",
-              "A deletion proof requires an independently trusted composition authority.",
-            ),
-          ];
-  const useSyntheticComposition =
-    syntheticComposition !== null &&
-    syntheticSchemaValid &&
-    syntheticTrustValid &&
-    syntheticAuthorityFindings.length === 0;
+  const currentGraphDigests = {
+    complianceGraphDigest: sha256Digest(
+      complianceProjections
+        .map(({ artifact }) => artifact)
+        .sort((left, right) => compareText(left.review.id, right.review.id)),
+    ),
+    contractGraphDigest: sha256Digest(contractProjection.artifact),
+  };
+  const futureRequested =
+    futureAnalogueSchema !== null ||
+    futureAnalogueValidatorArtifact !== null ||
+    futureAnalogueGraph !== null ||
+    futureAnalogueTrust !== null;
+  let futureSchemaValid = !futureRequested;
+  let futureSemanticValid = !futureRequested;
+  let futureSourceBindingsValid = !futureRequested;
+  let futureTrustValid = !futureRequested;
+  let futureAuthorityFindings = [];
+  let futureValidatedGraph = null;
+  if (futureRequested) {
+    try {
+      const futureSchemaIsExact =
+        canonicalJson(futureAnalogueSchema) ===
+        canonicalJson(strongestCompositionProofSchema);
+      const futureAjv = new Ajv2020({ allErrors: true, strict: true });
+      addFormats(futureAjv);
+      const validateFuture = futureAjv.compile(futureAnalogueSchema);
+      const futureValidatorValid =
+        validateFutureAnalogueValidatorSchema(
+          futureAnalogueValidatorArtifact,
+        ) &&
+        futureAnalogueValidatorArtifact.graphSchemaDigest ===
+          sha256Digest(futureAnalogueSchema) &&
+        futureAnalogueGraph.validatorArtifactDigest ===
+          sha256Digest(futureAnalogueValidatorArtifact);
+      futureSchemaValid =
+        futureSchemaIsExact &&
+        validateStrongestCompositionProofSchema(futureAnalogueGraph) &&
+        validateFuture(futureAnalogueGraph) &&
+        futureValidatorValid;
+      futureValidatedGraph = futureSchemaValid
+        ? executeFutureAnalogueValidatorArtifact({
+            graph: futureAnalogueGraph,
+            validatorArtifact: futureAnalogueValidatorArtifact,
+            sourceArtifacts: currentGraphDigests,
+            expected,
+          })
+        : null;
+      futureSemanticValid = futureValidatedGraph !== null;
+      futureSourceBindingsValid =
+        futureSemanticValid &&
+        canonicalJson(futureValidatedGraph.sourceArtifacts) ===
+          canonicalJson(currentGraphDigests);
+      const candidateTrust = candidateEvaluationContext.publicTrust;
+      futureTrustValid =
+        futureSemanticValid &&
+        futureSourceBindingsValid &&
+        validatePublicTrustSchema(futureAnalogueTrust) &&
+        !containsPrivateKeyMaterial(futureAnalogueTrust) &&
+        !hasCrossOwnerKeyReuse(futureAnalogueTrust) &&
+        trustedSignerActiveAt(
+          futureAnalogueTrust,
+          futureValidatedGraph.authority,
+          compositionAsOf,
+        ) &&
+        !futureAnalogueTrust.signers.some((futureSigner) => {
+          const futureFingerprint = publicKeyFingerprint(futureSigner);
+          return candidateTrust.signers.some(
+            (candidateSigner) =>
+              futureFingerprint !== null &&
+              publicKeyFingerprint(candidateSigner) === futureFingerprint,
+          );
+        });
+      futureAuthorityFindings =
+        futureTrustValid &&
+        !candidateInput.principals.some(
+          (item) => item.id === futureValidatedGraph.authority.ownerRef,
+        )
+          ? detachedSignatureFindings(
+              futureValidatedGraph.authority,
+              futureAnalogueGraphPayload(futureValidatedGraph),
+              futureAnalogueTrust,
+              {
+                code: "invalid-future-analogue-authority",
+                path: "$.futureAnalogueGraph.authority",
+                message:
+                  "A deletion graph requires an independently trusted analogue authority.",
+                ownerRef: futureValidatedGraph.authority.ownerRef,
+                notBefore: timestamp(candidateInput.sourceAuthority.issuedAt),
+                notAfter: compositionAsOf,
+              },
+            )
+          : [
+              finding(
+                "invalid-future-analogue-authority",
+                "$.futureAnalogueGraph.authority",
+                "A deletion graph requires an independently trusted analogue authority.",
+              ),
+            ];
+    } catch {
+      futureSchemaValid = false;
+      futureSemanticValid = false;
+      futureSourceBindingsValid = false;
+      futureTrustValid = false;
+      futureAuthorityFindings = [
+        finding(
+          "invalid-future-analogue",
+          "$.futureAnalogueGraph",
+          "The future analogue graph could not be validated.",
+        ),
+      ];
+    }
+  }
+  const useFutureAnalogue =
+    futureRequested &&
+    futureSchemaValid &&
+    futureSemanticValid &&
+    futureSourceBindingsValid &&
+    futureTrustValid &&
+    futureAuthorityFindings.length === 0;
+  const futureOutput = useFutureAnalogue
+    ? futureAnalogueOutputRecord(futureValidatedGraph)
+    : null;
   const representedApplicability =
-    useSyntheticComposition
-      ? syntheticComposition.applicabilityRecords
+    useFutureAnalogue
+      ? futureOutput.applicabilityRecords
       : actualApplicability;
   const representedExpiry =
-    useSyntheticComposition ? syntheticComposition.expiryRecords : actualExpiry;
+    useFutureAnalogue ? futureOutput.expiryRecords : actualExpiry;
   const representedReopening =
-    useSyntheticComposition
-      ? syntheticComposition.reopeningRecords
+    useFutureAnalogue
+      ? futureOutput.reopeningRecords
       : actualReopening;
   const representedRevisions =
-    !useSyntheticComposition
+    !useFutureAnalogue
       ? actualRevisions
       : [
-          syntheticComposition.requirementCatalogRevision,
-          syntheticComposition.cellIndexRevision,
-          syntheticComposition.freshnessRuleRevision,
+          futureOutput.requirementCatalogRevision,
+          futureOutput.cellIndexRevision,
+          futureOutput.freshnessRuleRevision,
         ];
   const applicabilityMatches = expected.applicabilityRecords.filter(
     (expectedRecord) =>
@@ -2855,7 +3188,7 @@ export function assessStrongestComplianceContractComposition({
   );
   const projectionAuthority = {
     safe:
-      useSyntheticComposition &&
+      useFutureAnalogue &&
       exactRecordSet(
         expected.applicabilityRecords,
         representedApplicability,
@@ -2867,13 +3200,19 @@ export function assessStrongestComplianceContractComposition({
         representedReopening,
         reopeningFields,
       ) &&
-      syntheticComposition.requirementCatalogRevision ===
+      futureOutput.requirementCatalogRevision ===
         expected.requirementCatalogRevision &&
-      syntheticComposition.cellIndexRevision === expected.cellIndexRevision &&
-      syntheticComposition.freshnessRuleRevision ===
+      futureOutput.cellIndexRevision === expected.cellIndexRevision &&
+      futureOutput.freshnessRuleRevision ===
+        expected.freshnessRuleRevision &&
+      futureOutput.contractRevisions.requirementCatalogRevision ===
+        expected.requirementCatalogRevision &&
+      futureOutput.contractRevisions.cellIndexRevision ===
+        expected.cellIndexRevision &&
+      futureOutput.contractRevisions.freshnessRuleRevision ===
         expected.freshnessRuleRevision,
     inventedSemanticFields:
-      !useSyntheticComposition
+      !useFutureAnalogue
         ? [
             "compliance.review.frameworkVersion",
             "compliance.findings[].severity",
@@ -2931,24 +3270,63 @@ export function assessStrongestComplianceContractComposition({
     },
   ];
   const proofValid =
+    candidateEvaluation.valid &&
+    timestamp(candidateEvaluationContext.asOf) === compositionAsOf &&
     expected.applicabilityRecords.length === 6 &&
     complianceOutcomes.length === candidateInput.vendorServices.length &&
     complianceOutcomes.every((item) => item.valid) &&
     contractOutcome.valid &&
-    syntheticSchemaValid &&
-    syntheticTrustValid &&
-    syntheticAuthorityFindings.length === 0;
+    (!futureRequested ||
+      (useFutureAnalogue &&
+        exactRecordSet(
+          expected.applicabilityRecords,
+          representedApplicability,
+          applicabilityFields,
+        ) &&
+        exactRecordSet(
+          expected.expiryRecords,
+          representedExpiry,
+          expiryFields,
+        ) &&
+        exactRecordSet(
+          expected.reopeningRecords,
+          representedReopening,
+          reopeningFields,
+        ) &&
+        futureOutput.requirementCatalogRevision ===
+          expected.requirementCatalogRevision &&
+        futureOutput.cellIndexRevision === expected.cellIndexRevision &&
+        futureOutput.freshnessRuleRevision ===
+          expected.freshnessRuleRevision &&
+        futureOutput.contractRevisions.requirementCatalogRevision ===
+          expected.requirementCatalogRevision &&
+        futureOutput.contractRevisions.cellIndexRevision ===
+          expected.cellIndexRevision &&
+        futureOutput.contractRevisions.freshnessRuleRevision ===
+          expected.freshnessRuleRevision));
   const preservesAllInvariants =
     proofValid &&
     projectionAuthority.safe &&
     invariants.every((item) => item.preserved);
   return {
     proofValid,
+    candidateEvaluation: { valid: true, findingCodes: [] },
     exactCellRefs: expected.applicabilityRecords.map((item) => item.cellRef),
     analogueValidation: {
       complianceProjections: complianceOutcomes,
       contractProjection: contractOutcome,
-      syntheticAuthorityFindings,
+      currentGraphDigests,
+      futureAnalogue: futureRequested
+        ? {
+            schemaValid: futureSchemaValid,
+            semanticValid: futureSemanticValid,
+            sourceBindingsValid: futureSourceBindingsValid,
+            trustValid: futureTrustValid,
+            authorityFindingCodes: futureAuthorityFindings.map(
+              (item) => item.code,
+            ),
+          }
+        : null,
     },
     projectionAuthority,
     preservesAllInvariants,
@@ -2961,6 +3339,116 @@ export function assessStrongestComplianceContractComposition({
     deletionTarget:
       "Delete this candidate when an authority-safe typed composition round-trips every required record without invented or encoded semantics.",
   };
+}
+
+export function assessStrongestComplianceContractComposition(options = {}) {
+  if (
+    options === null ||
+    typeof options !== "object" ||
+    isProxy(options) ||
+    Array.isArray(options)
+  ) {
+    return compositionInvalidResult("invalid-composition-input");
+  }
+  let descriptors;
+  try {
+    descriptors = Object.getOwnPropertyDescriptors(options);
+  } catch {
+    return compositionInvalidResult("invalid-composition-input");
+  }
+  if (
+    Object.values(descriptors).some(
+      (descriptor) => descriptor.enumerable && (descriptor.get || descriptor.set),
+    )
+  ) {
+    return compositionInvalidResult("invalid-composition-input");
+  }
+  const raw = (name) => descriptors[name]?.value;
+  const normalize = (name, maxBytes, optional = false) => {
+    const value = raw(name);
+    if (optional && (value === null || value === undefined)) return null;
+    const normalized = normalizeJsonValue(value, {
+      ...SLICE_LIMITS,
+      maxBytes,
+    });
+    if (normalized.error !== null) {
+      throw new TypeError("invalid composition argument");
+    }
+    return normalized.value;
+  };
+  const requiredFunction = (name) => {
+    const value = raw(name);
+    if (typeof value !== "function" || isProxy(value)) {
+      throw new TypeError("invalid composition function");
+    }
+    return value;
+  };
+  try {
+    const futureAnalogueGraph = normalize(
+      "futureAnalogueGraph",
+      SLICE_LIMITS.analogueArtifactBytes,
+      true,
+    );
+    const futureAnalogueSchema = normalize(
+      "futureAnalogueSchema",
+      SLICE_LIMITS.analogueSchemaBytes,
+      true,
+    );
+    const futureAnalogueTrust = normalize(
+      "futureAnalogueTrust",
+      SLICE_LIMITS.validationContextBytes,
+      true,
+    );
+    const futureAnalogueValidatorArtifact = normalize(
+      "futureAnalogueValidatorArtifact",
+      SLICE_LIMITS.analogueSchemaBytes,
+      true,
+    );
+    return assessNormalizedComplianceContractComposition({
+      candidateInput: normalize(
+        "candidateInput",
+        SLICE_LIMITS.inputBytes,
+      ),
+      candidateEvaluationContext: normalize(
+        "candidateEvaluationContext",
+        SLICE_LIMITS.validationContextBytes,
+      ),
+      complianceSchema: normalize(
+        "complianceSchema",
+        SLICE_LIMITS.analogueSchemaBytes,
+      ),
+      complianceArtifact: normalize(
+        "complianceArtifact",
+        SLICE_LIMITS.analogueArtifactBytes,
+      ),
+      complianceSemanticValidator: requiredFunction(
+        "complianceSemanticValidator",
+      ),
+      contractSchema: normalize(
+        "contractSchema",
+        SLICE_LIMITS.analogueSchemaBytes,
+      ),
+      contractArtifact: normalize(
+        "contractArtifact",
+        SLICE_LIMITS.analogueArtifactBytes,
+      ),
+      contractSemanticValidator: requiredFunction(
+        "contractSemanticValidator",
+      ),
+      contractValidationContext: normalize(
+        "contractValidationContext",
+        SLICE_LIMITS.validationContextBytes,
+      ),
+      contractResealer: requiredFunction("contractResealer"),
+      asOf: normalize("asOf", 256),
+      futureAnalogueSchema,
+      futureAnalogueValidatorArtifact,
+      futureAnalogueGraph,
+      futureAnalogueTrust,
+    });
+  } catch {
+    return compositionInvalidResult("invalid-composition-input");
+  }
 }
 
 export function renderReviewProof(result) {
@@ -3007,24 +3495,73 @@ purchase, and mutation claims are structurally \`false\`.
 `;
 }
 
+function cliFailure(code) {
+  return {
+    valid: false,
+    findings: [
+      {
+        code,
+        path: "$",
+        message: "The bounded CLI input was rejected.",
+        refs: [],
+      },
+    ],
+    result: null,
+  };
+}
+
+function readBoundedJson(path, maxBytes) {
+  const descriptor = openSync(path, "r");
+  try {
+    const buffer = Buffer.allocUnsafe(maxBytes + 1);
+    let total = 0;
+    while (total <= maxBytes) {
+      const read = readSync(
+        descriptor,
+        buffer,
+        total,
+        maxBytes + 1 - total,
+        null,
+      );
+      if (read === 0) break;
+      total += read;
+    }
+    if (total > maxBytes) {
+      throw new RangeError("bounded file rejected");
+    }
+    return JSON.parse(buffer.subarray(0, total).toString("utf8"));
+  } finally {
+    closeSync(descriptor);
+  }
+}
+
 async function runCli() {
   const [inputPath, asOf, publicTrustPath, sourceReceiptsPath] =
     process.argv.slice(2);
   if (!inputPath || !asOf || !publicTrustPath || !sourceReceiptsPath) {
-    process.stderr.write(
-      "Usage: node recurring-third-party-review-evidence-reconciler.mjs <input.json> <asOf> <public-trust.json> <source-receipts.json>\n",
-    );
+    process.stdout.write(`${JSON.stringify(cliFailure("invalid-cli-input"))}\n`);
     process.exitCode = 2;
     return;
   }
-  const input = JSON.parse(readFileSync(inputPath, "utf8"));
-  const publicTrust = JSON.parse(readFileSync(publicTrustPath, "utf8"));
-  const sourceReceipts = JSON.parse(readFileSync(sourceReceiptsPath, "utf8"));
-  const evaluation = evaluateRecurringThirdPartyReview(input, {
-    asOf,
-    publicTrust,
-    sourceReceipts,
-  });
+  let evaluation;
+  try {
+    const input = readBoundedJson(inputPath, SLICE_LIMITS.inputBytes);
+    const publicTrust = readBoundedJson(
+      publicTrustPath,
+      SLICE_LIMITS.validationContextBytes,
+    );
+    const sourceReceipts = readBoundedJson(
+      sourceReceiptsPath,
+      SLICE_LIMITS.validationContextBytes,
+    );
+    evaluation = evaluateRecurringThirdPartyReview(input, {
+      asOf,
+      publicTrust,
+      sourceReceipts,
+    });
+  } catch {
+    evaluation = cliFailure("invalid-cli-file");
+  }
   process.stdout.write(`${JSON.stringify(evaluation, null, 2)}\n`);
   if (!evaluation.valid) process.exitCode = 1;
 }

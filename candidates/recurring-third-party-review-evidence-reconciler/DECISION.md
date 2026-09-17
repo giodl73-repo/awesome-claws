@@ -2,7 +2,7 @@
 
 Status: **NEW CLAW proven by a bounded candidate slice; not a catalog contribution**
 
-Confidence: **high (0.94)**
+Confidence: **high (0.84)**
 
 This directory is deliberately candidate-only. It does not add or change a
 catalog entry, contribution record, regression case, Experience case,
@@ -37,8 +37,9 @@ executable composition test deliberately has both outcomes:
 
 - current analogue sources produce
   `reject-compliance-plus-contract-composition`; and
-- a synthetic future composition containing every required invariant produces
-  `reject-candidate`.
+- a closed, independently authenticated future analogue graph can produce
+  `reject-candidate` only after its validator executes and its exact graph binds
+  the validated Compliance and Contract artifact digests.
 
 The proposed owner-first capability is:
 
@@ -86,12 +87,14 @@ and inventing agreement, clause, and due-date semantics that the candidate input
 does not own. It still cannot round-trip effective expiry or
 predecessor-linked reopening. Because verdict eligibility now requires an
 authority-safe projection, this lossy adapter cannot reject the candidate. A
-strict synthetic future composition sourced entirely from candidate fields
-round-trips all four invariants without inventions. It can return
-`reject-candidate` only when signed by an independently trusted composition key
-that is disjoint from every authenticated candidate key. The verdict is
-therefore derived from executed typed graph relationships, exact round trips,
-and the authority gate—not editable capability labels.
+strict future analogue graph round-trips all four invariants without
+inventions. It can return `reject-candidate` only after the full candidate
+evaluation passes with signed receipts and detached owner/predecessor
+authentication, its closed schema and semantic validator pass, it binds the
+exact validated Compliance and Contract graph digests, and it is signed by an
+independently trusted key disjoint from every candidate key. The verdict is
+therefore derived only from normalized records extracted from executed,
+validated analogue graphs—not editable labels or an overriding fact sidecar.
 
 1. owner-declared service applicability;
 2. requirement catalog and cell-index revisions;
@@ -167,8 +170,10 @@ The candidate contains:
 - `schemas/source-receipts.schema.json`: a closed receipt-manifest and source-byte
   contract;
 - `schemas/strongest-composition-proof.schema.json`: the strict future-composition
-  shape used to prove that an authority-safe complete graph would delete this
-  candidate;
+  graph shape used to prove that an authority-safe complete analogue would
+  delete this candidate;
+- `schemas/future-analogue-validator.schema.json`: the closed declarative
+  validator artifact whose canonical digest is signed into the future graph;
 - `recurring-third-party-review-evidence-reconciler.mjs`: strict schema
   validation, bounded descriptor-based normalization, canonical
   catalog/cell/exception digests, independently signed owner manifests and
@@ -189,8 +194,8 @@ The candidate contains:
   hostile getters/serialization/size/depth/cardinality, source receipt bytes,
   owner-manifest omission/service reassignment, decision revision/cell binding,
   independent predecessor authentication, subprocessor, remediation, exception,
-  risk-attempt, no-action, actual-analogue, authority-safe synthetic deletion,
-  and CLI proof.
+  risk-attempt, no-action, actual-analogue, authority-safe future-graph deletion,
+  bounded non-echoing CLI failures, and CLI proof.
 
 The public signature covers every result-driving field in the candidate input.
 The private fixture key was discarded and is not stored. The public trust entry
@@ -211,11 +216,11 @@ node --test `
 
 Candidate-only result:
 
-- **35 passed, 0 failed, 0 skipped**.
+- **36 passed, 0 failed, 0 skipped**.
 
 Candidate plus focused analogue result:
 
-- **283 passed, 0 failed, 0 skipped**.
+- **284 passed, 0 failed, 0 skipped**.
 
 ## Verdict
 
@@ -231,8 +236,9 @@ bounded at or before issuance. The executed strongest-composition adapter can
 round-trip service applicability and catalog revision only through an
 authority-unsafe Contract reinterpretation. Neither analogue can round-trip the
 effective evidence-expiry rule/state or predecessor-linked reopening. The
-authority-safe synthetic control proves that a complete typed composition would
-return `reject-candidate`.
+authority-safe future analogue control proves that a complete validated graph
+can return `reject-candidate`, but only with exact source-graph bindings and
+independent execution provenance.
 
 The distinct repeatable job is:
 

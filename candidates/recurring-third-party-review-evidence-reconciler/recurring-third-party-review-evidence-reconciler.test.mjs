@@ -5,7 +5,7 @@ import {
   generateKeyPairSync,
   sign as signPayload,
 } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
@@ -19,12 +19,15 @@ import {
   computeFreshnessRuleRevision,
   computePredecessorArtifactDigest,
   computeRequirementCatalogRevision,
-  createAuthoritySafeSyntheticComposition,
+  createFutureAnalogueValidatorArtifact,
+  createAuthoritySafeFutureAnalogueGraph,
   evaluateRecurringThirdPartyReview,
+  futureAnalogueGraphPayload,
   ownerManifestPayload,
+  resealFutureAnalogueGraph,
   renderReviewProof,
+  sha256Digest,
   sourceAuthorityPayload,
-  syntheticCompositionPayload,
 } from "./recurring-third-party-review-evidence-reconciler.mjs";
 import {
   artifactSemanticValidationOptions,
@@ -300,7 +303,18 @@ test("normalization rejects private keys and pre-read resource attacks without e
   assert.doesNotThrow(() => evaluate(proxyInput));
   assert.equal(lengthRead, false);
   assert.ok(
-    evaluate(proxyInput).findings.some((item) => item.code === "schema-invalid"),
+    evaluate(proxyInput).findings.some((item) => item.code === "invalid-json-input"),
+  );
+
+  const nestedProxyInput = clone();
+  nestedProxyInput.ownerManifests[0] = new Proxy(
+    nestedProxyInput.ownerManifests[0],
+    {},
+  );
+  assert.doesNotThrow(() => evaluate(nestedProxyInput));
+  assert.equal(
+    evaluate(nestedProxyInput).findings[0].code,
+    "invalid-json-input",
   );
 });
 
@@ -1473,8 +1487,15 @@ test("actual Compliance plus Contract composition fails the admission falsificat
       "utf8",
     ),
   );
+  const futureAnalogueSchema = JSON.parse(
+    await readFile(
+      resolve(here, "schemas", "strongest-composition-proof.schema.json"),
+      "utf8",
+    ),
+  );
   const compositionOptions = {
     candidateInput: fixture,
+    candidateEvaluationContext: { asOf, publicTrust, sourceReceipts },
     complianceSchema,
     complianceArtifact: complianceFixture,
     complianceSemanticValidator: (artifact) =>
@@ -1484,12 +1505,12 @@ test("actual Compliance plus Contract composition fails the admission falsificat
     contractSemanticValidator: contractObligationTrackerFindings,
     contractValidationContext: { asOf },
     contractResealer: resealContractObligationTracker,
-    candidatePublicTrust: publicTrust,
     asOf,
   };
   const assessment =
     assessStrongestComplianceContractComposition(compositionOptions);
   assert.equal(assessment.proofValid, true);
+  assert.equal(assessment.candidateEvaluation.valid, true);
   assert.equal(assessment.preservesAllInvariants, false);
   assert.equal(
     assessment.verdict,
@@ -1584,20 +1605,32 @@ test("actual Compliance plus Contract composition fails the admission falsificat
     issuedAt: asOf,
     signature: "placeholder",
   };
-  const synthetic = createAuthoritySafeSyntheticComposition(fixture, {
+  const futureAnalogueValidatorArtifact =
+    createFutureAnalogueValidatorArtifact();
+  const futureGraph = createAuthoritySafeFutureAnalogueGraph(fixture, {
     asOf,
     authority: compositionAuthority,
+    validatorArtifactDigest: sha256Digest(futureAnalogueValidatorArtifact),
+    ...assessment.analogueValidation.currentGraphDigests,
   });
-  const signSynthetic = (value) => {
+  const signFutureGraph = (value) => {
     value.authority.signature = signPayload(
       null,
-      syntheticCompositionPayload(value),
+      futureAnalogueGraphPayload(value),
       compositionPrivateKey,
     ).toString("base64");
     return value;
   };
-  signSynthetic(synthetic);
-  const syntheticCompositionTrust = {
+  signFutureGraph(futureGraph);
+  const futureGraphAjv = new Ajv2020({ allErrors: true, strict: true });
+  addFormats(futureGraphAjv);
+  const validateFutureGraph = futureGraphAjv.compile(futureAnalogueSchema);
+  assert.equal(
+    validateFutureGraph(futureGraph),
+    true,
+    JSON.stringify(validateFutureGraph.errors),
+  );
+  const futureAnalogueTrust = {
     schemaVersion:
       "awesomeClaws.recurringThirdPartyReviewEvidenceReconcilerPublicTrust.v1",
     signers: [
@@ -1614,33 +1647,74 @@ test("actual Compliance plus Contract composition fails the admission falsificat
       },
     ],
   };
-  const syntheticAssessment = assessStrongestComplianceContractComposition({
+  const futureAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
-    syntheticComposition: synthetic,
-    syntheticCompositionTrust,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: futureGraph,
+    futureAnalogueTrust,
   });
-  assert.equal(syntheticAssessment.proofValid, true);
-  assert.equal(syntheticAssessment.projectionAuthority.safe, true);
-  assert.equal(syntheticAssessment.preservesAllInvariants, true);
-  assert.equal(syntheticAssessment.verdict, "reject-candidate");
+  assert.equal(
+    futureAssessment.proofValid,
+    true,
+    JSON.stringify(futureAssessment, null, 2),
+  );
+  assert.equal(futureAssessment.projectionAuthority.safe, true);
+  assert.equal(futureAssessment.preservesAllInvariants, true);
+  assert.equal(futureAssessment.verdict, "reject-candidate");
 
-  const untrustedSynthetic = assessStrongestComplianceContractComposition({
+  const substitutedValidatorArtifact = structuredClone(
+    futureAnalogueValidatorArtifact,
+  );
+  substitutedValidatorArtifact.validatorId =
+    "future-third-party-review-substituted-validator";
+  const noOpAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
-    syntheticComposition: synthetic,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact: substitutedValidatorArtifact,
+    futureAnalogueGraph: futureGraph,
+    futureAnalogueTrust,
   });
-  assert.equal(untrustedSynthetic.proofValid, false);
-  assert.equal(untrustedSynthetic.projectionAuthority.safe, false);
-  assert.equal(untrustedSynthetic.verdict, "composition-proof-invalid");
+  assert.equal(noOpAssessment.proofValid, false);
+  assert.equal(noOpAssessment.verdict, "composition-proof-invalid");
 
-  const aliasedCandidateTrust = structuredClone(publicTrust);
-  aliasedCandidateTrust.signers.find(
+  const untrustedFuture = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: futureGraph,
+  });
+  assert.equal(untrustedFuture.proofValid, false);
+  assert.equal(untrustedFuture.projectionAuthority.safe, false);
+  assert.equal(untrustedFuture.verdict, "composition-proof-invalid");
+
+  const expiredGraph = structuredClone(futureGraph);
+  expiredGraph.authority.issuedAt = "2026-09-16T19:00:00Z";
+  expiredGraph.execution.executedAt = expiredGraph.authority.issuedAt;
+  signFutureGraph(expiredGraph);
+  const expiredTrust = structuredClone(futureAnalogueTrust);
+  expiredTrust.signers[0].validUntil = "2026-09-16T19:30:00Z";
+  const expiredAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: expiredGraph,
+    futureAnalogueTrust: expiredTrust,
+  });
+  assert.equal(expiredAssessment.proofValid, false);
+  assert.equal(expiredAssessment.projectionAuthority.safe, false);
+  assert.equal(expiredAssessment.verdict, "composition-proof-invalid");
+
+  const aliasedFutureTrust = structuredClone(futureAnalogueTrust);
+  aliasedFutureTrust.signers[0].publicKeyPem = publicTrust.signers.find(
     (item) => item.signingKeyId === fixture.sourceAuthority.signingKeyId,
-  ).publicKeyPem = syntheticCompositionTrust.signers[0].publicKeyPem;
+  ).publicKeyPem;
   const aliasedAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
-    candidatePublicTrust: aliasedCandidateTrust,
-    syntheticComposition: synthetic,
-    syntheticCompositionTrust,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: futureGraph,
+    futureAnalogueTrust: aliasedFutureTrust,
   });
   assert.equal(aliasedAssessment.proofValid, false);
   assert.equal(aliasedAssessment.projectionAuthority.safe, false);
@@ -1652,15 +1726,21 @@ test("actual Compliance plus Contract composition fails the admission falsificat
   );
   const decoyAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
-    candidatePublicTrust: decoyCandidateTrust,
-    syntheticComposition: synthetic,
-    syntheticCompositionTrust,
+    candidateEvaluationContext: {
+      asOf,
+      publicTrust: decoyCandidateTrust,
+      sourceReceipts,
+    },
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: futureGraph,
+    futureAnalogueTrust,
   });
   assert.equal(decoyAssessment.proofValid, false);
   assert.equal(decoyAssessment.projectionAuthority.safe, false);
   assert.equal(decoyAssessment.verdict, "composition-proof-invalid");
 
-  const internallyAliasedTrust = structuredClone(syntheticCompositionTrust);
+  const internallyAliasedTrust = structuredClone(futureAnalogueTrust);
   internallyAliasedTrust.signers.push({
     ...structuredClone(internallyAliasedTrust.signers[0]),
     ownerRef: "principal-reviewer-riley",
@@ -1669,8 +1749,10 @@ test("actual Compliance plus Contract composition fails the admission falsificat
   const internallyAliasedAssessment =
     assessStrongestComplianceContractComposition({
       ...compositionOptions,
-      syntheticComposition: synthetic,
-      syntheticCompositionTrust: internallyAliasedTrust,
+      futureAnalogueSchema,
+      futureAnalogueValidatorArtifact,
+      futureAnalogueGraph: futureGraph,
+      futureAnalogueTrust: internallyAliasedTrust,
     });
   assert.equal(internallyAliasedAssessment.proofValid, false);
   assert.equal(internallyAliasedAssessment.projectionAuthority.safe, false);
@@ -1679,13 +1761,16 @@ test("actual Compliance plus Contract composition fails the admission falsificat
     "composition-proof-invalid",
   );
 
-  const detachedSynthetic = structuredClone(synthetic);
-  detachedSynthetic.sourceInputDigest =
+  const detachedFutureGraph = structuredClone(futureGraph);
+  detachedFutureGraph.sourceArtifacts.complianceGraphDigest =
     "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+  signFutureGraph(detachedFutureGraph);
   const detachedAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
-    syntheticComposition: detachedSynthetic,
-    syntheticCompositionTrust,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: detachedFutureGraph,
+    futureAnalogueTrust,
   });
   assert.equal(detachedAssessment.proofValid, false);
   assert.equal(detachedAssessment.verdict, "composition-proof-invalid");
@@ -1693,52 +1778,168 @@ test("actual Compliance plus Contract composition fails the admission falsificat
   assert.doesNotThrow(() =>
     assessStrongestComplianceContractComposition({
       ...compositionOptions,
-      syntheticComposition: {},
-      syntheticCompositionTrust,
+      futureAnalogueSchema,
+      futureAnalogueValidatorArtifact,
+      futureAnalogueGraph: {},
+      futureAnalogueTrust,
     }),
   );
   const malformedAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
-    syntheticComposition: {},
-    syntheticCompositionTrust,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: {},
+    futureAnalogueTrust,
   });
   assert.equal(malformedAssessment.proofValid, false);
   assert.equal(malformedAssessment.projectionAuthority.safe, false);
   assert.equal(malformedAssessment.verdict, "composition-proof-invalid");
 
-  const extraRecord = structuredClone(synthetic);
-  extraRecord.expiryRecords.push({
-    ...extraRecord.expiryRecords[0],
+  const extraRecord = structuredClone(futureGraph);
+  extraRecord.complianceArtifact.expiryRecords.push({
+    ...extraRecord.complianceArtifact.expiryRecords[0],
     evidenceRef: "evidence-alpine-security-questionnaire",
   });
-  signSynthetic(extraRecord);
+  signFutureGraph(extraRecord);
   const extraAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
-    syntheticComposition: extraRecord,
-    syntheticCompositionTrust,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: extraRecord,
+    futureAnalogueTrust,
   });
-  assert.equal(extraAssessment.proofValid, true);
+  assert.equal(extraAssessment.proofValid, false);
   assert.equal(extraAssessment.projectionAuthority.safe, false);
-  assert.equal(
-    extraAssessment.verdict,
-    "reject-compliance-plus-contract-composition",
-  );
+  assert.equal(extraAssessment.verdict, "composition-proof-invalid");
 
-  const duplicateRecord = structuredClone(synthetic);
-  duplicateRecord.reopeningRecords.push(
-    structuredClone(duplicateRecord.reopeningRecords[0]),
+  const duplicateRecord = structuredClone(futureGraph);
+  duplicateRecord.contractArtifact.reopeningRecords.push(
+    structuredClone(duplicateRecord.contractArtifact.reopeningRecords[0]),
   );
-  signSynthetic(duplicateRecord);
+  signFutureGraph(duplicateRecord);
   const duplicateAssessment = assessStrongestComplianceContractComposition({
     ...compositionOptions,
-    syntheticComposition: duplicateRecord,
-    syntheticCompositionTrust,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: duplicateRecord,
+    futureAnalogueTrust,
   });
-  assert.equal(duplicateAssessment.proofValid, true);
+  assert.equal(duplicateAssessment.proofValid, false);
   assert.equal(duplicateAssessment.projectionAuthority.safe, false);
+  assert.equal(duplicateAssessment.verdict, "composition-proof-invalid");
+
+  const privateCandidate = clone();
+  privateCandidate.privateKeyMaterial =
+    "-----BEGIN PRIVATE KEY-----\nsecret\n-----END PRIVATE KEY-----";
+  const privateAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    candidateInput: privateCandidate,
+    futureAnalogueSchema,
+    futureAnalogueValidatorArtifact,
+    futureAnalogueGraph: futureGraph,
+    futureAnalogueTrust,
+  });
+  assert.equal(privateAssessment.proofValid, false);
+  assert.equal(privateAssessment.verdict, "composition-proof-invalid");
+
+  const missingReceiptsAssessment =
+    assessStrongestComplianceContractComposition({
+      ...compositionOptions,
+      candidateEvaluationContext: { asOf, publicTrust },
+      futureAnalogueSchema,
+      futureAnalogueValidatorArtifact,
+      futureAnalogueGraph: futureGraph,
+      futureAnalogueTrust,
+    });
+  assert.equal(missingReceiptsAssessment.proofValid, false);
   assert.equal(
-    duplicateAssessment.verdict,
-    "reject-compliance-plus-contract-composition",
+    missingReceiptsAssessment.verdict,
+    "composition-proof-invalid",
+  );
+
+  const wrongRevision = structuredClone(futureGraph);
+  wrongRevision.complianceArtifact.freshnessRuleRevision =
+    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+  signFutureGraph(wrongRevision);
+  const wrongRevisionAssessment =
+    assessStrongestComplianceContractComposition({
+      ...compositionOptions,
+      futureAnalogueSchema,
+      futureAnalogueValidatorArtifact,
+      futureAnalogueGraph: wrongRevision,
+      futureAnalogueTrust,
+    });
+  assert.equal(wrongRevisionAssessment.proofValid, false);
+  assert.equal(wrongRevisionAssessment.verdict, "composition-proof-invalid");
+
+  let wrongContractRevision = structuredClone(futureGraph);
+  wrongContractRevision.contractArtifact.cellIndexRevision =
+    "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+  wrongContractRevision = resealFutureAnalogueGraph(wrongContractRevision);
+  signFutureGraph(wrongContractRevision);
+  const wrongContractRevisionAssessment =
+    assessStrongestComplianceContractComposition({
+      ...compositionOptions,
+      futureAnalogueSchema,
+      futureAnalogueValidatorArtifact,
+      futureAnalogueGraph: wrongContractRevision,
+      futureAnalogueTrust,
+    });
+  assert.equal(wrongContractRevisionAssessment.proofValid, false);
+  assert.equal(
+    wrongContractRevisionAssessment.verdict,
+    "composition-proof-invalid",
+  );
+
+  for (const invalidOptions of [null, undefined, {}, []]) {
+    assert.doesNotThrow(() =>
+      assessStrongestComplianceContractComposition(invalidOptions),
+    );
+    assert.equal(
+      assessStrongestComplianceContractComposition(invalidOptions).verdict,
+      "composition-proof-invalid",
+    );
+  }
+  const proxiedComposition = {
+    ...compositionOptions,
+    candidateInput: new Proxy(fixture, {}),
+  };
+  assert.doesNotThrow(() =>
+    assessStrongestComplianceContractComposition(proxiedComposition),
+  );
+  assert.equal(
+    assessStrongestComplianceContractComposition(proxiedComposition).verdict,
+    "composition-proof-invalid",
+  );
+
+  let compositionGetterRead = false;
+  const getterComposition = { ...compositionOptions };
+  Object.defineProperty(getterComposition, "candidateInput", {
+    enumerable: true,
+    get() {
+      compositionGetterRead = true;
+      throw new Error("sensitive composition getter");
+    },
+  });
+  const getterAssessment =
+    assessStrongestComplianceContractComposition(getterComposition);
+  assert.equal(compositionGetterRead, false);
+  assert.equal(getterAssessment.verdict, "composition-proof-invalid");
+  assert.doesNotMatch(
+    JSON.stringify(getterAssessment),
+    /sensitive composition getter/u,
+  );
+
+  const throwingAssessment = assessStrongestComplianceContractComposition({
+    ...compositionOptions,
+    complianceSemanticValidator() {
+      throw new Error("sensitive validator failure");
+    },
+  });
+  assert.equal(throwingAssessment.verdict, "composition-proof-invalid");
+  assert.doesNotMatch(
+    JSON.stringify(throwingAssessment),
+    /sensitive validator failure/u,
   );
 });
 
@@ -1759,4 +1960,58 @@ test("candidate CLI accepts the trusted fixture but reports a blocked handoff", 
   assert.equal(output.valid, true);
   assert.equal(output.result.handoff.state, "blocked");
   assert.deepEqual(output.result.handoff.blockerCodes, expected.handoff.blockerCodes);
+});
+
+test("candidate CLI bounds every file and never echoes parser or file failures", async () => {
+  const scratch = resolve(root, ".tmp", `third-party-review-cli-${process.pid}`);
+  await mkdir(scratch, { recursive: true });
+  const invalidPath = resolve(scratch, "invalid.json");
+  const oversizedPath = resolve(scratch, "oversized.json");
+  await writeFile(invalidPath, '{"secret-token":');
+  await writeFile(oversizedPath, "x".repeat(2 * 1024 * 1024 + 1));
+  const validArgs = [
+    resolve(here, "fixtures", "approved-review-cycle.input.json"),
+    asOf,
+    resolve(here, "fixtures", "public-trust.test.json"),
+    resolve(here, "fixtures", "source-receipts.test.json"),
+  ];
+  try {
+    for (const badPath of [invalidPath, oversizedPath]) {
+      for (const index of [0, 2, 3]) {
+        const args = [...validArgs];
+        args[index] = badPath;
+        const result = spawnSync(
+          process.execPath,
+          [resolve(here, "recurring-third-party-review-evidence-reconciler.mjs"), ...args],
+          { cwd: root, encoding: "utf8" },
+        );
+        assert.equal(result.status, 1);
+        assert.equal(result.stderr, "");
+        const output = JSON.parse(result.stdout);
+        assert.equal(output.valid, false);
+        assert.deepEqual(output.findings.map((item) => item.code), [
+          "invalid-cli-file",
+        ]);
+        assert.doesNotMatch(result.stdout, /secret-token|SyntaxError|stack|ENOENT/u);
+      }
+    }
+    const missing = spawnSync(
+      process.execPath,
+      [
+        resolve(here, "recurring-third-party-review-evidence-reconciler.mjs"),
+        resolve(scratch, "missing.json"),
+        asOf,
+        validArgs[2],
+        validArgs[3],
+      ],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(missing.status, 1);
+    assert.equal(missing.stderr, "");
+    assert.deepEqual(JSON.parse(missing.stdout).findings.map((item) => item.code), [
+      "invalid-cli-file",
+    ]);
+  } finally {
+    await rm(scratch, { recursive: true, force: true });
+  }
 });
