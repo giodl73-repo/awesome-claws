@@ -439,6 +439,13 @@ function integer(value) {
   return typeof value === "string" && INTEGER.test(value) ? BigInt(value) : null;
 }
 
+function sumIntegerField(rows, field) {
+  const values = rows.map((row) => integer(row[field]));
+  return values.some((value) => value === null)
+    ? null
+    : values.reduce((sum, value) => sum + value, 0n);
+}
+
 function timestamp(value) {
   if (typeof value !== "string") return null;
   const match = OFFSET_TIMESTAMP.exec(value);
@@ -506,6 +513,31 @@ function maximumTimestamp(values) {
   if (!Array.isArray(values) || values.length === 0) return null;
   const parsed = values.map(timestamp);
   return parsed.some((value) => value === null) ? null : Math.max(...parsed);
+}
+
+function exactSubsetExists(vectors, targets) {
+  if (
+    targets.some((target) => target === null || target <= 0n) ||
+    vectors.some(
+      (vector) =>
+        vector.length !== targets.length ||
+        vector.some((value) => value === null || value < 0n),
+    )
+  ) {
+    return null;
+  }
+  const key = (values) => values.map(String).join(":");
+  const zero = targets.map(() => 0n);
+  const reachable = new Map([[key(zero), zero]]);
+  for (const vector of vectors) {
+    for (const current of [...reachable.values()]) {
+      const next = current.map((value, index) => value + vector[index]);
+      if (next.some((value, index) => value > targets[index])) continue;
+      reachable.set(key(next), next);
+      if (reachable.size > 10_000) return null;
+    }
+  }
+  return reachable.has(key(targets));
 }
 
 export function validateThreeWayMatch(candidate, context = {}) {
@@ -1255,6 +1287,84 @@ export function validateThreeWayMatch(candidate, context = {}) {
     receipt: new Map(),
     invoice: new Map(),
   });
+  const exactSubsetByPoLine = new Map();
+  const exactSubsetAvailable = (poLine) => {
+    if (!poLine || exactSubsetByPoLine.has(poLine.id)) {
+      return exactSubsetByPoLine.get(poLine?.id) ?? null;
+    }
+    const poQuantity = integer(poLine.quantity);
+    const poAmount = integer(poLine.extendedMinorUnits);
+    const poUnit = integer(poLine.unitMinorUnits);
+    const relatedReceipts = receiptLines.filter(
+      (line) => line.poLineRef === poLine.id,
+    );
+    const relatedInvoices = invoiceLines.filter(
+      (line) => line.poLineRef === poLine.id,
+    );
+    const receiptFamilies = relatedReceipts
+      .filter((line) => line.kind === "receipt")
+      .map((source) => {
+        const family = [
+          source,
+          ...relatedReceipts.filter(
+            (line) =>
+              line.kind === "return" &&
+              line.reversesLineRef === source.id &&
+              receiptReversalValid.get(line.id),
+          ),
+        ];
+        return [sumIntegerField(family, "quantity")];
+      });
+    const invoiceFamilies = relatedInvoices
+      .filter((line) => line.kind === "invoice")
+      .map((source) => {
+        const family = [
+          source,
+          ...relatedInvoices.filter(
+            (line) =>
+              line.kind === "credit" &&
+              line.reversesLineRef === source.id &&
+              invoiceReversalValid.get(line.id),
+          ),
+        ];
+        return [
+          sumIntegerField(family, "quantity"),
+          sumIntegerField(family, "lineMinorUnits"),
+        ];
+      });
+    const unitsValid =
+      poUnit !== null &&
+      relatedReceipts.every(
+        (line) =>
+          integer(line.quantity) !== null &&
+          line.unitOfMeasure === poLine.unitOfMeasure,
+      ) &&
+      relatedInvoices.every((line) => {
+        const quantity = integer(line.quantity);
+        const unit = integer(line.unitMinorUnits);
+        const amount = integer(line.lineMinorUnits);
+        return (
+          quantity !== null &&
+          unit === poUnit &&
+          amount === quantity * unit &&
+          line.unitOfMeasure === poLine.unitOfMeasure
+        );
+      });
+    const receiptSubset = unitsValid
+      ? exactSubsetExists(receiptFamilies, [poQuantity])
+      : null;
+    const invoiceSubset = unitsValid
+      ? exactSubsetExists(invoiceFamilies, [poQuantity, poAmount])
+      : null;
+    const status =
+      receiptSubset === true && invoiceSubset === true
+        ? true
+        : receiptSubset === false || invoiceSubset === false
+          ? false
+          : null;
+    exactSubsetByPoLine.set(poLine.id, status);
+    return status;
+  };
 
   for (const [index, group] of groups.entries()) {
     const path = `/matchGroups/${index}`;
@@ -1444,37 +1554,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
     const relatedReceipts = receiptLines.filter((item) => item.poLineRef === residual.poLineRef);
     const relatedInvoices = invoiceLines.filter((item) => item.poLineRef === residual.poLineRef);
     const poLine = poLineById.get(residual.poLineRef);
-    const poQuantity = integer(object(poLine).quantity);
-    const poAmount = integer(object(poLine).extendedMinorUnits);
-    const poUnit = integer(object(poLine).unitMinorUnits);
-    const receiptQuantities = relatedReceipts.map((item) => integer(item.quantity));
-    const invoiceQuantities = relatedInvoices.map((item) => integer(item.quantity));
-    const invoiceAmounts = relatedInvoices.map((item) => integer(item.lineMinorUnits));
-    const exactRelatedMatch =
-      relatedReceipts.length > 0 &&
-      relatedInvoices.length > 0 &&
-      [
-        poQuantity,
-        poAmount,
-        poUnit,
-        ...receiptQuantities,
-        ...invoiceQuantities,
-        ...invoiceAmounts,
-      ].every((item) => item !== null) &&
-      relatedReceipts.every(
-        (item) =>
-          item.unitOfMeasure === object(poLine).unitOfMeasure &&
-          receiptReversalValid.get(item.id),
-      ) &&
-      relatedInvoices.every(
-        (item) =>
-          integer(item.unitMinorUnits) === poUnit &&
-          item.unitOfMeasure === object(poLine).unitOfMeasure &&
-          invoiceReversalValid.get(item.id),
-      ) &&
-      receiptQuantities.reduce((sum, item) => sum + item, 0n) === poQuantity &&
-      invoiceQuantities.reduce((sum, item) => sum + item, 0n) === poQuantity &&
-      invoiceAmounts.reduce((sum, item) => sum + item, 0n) === poAmount;
+    const exactRelatedMatch = exactSubsetAvailable(poLine);
     const validReason =
       residual.side === "purchase-order"
         ? (residual.reasonCode === "no-receipt-or-invoice-by-cutoff" &&
@@ -1482,11 +1562,11 @@ export function validateThreeWayMatch(candidate, context = {}) {
             relatedInvoices.length === 0) ||
           (residual.reasonCode === "three-way-mismatch-needs-owner-review" &&
             (relatedReceipts.length > 0 || relatedInvoices.length > 0) &&
-            !exactRelatedMatch)
+            exactRelatedMatch === false)
         : residual.reasonCode ===
             (residual.side === "receipt"
               ? "receipt-needs-owner-review"
-              : "invoice-needs-owner-review") && !exactRelatedMatch;
+              : "invoice-needs-owner-review") && exactRelatedMatch === false;
     const recordedAt = timestamp(residual.recordedAt);
     if (
       !line ||

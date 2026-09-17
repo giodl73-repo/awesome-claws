@@ -574,6 +574,77 @@ test("an exact three-way match cannot be relabeled as side residuals", () => {
   assert.ok(codes(candidate, trustedContext(candidate)).includes("invalid_result"));
 });
 
+test("an exact subset cannot be hidden by an extra residual line", () => {
+  const candidate = structuredClone(acceptedFixture);
+  candidate.receiptLines.push({
+    id: "receipt-line-kit-excess",
+    manifestRef: "manifest-receipts-po-450",
+    sourceSystemRef: "WMS://Receiving/DC-04",
+    exportRef: "RCV-PO450@2026-09-15T235959Z",
+    sourceNativeLineId: "RCV7005/10",
+    poLineRef: "po-line-server-kit",
+    purchaseOrderRevisionRef: "po-450-r2",
+    receiptId: "receipt-7005",
+    kind: "receipt",
+    reversesLineRef: null,
+    unitOfMeasure: "EA",
+    quantity: "1",
+    recordedAt: "2026-09-15T13:00:00Z",
+    currency: "USD",
+  });
+  candidate.matchGroups = candidate.matchGroups.filter(
+    (group) => group.id !== "group-server-kit",
+  );
+  const residualLines = [
+    candidate.purchaseOrderLines.find((line) => line.id === "po-line-server-kit"),
+    ...candidate.receiptLines.filter(
+      (line) => line.poLineRef === "po-line-server-kit",
+    ),
+    ...candidate.invoiceLines.filter(
+      (line) => line.poLineRef === "po-line-server-kit",
+    ),
+  ];
+  candidate.residuals.push(
+    ...residualLines.map((line, index) => ({
+      id: `residual-hidden-exact-subset-${index + 1}`,
+      side:
+        "lineNumber" in line
+          ? "purchase-order"
+          : "receiptId" in line
+            ? "receipt"
+            : "invoice",
+      lineRef: line.id,
+      poLineRef: "po-line-server-kit",
+      reasonCode:
+        "lineNumber" in line
+          ? "three-way-mismatch-needs-owner-review"
+          : "receiptId" in line
+            ? "receipt-needs-owner-review"
+            : "invoice-needs-owner-review",
+      ownerRef: "principal-anika-shah",
+      recordedAt: `2026-09-16T01:${30 + index}:00Z`,
+    })),
+  );
+  candidate.coverage.receiptLineRefs.push("receipt-line-kit-excess");
+  candidate.coverage.groupRefs = ["group-cable"];
+  candidate.coverage.residualRefs = candidate.residuals.map(
+    (residual) => residual.id,
+  );
+  candidate.result.groupRefs = ["group-cable"];
+  candidate.result.residualRefs = candidate.residuals.map(
+    (residual) => residual.id,
+  );
+  refreshManifest(candidate, "receipt");
+  bindDecisionsToCurrentPayloads(candidate);
+  refreshPartitionRoot(candidate);
+
+  assert.ok(
+    codes(candidate, trustedContext(candidate)).includes(
+      "invalid_side_residual",
+    ),
+  );
+});
+
 test("net-zero exact receipt and invoice additions cannot be hidden as side residuals", () => {
   const candidate = structuredClone(acceptedFixture);
   candidate.receiptLines.push(
