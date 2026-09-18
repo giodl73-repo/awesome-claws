@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/problem-known-error-public-trust.schema.json",
+  "title": "Caller-owned trust for the problem and known-error candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "publisher",
+    "issuer",
+    "identityCredentials",
+    "authorityGrants",
+    "evidenceRecords",
+    "sourceRecords",
+    "ownerReceipts",
+    "signatures",
+    "records"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.problemKnownErrorPublicTrust.v1"
+    },
+    "id": {
+      "$ref": "#/$defs/id"
+    },
+    "publisher": {
+      "$ref": "#/$defs/nonEmptyString"
+    },
+    "issuer": {
+      "$ref": "#/$defs/issuer"
+    },
+    "authorityGrants": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/authorityGrant"
+      }
+    },
+    "identityCredentials": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/identityCredential"
+      }
+    },
+    "evidenceRecords": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/evidenceRecord"
+      }
+    },
+    "sourceRecords": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/sourceRecord"
+      }
+    },
+    "ownerReceipts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/ownerReceipt"
+      }
+    },
+    "signatures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identityCredentials",
+        "authorityGrants",
+        "evidenceRecords",
+        "sourceRecords",
+        "ownerReceipts"
+      ],
+      "properties": {
+        "identityCredentials": {
+          "$ref": "#/$defs/signature"
+        },
+        "authorityGrants": {
+          "$ref": "#/$defs/signature"
+        },
+        "evidenceRecords": {
+          "$ref": "#/$defs/signature"
+        },
+        "sourceRecords": {
+          "$ref": "#/$defs/signature"
+        },
+        "ownerReceipts": {
+          "$ref": "#/$defs/signature"
+        }
+      }
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/publicRecord"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "displayName", "keyRef", "keyId", "algorithm"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "displayName": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "keyRef": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 4096
+        },
+        "keyId": {
+          "$ref": "#/$defs/id"
+        },
+        "algorithm": {
+          "const": "ed25519"
+        }
+      }
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9+/]+={0,2}$",
+      "minLength": 80,
+      "maxLength": 128
+    },
+    "identityCredential": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "principalRef",
+        "principalRecordDigest",
+        "assurance",
+        "subjectKeyId",
+        "issuerRef",
+        "validFrom",
+        "expiresAt",
+        "credentialDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "assurance": {
+          "const": "verified-human"
+        },
+        "subjectKeyId": {
+          "$ref": "#/$defs/id"
+        },
+        "issuerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "validFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "credentialDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "authorityGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principalRef",
+        "principalRecordDigest",
+        "issuerRef",
+        "scopes",
+        "validFrom",
+        "expiresAt",
+        "grantDigest"
+      ],
+      "properties": {
+        "principalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "issuerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "validFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "grantDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceRef",
+        "evidenceRecordDigest",
+        "issuerRef",
+        "claimDigest"
+      ],
+      "properties": {
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "issuerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "claimDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "sourceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceRef",
+        "sourceRef",
+        "sourceBytesDigest",
+        "evidenceRecordDigest",
+        "observedAt",
+        "issuerRef",
+        "attestationDigest"
+      ],
+      "properties": {
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceRef": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 4096
+        },
+        "sourceBytesDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "issuerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "attestationDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "ownerReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "evidenceRef",
+        "evidenceRecordDigest",
+        "ownerRef",
+        "consumedRevisionRefs",
+        "issuedAt",
+        "issuerRef",
+        "signerKeyId",
+        "receiptDigest",
+        "signature"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "consumedRevisionRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "issuerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signerKeyId": {
+          "$ref": "#/$defs/id"
+        },
+        "receiptDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "signature": {
+          "$ref": "#/$defs/signature"
+        }
+      }
+    },
+    "publicRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceRef",
+        "sourceRef",
+        "recordDigest",
+        "publishedAt"
+      ],
+      "properties": {
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceRef": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 4096
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "publishedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    }
+  }
+}

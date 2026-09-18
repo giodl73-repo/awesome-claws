@@ -404,6 +404,10 @@
                 "ownerTrustPolicy": {
                   "$ref": "#/$defs/procureToPayOwnerTrustPolicy"
                 },
+                "cutoff": {
+                  "type": "string",
+                  "format": "date-time"
+                },
                 "licenseTrustRoot": {
                   "type": "object",
                   "additionalProperties": false,

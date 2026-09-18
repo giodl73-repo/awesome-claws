@@ -85,7 +85,7 @@ async function buildSession(entry, experience) {
                 viewId,
                 url: `/__openclaw__/canvas/documents/${viewId}/index.html`,
                 preferredHeight: 620,
-                sandbox: "scripts",
+                sandbox: /<script\b/iu.test(asset) ? "scripts" : "strict",
               },
             },
           ],
@@ -113,7 +113,7 @@ async function buildSession(entry, experience) {
 async function waitForVisualResult(page, entry, session) {
   await page.getByText(entry.example.request, { exact: false }).first().waitFor({ timeout: 60_000 });
   if (session.assetUrl) {
-    await page.locator('.chat-tool-card__preview[data-kind="canvas"] iframe').waitFor({
+    await page.locator('.chat-tool-card__preview[data-kind="canvas"]').waitFor({
       state: "visible",
       timeout: 60_000,
     });

@@ -86,6 +86,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "pond-water-feature-coordinator": "pond-system.schema.json",
   "presentation-producer": "presentation-evidence-manifest.schema.json",
   "privacy-request-coordinator": "privacy-request.schema.json",
+  "problem-known-error-coordinator": "problem-known-error.schema.json",
   "procurement-evaluator": "vendor-evaluation.schema.json",
   "procure-to-pay-three-way-match-exception-reconciler":
     "procure-to-pay-three-way-match.schema.json",

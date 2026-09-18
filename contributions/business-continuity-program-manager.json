@@ -150,6 +150,11 @@
         "difference": "Security Alert Review Reconciler closes one revision-exact native-alert review snapshot with human dispositions and exact non-decisions. This Claw governs recurring business continuity across critical-process registers, BIAs, RTO/RPO requirements, dependencies, continuity plans, exercises, findings, corrective actions, exceptions, and independent recertification without reviewing detector alerts."
       },
       {
+        "id": "problem-known-error-coordinator",
+        "overlap": "Both preserve owner-supplied incident and change evidence, exact revision lineage, accountable findings and actions, later verification, explicit blockers, and non-authoritative handoffs.",
+        "difference": "Problem and Known-Error Coordinator reconciles one owner-declared cross-incident problem through hypotheses, QA tests, a workaround, a known-error declaration, an executed change, and recurrence. This Claw governs an enterprise-wide critical-process, BIA, dependency, continuity-plan, exercise, exception, and recertification cycle without correlating incidents or maintaining problem and known-error records."
+      },
+      {
         "id": "backup-restore-verification-coordinator",
         "overlap": "Both preserve recovery-objective evidence, dependency-aware blockers, exercise evidence, accountable owners, and a non-certifying resilience handoff.",
         "difference": "Backup Restore Verification Coordinator proves one technical restore round over protected resources, recovery points, isolated targets, provider jobs, validation, and cleanup. This Claw governs the recurring enterprise continuity lifecycle for exact business processes, BIAs, dependency maps, plan revisions, broad exercises, findings, remediation, exceptions, and recertification without selecting or restoring recovery points."

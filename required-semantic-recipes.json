@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 123,
-    "coveredCount": 123,
-    "recipeCount": 337,
-    "findingCodeCount": 447
+    "validatorCount": 124,
+    "coveredCount": 124,
+    "recipeCount": 340,
+    "findingCodeCount": 457
   },
   "entries": [
     {
@@ -3435,6 +3435,58 @@
           "replacement": "agent-owned",
           "expectedCodes": [
             "agent_owned_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "problem-known-error-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-problem-revision-1",
+          "operator": "replace",
+          "path": [
+            "problem",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_problem_revision"
+          ]
+        },
+        {
+          "id": "semantic-invalid-caller-trust-input-2",
+          "operator": "replace",
+          "path": [
+            "problem",
+            "revision"
+          ],
+          "replacement": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "expectedCodes": [
+            "invalid_caller_trust_input",
+            "invalid_change_receipt",
+            "invalid_hypothesis_matrix",
+            "invalid_hypothesis_test",
+            "invalid_incident_manifest",
+            "invalid_incident_membership_authority",
+            "invalid_known_error_revision_binding",
+            "invalid_problem_revision",
+            "invalid_recurrence",
+            "invalid_workaround_revision_binding"
+          ]
+        },
+        {
+          "id": "semantic-invalid-caller-trust-input-3",
+          "operator": "replace",
+          "path": [
+            "problem",
+            "declarationEvidenceRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_caller_trust_input",
+            "invalid_coverage",
+            "invalid_problem_revision"
           ]
         }
       ]

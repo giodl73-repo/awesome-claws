@@ -1,8 +1,14 @@
-# IT Problem Evidence and Known-Error Coordinator admission slice
+# Problem and Known-Error Coordinator admission decision
 
 ## Verdict
 
-**New Claw candidate; do not publish yet.** Confidence: **0.90**.
+**NEW Claw approved for public X3/X4 contribution.** Confidence: **0.90**.
+
+Independent admission approved the candidate at
+`a0086ad5a287a01754c579a81511463c3aed9389`. The accepted contract is now
+published as `problem-known-error-coordinator` with its source package,
+contribution record, semantic validator, deterministic proof surfaces, X4
+visual, Markdown fallback, and current Control UI screenshot.
 
 The independent review's **IMPROVE/COMPOSE** hypothesis was tested first with a
 source-derived adapter over real Incident Response, Quality Assurance Lead,
@@ -10,9 +16,6 @@ Change Control Operator, Repository Compliance Program Manager, and Case
 Continuity Coordinator artifacts. Their exact owner surfaces round-trip, but
 five problem-specific typed invariants are absent. The adapter cannot fill
 those gaps without becoming the new contract it is trying to avoid.
-
-No public catalog, contribution, Experience, chooser, screenshot, generated
-package, or artifact-validator registry entry is changed by this slice.
 
 ## Frame
 
@@ -44,7 +47,7 @@ accept risk.
 
 ## Strongest composition result
 
-`composition-adapter.mjs` pins the complete artifact and schema digests for all
+`scripts/problem-known-error-composition.mjs` pins the complete artifact and schema digests for all
 five owner Claws, derives identity/revision/chronology/coverage/authority
 projections only from those artifacts, and explicitly anchors Incident
 `followUps[].id`, `identityKey`, and `incidentRef`. It never copies proposal
@@ -84,9 +87,9 @@ If existing owner schemas later add these exact cross-artifact relationships,
 rerun the probe. A lossless result must flip the verdict to
 **IMPROVE/COMPOSE** and delete the candidate.
 
-## Candidate proof
+## Admitted public contract
 
-The candidate adds only the missing cross-owner contract:
+The public Claw adds only the missing cross-owner contract:
 
 - an owner-signed incident manifest over the exact membership revisions;
 - immutable content digests whose timestamps and predecessor references remain
@@ -107,6 +110,9 @@ The candidate adds only the missing cross-owner contract:
   roles;
 - caller-verified human credentials rather than name-based identity heuristics;
 - exact closed coverage across the complete supplied universe;
+- a caller-supplied, schema-validated owner-artifact bundle whose complete
+  Incident Response, QA, and Change Control artifacts may advance without
+  repository fixture pinning;
 - schema-first, total, resource-bounded validation;
 - negation-aware rejection of prohibited authority claims across every
   narrative surface.
@@ -141,4 +147,5 @@ hypotheses, tests, workaround expiry, known-error state, change receipts, and
 recurrence notes. Keep incident, QA, change, compliance, status-page, and
 owner-decision records authoritative.
 
-See `PROOF.md` for the exact commands, counts, and review result.
+See `problem-known-error-coordinator-proof.md` for the exact commands, counts,
+and review result.

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Problem and known-error owner review",
+  "output": "outputs/problem-known-error-coordinator-handoff.md",
+  "structuredOutput": "outputs/problem-known-error.json",
+  "sections": [
+    "exact_problem_revision",
+    "incident_membership_manifest",
+    "hypothesis_test_disposition_matrix",
+    "workaround_and_known_error",
+    "change_finalization_and_recurrence",
+    "coverage_and_trust_findings",
+    "authority_boundary_and_next_owner"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same problem revision, incident membership, hypothesis/test matrix, workaround and known-error state, change/recurrence chronology, findings, and authority non-claims as Markdown when inline presentation is unavailable."
+}

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "awesomeClaws.problemKnownErrorTrustKeyring.v1",
+  "allowedIssuerRefs": [
+    "issuer-awesome-claws-proof"
+  ],
+  "keys": [
+    {
+      "id": "key-awesome-claws-proof-issuer",
+      "kind": "issuer",
+      "principalRef": null,
+      "issuerRef": "issuer-awesome-claws-proof",
+      "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/issuer",
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAA/L5DCuhNwaj8fDR7vbSCpKRG8Xnl0d2X4q51aOM9WI=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "id": "key-problem-owner",
+      "kind": "principal",
+      "principalRef": "principal-problem-owner",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/principal-problem-owner",
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAzf1n3UcttJQnHWqDMMsusuKAYndemRJUS8CC4OcfSbc=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "id": "key-investigator",
+      "kind": "principal",
+      "principalRef": "principal-investigator",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/principal-investigator",
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAN8kXdGcr43G3ElnCnZjONx6Z9akSvQ9EYIdTqFGMNqU=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "id": "key-qa-engineer-alex",
+      "kind": "principal",
+      "principalRef": "principal-qa-engineer-alex",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/principal-qa-engineer-alex",
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAa3Eg8kmX4Gs1BmhI0dCjiNaqys38IWAlFDtQSr9KdZU=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "id": "key-workaround-owner",
+      "kind": "principal",
+      "principalRef": "principal-workaround-owner",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/principal-workaround-owner",
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA9VwmouwtdVMMhzcXCz918ktp5gqWlX1Guck8lw1nvvM=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "id": "key-known-error-owner",
+      "kind": "principal",
+      "principalRef": "principal-known-error-owner",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/principal-known-error-owner",
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEABWfTuxIk5dq6c4gf4kAOV6vFILVHSVLGYOzjd4z+P+A=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "id": "key-change-owner",
+      "kind": "principal",
+      "principalRef": "principal-change-owner",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/principal-change-owner",
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAeubqDp0SGwVvylMTFpBLIcU5Ha2BfIfaz7coskDOGOw=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "id": "key-incident-system",
+      "kind": "principal",
+      "principalRef": "principal-incident-system",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/principal-incident-system",
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAeoUqwrTW5sDSse8tsMPUi/kkgtgmsJk8izIDELyCfr4=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "id": "key-public-status",
+      "kind": "principal",
+      "principalRef": "principal-public-status",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/principal-public-status",
+      "algorithm": "ed25519",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA13TAaTOii++PXQLC+IvVfl0R6cFa6qDYVmMSodATCKo=\n-----END PUBLIC KEY-----\n"
+    }
+  ]
+}

@@ -4,10 +4,11 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import {
   deriveIncidentArtifact,
   digest as computeOwnerArtifactDigest,
-} from "./composition-adapter.mjs";
+} from "./problem-known-error-composition.mjs";
 
 import {
   canonicalJson,
@@ -32,7 +33,7 @@ import {
   problemKnownErrorFindings,
   resealProblemKnownErrorArtifact,
   signedCollectionPayload,
-} from "./validate.mjs";
+} from "./problem-known-error-coordinator.mjs";
 
 async function json(relative) {
   return JSON.parse(await readFile(new URL(relative, import.meta.url), "utf8"));
@@ -42,28 +43,32 @@ const [
   accepted,
   publicTrustInput,
   trustKeyring,
+  ownerArtifactBundle,
   revisionDrift,
   missingCoverage,
   candidateSchema,
   publicTrustSchema,
   trustKeyringSchema,
+  ownerArtifactBundleSchema,
   caseSchema,
   caseFixture,
   incidentSchema,
   incidentFixture,
 ] = await Promise.all([
-  json("./accepted.json"),
-  json("./public-trust-input.json"),
-  json("./trust-keyring.json"),
-  json("./revision-drift.json"),
-  json("./missing-coverage.json"),
-  json("./problem-known-error.schema.json"),
-  json("./problem-known-error-public-trust.schema.json"),
-  json("./problem-known-error-trust-keyring.schema.json"),
-  json("../../../sources/case-continuity-coordinator/schemas/case-checkpoint.schema.json"),
-  json("../../../sources/case-continuity-coordinator/fixtures/case-checkpoint.example.json"),
-  json("../../../sources/incident-response/schemas/incident-state.schema.json"),
-  json("../../../sources/incident-response/fixtures/incident-state.example.json"),
+  json("../sources/problem-known-error-coordinator/fixtures/problem-known-error.example.json"),
+  json("../sources/problem-known-error-coordinator/references/public-trust.example.json"),
+  json("../sources/problem-known-error-coordinator/references/trust-keyring.example.json"),
+  json("../sources/problem-known-error-coordinator/references/owner-artifacts.example.json"),
+  json("../sources/problem-known-error-coordinator/fixtures/problem-known-error.revision-drift.json"),
+  json("../sources/problem-known-error-coordinator/fixtures/problem-known-error.missing-coverage.json"),
+  json("../sources/problem-known-error-coordinator/schemas/problem-known-error.schema.json"),
+  json("../sources/problem-known-error-coordinator/schemas/problem-known-error-public-trust.schema.json"),
+  json("../sources/problem-known-error-coordinator/schemas/problem-known-error-trust-keyring.schema.json"),
+  json("../sources/problem-known-error-coordinator/schemas/problem-known-error-owner-artifacts.schema.json"),
+  json("../sources/case-continuity-coordinator/schemas/case-checkpoint.schema.json"),
+  json("../sources/case-continuity-coordinator/fixtures/case-checkpoint.example.json"),
+  json("../sources/incident-response/schemas/incident-state.schema.json"),
+  json("../sources/incident-response/fixtures/incident-state.example.json"),
 ]);
 
 const CUTOFF = "2026-09-16T20:00:00Z";
@@ -72,6 +77,7 @@ addFormats(ajv);
 const validateCandidateSchema = ajv.compile(candidateSchema);
 const validatePublicTrustSchema = ajv.compile(publicTrustSchema);
 const validateTrustKeyringSchema = ajv.compile(trustKeyringSchema);
+const validateOwnerArtifactBundleSchema = ajv.compile(ownerArtifactBundleSchema);
 const validateCaseSchema = ajv.compile(caseSchema);
 const validateIncidentSchema = ajv.compile(incidentSchema);
 
@@ -84,6 +90,7 @@ function findings(value, options = {}) {
     cutoff: CUTOFF,
     publicTrustInput,
     trustKeyring,
+    sourceBundle: ownerArtifactBundle,
     ...options,
   });
 }
@@ -602,6 +609,11 @@ test("accepted candidate is strict-schema valid and semantically clean", () => {
     true,
     ajv.errorsText(validateTrustKeyringSchema.errors),
   );
+  assert.equal(
+    validateOwnerArtifactBundleSchema(ownerArtifactBundle),
+    true,
+    ajv.errorsText(validateOwnerArtifactBundleSchema.errors),
+  );
   assert.deepEqual(findings(accepted), []);
   assert.equal(accepted.evidence.length, 19);
   assert.equal(accepted.incidentMemberships.length, 3);
@@ -934,6 +946,11 @@ test("public trust and cutoff stay caller-controlled", () => {
       "invalid_validation_context",
     ),
   );
+  assert.ok(
+    codes(accepted, { sourceBundle: undefined }).has(
+      "invalid_validation_context",
+    ),
+  );
   const driftedTrust = structuredClone(publicTrustInput);
   driftedTrust.records[0].recordDigest =
     "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
@@ -1188,9 +1205,17 @@ test("owner-signed incident manifest seals coherent incident substitutions", () 
     "sha256:9191919191919191919191919191919191919191919191919191919191919191";
   membership.revision = computeIncidentMembershipRevision(membership);
   declaration.subjectRevision = membership.revision;
+  const sourceBundle = structuredClone(ownerArtifactBundle);
+  const incidentOwnerArtifact = sourceBundle.incidentResponseArtifacts.find(
+    (row) => row.artifact.incident.id === "incident-inc-001",
+  );
+  incidentOwnerArtifact.artifactRef =
+    "controlled://incident-response/incident-inc-009";
+  incidentOwnerArtifact.artifact = substitutedOwnerArtifact;
 
   const actual = codes(candidate, {
     publicTrustInput: refreshedTrust(candidate),
+    sourceBundle,
   });
   assert.equal(actual.has("invalid_incident_membership_authority"), false);
   assert.ok(actual.has("invalid_incident_manifest"));
@@ -1548,6 +1573,122 @@ test("candidate records resolve exact complete owner artifacts", () => {
   unresolvedChange.changeReceipts[0].ownerPlanDigest =
     "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
   assert.ok(codes(unresolvedChange).has("invalid_change_receipt"));
+
+  const duplicateBundle = structuredClone(ownerArtifactBundle);
+  duplicateBundle.incidentResponseArtifacts.push(
+    structuredClone(duplicateBundle.incidentResponseArtifacts[0]),
+  );
+  assert.ok(
+    codes(accepted, { sourceBundle: duplicateBundle }).has(
+      "invalid_owner_artifact_bundle",
+    ),
+  );
+});
+
+test("caller-supplied owner artifacts may advance without repository fixture pinning", () => {
+  const sourceBundle = structuredClone(ownerArtifactBundle);
+  sourceBundle.qualityAssuranceArtifact.artifact.limitations.push(
+    "The owner added a valid evidence-retention limitation.",
+  );
+  const ownerArtifactDigest = computeOwnerArtifactDigest(
+    sourceBundle.qualityAssuranceArtifact.artifact,
+  );
+  const candidate = clone();
+  for (const row of candidate.tests) {
+    row.ownerArtifactDigest = ownerArtifactDigest;
+  }
+  const resealed = coherentlyReseal(candidate);
+  const signed = fullySignedTrust(resealed);
+
+  assert.deepEqual(
+    problemKnownErrorFindings(resealed, {
+      cutoff: CUTOFF,
+      sourceBundle,
+      publicTrustInput: signed.publicTrustInput,
+      trustKeyring: signed.trustKeyring,
+    }),
+    [],
+  );
+
+  const staleBundle = structuredClone(ownerArtifactBundle);
+  assert.ok(
+    codes(resealed, {
+      sourceBundle: staleBundle,
+      publicTrustInput: signed.publicTrustInput,
+      trustKeyring: signed.trustKeyring,
+    }).has("invalid_hypothesis_test"),
+  );
+});
+
+test("inconclusive owner QA runs cannot be converted into hypothesis refutations", () => {
+  const sourceBundle = structuredClone(ownerArtifactBundle);
+  const qaArtifact = sourceBundle.qualityAssuranceArtifact.artifact;
+  const blockedRun = {
+    ...structuredClone(
+      qaArtifact.testRuns.find((row) => row.id === "run-payment-retry-1"),
+    ),
+    id: "run-payment-retry-blocked",
+    result: "blocked",
+    evidenceRef: "evidence-run-payment-retry-blocked",
+  };
+  qaArtifact.testRuns.push(blockedRun);
+  qaArtifact.evidence.push({
+    ...structuredClone(
+      qaArtifact.evidence.find(
+        (row) => row.id === "evidence-run-payment-retry-1",
+      ),
+    ),
+    id: blockedRun.evidenceRef,
+    testRunRef: blockedRun.id,
+    outcome: "blocked",
+    sourceRef:
+      "controlled://qa-evidence/release-2026.9.0-mobile/payment-retry-blocked",
+  });
+  assert.deepEqual(
+    validateArtifactSemantics("quality-assurance-lead", qaArtifact),
+    [],
+  );
+
+  const ownerArtifactDigest = computeOwnerArtifactDigest(qaArtifact);
+  const candidate = clone();
+  const testRow = candidate.tests.find(
+    (row) => row.outcome === "refutes",
+  );
+  testRow.testRunRef = blockedRun.id;
+  testRow.ownerArtifactDigest = ownerArtifactDigest;
+  testRow.revision = computeTestRevision(testRow);
+  const resealed = coherentlyReseal(candidate);
+  const signed = fullySignedTrust(resealed);
+  assert.ok(
+    problemKnownErrorFindings(resealed, {
+      cutoff: CUTOFF,
+      sourceBundle,
+      publicTrustInput: signed.publicTrustInput,
+      trustKeyring: signed.trustKeyring,
+    }).some((row) => row.code === "invalid_hypothesis_test"),
+  );
+});
+
+test("public evidence rejects credential-bearing URLs", () => {
+  for (const sourceRef of [
+    "https://user:password@status.contoso.example/incidents/inc-003",
+    "https://status.contoso.example/incidents/inc-003?access_token=secret",
+  ]) {
+    const candidate = clone();
+    candidate.evidence.find(
+      (row) => row.id === "evidence-public-status-inc-003",
+    ).sourceRef = sourceRef;
+    const signed = fullySignedTrust(candidate);
+    assert.ok(
+      problemKnownErrorFindings(candidate, {
+        cutoff: CUTOFF,
+        sourceBundle: ownerArtifactBundle,
+        publicTrustInput: signed.publicTrustInput,
+        trustKeyring: signed.trustKeyring,
+      }).some((row) => row.code === "invalid_evidence"),
+      sourceRef,
+    );
+  }
 });
 
 test("coherent graph reseal cannot mint fresh external receipts or signatures", () => {

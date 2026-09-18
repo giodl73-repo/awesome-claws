@@ -104,6 +104,14 @@
       "output": "outputs/three-way-match-review.html"
     },
     {
+      "id": "problem-known-error-coordinator",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/problem-known-error-review.html",
+      "fallback": "outputs/problem-known-error-coordinator-handoff.md",
+      "output": "outputs/problem-known-error-review.html"
+    },
+    {
       "id": "enterprise-license-entitlement-reconciler",
       "target": 4,
       "primary": "inline-widget",

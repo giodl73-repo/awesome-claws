@@ -1920,6 +1920,34 @@
       "capabilityDigest": "sha256:3a263720c362329eaafe1c80874a7d2f709ca2c0775b6c2c2a52e225d512011c"
     },
     {
+      "id": "problem-known-error-coordinator",
+      "acceptedRequest": "Reconcile these three owner-declared checkout incidents into the current problem revision, preserve the competing hypothesis tests, approved workaround, known-error declaration, completed change receipt, and later recurrence, and prepare the next owner decision without publishing, changing, or closing anything.",
+      "requiredEvidence": [
+        "Exact open problem revision, predecessor artifact and revision, service scope, accountable problem owner, and caller-controlled cutoff",
+        "Owner-signed incident-membership manifest with complete Incident Response artifact, schema, source-byte, follow-up, and identity digests",
+        "Competing owner hypothesis proposal and disposition revisions with exact QA run, build, environment, evidence, and execution time",
+        "Expiring workaround approval, known-error declaration, Change Control artifact and plan digests, external execution and verification receipts, and later recurrence",
+        "Caller-supplied allowlisted keyring, verified-human credentials, scoped grants, evidence claims, source attestations, owner receipts, and exact closed coverage"
+      ],
+      "authorityBoundaries": [
+        "Do not infer or declare incident correlation or root cause; preserve only owner-signed membership and hypothesis evidence",
+        "Do not approve, execute, or publish a workaround or known error",
+        "Do not authorize or execute production change, mutate incident or problem records, close an incident or problem, or accept risk",
+        "Do not accept stale, equal-time, self-attested, unsigned, unresolved, or incomplete lineage as current evidence"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/problem-known-error-review.html",
+        "fallback": "outputs/problem-known-error-coordinator-handoff.md",
+        "asset": "assets/problem-known-error-review.html"
+      },
+      "capabilityClasses": [
+        "visual"
+      ],
+      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
+    },
+    {
       "id": "procure-to-pay-three-way-match-exception-reconciler",
       "acceptedRequest": "Reconcile PO-450 revision 2 and its approved amendment against these complete receipt and invoice exports at the supplied cutoff. Preserve split receipts, the return, partial invoices, the credit, and every unmatched line. Accept only exact owner-approved three-way groups; do not post, pay, create receipts, contact the supplier, interpret tax or accounting treatment, or change any source.",
       "requiredEvidence": [

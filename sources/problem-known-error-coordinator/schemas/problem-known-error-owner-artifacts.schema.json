@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/problem-known-error-owner-artifacts.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "incidentResponseArtifacts",
+    "qualityAssuranceArtifact",
+    "changeControlArtifact"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.problemKnownErrorOwnerArtifacts.v1"
+    },
+    "incidentResponseArtifacts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/ownerArtifact"
+      }
+    },
+    "qualityAssuranceArtifact": {
+      "$ref": "#/$defs/ownerArtifact"
+    },
+    "changeControlArtifact": {
+      "$ref": "#/$defs/ownerArtifact"
+    }
+  },
+  "$defs": {
+    "ownerArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactRef",
+        "artifact"
+      ],
+      "properties": {
+        "artifactRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "artifact": {
+          "type": "object",
+          "minProperties": 1
+        }
+      }
+    }
+  }
+}

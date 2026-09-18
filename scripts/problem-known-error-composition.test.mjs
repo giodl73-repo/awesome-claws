@@ -14,15 +14,15 @@ import {
   OWNER_CONTRACTS,
   requireLosslessProposalComposition,
   roundTripOwnerProjection,
-} from "./composition-adapter.mjs";
+} from "./problem-known-error-composition.mjs";
 import {
   TYPED_CONTROL_KEYRING_SCHEMA_VERSION,
   TYPED_CONTROL_SCHEMA_VERSION,
-} from "./typed-composition-graph.mjs";
+} from "./problem-known-error-composition-graph.mjs";
 import {
   artifactSemanticValidationOptions,
   validateArtifactSemantics,
-} from "../../../scripts/artifact-semantics.mjs";
+} from "./artifact-semantics.mjs";
 
 async function json(relative) {
   return JSON.parse(await readFile(new URL(relative, import.meta.url), "utf8"));
@@ -30,36 +30,38 @@ async function json(relative) {
 
 const definitions = {
   "incident-response": {
-    artifact: "../../../sources/incident-response/fixtures/incident-state.example.json",
-    schema: "../../../sources/incident-response/schemas/incident-state.schema.json",
+    artifact: "../sources/incident-response/fixtures/incident-state.example.json",
+    schema: "../sources/incident-response/schemas/incident-state.schema.json",
   },
   "quality-assurance-lead": {
     artifact:
-      "../../../sources/quality-assurance-lead/fixtures/test-evidence.example.json",
+      "../sources/quality-assurance-lead/fixtures/test-evidence.example.json",
     schema:
-      "../../../sources/quality-assurance-lead/schemas/test-evidence.schema.json",
+      "../sources/quality-assurance-lead/schemas/test-evidence.schema.json",
   },
   "change-control-operator": {
     artifact:
-      "../../../sources/change-control-operator/fixtures/change-plan.example.json",
+      "../sources/change-control-operator/fixtures/change-plan.example.json",
     schema:
-      "../../../sources/change-control-operator/schemas/change-plan.schema.json",
+      "../sources/change-control-operator/schemas/change-plan.schema.json",
   },
   "repository-compliance-program-manager": {
     artifact:
-      "../../../sources/repository-compliance-program-manager/fixtures/repository-compliance-program.example.json",
+      "../sources/repository-compliance-program-manager/fixtures/repository-compliance-program.example.json",
     schema:
-      "../../../sources/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json",
+      "../sources/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json",
   },
   "case-continuity-coordinator": {
     artifact:
-      "../../../sources/case-continuity-coordinator/fixtures/case-checkpoint.example.json",
+      "../sources/case-continuity-coordinator/fixtures/case-checkpoint.example.json",
     schema:
-      "../../../sources/case-continuity-coordinator/schemas/case-checkpoint.schema.json",
+      "../sources/case-continuity-coordinator/schemas/case-checkpoint.schema.json",
   },
 };
 
-const proposal = await json("./accepted.json");
+const proposal = await json(
+  "../sources/problem-known-error-coordinator/fixtures/problem-known-error.example.json",
+);
 const sources = Object.fromEntries(
   await Promise.all(
     Object.entries(definitions).map(async ([id, paths]) => [

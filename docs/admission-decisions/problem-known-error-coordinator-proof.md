@@ -1,18 +1,20 @@
-# Problem and known-error candidate proof
+# Problem and Known-Error Coordinator public proof
 
-Status: hardened local deterministic proof on 2026-09-17.
+Status: admitted NEW contract promoted to the public X3/X4 catalog on
+2026-09-18 from accepted candidate
+`a0086ad5a287a01754c579a81511463c3aed9389`.
 
 ## Commands and results
 
 ```text
-node --test docs\admission-slices\problem-known-error\composition-adapter.test.mjs docs\admission-slices\problem-known-error\validate.test.mjs scripts\incident-state-schema.test.mjs scripts\quality-assurance-lead.test.mjs scripts\repository-compliance-program-manager.test.mjs
+node --test scripts\problem-known-error-composition.test.mjs scripts\problem-known-error-coordinator.test.mjs scripts\incident-state-schema.test.mjs scripts\quality-assurance-lead.test.mjs scripts\repository-compliance-program-manager.test.mjs
 ```
 
-Result: **124 passed, 0 failed**. The eight composition assertions validate the
+Result: **127 passed, 0 failed**. The eight composition assertions validate the
 real owner artifacts, three coherently substituted Incident Response artifacts,
 owner projection round-trip, normalized typed-graph relationship/authority
 calculation, five independent closed future controls, and tamper rejection. The
-28 candidate assertions cover the
+31 coordinator assertions cover the
 accepted artifact and exact adversarial regressions. The remaining tests are
 the Incident Response, Quality Assurance Lead, and Repository Compliance
 Program Manager schema and semantic suites.
@@ -25,21 +27,21 @@ Result: **2 passed, 0 failed** for the focused Change Control Operator and Case
 Continuity Coordinator contracts.
 
 ```text
-node --test scripts\problem-known-error-admission-slice.test.mjs
+npm run validate:artifact -- problem-known-error-coordinator sources\problem-known-error-coordinator\fixtures\problem-known-error.example.json --cutoff 2026-09-16T20:00:00Z --public-trust-input sources\problem-known-error-coordinator\references\public-trust.example.json --trust-keyring sources\problem-known-error-coordinator\references\trust-keyring.example.json --source-bundle sources\problem-known-error-coordinator\references\owner-artifacts.example.json
 ```
 
-Result: **36 passed, 0 failed**. The required scripts bridge executes both the
-strongest-composition probe and hardened candidate suite without registering a
-public artifact validator.
+Result: **valid**, with no schema errors or semantic findings. The public CLI
+uses explicit caller-supplied trust and complete owner artifacts rather than
+repository fixture identities.
 
 ```text
 npm run check
 ```
 
-Result: **2,139 passed, 1 expected platform skip, 0 failed**. The remaining
-required checks also passed: 121 semantic validators, 331 recipes, 435 finding
-codes, 121 packages, 121 chooser views, 363 deterministic runtime trials, 110
-post-policy contribution records, and 121 regression contracts.
+Result: **2,150 passed, 1 expected platform skip, 0 failed**. The remaining
+required checks also passed: 122 semantic validators, 334 recipes, 445 finding
+codes, 122 packages, 122 chooser views, 366 deterministic runtime trials, 111
+post-policy contribution records, and 122 regression contracts.
 
 ## Composition decision
 
@@ -63,7 +65,7 @@ with those exact losses. The honest verdict is therefore **NEW**, with an
 explicit future verdict-flip gate if the owner contracts gain a lossless
 round-trip.
 
-## Hardened candidate claims
+## Hardened public contract claims
 
 - Resealing recomputes digest fields only; it never rewrites evidence,
   authority, coverage, or downstream revision bindings.
@@ -71,6 +73,11 @@ round-trip.
   revision universe, including real Incident follow-up identity keys.
 - A caller-supplied allowlisted keyring—not the trust payload—selects the issuer
   key and each principal key.
+- A caller-supplied, schema-validated source bundle provides the complete
+  Incident Response, QA, and Change Control artifacts. Their exact digests,
+  identities, revisions, run references, plan references, and canonical schema
+  digests are bound by the coordinator artifact; packaged examples are used only
+  by the explicit deterministic fixture profile.
 - Issuer signatures bind unique scoped/time-bounded grants, verified-human
   credentials, every evidence claim, every source-byte attestation, and the
   complete owner-receipt set through map-indexed lookups.
@@ -93,32 +100,34 @@ round-trip.
 - Schema validation runs before semantic rules, and duplicate caller-trust keys
   fail closed.
 
-No public registry or generated catalog surface is changed.
+The approved public promotion adds the catalog and contribution records,
+generated package and chooser surfaces, semantic and schema registries,
+regression and Mock+ evidence, X4 experience case and visual, Markdown fallback,
+and current Control UI screenshot.
 
 ## Autoreview
 
-The fresh trust-boundary review accepted two P1 findings: issuer signatures
-could impersonate an owner receipt, and the trust payload could declare its own
-verification key. Both are fixed with exact adversarial regressions. The
-follow-up Autoreview loop also tightened coherent-subgraph evaluation, exact
-candidate node/edge bindings, owner-artifact validation, evidence-bound owner
-signatures, key-material separation, malformed-input totality, and signed
-control attribution. No finding was rejected.
-
-The final chronology review accepted one blocker: QA execution equaling its
-hypothesis proposal was admitted. Every consume-after edge now rejects equality,
-and the 14-case equality matrix rebuilds all downstream revisions, evidence,
-coverage, issuer signatures, and principal receipts before asserting the
-chronology finding.
+Candidate review repaired issuer/owner key separation, coherent-subgraph
+evaluation, exact node/edge bindings, evidence-bound owner signatures,
+malformed-input totality, and strict consume-after chronology. Promotion review
+then accepted and repaired stale generated score evidence, incomplete index
+coverage, contradictory pre-admission wording, and fixture-pinned owner
+artifacts. The public validator now requires a caller-supplied owner-artifact
+bundle and proves that a legitimate non-pinned QA artifact revision validates
+only after every candidate digest and owner receipt is coherently refreshed. No
+finding was rejected. The final review also required explicit rejection of
+inconclusive QA outcomes as hypothesis refutations and credential-bearing public
+evidence URLs; both have exact regressions.
 
 Final command:
 
 ```text
-C:\src\claws-hapi\.agents\skills\autoreview\scripts\autoreview --mode local --fallback-reviewer claude --output C:\src\awesome-claws-problem-slice\.tmp\autoreview-problem.txt
+C:\src\claws-hapi\.agents\skills\autoreview\scripts\autoreview --mode branch --base origin/main
 ```
 
 Final result:
 `autoreview clean: no accepted/actionable findings reported`.
 The reviewer reported no actionable correctness issues, **36 focused tests**
-passing, and the full repository check passing with **2,139 tests** plus all
-catalog validations.
+passing at candidate admission, **127 focused and analogue tests** passing for
+public promotion, and the full repository check passing with **2,150 tests**
+plus all catalog validations.

@@ -6,12 +6,11 @@ import {
 import { readFileSync } from "node:fs";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import { digest as computeOwnerArtifactDigest } from "./problem-known-error-owner-contracts.mjs";
 import {
-  deriveIncidentArtifact,
-  digest as computeOwnerArtifactDigest,
-  OWNER_CONTRACTS,
-} from "./composition-adapter.mjs";
-import { validateArtifactSemantics } from "../../../scripts/artifact-semantics.mjs";
+  isCredentialFreePublicHttpsReference,
+  validateArtifactSemantics,
+} from "./artifact-semantics.mjs";
 
 export const PROBLEM_KNOWN_ERROR_SCHEMA_VERSION =
   "awesomeClaws.problemKnownErrorCandidate.v1";
@@ -25,7 +24,10 @@ addFormats(ajv);
 const validateCandidateSchema = ajv.compile(
   JSON.parse(
     readFileSync(
-      new URL("./problem-known-error.schema.json", import.meta.url),
+      new URL(
+        "../sources/problem-known-error-coordinator/schemas/problem-known-error.schema.json",
+        import.meta.url,
+      ),
       "utf8",
     ),
   ),
@@ -33,7 +35,10 @@ const validateCandidateSchema = ajv.compile(
 const validatePublicTrustSchema = ajv.compile(
   JSON.parse(
     readFileSync(
-      new URL("./problem-known-error-public-trust.schema.json", import.meta.url),
+      new URL(
+        "../sources/problem-known-error-coordinator/schemas/problem-known-error-public-trust.schema.json",
+        import.meta.url,
+      ),
       "utf8",
     ),
   ),
@@ -42,35 +47,28 @@ const validateTrustKeyringSchema = ajv.compile(
   JSON.parse(
     readFileSync(
       new URL(
-        "./problem-known-error-trust-keyring.schema.json",
+        "../sources/problem-known-error-coordinator/schemas/problem-known-error-trust-keyring.schema.json",
         import.meta.url,
       ),
       "utf8",
     ),
   ),
 );
-const incidentOwnerArtifact = JSON.parse(
-  readFileSync(
-    new URL(
-      "../../../sources/incident-response/fixtures/incident-state.example.json",
-      import.meta.url,
+const validateOwnerArtifactsSchema = ajv.compile(
+  JSON.parse(
+    readFileSync(
+      new URL(
+        "../sources/problem-known-error-coordinator/schemas/problem-known-error-owner-artifacts.schema.json",
+        import.meta.url,
+      ),
+      "utf8",
     ),
-    "utf8",
   ),
 );
 const incidentOwnerSchema = JSON.parse(
   readFileSync(
     new URL(
-      "../../../sources/incident-response/schemas/incident-state.schema.json",
-      import.meta.url,
-    ),
-    "utf8",
-  ),
-);
-const qaOwnerArtifact = JSON.parse(
-  readFileSync(
-    new URL(
-      "../../../sources/quality-assurance-lead/fixtures/test-evidence.example.json",
+      "../sources/incident-response/schemas/incident-state.schema.json",
       import.meta.url,
     ),
     "utf8",
@@ -79,16 +77,7 @@ const qaOwnerArtifact = JSON.parse(
 const qaOwnerSchema = JSON.parse(
   readFileSync(
     new URL(
-      "../../../sources/quality-assurance-lead/schemas/test-evidence.schema.json",
-      import.meta.url,
-    ),
-    "utf8",
-  ),
-);
-const changeOwnerArtifact = JSON.parse(
-  readFileSync(
-    new URL(
-      "../../../sources/change-control-operator/fixtures/change-plan.example.json",
+      "../sources/quality-assurance-lead/schemas/test-evidence.schema.json",
       import.meta.url,
     ),
     "utf8",
@@ -97,7 +86,7 @@ const changeOwnerArtifact = JSON.parse(
 const changeOwnerSchema = JSON.parse(
   readFileSync(
     new URL(
-      "../../../sources/change-control-operator/schemas/change-plan.schema.json",
+      "../sources/change-control-operator/schemas/change-plan.schema.json",
       import.meta.url,
     ),
     "utf8",
@@ -106,38 +95,46 @@ const changeOwnerSchema = JSON.parse(
 const validateIncidentOwnerSchema = ajv.compile(incidentOwnerSchema);
 const validateQaOwnerSchema = ajv.compile(qaOwnerSchema);
 const validateChangeOwnerSchema = ajv.compile(changeOwnerSchema);
-const QA_OWNER_ARTIFACT_REF =
-  "sources/quality-assurance-lead/fixtures/test-evidence.example.json";
-const incidentOwnerContractValid =
-  computeOwnerArtifactDigest(incidentOwnerArtifact) ===
-    OWNER_CONTRACTS["incident-response"].artifactDigest &&
-  computeOwnerArtifactDigest(incidentOwnerSchema) ===
-    OWNER_CONTRACTS["incident-response"].schemaDigest &&
-  validateIncidentOwnerSchema(incidentOwnerArtifact) &&
-  validateArtifactSemantics(
-    "incident-response",
-    incidentOwnerArtifact,
-  ).length === 0;
-const qaOwnerContractValid =
-  computeOwnerArtifactDigest(qaOwnerArtifact) ===
-    OWNER_CONTRACTS["quality-assurance-lead"].artifactDigest &&
-  computeOwnerArtifactDigest(qaOwnerSchema) ===
-    OWNER_CONTRACTS["quality-assurance-lead"].schemaDigest &&
-  validateQaOwnerSchema(qaOwnerArtifact) &&
-  validateArtifactSemantics(
-    "quality-assurance-lead",
-    qaOwnerArtifact,
-  ).length === 0;
-const changeOwnerContractValid =
-  computeOwnerArtifactDigest(changeOwnerArtifact) ===
-    OWNER_CONTRACTS["change-control-operator"].artifactDigest &&
-  computeOwnerArtifactDigest(changeOwnerSchema) ===
-    OWNER_CONTRACTS["change-control-operator"].schemaDigest &&
-  validateChangeOwnerSchema(changeOwnerArtifact) &&
-  validateArtifactSemantics(
-    "change-control-operator",
-    changeOwnerArtifact,
-  ).length === 0;
+const INCIDENT_OWNER_SCHEMA_DIGEST =
+  computeOwnerArtifactDigest(incidentOwnerSchema);
+const QA_OWNER_SCHEMA_DIGEST = computeOwnerArtifactDigest(qaOwnerSchema);
+const CHANGE_OWNER_SCHEMA_DIGEST =
+  computeOwnerArtifactDigest(changeOwnerSchema);
+const PROBLEM_KNOWN_ERROR_EXAMPLE_VALIDATION_OPTIONS = Object.freeze({
+  cutoff: "2026-09-16T20:00:00Z",
+  publicTrustInput: JSON.parse(
+    readFileSync(
+      new URL(
+        "../sources/problem-known-error-coordinator/references/public-trust.example.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  ),
+  trustKeyring: JSON.parse(
+    readFileSync(
+      new URL(
+        "../sources/problem-known-error-coordinator/references/trust-keyring.example.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  ),
+  sourceBundle: JSON.parse(
+    readFileSync(
+      new URL(
+        "../sources/problem-known-error-coordinator/references/owner-artifacts.example.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+  ),
+});
+export const PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS = Object.freeze({
+  cutoff: PROBLEM_KNOWN_ERROR_EXAMPLE_VALIDATION_OPTIONS.cutoff,
+  fixtureTrustProfile: "packaged-example-v1",
+  fixtureSourceProfile: "packaged-example-v1",
+});
 const MAX_ARTIFACT_BYTES = 256 * 1024;
 const MAX_DEPTH = 16;
 const MAX_STRING_LENGTH = 4096;
@@ -856,19 +853,39 @@ export function problemKnownErrorFindings(value, options = {}) {
     ];
   }
 
+  const fixtureProfiles =
+    options.fixtureTrustProfile === "packaged-example-v1" &&
+    options.fixtureSourceProfile === "packaged-example-v1";
+  const contextOptions = fixtureProfiles
+    ? {
+        ...options,
+        publicTrustInput:
+          PROBLEM_KNOWN_ERROR_EXAMPLE_VALIDATION_OPTIONS.publicTrustInput,
+        trustKeyring:
+          PROBLEM_KNOWN_ERROR_EXAMPLE_VALIDATION_OPTIONS.trustKeyring,
+        sourceBundle:
+          PROBLEM_KNOWN_ERROR_EXAMPLE_VALIDATION_OPTIONS.sourceBundle,
+      }
+    : options;
   const boundedFindings = [
     ...boundedInputFindings(value, "$"),
-    ...(options.publicTrustInput === undefined
+    ...(contextOptions.publicTrustInput === undefined
       ? []
       : boundedInputFindings(
-          options.publicTrustInput,
+          contextOptions.publicTrustInput,
           "$context.publicTrustInput",
         )),
-    ...(options.trustKeyring === undefined
+    ...(contextOptions.trustKeyring === undefined
       ? []
       : boundedInputFindings(
-          options.trustKeyring,
+          contextOptions.trustKeyring,
           "$context.trustKeyring",
+        )),
+    ...(contextOptions.sourceBundle === undefined
+      ? []
+      : boundedInputFindings(
+          contextOptions.sourceBundle,
+          "$context.sourceBundle",
         )),
   ];
   if (boundedFindings.length > 0) {
@@ -882,9 +899,10 @@ export function problemKnownErrorFindings(value, options = {}) {
 
   const findings = [];
   const add = (code, path, message) => findings.push({ code, path, message });
-  const cutoff = time(options.cutoff);
-  const trust = object(options.publicTrustInput);
-  const trustKeyring = object(options.trustKeyring);
+  const cutoff = time(contextOptions.cutoff);
+  const trust = object(contextOptions.publicTrustInput);
+  const trustKeyring = object(contextOptions.trustKeyring);
+  const ownerArtifacts = object(contextOptions.sourceBundle);
   if (!validateCandidateSchema(value)) {
     add(
       "invalid_schema",
@@ -904,6 +922,13 @@ export function problemKnownErrorFindings(value, options = {}) {
       "invalid_trust_keyring",
       "$context.trustKeyring",
       `Trust keyring schema validation failed: ${ajv.errorsText(validateTrustKeyringSchema.errors)}`,
+    );
+  }
+  if (!validateOwnerArtifactsSchema(ownerArtifacts)) {
+    add(
+      "invalid_owner_artifact_bundle",
+      "$context.sourceBundle",
+      `Owner artifact bundle schema validation failed: ${ajv.errorsText(validateOwnerArtifactsSchema.errors)}`,
     );
   }
   const problem = object(value.problem);
@@ -928,6 +953,43 @@ export function problemKnownErrorFindings(value, options = {}) {
   const testById = mapById(tests);
   const changeById = mapById(changes);
   const verifiedHumanRefs = new Set();
+  const incidentOwnerArtifactRows = records(
+    ownerArtifacts.incidentResponseArtifacts,
+  ).map((row) => ({
+    artifactRef: row.artifactRef,
+    artifact: object(row.artifact),
+  }));
+  const incidentOwnerArtifactById = new Map(
+    incidentOwnerArtifactRows.map((row) => [row.artifact.incident?.id, row]),
+  );
+  const incidentOwnerArtifactsValid =
+    incidentOwnerArtifactRows.length === memberships.length &&
+    incidentOwnerArtifactById.size === incidentOwnerArtifactRows.length &&
+    incidentOwnerArtifactRows.every(
+      (row) =>
+        typeof row.artifactRef === "string" &&
+        validateIncidentOwnerSchema(row.artifact) &&
+        validateArtifactSemantics("incident-response", row.artifact).length ===
+          0,
+    ) &&
+    exactSet(
+      incidentOwnerArtifactRows.map((row) => row.artifact.incident?.id),
+      memberships.map((row) => row.incidentRef),
+    );
+  const qaOwnerArtifactRow = object(ownerArtifacts.qualityAssuranceArtifact);
+  const qaOwnerArtifact = object(qaOwnerArtifactRow.artifact);
+  const qaOwnerContractValid =
+    typeof qaOwnerArtifactRow.artifactRef === "string" &&
+    validateQaOwnerSchema(qaOwnerArtifact) &&
+    validateArtifactSemantics("quality-assurance-lead", qaOwnerArtifact)
+      .length === 0;
+  const changeOwnerArtifactRow = object(ownerArtifacts.changeControlArtifact);
+  const changeOwnerArtifact = object(changeOwnerArtifactRow.artifact);
+  const changeOwnerContractValid =
+    typeof changeOwnerArtifactRow.artifactRef === "string" &&
+    validateChangeOwnerSchema(changeOwnerArtifact) &&
+    validateArtifactSemantics("change-control-operator", changeOwnerArtifact)
+      .length === 0;
 
   if (value.schemaVersion !== PROBLEM_KNOWN_ERROR_SCHEMA_VERSION) {
     add("invalid_schema_version", "schemaVersion", "The candidate schema version is not supported.");
@@ -961,6 +1023,11 @@ export function problemKnownErrorFindings(value, options = {}) {
     !Array.isArray(trust.evidenceRecords) ||
     !Array.isArray(trust.sourceRecords) ||
     !Array.isArray(trust.ownerReceipts) ||
+    ownerArtifacts.schemaVersion !==
+      "awesomeClaws.problemKnownErrorOwnerArtifacts.v1" ||
+    !Array.isArray(ownerArtifacts.incidentResponseArtifacts) ||
+    !isRecord(ownerArtifacts.qualityAssuranceArtifact) ||
+    !isRecord(ownerArtifacts.changeControlArtifact) ||
     [
       "records",
       "identityCredentials",
@@ -975,7 +1042,7 @@ export function problemKnownErrorFindings(value, options = {}) {
     add(
       "invalid_validation_context",
       "$context",
-      "Caller-supplied cutoff and publicTrustInput are required; the artifact cannot supply current time or its own public trust.",
+      "Caller-supplied cutoff, publicTrustInput, trustKeyring, and sourceBundle are required; the artifact cannot supply current time, its own trust, or owner artifacts.",
     );
   }
 
@@ -1395,13 +1462,23 @@ export function problemKnownErrorFindings(value, options = {}) {
   for (const [index, row] of evidence.entries()) {
     const observedAt = time(row.observedAt);
     const producer = principalById.get(row.producedByRef);
+    let publicSourceValid = false;
+    if (row.trust === "public") {
+      try {
+        publicSourceValid = isCredentialFreePublicHttpsReference(
+          new URL(row.sourceRef),
+        );
+      } catch {
+        publicSourceValid = false;
+      }
+    }
     if (
       !producer ||
       observedAt === null ||
       (cutoff !== null && observedAt > cutoff) ||
       (row.trust === "public" &&
         (row.kind !== "public-observation" ||
-          !String(row.sourceRef).startsWith("https://") ||
+          !publicSourceValid ||
           !hasTypedScope(producer, "public-source"))) ||
       (row.kind === "public-observation" && row.trust !== "public") ||
       (row.trust === "controlled-owner" &&
@@ -1500,20 +1577,16 @@ export function problemKnownErrorFindings(value, options = {}) {
   for (const [index, membership] of memberships.entries()) {
     const declaration = evidenceById.get(membership.declarationEvidenceRef);
     const incidentRecord = evidenceById.get(membership.incidentRecordEvidenceRef);
-    const membershipIdentityValid = [
+    const ownerArtifactRow = incidentOwnerArtifactById.get(
       membership.incidentRef,
-      membership.followUpRef,
-      membership.followUpIdentityKey,
-    ].every((value) => typeof value === "string");
-    const ownerArtifact = membershipIdentityValid
-      ? deriveIncidentArtifact(incidentOwnerArtifact, membership)
-      : null;
+    );
+    const ownerArtifact = ownerArtifactRow?.artifact;
     const ownerArtifactDigest = ownerArtifact
       ? computeOwnerArtifactDigest(ownerArtifact)
       : null;
     const ownerArtifactResolved =
-      ownerArtifact !== null &&
-      incidentOwnerContractValid &&
+      incidentOwnerArtifactsValid &&
+      ownerArtifact !== undefined &&
       validateIncidentOwnerSchema(ownerArtifact) &&
       validateArtifactSemantics("incident-response", ownerArtifact)
         .length === 0 &&
@@ -1526,8 +1599,7 @@ export function problemKnownErrorFindings(value, options = {}) {
       membership.revision !== computeIncidentMembershipRevision(membership) ||
       !ownerArtifactResolved ||
       membership.ownerArtifactDigest !== ownerArtifactDigest ||
-      membership.ownerSchemaDigest !==
-        OWNER_CONTRACTS["incident-response"].schemaDigest ||
+      membership.ownerSchemaDigest !== INCIDENT_OWNER_SCHEMA_DIGEST ||
       membership.incidentRevision !== ownerArtifactDigest ||
       membership.state !== "declared-by-owner" ||
       membership.declaredByRef !== problem.declaredByRef ||
@@ -1670,11 +1742,11 @@ export function problemKnownErrorFindings(value, options = {}) {
       row.hypothesisRevisionRef !== hypothesis?.revision ||
       !qaOwnerContractValid ||
       row.ownerArtifactDigest !==
-        OWNER_CONTRACTS["quality-assurance-lead"].artifactDigest ||
-      row.ownerSchemaDigest !==
-        OWNER_CONTRACTS["quality-assurance-lead"].schemaDigest ||
-      row.qaArtifactRef !== QA_OWNER_ARTIFACT_REF ||
+        computeOwnerArtifactDigest(qaOwnerArtifact) ||
+      row.ownerSchemaDigest !== QA_OWNER_SCHEMA_DIGEST ||
+      row.qaArtifactRef !== qaOwnerArtifactRow.artifactRef ||
       !ownerRun ||
+      !["passed", "failed"].includes(ownerRun?.result) ||
       row.buildId !== ownerRun?.buildId ||
       row.environment !== ownerRun?.environment ||
       row.executedAt !== ownerRun?.executedAt ||
@@ -1839,9 +1911,8 @@ export function problemKnownErrorFindings(value, options = {}) {
     change?.problemRevision !== problem.revision ||
     !changeOwnerContractValid ||
     change?.ownerArtifactDigest !==
-      OWNER_CONTRACTS["change-control-operator"].artifactDigest ||
-    change?.ownerSchemaDigest !==
-      OWNER_CONTRACTS["change-control-operator"].schemaDigest ||
+      computeOwnerArtifactDigest(changeOwnerArtifact) ||
+    change?.ownerSchemaDigest !== CHANGE_OWNER_SCHEMA_DIGEST ||
     change?.changePlanRef !== changeOwnerArtifact.plan.id ||
     change?.ownerPlanDigest !== changeOwnerArtifact.plan.digest ||
     change?.planDigest !== `sha256:${changeOwnerArtifact.plan.digest}` ||

@@ -8,7 +8,7 @@ import {
 const [id, input, ...args] = process.argv.slice(2);
 const semanticOptions = {};
 const usage =
-  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--p2p-cutoff-at <RFC3339>] [--p2p-owner-policy <owner-policy.json>] [--license-trust-root <trust-root.json>] [--trust-store <trust.json>] [--source-bundle <sources.json>] [--trust-keys <keys.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
+  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--cutoff <RFC3339>] [--p2p-cutoff-at <RFC3339>] [--p2p-owner-policy <owner-policy.json>] [--license-trust-root <trust-root.json>] [--trust-store <trust.json>] [--source-bundle <sources.json>] [--trust-keys <keys.json>] [--public-trust-input <trust.json>] [--trust-keyring <keyring.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
 for (let index = 0; index < args.length; index += 2) {
   const flag = args[index];
   const argument = args[index + 1];
@@ -18,10 +18,13 @@ for (let index = 0; index < args.length; index += 2) {
       "--as-of",
       "--p2p-cutoff-at",
       "--p2p-owner-policy",
+      "--cutoff",
       "--license-trust-root",
       "--trust-store",
       "--source-bundle",
       "--trust-keys",
+      "--public-trust-input",
+      "--trust-keyring",
       "--approved-plan-public-keys",
       "--approved-plan-metric-digests",
     ].includes(flag)
@@ -32,6 +35,8 @@ for (let index = 0; index < args.length; index += 2) {
     semanticOptions.asOf = argument;
   } else if (flag === "--p2p-cutoff-at") {
     semanticOptions.cutoffAt = argument;
+  } else if (flag === "--cutoff") {
+    semanticOptions.cutoff = argument;
   } else if (flag === "--trust-keys") {
     const content = await readFile(resolve(argument));
     const trustConfiguration = JSON.parse(content.toString("utf8"));
@@ -55,6 +60,10 @@ for (let index = 0; index < args.length; index += 2) {
       semanticOptions.licenseTrustRoot = trustConfiguration;
     } else if (flag === "--trust-store") {
       semanticOptions.trustStore = trustConfiguration;
+    } else if (flag === "--public-trust-input") {
+      semanticOptions.publicTrustInput = trustConfiguration;
+    } else if (flag === "--trust-keyring") {
+      semanticOptions.trustKeyring = trustConfiguration;
     } else if (flag === "--source-bundle") {
       semanticOptions.sourceBundle = trustConfiguration;
       semanticOptions.sourceBundleByteLength = content.length;

@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "problem-known-error-coordinator",
+  "scenario": "Reconcile these three owner-declared checkout incidents into the current problem revision, preserve the competing hypothesis tests, approved workaround, known-error declaration, completed change receipt, and later recurrence, and prepare the next owner decision without publishing, changing, or closing anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile these three owner-declared checkout incidents into the current problem revision, preserve the competing hypothesis tests, approved workaround, known-error declaration, completed change receipt, and later recurrence, and prepare the next owner decision without publishing, changing, or closing anything."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/problem-known-error-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Problem and known-error coordinator session handoff",
+    "summary": "A signed, revision-bound problem lifecycle shows three exact incident memberships, one supported and one refuted hypothesis, an unexpired owner-approved workaround, an owner-declared known error, one owner-executed verified change, a later recurrence, complete coverage, and an escalation-only owner handoff.",
+    "output": "outputs/problem-known-error-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Owner-signed incident-membership and source-provenance manifest",
+        "summary": "Every supplied principal, evidence record, incident membership, hypothesis revision, test, workaround, known error, change receipt, and recurrence is covered exactly once",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Hypothesis proposal, QA test, and disposition matrix",
+        "summary": "Every consumed revision has a strictly later independently verifiable owner receipt and exact source-byte attestation",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Workaround and known-error revision ledger",
+        "summary": "Incident memberships, QA runs, and change plans resolve to complete pinned owner artifacts and schemas",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Change-finalization and post-change recurrence ledger",
+        "summary": "The Markdown and inline visual agree on lifecycle state, blockers, chronology, evidence, and owner authority",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact coverage and authority findings",
+        "summary": "No output claims inferred correlation or root cause, workaround approval or execution, known-error publication, production change, closure, mutation, or risk acceptance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Private Markdown handoff and inline problem lifecycle visual",
+        "summary": "Every supplied principal, evidence record, incident membership, hypothesis revision, test, workaround, known error, change receipt, and recurrence is covered exactly once",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

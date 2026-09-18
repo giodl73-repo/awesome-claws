@@ -7797,6 +7797,169 @@
       ]
     },
     {
+      "id": "problem-known-error-coordinator",
+      "name": "Problem and known-error coordinator",
+      "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-17"
+      },
+      "description": "Coordinates an owner-signed cross-incident problem record through competing hypothesis tests, an expiring owner-approved workaround, an owner-declared known error, an owner-executed change, and later recurrence without inferring correlation or root cause or exercising approval, publication, execution, closure, or risk authority.",
+      "audience": "Problem owners, reliability investigators, service owners, QA owners, change owners, and known-error authorities coordinating recurring production incidents.",
+      "principles": [
+        "Treat the owner-signed problem and incident-membership manifest as the complete universe",
+        "Bind every hypothesis, test, workaround, known error, change, and recurrence to exact revisions and evidence",
+        "Require fresh independently authenticated owner receipts after every consumed revision",
+        "Keep all correlation, root-cause, approval, execution, publication, closure, and risk authority external"
+      ],
+      "boundaries": [
+        "Do not infer or declare incident correlation or root cause; preserve only owner-signed membership and hypothesis evidence",
+        "Do not approve, execute, or publish a workaround or known error",
+        "Do not authorize or execute production change, mutate incident or problem records, close an incident or problem, or accept risk",
+        "Do not accept stale, equal-time, self-attested, unsigned, unresolved, or incomplete lineage as current evidence"
+      ],
+      "intake": [
+        "Exact open problem revision, predecessor artifact and revision, service scope, accountable problem owner, and caller-controlled cutoff",
+        "Owner-signed incident-membership manifest with complete Incident Response artifact, schema, source-byte, follow-up, and identity digests",
+        "Competing owner hypothesis proposal and disposition revisions with exact QA run, build, environment, evidence, and execution time",
+        "Expiring workaround approval, known-error declaration, Change Control artifact and plan digests, external execution and verification receipts, and later recurrence",
+        "Caller-supplied allowlisted keyring, verified-human credentials, scoped grants, evidence claims, source attestations, owner receipts, and exact closed coverage"
+      ],
+      "workflow": [
+        "Validate schema, bounded structure, caller cutoff, keyring, credentials, grants, signatures, source bytes, predecessor, and exact closed coverage",
+        "Resolve every incident membership to a complete schema- and semantic-valid Incident Response artifact and exact follow-up identity",
+        "Reconcile competing hypothesis proposals to exact QA runs and require strictly later disposition evidence",
+        "Bind workaround approval and known-error declaration to fresh owner receipts and their consumed revisions",
+        "Bind the owner-executed change to the exact Change Control artifact and plan, then admit recurrence only after finalized change and later incident membership",
+        "Render a private owner-review artifact and inline visual while returning every governed decision to its existing owner"
+      ],
+      "deliverables": [
+        "Owner-signed incident-membership and source-provenance manifest",
+        "Hypothesis proposal, QA test, and disposition matrix",
+        "Workaround and known-error revision ledger",
+        "Change-finalization and post-change recurrence ledger",
+        "Exact coverage and authority findings",
+        "Private Markdown handoff and inline problem lifecycle visual"
+      ],
+      "example": {
+        "request": "Reconcile these three owner-declared checkout incidents into the current problem revision, preserve the competing hypothesis tests, approved workaround, known-error declaration, completed change receipt, and later recurrence, and prepare the next owner decision without publishing, changing, or closing anything.",
+        "outcome": "A signed, revision-bound problem lifecycle shows three exact incident memberships, one supported and one refuted hypothesis, an unexpired owner-approved workaround, an owner-declared known error, one owner-executed verified change, a later recurrence, complete coverage, and an escalation-only owner handoff."
+      },
+      "doneWhen": [
+        "Every supplied principal, evidence record, incident membership, hypothesis revision, test, workaround, known error, change receipt, and recurrence is covered exactly once",
+        "Every consumed revision has a strictly later independently verifiable owner receipt and exact source-byte attestation",
+        "Incident memberships, QA runs, and change plans resolve to the exact complete caller-supplied owner artifacts and canonical schemas",
+        "The Markdown and inline visual agree on lifecycle state, blockers, chronology, evidence, and owner authority",
+        "No output claims inferred correlation or root cause, workaround approval or execution, known-error publication, production change, closure, mutation, or risk acceptance"
+      ],
+      "capabilityGuidance": [
+        "The base package uses supplied workspace evidence and caller-provided trust only; it has no incident, change, deployment, publication, messaging, or ticket mutation capability.",
+        "Inline visualization is presentation-only and must preserve the complete Markdown fallback and structural authority non-claims."
+      ],
+      "openclawProfile": {
+        "schemaVersion": 1,
+        "agent": {
+          "tools": {
+            "profile": "minimal",
+            "alsoAllow": [
+              "read",
+              "write",
+              "edit",
+              "show_widget"
+            ],
+            "fs": {
+              "workspaceOnly": true
+            }
+          }
+        }
+      },
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/problem-known-error.schema.json",
+          "path": "schemas/problem-known-error.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "schemas/problem-known-error-public-trust.schema.json",
+          "path": "schemas/problem-known-error-public-trust.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "schemas/problem-known-error-trust-keyring.schema.json",
+          "path": "schemas/problem-known-error-trust-keyring.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "schemas/problem-known-error-owner-artifacts.schema.json",
+          "path": "schemas/problem-known-error-owner-artifacts.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/problem-known-error.example.json",
+          "path": "fixtures/problem-known-error.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/problem-known-error.missing-coverage.json",
+          "path": "fixtures/problem-known-error.missing-coverage.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/problem-known-error.revision-drift.json",
+          "path": "fixtures/problem-known-error.revision-drift.json",
+          "role": "fixture"
+        },
+        {
+          "source": "references/public-trust.example.json",
+          "path": "references/public-trust.example.json",
+          "role": "reference"
+        },
+        {
+          "source": "references/trust-keyring.example.json",
+          "path": "references/trust-keyring.example.json",
+          "role": "reference"
+        },
+        {
+          "source": "references/owner-artifacts.example.json",
+          "path": "references/owner-artifacts.example.json",
+          "role": "reference"
+        },
+        {
+          "source": "templates/problem-known-error-handoff.md",
+          "path": "templates/problem-known-error-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "templates/problem-known-error-review.md",
+          "path": "templates/problem-known-error-review.md",
+          "role": "template"
+        },
+        {
+          "source": "assets/problem-known-error-review.html",
+          "path": "assets/problem-known-error-review.html",
+          "role": "asset"
+        }
+      ]
+    },
+    {
       "id": "procure-to-pay-three-way-match-exception-reconciler",
       "name": "Procure-to-Pay Three-Way Match Exception Reconciler",
       "category": "governance",

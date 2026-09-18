@@ -16,6 +16,10 @@ import { learningProgramFindings } from "./learning-program-manager.mjs";
 import { partnerBusinessPlanFindings } from "./partner-business-manager.mjs";
 import { ownerTrustPolicy as procureToPayOwnerTrustPolicy } from "./procure-to-pay-three-way-match-exception-reconciler-fixtures.mjs";
 import { procureToPayThreeWayMatchFindings } from "./procure-to-pay-three-way-match-exception-reconciler.mjs";
+import {
+  problemKnownErrorFindings,
+  PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS,
+} from "./problem-known-error-coordinator.mjs";
 import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
 import { repositoryComplianceProgramFindings } from "./repository-compliance-program-manager.mjs";
 import { solutionArchitectureDecisionFindings } from "./solution-architecture-decision-advisor.mjs";
@@ -84,7 +88,7 @@ function hasUnsafePublicHost(hostname) {
   return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
 }
 
-function isCredentialFreePublicHttpsReference(reference) {
+export function isCredentialFreePublicHttpsReference(reference) {
   const unsafeQueryKeys =
     /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
   const unsafeQuery =
@@ -53306,6 +53310,7 @@ const validators = {
   "product-manager": productFindings,
   "presentation-producer": presentationEvidenceManifestFindings,
   "privacy-request-coordinator": privacyRequestFindings,
+  "problem-known-error-coordinator": problemKnownErrorFindings,
   "procurement-evaluator": procurementEvaluationFindings,
   "procure-to-pay-three-way-match-exception-reconciler":
     procureToPayThreeWayMatchFindings,
@@ -53410,6 +53415,8 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
     cutoffAt: "2026-09-15T23:59:59Z",
     ownerTrustPolicy: procureToPayOwnerTrustPolicy,
   }),
+  "problem-known-error-coordinator":
+    PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS,
   "supplier-capacity-assurance-manager": Object.freeze({
     asOf: "2026-09-14T18:00:00Z",
   }),

@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (122)
+### Active (124)
 
 | Claw | Detail |
 | --- | --- |
@@ -89,6 +89,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | @giodl73-repo; last verified 2026-08-21 |
 | [Presentation producer](claws/presentation-producer) | @giodl73-repo; last verified 2026-09-01 |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | @giodl73-repo; last verified 2026-08-19 |
+| [Problem and known-error coordinator](claws/problem-known-error-coordinator) | @giodl73-repo; last verified 2026-09-17 |
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | @giodl73; last verified 2026-09-16 |
 | [Procurement evaluator](claws/procurement-evaluator) | @giodl73-repo; last verified 2026-08-19 |
 | [Product manager](claws/product-manager) | @giodl73-repo; last verified 2026-08-19 |
@@ -150,7 +151,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (90)
+### Low setup (92)
 
 | Claw | Detail |
 | --- | --- |
@@ -214,6 +215,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Pet care coordinator](claws/pet-care-coordinator) | no bootstrap, external dependency, or schedule |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | no bootstrap, external dependency, or schedule |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | no bootstrap, external dependency, or schedule |
+| [Problem and known-error coordinator](claws/problem-known-error-coordinator) | no bootstrap, external dependency, or schedule |
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | no bootstrap, external dependency, or schedule |
 | [Product manager](claws/product-manager) | no bootstrap, external dependency, or schedule |
 | [Professional networking follow-up](claws/professional-networking-followup) | no bootstrap, external dependency, or schedule |
@@ -292,7 +294,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (99)
+### No external dependencies (101)
 
 | Claw | Detail |
 | --- | --- |
@@ -364,6 +366,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Pet care coordinator](claws/pet-care-coordinator) | None |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | None |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | None |
+| [Problem and known-error coordinator](claws/problem-known-error-coordinator) | None |
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | None |
 | [Procurement evaluator](claws/procurement-evaluator) | None |
 | [Product manager](claws/product-manager) | None |
@@ -520,7 +523,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Work chief of staff](claws/work-chief-of-staff) | Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
 | [Workflow operator](claws/workflow-operator) | Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality. |
 
-### X4 (29)
+### X4 (31)
 
 | Claw | Detail |
 | --- | --- |
@@ -542,6 +545,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Learning program manager](claws/learning-program-manager) | Converts an approved aggregate capability-gap revision into evidence-bound curriculum releases, cohort assignments, delivery readiness, completion and assessment evidence, effectiveness review, refresh decisions, and owner handoff. |
 | [Localization program manager](claws/localization-program-manager) | Coordinates locale scope, terminology, string readiness, review ownership, and release evidence without publishing translations. |
 | [Partner business manager](claws/partner-business-manager) | Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority. |
+| [Problem and known-error coordinator](claws/problem-known-error-coordinator) | Coordinates an owner-signed cross-incident problem record through competing hypothesis tests, an expiring owner-approved workaround, an owner-declared known error, an owner-executed change, and later recurrence without inferring correlation or root cause or exercising approval, publication, execution, closure, or risk authority. |
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | Reconciles one exact owner-approved purchase-order revision against complete receipt and invoice line exports, partitioning every line into an authorized exact three-sided group or a typed side-specific residual. |
 | [Product manager](claws/product-manager) | Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [Project manager](claws/project-manager) | Keeps projects aligned through milestones, dependencies, decisions, and accountable execution. |
@@ -592,7 +596,7 @@ Categories come directly from the catalog entry.
 | [Web evidence researcher](claws/web-evidence-researcher) | X3; Produces a private, bounded claim-evidence investigation ledger that maps owner-approved public web authorities, reproducible searches, canonical sources, corroboration, conflicts, uncertainty, and decision implications without making the decision. |
 | [Website evidence collector](claws/website-evidence-collector) | X3; Produces a private, bounded website capture evidence ledger that binds owner-approved public pages to retrieval attempts, minimized snapshots, and baseline change comparisons without deciding materiality. |
 
-### Engineering (10)
+### Engineering (11)
 
 | Claw | Detail |
 | --- | --- |
@@ -600,6 +604,7 @@ Categories come directly from the catalog entry.
 | [Change control operator](claws/change-control-operator) | X3; Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest. |
 | [Data migration planner](claws/data-migration-planner) | X4; Plans a controlled data migration through mappings, validation, cutover, rollback, and accountable reconciliation without moving production data. |
 | [Incident response](claws/incident-response) | X4; Coordinates evidence-bound Technical DRI and Incident Manager loops through service recovery, owner-controlled closure, and durable compliance follow-up. |
+| [Problem and known-error coordinator](claws/problem-known-error-coordinator) | X4; Coordinates an owner-signed cross-incident problem record through competing hypothesis tests, an expiring owner-approved workaround, an owner-declared known error, an owner-executed change, and later recurrence without inferring correlation or root cause or exercising approval, publication, execution, closure, or risk authority. |
 | [Quality assurance lead](claws/quality-assurance-lead) | X4; Turns requirements and risk into a traceable test strategy, execution ledger, defect assessment, and release recommendation. |
 | [Release coordinator](claws/release-coordinator) | X4; Coordinates a repository release from verified GitHub state to an approval-bound communication handoff. |
 | [Repository Operations Manager](claws/repository-operations-manager) | X3; Supervises an approved repository portfolio by reconciling pull requests, head-bound reviews and checks, builds, release trains, cross-repository dependencies, human approval decisions, and trusted system deadline observations without making owner decisions or performing repository mutations. |
@@ -607,7 +612,7 @@ Categories come directly from the catalog entry.
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | X4; Turns one exact approved workload requirements revision into evidence-comparable architecture options, validation experiments, ADR chronology, and an accountable owner decision. |
 
-### Governance (17)
+### Governance (18)
 
 | Claw | Detail |
 | --- | --- |
@@ -791,7 +796,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Wardrobe organizer](claws/wardrobe-organizer) | portable workspace artifacts only |
 | [Warranty and returns manager](claws/warranty-returns-manager) | portable workspace artifacts only |
 
-### Guarded attention (48)
+### Guarded attention (50)
 
 | Claw | Detail |
 | --- | --- |
@@ -828,6 +833,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Partner business manager](claws/partner-business-manager) | explicit tool policy |
 | [Presentation producer](claws/presentation-producer) | pinned skill |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | explicit tool policy; persistent dashboard |
+| [Problem and known-error coordinator](claws/problem-known-error-coordinator) | explicit tool policy |
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | explicit tool policy |
 | [Procurement evaluator](claws/procurement-evaluator) | guided local setup; explicit tool policy; persistent dashboard |
 | [Product manager](claws/product-manager) | explicit tool policy |
