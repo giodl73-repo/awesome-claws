@@ -1785,6 +1785,36 @@ test("subprocessor relationships are reciprocal across declared services and cel
         item.code === "invalid-shared-subprocessor-binding",
     ),
   );
+
+  const staleSecond = clone();
+  const secondSubprocessor = {
+    ...structuredClone(staleSecond.subprocessors[0]),
+    id: "subprocessor-shared-cloud-secondary",
+    name: "Shared Cloud Secondary",
+    declarationEvidenceRef: "evidence-shared-subprocessor-disclosure-secondary",
+  };
+  staleSecond.subprocessors.push(secondSubprocessor);
+  for (const service of staleSecond.vendorServices) {
+    service.subprocessorRefs.push(secondSubprocessor.id);
+  }
+  const staleEvidence = {
+    ...structuredClone(
+      staleSecond.evidence.find(
+        (item) => item.id === "evidence-shared-subprocessor-disclosure",
+      ),
+    ),
+    id: secondSubprocessor.declarationEvidenceRef,
+    subjectRef: secondSubprocessor.id,
+    sourceRef:
+      "controlled://third-party-review/subprocessors/shared-cloud-secondary-2025",
+    validUntil: "2026-09-01T00:00:00Z",
+  };
+  staleSecond.evidence.push(staleEvidence);
+  assert.ok(
+    evaluate(staleSecond).findings.some(
+      (item) => item.code === "invalid-shared-subprocessor-evidence",
+    ),
+  );
 });
 
 test("evidence source classes require their declared URI scheme", () => {
@@ -1805,6 +1835,8 @@ test("evidence source classes require their declared URI scheme", () => {
     "https://storage.example/report?X-Amz-Signature=abcdef",
     "https://storage.example/report?X-Goog-Signature=abcdef",
     "https://storage.example/report?sv=1&sig=abcdef",
+    "https://[::]/private",
+    "https://[::ffff:127.0.0.1]/private",
   ]) {
     const unsafePublic = clone();
     unsafePublic.evidence.find(

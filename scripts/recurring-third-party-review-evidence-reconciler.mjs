@@ -4,6 +4,7 @@ import {
   verify as verifySignature,
 } from "node:crypto";
 import { closeSync, openSync, readFileSync, readSync } from "node:fs";
+import { isIP } from "node:net";
 import { fileURLToPath } from "node:url";
 import { isProxy } from "node:util/types";
 import Ajv2020 from "ajv/dist/2020.js";
@@ -521,15 +522,40 @@ function duplicateValues(values) {
 
 function hasUnsafePublicHost(hostname) {
   const host = hostname.toLowerCase().replace(/^\[|\]$/gu, "");
+  if (isIP(host) === 4) {
+    const [first, second] = host.split(".").map(Number);
+    return (
+      first === 0 ||
+      first === 10 ||
+      first === 127 ||
+      (first === 100 && second >= 64 && second <= 127) ||
+      (first === 169 && second === 254) ||
+      (first === 172 && second >= 16 && second <= 31) ||
+      (first === 192 && [0, 168].includes(second)) ||
+      (first === 198 && [18, 19].includes(second)) ||
+      first >= 224
+    );
+  }
+  if (isIP(host) === 6) {
+    return (
+      host === "::" ||
+      host === "::1" ||
+      host.startsWith("::ffff:") ||
+      host.startsWith("fc") ||
+      host.startsWith("fd") ||
+      /^fe[89ab]/u.test(host) ||
+      host.startsWith("ff") ||
+      host.startsWith("2001:db8:")
+    );
+  }
   if (
-    /^(?:localhost(?:\.localdomain)?|.+\.localhost|0(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|127(?:\.\d{1,3}){3}|169\.254(?:\.\d{1,3}){2}|192\.168(?:\.\d{1,3}){2}|::1|f[cd][0-9a-f:]*|fe[89ab][0-9a-f:]*)$/u.test(
+    /^(?:localhost(?:\.localdomain)?|.+\.localhost|.+\.local|.+\.internal)$/u.test(
       host,
     )
   ) {
     return true;
   }
-  const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/u.exec(host);
-  return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
+  return false;
 }
 
 function isCredentialFreePublicHttpsReference(value) {
@@ -1331,7 +1357,14 @@ function semanticFindings(input, asOf, trustStore) {
       subprocessorEvidence?.kind !== "subprocessor-disclosure" ||
       subprocessorEvidence.subjectType !== "subprocessor" ||
       subprocessorEvidence.subjectRef !== subprocessor.id ||
-      !sameSet(subprocessorEvidence.cellRefs, subprocessorCells)
+      !sameSet(subprocessorEvidence.cellRefs, subprocessorCells) ||
+      evidenceState(
+        subprocessorEvidence,
+        input.freshnessRules.find(
+          (item) => item.evidenceKind === subprocessorEvidence?.kind,
+        ),
+        asOf,
+      ) !== "current"
     ) {
       add(
         "invalid-shared-subprocessor-evidence",
