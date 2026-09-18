@@ -2350,6 +2350,26 @@ test("safe config identity binds declared provider/model without persisting cred
     assert.match(identity.configDigest, /^sha256:[a-f0-9]{64}$/u);
     assert.equal(identity.configurationAssertion, "structurally-unavailable");
     assert.doesNotMatch(JSON.stringify(identity), /raw-secret/u);
+
+    const sonnetConfig = JSON.parse(await readFile(configPath, "utf8"));
+    sonnetConfig.agents.defaults.model.primary =
+      "github-copilot/claude-sonnet-5";
+    sonnetConfig.agents.defaults.models = {
+      "github-copilot/claude-sonnet-5": {
+        params: { maxTokens: 1000 },
+      },
+    };
+    await writeFile(configPath, JSON.stringify(sonnetConfig));
+    const sonnetIdentity = await inspectLiveConfig(configPath, {
+      provider: "github-copilot",
+      model: "claude-sonnet-5",
+    });
+    assert.match(sonnetIdentity.configDigest, /^sha256:[a-f0-9]{64}$/u);
+    assert.equal(
+      sonnetIdentity.configurationAssertion,
+      "structurally-unavailable",
+    );
+
     await assert.rejects(
       inspectLiveConfig(configPath, {
         provider: "different-provider",

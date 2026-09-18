@@ -641,6 +641,11 @@ function hasPluginAutoEnableInput(config, expectedProvider, expectedModel) {
   return false;
 }
 
+const APPROVED_LIVE_GITHUB_COPILOT_MODELS = new Set([
+  "claude-sonnet-5",
+  "gpt-5.6-sol",
+]);
+
 export async function inspectLiveConfig(path, { provider, model }) {
   let parsed;
   try {
@@ -667,7 +672,7 @@ export async function inspectLiveConfig(path, { provider, model }) {
   const slots = parsed.plugins?.slots;
   if (
     provider !== "github-copilot" ||
-    model !== "gpt-5.6-sol" ||
+    !APPROVED_LIVE_GITHUB_COPILOT_MODELS.has(model) ||
     parsed.plugins?.enabled !== true ||
     !Array.isArray(parsed.plugins.allow) ||
     parsed.plugins.allow.length !== 1 ||

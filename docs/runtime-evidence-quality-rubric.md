@@ -217,8 +217,9 @@ overrides, custom load paths, and every other plugin option are rejected except
 the exact memory-slot disablement `slots.memory: "none"`.
 Channel, browser, ACP, and browser-tool activation inputs are also forbidden,
 including per-agent tool overrides. Provider configuration and every default or
-per-agent model reference must bind exclusively to
-`github-copilot/gpt-5.6-sol`, with an explicit default and no fallback chain;
+per-agent model reference must bind exclusively to the selected approved model,
+currently `github-copilot/gpt-5.6-sol` or
+`github-copilot/claude-sonnet-5`, with an explicit default and no fallback chain;
 fallback providers, embedded agent runtimes, web/voice providers, worker
 providers, and unknown root config surfaces are rejected. The same policy is rechecked after Claw installation and before the model turn.
 This limits loading to OpenClaw's bundled Copilot provider without enabling
