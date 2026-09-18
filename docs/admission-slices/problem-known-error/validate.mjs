@@ -1340,7 +1340,7 @@ export function problemKnownErrorFindings(value, options = {}) {
           ) &&
           time(receipt?.issuedAt) !== null &&
           time(receipt?.issuedAt) > time(expected.consumedAt) &&
-          time(receipt?.issuedAt) >= time(evidenceRecord?.observedAt) &&
+          time(receipt?.issuedAt) > time(evidenceRecord?.observedAt) &&
           cutoff !== null &&
           time(receipt?.issuedAt) <= cutoff
         );
@@ -1555,9 +1555,9 @@ export function problemKnownErrorFindings(value, options = {}) {
           "public-source",
         )) ||
       time(membership.declaredAt) === null ||
-      time(membership.declaredAt) < time(problem.declaredAt) ||
+      time(membership.declaredAt) <= time(problem.declaredAt) ||
       (cutoff !== null && time(membership.declaredAt) > cutoff) ||
-      time(incidentRecord?.observedAt) > time(membership.declaredAt) ||
+      time(incidentRecord?.observedAt) >= time(membership.declaredAt) ||
       time(declaration?.observedAt) <= time(membership.declaredAt)
     ) {
       add(
@@ -1628,8 +1628,8 @@ export function problemKnownErrorFindings(value, options = {}) {
         linkedTests.map((row) => row.revision),
       ) ||
       !observationOk ||
-      time(hypothesis.proposedAt) < time(problem.declaredAt) ||
-      time(hypothesis.revisedAt) < latestTestEvidence ||
+      time(hypothesis.proposedAt) <= time(problem.declaredAt) ||
+      time(hypothesis.revisedAt) <= latestTestEvidence ||
       (hypothesis.state === "supported" &&
         (!outcomes.has("supports") || outcomes.has("refutes"))) ||
       (hypothesis.state === "refuted" &&
@@ -1694,9 +1694,9 @@ export function problemKnownErrorFindings(value, options = {}) {
         producedByRef: row.executedByRef,
       }) ||
       time(row.executedAt) === null ||
-      time(row.executedAt) < time(hypothesis?.proposedAt) ||
-      time(row.executedAt) > time(hypothesis?.revisedAt) ||
-      time(result?.observedAt) < time(row.executedAt)
+      time(row.executedAt) <= time(hypothesis?.proposedAt) ||
+      time(row.executedAt) >= time(hypothesis?.revisedAt) ||
+      time(result?.observedAt) <= time(row.executedAt)
     ) {
       add(
         "invalid_hypothesis_test",
@@ -1870,7 +1870,7 @@ export function problemKnownErrorFindings(value, options = {}) {
     time(change?.linkedAt) === null ||
     time(linkEvidence?.observedAt) <= time(change?.linkedAt) ||
     time(change?.linkedAt) <= time(change?.executedAt) ||
-    time(change?.linkedAt) < time(problem.declaredAt) ||
+    time(change?.linkedAt) <= time(problem.declaredAt) ||
     (cutoff !== null && time(change?.linkedAt) > cutoff) ||
     !targetsStayWithinProblem ||
     !verificationOk

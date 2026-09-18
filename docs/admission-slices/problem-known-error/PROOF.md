@@ -8,11 +8,11 @@ Status: hardened local deterministic proof on 2026-09-17.
 node --test docs\admission-slices\problem-known-error\composition-adapter.test.mjs docs\admission-slices\problem-known-error\validate.test.mjs scripts\incident-state-schema.test.mjs scripts\quality-assurance-lead.test.mjs scripts\repository-compliance-program-manager.test.mjs
 ```
 
-Result: **123 passed, 0 failed**. The eight composition assertions validate the
+Result: **124 passed, 0 failed**. The eight composition assertions validate the
 real owner artifacts, three coherently substituted Incident Response artifacts,
 owner projection round-trip, normalized typed-graph relationship/authority
 calculation, five independent closed future controls, and tamper rejection. The
-27 candidate assertions cover the
+28 candidate assertions cover the
 accepted artifact and exact adversarial regressions. The remaining tests are
 the Incident Response, Quality Assurance Lead, and Repository Compliance
 Program Manager schema and semantic suites.
@@ -28,7 +28,7 @@ Continuity Coordinator contracts.
 node --test scripts\problem-known-error-admission-slice.test.mjs
 ```
 
-Result: **35 passed, 0 failed**. The required scripts bridge executes both the
+Result: **36 passed, 0 failed**. The required scripts bridge executes both the
 strongest-composition probe and hardened candidate suite without registering a
 public artifact validator.
 
@@ -36,7 +36,7 @@ public artifact validator.
 npm run check
 ```
 
-Result: **2,138 passed, 1 expected platform skip, 0 failed**. The remaining
+Result: **2,139 passed, 1 expected platform skip, 0 failed**. The remaining
 required checks also passed: 121 semantic validators, 331 recipes, 435 finding
 codes, 121 packages, 121 chooser views, 363 deterministic runtime trials, 110
 post-policy contribution records, and 121 regression contracts.
@@ -105,6 +105,12 @@ candidate node/edge bindings, owner-artifact validation, evidence-bound owner
 signatures, key-material separation, malformed-input totality, and signed
 control attribution. No finding was rejected.
 
+The final chronology review accepted one blocker: QA execution equaling its
+hypothesis proposal was admitted. Every consume-after edge now rejects equality,
+and the 14-case equality matrix rebuilds all downstream revisions, evidence,
+coverage, issuer signatures, and principal receipts before asserting the
+chronology finding.
+
 Final command:
 
 ```text
@@ -113,6 +119,6 @@ C:\src\claws-hapi\.agents\skills\autoreview\scripts\autoreview --mode local --fa
 
 Final result:
 `autoreview clean: no accepted/actionable findings reported`.
-The reviewer reported no actionable correctness issues, **35 focused tests**
-passing, and the full repository check passing with **2,138 tests** plus all
+The reviewer reported no actionable correctness issues, **36 focused tests**
+passing, and the full repository check passing with **2,139 tests** plus all
 catalog validations.
