@@ -1,0 +1,1070 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/candidates/claw-portfolio-manager.schema.json",
+  "title": "Claw Portfolio Manager candidate input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "run",
+    "principals",
+    "grants",
+    "portfolioManifest",
+    "issueManifest",
+    "predecessor",
+    "budget",
+    "issues",
+    "evidenceEnvelopes",
+    "usagePolicy",
+    "coverage",
+    "authority"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.clawPortfolioManagerCandidate.v1"
+    },
+    "run": {
+      "$ref": "#/$defs/run"
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "grants": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/grant"
+      }
+    },
+    "portfolioManifest": {
+      "$ref": "#/$defs/portfolioManifest"
+    },
+    "issueManifest": {
+      "$ref": "#/$defs/issueManifest"
+    },
+    "predecessor": {
+      "$ref": "#/$defs/predecessor"
+    },
+    "budget": {
+      "$ref": "#/$defs/budget"
+    },
+    "issues": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/issue"
+      }
+    },
+    "evidenceEnvelopes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "$ref": "#/$defs/evidenceEnvelope"
+      }
+    },
+    "usagePolicy": {
+      "$ref": "#/$defs/usagePolicy"
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 96,
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "idList": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "nullableId": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/id"
+        }
+      ]
+    },
+    "nullableDigest": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/digest"
+        }
+      ]
+    },
+    "nullableTimestamp": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/timestamp"
+        }
+      ]
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "keyId",
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "keyId": {
+          "$ref": "#/$defs/id"
+        },
+        "algorithm": {
+          "const": "Ed25519"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 86,
+          "maxLength": 88,
+          "pattern": "^[A-Za-z0-9+/]+={0,2}$"
+        }
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "asOf",
+        "portfolioManifestRef",
+        "issueManifestRef",
+        "predecessorRef",
+        "budgetRef",
+        "outputMode"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "asOf": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "portfolioManifestRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issueManifestRef": {
+          "$ref": "#/$defs/id"
+        },
+        "predecessorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "budgetRef": {
+          "$ref": "#/$defs/id"
+        },
+        "outputMode": {
+          "const": "proposal-only"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "roles"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "system"
+          ]
+        },
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "portfolio-owner",
+              "issue-owner",
+              "product-decision-owner",
+              "retirement-owner",
+              "grant-issuer",
+              "catalog-source-custodian",
+              "issue-evidence-custodian",
+              "usage-evidence-issuer"
+            ]
+          }
+        }
+      }
+    },
+    "grant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "issuerRef",
+        "granteeRef",
+        "kind",
+        "portfolioRef",
+        "issueRefs",
+        "classifications",
+        "issuedAt",
+        "notBefore",
+        "expiresAt",
+        "signature"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "issuerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "granteeRef": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "portfolio-review",
+            "issue-admission-review",
+            "product-decision-review",
+            "retirement-review"
+          ]
+        },
+        "portfolioRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issueRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "classifications": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/classification"
+          }
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "notBefore": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "signature": {
+          "$ref": "#/$defs/signature"
+        }
+      }
+    },
+    "clawRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clawId",
+        "clawRevision"
+      ],
+      "properties": {
+        "clawId": {
+          "$ref": "#/$defs/id"
+        },
+        "clawRevision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "selectedClaw": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "clawId",
+        "clawRevision",
+        "sourceReceiptRef"
+      ],
+      "properties": {
+        "clawId": {
+          "$ref": "#/$defs/id"
+        },
+        "clawRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "sourceReceiptRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "portfolioManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "predecessorRevision",
+        "ownerRef",
+        "signedAt",
+        "catalogRevision",
+        "selectedClaws",
+        "issueUniverseRoot",
+        "budgetRevision",
+        "principalRoot",
+        "grantRoot",
+        "usagePolicyRevision",
+        "grantRefs",
+        "signature"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "predecessorRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "catalogRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "selectedClaws": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/selectedClaw"
+          }
+        },
+        "issueUniverseRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "budgetRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "principalRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "grantRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "usagePolicyRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "grantRefs": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "signature": {
+          "$ref": "#/$defs/signature"
+        }
+      }
+    },
+    "issueManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "predecessorRevision",
+        "ownerRef",
+        "signedAt",
+        "issueRefs",
+        "issueUniverseRoot",
+        "signature"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "predecessorRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "issueRefs": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "issueUniverseRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "signature": {
+          "$ref": "#/$defs/signature"
+        }
+      }
+    },
+    "predecessorIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issueRef",
+        "revision"
+      ],
+      "properties": {
+        "issueRef": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "predecessor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "ownerRef",
+        "capturedAt",
+        "portfolioRevision",
+        "issueManifestRevision",
+        "issueRevisions",
+        "signature"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "portfolioRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "issueManifestRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "issueRevisions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/predecessorIssue"
+          }
+        },
+        "signature": {
+          "$ref": "#/$defs/signature"
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "ownerRef",
+        "grantRef",
+        "maxCandidateCount",
+        "maxAdmissions",
+        "maxWorkUnits",
+        "maxCostMicros",
+        "maxDurationMinutes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "grantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "maxCandidateCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "maxAdmissions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "maxWorkUnits": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "maxCostMicros": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        },
+        "maxDurationMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10080
+        }
+      }
+    },
+    "demand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateSlots",
+        "admissionSlots",
+        "workUnits",
+        "costMicros",
+        "durationMinutes"
+      ],
+      "properties": {
+        "candidateSlots": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "admissionSlots": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "workUnits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "costMicros": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        },
+        "durationMinutes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10080
+        }
+      }
+    },
+    "signals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sameRepeatableJob",
+        "compositionPreservesJob",
+        "compositionClawRefs",
+        "newInvariantIds",
+        "variantOnly",
+        "requiresProductDecision",
+        "retirementSignal",
+        "unsupportedReason",
+        "duplicateOfIssueRef",
+        "conflictingEvidenceRefs",
+        "freshAfter"
+      ],
+      "properties": {
+        "sameRepeatableJob": {
+          "type": "boolean"
+        },
+        "compositionPreservesJob": {
+          "type": "boolean"
+        },
+        "compositionClawRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "newInvariantIds": {
+          "$ref": "#/$defs/idList"
+        },
+        "variantOnly": {
+          "type": "boolean"
+        },
+        "requiresProductDecision": {
+          "type": "boolean"
+        },
+        "retirementSignal": {
+          "type": "boolean"
+        },
+        "unsupportedReason": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "outside-catalog-scope",
+                "requests-direct-production-action",
+                "requests-sensitive-person-inference"
+              ]
+            }
+          ]
+        },
+        "duplicateOfIssueRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "conflictingEvidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "freshAfter": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "previousRevision",
+        "sourceDigest",
+        "openedAt",
+        "observedAt",
+        "basePriority",
+        "affectedClaws",
+        "evidenceRefs",
+        "evidenceBindings",
+        "requestedAuthority",
+        "signals",
+        "demand"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "previousRevision": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "sourceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "openedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "basePriority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "affectedClaws": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/clawRef"
+          }
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "evidenceBindings": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "evidenceRef",
+              "evidenceRevision"
+            ],
+            "properties": {
+              "evidenceRef": {
+                "$ref": "#/$defs/id"
+              },
+              "evidenceRevision": {
+                "$ref": "#/$defs/digest"
+              }
+            }
+          }
+        },
+        "requestedAuthority": {
+          "type": "array",
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "merge",
+              "publish",
+              "increase-budget",
+              "accept-risk",
+              "external-mutation",
+              "infer-sensitive-personal-facts"
+            ]
+          }
+        },
+        "signals": {
+          "$ref": "#/$defs/signals"
+        },
+        "demand": {
+          "$ref": "#/$defs/demand"
+        }
+      }
+    },
+    "usageMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eventCount",
+        "successCount",
+        "failureCount"
+      ],
+      "properties": {
+        "eventCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "successCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "failureCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        }
+      }
+    },
+    "evidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "previousRevision",
+        "kind",
+        "subjectRef",
+        "sourceRef",
+        "tenantRef",
+        "observedAt",
+        "validUntil",
+        "claim",
+        "minimizedFields",
+        "metrics"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "previousRevision": {
+          "$ref": "#/$defs/nullableDigest"
+        },
+        "kind": {
+          "enum": [
+            "issue-source",
+            "runtime-correctness",
+            "catalog-quality",
+            "usage-summary"
+          ]
+        },
+        "subjectRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceRef": {
+          "type": "string",
+          "minLength": 14,
+          "maxLength": 512,
+          "pattern": "^(?:controlled://|https://).+"
+        },
+        "tenantRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "validUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "claim": {
+          "enum": [
+            "supports",
+            "opposes",
+            "request",
+            "regression",
+            "usage-only"
+          ]
+        },
+        "minimizedFields": {
+          "type": "array",
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "event-count",
+              "success-count",
+              "failure-count",
+              "outcome-code"
+            ]
+          }
+        },
+        "metrics": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/usageMetrics"
+            }
+          ]
+        }
+      }
+    },
+    "evidenceEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "kind",
+        "issuerRef",
+        "tenantRef",
+        "sourceRef",
+        "issuedAt",
+        "records",
+        "signature"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "kind": {
+          "enum": [
+            "owner-evidence",
+            "usage-evidence"
+          ]
+        },
+        "issuerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "tenantRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "sourceRef": {
+          "type": "string",
+          "minLength": 14,
+          "maxLength": 512,
+          "pattern": "^(?:controlled://|https://).+"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/evidenceRecord"
+          }
+        },
+        "signature": {
+          "$ref": "#/$defs/signature"
+        }
+      }
+    },
+    "usagePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "allowedTenantRefs",
+        "allowedSourceRefs",
+        "allowedEffects",
+        "maxRecords",
+        "maxMinimizedFields"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "allowedTenantRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "allowedSourceRefs": {
+          "type": "array",
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 14,
+            "maxLength": 512,
+            "pattern": "^(?:controlled://|https://).+"
+          }
+        },
+        "allowedEffects": {
+          "type": "array",
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "create-draft-issue",
+              "reprioritize-existing-issue"
+            ]
+          }
+        },
+        "maxRecords": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32
+        },
+        "maxMinimizedFields": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selectedClawRefs",
+        "issueRefs",
+        "evidenceRefs",
+        "grantRefs"
+      ],
+      "properties": {
+        "selectedClawRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "issueRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "grantRefs": {
+          "$ref": "#/$defs/idList"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "merge",
+        "publish",
+        "budgetIncrease",
+        "riskAcceptance",
+        "externalMutation",
+        "productionClawMutation",
+        "sensitivePersonalInference",
+        "reseal"
+      ],
+      "properties": {
+        "merge": {
+          "const": false
+        },
+        "publish": {
+          "const": false
+        },
+        "budgetIncrease": {
+          "const": false
+        },
+        "riskAcceptance": {
+          "const": false
+        },
+        "externalMutation": {
+          "const": false
+        },
+        "productionClawMutation": {
+          "const": false
+        },
+        "sensitivePersonalInference": {
+          "const": false
+        },
+        "reseal": {
+          "const": false
+        }
+      }
+    },
+    "classification": {
+      "enum": [
+        "NEW",
+        "IMPROVE",
+        "COMPOSE",
+        "VARIANT",
+        "PRODUCT_DECISION",
+        "RETIRE",
+        "DUPLICATE",
+        "UNSUPPORTED"
+      ]
+    }
+  }
+}

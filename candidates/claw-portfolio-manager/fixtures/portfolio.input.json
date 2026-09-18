@@ -1,0 +1,938 @@
+{
+  "schemaVersion": "awesomeClaws.clawPortfolioManagerCandidate.v1",
+  "run": {
+    "id": "portfolio-run-september",
+    "asOf": "2026-09-17T19:00:00Z",
+    "portfolioManifestRef": "claw-portfolio-september",
+    "issueManifestRef": "claw-issue-queue-september",
+    "predecessorRef": "portfolio-checkpoint-previous",
+    "budgetRef": "portfolio-budget-september",
+    "outputMode": "proposal-only"
+  },
+  "principals": [
+    {
+      "id": "principal-owner",
+      "kind": "human",
+      "roles": [
+        "portfolio-owner",
+        "grant-issuer"
+      ]
+    },
+    {
+      "id": "principal-issue-owner",
+      "kind": "human",
+      "roles": [
+        "issue-owner"
+      ]
+    },
+    {
+      "id": "principal-product-owner",
+      "kind": "human",
+      "roles": [
+        "product-decision-owner"
+      ]
+    },
+    {
+      "id": "principal-retirement-owner",
+      "kind": "human",
+      "roles": [
+        "retirement-owner"
+      ]
+    },
+    {
+      "id": "principal-evidence-custodian",
+      "kind": "human",
+      "roles": [
+        "issue-evidence-custodian"
+      ]
+    },
+    {
+      "id": "principal-catalog-custodian",
+      "kind": "system",
+      "roles": [
+        "catalog-source-custodian"
+      ]
+    },
+    {
+      "id": "principal-usage-issuer",
+      "kind": "system",
+      "roles": [
+        "usage-evidence-issuer"
+      ]
+    },
+    {
+      "id": "principal-evidence-custodian-two",
+      "kind": "human",
+      "roles": [
+        "issue-evidence-custodian"
+      ]
+    }
+  ],
+  "grants": [
+    {
+      "id": "grant-portfolio-review",
+      "issuerRef": "principal-owner",
+      "granteeRef": "principal-owner",
+      "kind": "portfolio-review",
+      "portfolioRef": "claw-portfolio-september",
+      "issueRefs": [
+        "issue-compose-release-portfolio",
+        "issue-improve-repository-operations",
+        "issue-new-claw-builder",
+        "issue-stale-theme-variant",
+        "issue-product-catalog-policy",
+        "issue-retire-legacy-claw",
+        "issue-duplicate-operations",
+        "issue-publish-directly"
+      ],
+      "classifications": [
+        "NEW",
+        "IMPROVE",
+        "COMPOSE",
+        "VARIANT",
+        "PRODUCT_DECISION",
+        "RETIRE",
+        "DUPLICATE",
+        "UNSUPPORTED"
+      ],
+      "issuedAt": "2026-09-17T15:00:00Z",
+      "notBefore": "2026-09-17T15:00:00Z",
+      "expiresAt": "2026-09-18T15:00:00Z",
+      "signature": {
+        "keyId": "owner-key",
+        "algorithm": "Ed25519",
+        "value": "0l9tdW7ykR3JSsJu7pdFdvkrd1T6hfon3pmjN0SM29ujhCST+DX142kBFXPAmV/RUzs5w6yQgY4lbpjfjMJaAg=="
+      }
+    },
+    {
+      "id": "grant-issue-admission",
+      "issuerRef": "principal-owner",
+      "granteeRef": "principal-issue-owner",
+      "kind": "issue-admission-review",
+      "portfolioRef": "claw-portfolio-september",
+      "issueRefs": [
+        "issue-compose-release-portfolio",
+        "issue-improve-repository-operations",
+        "issue-new-claw-builder",
+        "issue-stale-theme-variant",
+        "issue-product-catalog-policy",
+        "issue-retire-legacy-claw",
+        "issue-duplicate-operations",
+        "issue-publish-directly"
+      ],
+      "classifications": [
+        "NEW",
+        "IMPROVE",
+        "COMPOSE",
+        "VARIANT",
+        "DUPLICATE",
+        "UNSUPPORTED"
+      ],
+      "issuedAt": "2026-09-17T15:00:00Z",
+      "notBefore": "2026-09-17T15:00:00Z",
+      "expiresAt": "2026-09-18T15:00:00Z",
+      "signature": {
+        "keyId": "owner-key",
+        "algorithm": "Ed25519",
+        "value": "9rzT4j38Gh61RGTTK+YmBLxX1czagmmYFpQVfu7KJ3FdQmJGJDTH/4ev766D7ATRHMvhOt9l89e1lJFdk/OiDg=="
+      }
+    },
+    {
+      "id": "grant-product-decisions",
+      "issuerRef": "principal-owner",
+      "granteeRef": "principal-product-owner",
+      "kind": "product-decision-review",
+      "portfolioRef": "claw-portfolio-september",
+      "issueRefs": [
+        "issue-compose-release-portfolio",
+        "issue-improve-repository-operations",
+        "issue-new-claw-builder",
+        "issue-stale-theme-variant",
+        "issue-product-catalog-policy",
+        "issue-retire-legacy-claw",
+        "issue-duplicate-operations",
+        "issue-publish-directly"
+      ],
+      "classifications": [
+        "PRODUCT_DECISION"
+      ],
+      "issuedAt": "2026-09-17T15:00:00Z",
+      "notBefore": "2026-09-17T15:00:00Z",
+      "expiresAt": "2026-09-18T15:00:00Z",
+      "signature": {
+        "keyId": "owner-key",
+        "algorithm": "Ed25519",
+        "value": "By01CYoWbcr/AR9B+8DbFovQByhPf0QeD/o8YMvGT3BG7WB9oBHF8znx56yOb3219DipBeu144J8/YHwobgsAA=="
+      }
+    },
+    {
+      "id": "grant-retirement-decisions",
+      "issuerRef": "principal-owner",
+      "granteeRef": "principal-retirement-owner",
+      "kind": "retirement-review",
+      "portfolioRef": "claw-portfolio-september",
+      "issueRefs": [
+        "issue-compose-release-portfolio",
+        "issue-improve-repository-operations",
+        "issue-new-claw-builder",
+        "issue-stale-theme-variant",
+        "issue-product-catalog-policy",
+        "issue-retire-legacy-claw",
+        "issue-duplicate-operations",
+        "issue-publish-directly"
+      ],
+      "classifications": [
+        "RETIRE"
+      ],
+      "issuedAt": "2026-09-17T15:00:00Z",
+      "notBefore": "2026-09-17T15:00:00Z",
+      "expiresAt": "2026-09-18T15:00:00Z",
+      "signature": {
+        "keyId": "owner-key",
+        "algorithm": "Ed25519",
+        "value": "q8ZBXWXYOzwfQX7HZPaoMQfk+L1HWGpF1Rbp4liElMAIM2ToTNL/IcTw5UxAElIHu+sT4yYqNRFBSwJIdQnWDA=="
+      }
+    }
+  ],
+  "portfolioManifest": {
+    "id": "claw-portfolio-september",
+    "revision": "sha256:a0d9056086830a54d9c7f83b4fb987535135db3c60f09eafdb2625a5d2b610f0",
+    "predecessorRevision": "sha256:573cf17a0768345319766cdc0d51b1bb4e74f605e3ca533193bc1cf19b67431d",
+    "ownerRef": "principal-owner",
+    "signedAt": "2026-09-17T18:10:00Z",
+    "catalogRevision": "0c1bfb3c973a9940f301a5001e77435789993555",
+    "selectedClaws": [
+      {
+        "clawId": "repository-operations-manager",
+        "clawRevision": "sha256:f89be6f6a3b5a23ee5598df1f6c974eb010a3e0830b11972c0368c1e79ea1842",
+        "sourceReceiptRef": "receipt-repository-operations-manager"
+      },
+      {
+        "clawId": "repository-compliance-program-manager",
+        "clawRevision": "sha256:cad53dc0b2ea776461a4ec49b632dcc45879a96258cf26f4773a749baef9eab9",
+        "sourceReceiptRef": "receipt-repository-compliance-program-manager"
+      },
+      {
+        "clawId": "product-manager",
+        "clawRevision": "sha256:f8080dffb4849290fe7cb66e3e3ca798aa0858fe6a7225ad2712bf5325c513dd",
+        "sourceReceiptRef": "receipt-product-manager"
+      }
+    ],
+    "issueUniverseRoot": "sha256:82851a69cfece6400e5578071fec6a0a55ecd0869743809b4308390859f50be9",
+    "budgetRevision": "sha256:113597617be4ab274be67ca789fe8abdacff7317492b22a353e5d2ed203aefa4",
+    "grantRefs": [
+      "grant-portfolio-review",
+      "grant-issue-admission",
+      "grant-product-decisions",
+      "grant-retirement-decisions"
+    ],
+    "signature": {
+      "keyId": "owner-key",
+      "algorithm": "Ed25519",
+      "value": "zm7hX9u4d+jCBuKIehCAmyXQlr0dQ6ad8KGGnNSPNQz1DTid2GJDinQRJNjHclVlLaLj44im3QVzqbAPpwu4Dw=="
+    },
+    "principalRoot": "sha256:c4dd46a112723dc105d63474d68b31346f73be815a0ef86bb04f353a5d5d6470",
+    "grantRoot": "sha256:86ffbdcf19e6756ed0cf37f018d9c214f7b156b0529f5d4e396063721eb480da",
+    "usagePolicyRevision": "sha256:063b81a9181aca07b1eeb528acf91b96729dd3c91d2f55b725f0d77b8eea98af"
+  },
+  "issueManifest": {
+    "id": "claw-issue-queue-september",
+    "revision": "sha256:d5458d16337082c10929a6f5b3a56b78886511988232aac8bd195fc63c7887dd",
+    "predecessorRevision": "sha256:573cf17a0768345319766cdc0d51b1bb4e74f605e3ca533193bc1cf19b67431d",
+    "ownerRef": "principal-issue-owner",
+    "signedAt": "2026-09-17T18:05:00Z",
+    "issueRefs": [
+      "issue-compose-release-portfolio",
+      "issue-improve-repository-operations",
+      "issue-new-claw-builder",
+      "issue-stale-theme-variant",
+      "issue-product-catalog-policy",
+      "issue-retire-legacy-claw",
+      "issue-duplicate-operations",
+      "issue-publish-directly"
+    ],
+    "issueUniverseRoot": "sha256:82851a69cfece6400e5578071fec6a0a55ecd0869743809b4308390859f50be9",
+    "signature": {
+      "keyId": "issue-key",
+      "algorithm": "Ed25519",
+      "value": "xaZnWMJl+UiqEWrjFMHejtnaw+5Nz27rJs84/Kw9u6hOMvN5LKamlaC5boCmMshxIznDk/+PgEdFIWVJDgrbCw=="
+    }
+  },
+  "predecessor": {
+    "id": "portfolio-checkpoint-previous",
+    "revision": "sha256:573cf17a0768345319766cdc0d51b1bb4e74f605e3ca533193bc1cf19b67431d",
+    "ownerRef": "principal-owner",
+    "capturedAt": "2026-09-16T18:00:00Z",
+    "portfolioRevision": "sha256:93c05b59d75a54d361dd951d02326fbb26a375bfdcfedbff40c3991be9ef8cbb",
+    "issueManifestRevision": "sha256:f8456a4e9bda926af9349619ef6b7578459e7d2d05ec167773277cbf15c9ead6",
+    "issueRevisions": [
+      {
+        "issueRef": "issue-improve-repository-operations",
+        "revision": "sha256:5dd5176c9effefe6d0083296025d3a0969c32fa7f31a11b8542c65eb0b2ddb37"
+      },
+      {
+        "issueRef": "issue-compose-release-portfolio",
+        "revision": "sha256:9a56a2d3c1475d5408a385b32c8b43fbffcd2a6ce9db57e71ff93edb991d4046"
+      },
+      {
+        "issueRef": "issue-product-catalog-policy",
+        "revision": "sha256:06ca722793a3393b92a223bbdab93f505308e3181cc8af62b9a854916f7495b2"
+      },
+      {
+        "issueRef": "issue-retire-legacy-claw",
+        "revision": "sha256:65d1fbe9ee8e7975b49b7ffad32ab79aa4183619affbaf83575cfbf500c1b179"
+      }
+    ],
+    "signature": {
+      "keyId": "owner-key",
+      "algorithm": "Ed25519",
+      "value": "a4mQBTNsmtNv+JwO5D5ao0V4srB4l/KYgGB2mABrV7G+IvW8Sq7HPI0YCYqeZ6sPTie1/HYByK5a2cyRABbjCw=="
+    }
+  },
+  "budget": {
+    "id": "portfolio-budget-september",
+    "revision": "sha256:113597617be4ab274be67ca789fe8abdacff7317492b22a353e5d2ed203aefa4",
+    "ownerRef": "principal-owner",
+    "grantRef": "grant-portfolio-review",
+    "maxCandidateCount": 0,
+    "maxAdmissions": 2,
+    "maxWorkUnits": 10,
+    "maxCostMicros": 500000,
+    "maxDurationMinutes": 60
+  },
+  "issues": [
+    {
+      "id": "issue-compose-release-portfolio",
+      "revision": "sha256:e22de3ffce6cd63001074aba98cba0644a2bb0ad088aac7ee1e1c85fbc36fe2b",
+      "previousRevision": "sha256:9a56a2d3c1475d5408a385b32c8b43fbffcd2a6ce9db57e71ff93edb991d4046",
+      "sourceDigest": "sha256:632837fef1c0145e55473e4eedce97319b9786498577da3d22e6a4612cc3a87e",
+      "openedAt": "2026-09-10T12:00:00Z",
+      "observedAt": "2026-09-17T17:05:00Z",
+      "basePriority": 90,
+      "affectedClaws": [
+        {
+          "clawId": "repository-operations-manager",
+          "clawRevision": "sha256:f89be6f6a3b5a23ee5598df1f6c974eb010a3e0830b11972c0368c1e79ea1842"
+        },
+        {
+          "clawId": "product-manager",
+          "clawRevision": "sha256:f8080dffb4849290fe7cb66e3e3ca798aa0858fe6a7225ad2712bf5325c513dd"
+        }
+      ],
+      "evidenceRefs": [
+        "evidence-compose"
+      ],
+      "requestedAuthority": [],
+      "signals": {
+        "sameRepeatableJob": false,
+        "compositionPreservesJob": true,
+        "compositionClawRefs": [
+          "repository-operations-manager",
+          "product-manager"
+        ],
+        "newInvariantIds": [],
+        "variantOnly": false,
+        "requiresProductDecision": false,
+        "retirementSignal": false,
+        "unsupportedReason": null,
+        "duplicateOfIssueRef": null,
+        "conflictingEvidenceRefs": [],
+        "freshAfter": "2026-09-17T00:00:00Z"
+      },
+      "demand": {
+        "candidateSlots": 0,
+        "admissionSlots": 1,
+        "workUnits": 4,
+        "costMicros": 180000,
+        "durationMinutes": 25
+      },
+      "evidenceBindings": [
+        {
+          "evidenceRef": "evidence-compose",
+          "evidenceRevision": "sha256:0723a05bd004426b75354c1a98d06a52d5fd2e760b1c65fb0c1c177b7112b4a9"
+        }
+      ]
+    },
+    {
+      "id": "issue-improve-repository-operations",
+      "revision": "sha256:4568e36be1b956f90e1e1043c00099365a6b404dd6b55d2f2ee037ecacc7ac3d",
+      "previousRevision": "sha256:5dd5176c9effefe6d0083296025d3a0969c32fa7f31a11b8542c65eb0b2ddb37",
+      "sourceDigest": "sha256:fc3a36cb34daa45b92c9611ffc531c86d080705104752aa88a4d87b491b9baa5",
+      "openedAt": "2026-09-10T12:00:00Z",
+      "observedAt": "2026-09-17T17:05:00Z",
+      "basePriority": 80,
+      "affectedClaws": [
+        {
+          "clawId": "repository-operations-manager",
+          "clawRevision": "sha256:f89be6f6a3b5a23ee5598df1f6c974eb010a3e0830b11972c0368c1e79ea1842"
+        }
+      ],
+      "evidenceRefs": [
+        "evidence-improve"
+      ],
+      "requestedAuthority": [],
+      "signals": {
+        "sameRepeatableJob": true,
+        "compositionPreservesJob": false,
+        "compositionClawRefs": [],
+        "newInvariantIds": [],
+        "variantOnly": false,
+        "requiresProductDecision": false,
+        "retirementSignal": false,
+        "unsupportedReason": null,
+        "duplicateOfIssueRef": null,
+        "conflictingEvidenceRefs": [],
+        "freshAfter": "2026-09-17T00:00:00Z"
+      },
+      "demand": {
+        "candidateSlots": 0,
+        "admissionSlots": 1,
+        "workUnits": 3,
+        "costMicros": 120000,
+        "durationMinutes": 20
+      },
+      "evidenceBindings": [
+        {
+          "evidenceRef": "evidence-improve",
+          "evidenceRevision": "sha256:f4a334302d38013243d81baaf06df7547e209d087ef90b6792fa4e8858ff0e60"
+        }
+      ]
+    },
+    {
+      "id": "issue-new-claw-builder",
+      "revision": "sha256:b9f7378f9bc8f35511921bcd4413914f8ca4fe6cfc624fc9e0deec210c40f702",
+      "previousRevision": null,
+      "sourceDigest": "sha256:1e4b34c4e5a3c54543c87a9c627d98e68c0246921755fde0c86058de336346fe",
+      "openedAt": "2026-09-17T16:00:00Z",
+      "observedAt": "2026-09-17T17:05:00Z",
+      "basePriority": 70,
+      "affectedClaws": [],
+      "evidenceRefs": [
+        "evidence-new"
+      ],
+      "requestedAuthority": [],
+      "signals": {
+        "sameRepeatableJob": false,
+        "compositionPreservesJob": false,
+        "compositionClawRefs": [],
+        "newInvariantIds": [
+          "cross-catalog-bootstrap"
+        ],
+        "variantOnly": false,
+        "requiresProductDecision": false,
+        "retirementSignal": false,
+        "unsupportedReason": null,
+        "duplicateOfIssueRef": null,
+        "conflictingEvidenceRefs": [],
+        "freshAfter": "2026-09-17T00:00:00Z"
+      },
+      "demand": {
+        "candidateSlots": 1,
+        "admissionSlots": 1,
+        "workUnits": 5,
+        "costMicros": 300000,
+        "durationMinutes": 30
+      },
+      "evidenceBindings": [
+        {
+          "evidenceRef": "evidence-new",
+          "evidenceRevision": "sha256:bf9fd406b4dda4cc10727d295566cb1ea8155fb6ad263defa9887a8a1812bd87"
+        }
+      ]
+    },
+    {
+      "id": "issue-stale-theme-variant",
+      "revision": "sha256:4a5e181639945dfcbfb9bf92b94b8c0f8673ef99a6a3057cd816acd4c5d826da",
+      "previousRevision": null,
+      "sourceDigest": "sha256:4af6c2b829ea0a73f7a62c578b22938bcae3c676f5d0efd0bf8d6e1fa04d77eb",
+      "openedAt": "2026-09-17T16:00:00Z",
+      "observedAt": "2026-09-17T17:05:00Z",
+      "basePriority": 60,
+      "affectedClaws": [
+        {
+          "clawId": "product-manager",
+          "clawRevision": "sha256:f8080dffb4849290fe7cb66e3e3ca798aa0858fe6a7225ad2712bf5325c513dd"
+        }
+      ],
+      "evidenceRefs": [
+        "evidence-stale"
+      ],
+      "requestedAuthority": [],
+      "signals": {
+        "sameRepeatableJob": false,
+        "compositionPreservesJob": false,
+        "compositionClawRefs": [],
+        "newInvariantIds": [],
+        "variantOnly": true,
+        "requiresProductDecision": false,
+        "retirementSignal": false,
+        "unsupportedReason": null,
+        "duplicateOfIssueRef": null,
+        "conflictingEvidenceRefs": [],
+        "freshAfter": "2026-09-17T00:00:00Z"
+      },
+      "demand": {
+        "candidateSlots": 0,
+        "admissionSlots": 0,
+        "workUnits": 0,
+        "costMicros": 0,
+        "durationMinutes": 0
+      },
+      "evidenceBindings": [
+        {
+          "evidenceRef": "evidence-stale",
+          "evidenceRevision": "sha256:91eeec4f977bb74e119859c14deac1016abf6b89ae4c529440ad1f414a65e7da"
+        }
+      ]
+    },
+    {
+      "id": "issue-product-catalog-policy",
+      "revision": "sha256:a391adc5fc9606ebe8bbe16a389b96fa0524055c14eb29bb4be333c520565715",
+      "previousRevision": "sha256:06ca722793a3393b92a223bbdab93f505308e3181cc8af62b9a854916f7495b2",
+      "sourceDigest": "sha256:98886f25ef4d39bfc99a704e7bc373db4413b7ddedd59b4ec597e8f93c72d69c",
+      "openedAt": "2026-09-10T12:00:00Z",
+      "observedAt": "2026-09-17T17:05:00Z",
+      "basePriority": 50,
+      "affectedClaws": [
+        {
+          "clawId": "product-manager",
+          "clawRevision": "sha256:f8080dffb4849290fe7cb66e3e3ca798aa0858fe6a7225ad2712bf5325c513dd"
+        }
+      ],
+      "evidenceRefs": [
+        "evidence-product-support",
+        "evidence-product-oppose"
+      ],
+      "requestedAuthority": [],
+      "signals": {
+        "sameRepeatableJob": false,
+        "compositionPreservesJob": false,
+        "compositionClawRefs": [],
+        "newInvariantIds": [],
+        "variantOnly": false,
+        "requiresProductDecision": true,
+        "retirementSignal": false,
+        "unsupportedReason": null,
+        "duplicateOfIssueRef": null,
+        "conflictingEvidenceRefs": [
+          "evidence-product-support",
+          "evidence-product-oppose"
+        ],
+        "freshAfter": "2026-09-17T00:00:00Z"
+      },
+      "demand": {
+        "candidateSlots": 0,
+        "admissionSlots": 0,
+        "workUnits": 0,
+        "costMicros": 0,
+        "durationMinutes": 0
+      },
+      "evidenceBindings": [
+        {
+          "evidenceRef": "evidence-product-support",
+          "evidenceRevision": "sha256:5cb14d360caee6fdf28fb569c1ce07d36250cb44cb3db88be96cba2831d60784"
+        },
+        {
+          "evidenceRef": "evidence-product-oppose",
+          "evidenceRevision": "sha256:faf11dbea6546d518f032d1384e6d1e35375a4ab1cb90c58b5bf83a6584e80e1"
+        }
+      ]
+    },
+    {
+      "id": "issue-retire-legacy-claw",
+      "revision": "sha256:16721d9e2ddfc5d0a1e0d568f74b6351bbc2470119c3f62f56ff51490cd3a992",
+      "previousRevision": "sha256:65d1fbe9ee8e7975b49b7ffad32ab79aa4183619affbaf83575cfbf500c1b179",
+      "sourceDigest": "sha256:9dcb0ee3c3033cc3e3c8eeb2a4d8abcd335950a1305762ef19a0fc921abd6f38",
+      "openedAt": "2026-09-10T12:00:00Z",
+      "observedAt": "2026-09-17T17:05:00Z",
+      "basePriority": 40,
+      "affectedClaws": [
+        {
+          "clawId": "product-manager",
+          "clawRevision": "sha256:f8080dffb4849290fe7cb66e3e3ca798aa0858fe6a7225ad2712bf5325c513dd"
+        }
+      ],
+      "evidenceRefs": [
+        "evidence-retire"
+      ],
+      "requestedAuthority": [],
+      "signals": {
+        "sameRepeatableJob": false,
+        "compositionPreservesJob": false,
+        "compositionClawRefs": [],
+        "newInvariantIds": [],
+        "variantOnly": false,
+        "requiresProductDecision": false,
+        "retirementSignal": true,
+        "unsupportedReason": null,
+        "duplicateOfIssueRef": null,
+        "conflictingEvidenceRefs": [],
+        "freshAfter": "2026-09-17T00:00:00Z"
+      },
+      "demand": {
+        "candidateSlots": 0,
+        "admissionSlots": 0,
+        "workUnits": 0,
+        "costMicros": 0,
+        "durationMinutes": 0
+      },
+      "evidenceBindings": [
+        {
+          "evidenceRef": "evidence-retire",
+          "evidenceRevision": "sha256:e17a1eab60dbaff52724e1c1df38fff061184faf5fc6a6c6a6c246652dc29df8"
+        }
+      ]
+    },
+    {
+      "id": "issue-duplicate-operations",
+      "revision": "sha256:f234dc605ceaccf41457a6c95c98dfc1b1d03ba54d7744e656cf7f877765efe0",
+      "previousRevision": null,
+      "sourceDigest": "sha256:c1cc24962640037554197f169e47471a25500c0bdab2f00b1c1fb53bec2a53cc",
+      "openedAt": "2026-09-17T16:00:00Z",
+      "observedAt": "2026-09-17T17:05:00Z",
+      "basePriority": 30,
+      "affectedClaws": [
+        {
+          "clawId": "repository-operations-manager",
+          "clawRevision": "sha256:f89be6f6a3b5a23ee5598df1f6c974eb010a3e0830b11972c0368c1e79ea1842"
+        }
+      ],
+      "evidenceRefs": [
+        "evidence-duplicate"
+      ],
+      "requestedAuthority": [],
+      "signals": {
+        "sameRepeatableJob": false,
+        "compositionPreservesJob": false,
+        "compositionClawRefs": [],
+        "newInvariantIds": [],
+        "variantOnly": false,
+        "requiresProductDecision": false,
+        "retirementSignal": false,
+        "unsupportedReason": null,
+        "duplicateOfIssueRef": "issue-improve-repository-operations",
+        "conflictingEvidenceRefs": [],
+        "freshAfter": "2026-09-17T00:00:00Z"
+      },
+      "demand": {
+        "candidateSlots": 0,
+        "admissionSlots": 0,
+        "workUnits": 0,
+        "costMicros": 0,
+        "durationMinutes": 0
+      },
+      "evidenceBindings": [
+        {
+          "evidenceRef": "evidence-duplicate",
+          "evidenceRevision": "sha256:3777ce67450a1baa0632575ba2a463471eefe1cf8e879965201cbb3423a377b3"
+        }
+      ]
+    },
+    {
+      "id": "issue-publish-directly",
+      "revision": "sha256:125324808ed251f2488a7e578d0d815edc439c9f36a6a86574dfa2613612827e",
+      "previousRevision": null,
+      "sourceDigest": "sha256:f24bb5dec5441515f856b4e3c595df5da3a0f79e7ad52018a5d3c7a83657d599",
+      "openedAt": "2026-09-17T16:00:00Z",
+      "observedAt": "2026-09-17T17:05:00Z",
+      "basePriority": 20,
+      "affectedClaws": [
+        {
+          "clawId": "repository-compliance-program-manager",
+          "clawRevision": "sha256:cad53dc0b2ea776461a4ec49b632dcc45879a96258cf26f4773a749baef9eab9"
+        }
+      ],
+      "evidenceRefs": [
+        "evidence-unsupported"
+      ],
+      "requestedAuthority": [
+        "publish",
+        "external-mutation"
+      ],
+      "signals": {
+        "sameRepeatableJob": false,
+        "compositionPreservesJob": false,
+        "compositionClawRefs": [],
+        "newInvariantIds": [],
+        "variantOnly": false,
+        "requiresProductDecision": false,
+        "retirementSignal": false,
+        "unsupportedReason": null,
+        "duplicateOfIssueRef": null,
+        "conflictingEvidenceRefs": [],
+        "freshAfter": "2026-09-17T00:00:00Z"
+      },
+      "demand": {
+        "candidateSlots": 0,
+        "admissionSlots": 0,
+        "workUnits": 0,
+        "costMicros": 0,
+        "durationMinutes": 0
+      },
+      "evidenceBindings": [
+        {
+          "evidenceRef": "evidence-unsupported",
+          "evidenceRevision": "sha256:0af0c35745c1fb5e8130fcf46c900680c7ec711df9627bf1969d50e1eb0178e0"
+        }
+      ]
+    }
+  ],
+  "evidenceEnvelopes": [
+    {
+      "id": "owner-issue-evidence-envelope",
+      "revision": "sha256:bcaa8a985d619f32db85fab3cf5e8ab6cd7cfe2a57b0fbe9bd7a13be102b95ef",
+      "kind": "owner-evidence",
+      "issuerRef": "principal-evidence-custodian",
+      "tenantRef": null,
+      "sourceRef": "controlled://owner/issues",
+      "issuedAt": "2026-09-17T17:30:00Z",
+      "records": [
+        {
+          "id": "evidence-compose",
+          "revision": "sha256:0723a05bd004426b75354c1a98d06a52d5fd2e760b1c65fb0c1c177b7112b4a9",
+          "previousRevision": null,
+          "kind": "issue-source",
+          "subjectRef": "issue-compose-release-portfolio",
+          "sourceRef": "controlled://owner/issues",
+          "tenantRef": null,
+          "observedAt": "2026-09-17T16:45:00Z",
+          "validUntil": "2026-09-30T00:00:00Z",
+          "claim": "request",
+          "minimizedFields": [],
+          "metrics": null
+        },
+        {
+          "id": "evidence-improve",
+          "revision": "sha256:f4a334302d38013243d81baaf06df7547e209d087ef90b6792fa4e8858ff0e60",
+          "previousRevision": null,
+          "kind": "issue-source",
+          "subjectRef": "issue-improve-repository-operations",
+          "sourceRef": "controlled://owner/issues",
+          "tenantRef": null,
+          "observedAt": "2026-09-17T16:45:00Z",
+          "validUntil": "2026-09-30T00:00:00Z",
+          "claim": "request",
+          "minimizedFields": [],
+          "metrics": null
+        },
+        {
+          "id": "evidence-new",
+          "revision": "sha256:bf9fd406b4dda4cc10727d295566cb1ea8155fb6ad263defa9887a8a1812bd87",
+          "previousRevision": null,
+          "kind": "issue-source",
+          "subjectRef": "issue-new-claw-builder",
+          "sourceRef": "controlled://owner/issues",
+          "tenantRef": null,
+          "observedAt": "2026-09-17T16:45:00Z",
+          "validUntil": "2026-09-30T00:00:00Z",
+          "claim": "request",
+          "minimizedFields": [],
+          "metrics": null
+        },
+        {
+          "id": "evidence-stale",
+          "revision": "sha256:91eeec4f977bb74e119859c14deac1016abf6b89ae4c529440ad1f414a65e7da",
+          "previousRevision": null,
+          "kind": "issue-source",
+          "subjectRef": "issue-stale-theme-variant",
+          "sourceRef": "controlled://owner/issues",
+          "tenantRef": null,
+          "observedAt": "2026-09-15T12:00:00Z",
+          "validUntil": "2026-09-16T00:00:00Z",
+          "claim": "request",
+          "minimizedFields": [],
+          "metrics": null
+        },
+        {
+          "id": "evidence-product-support",
+          "revision": "sha256:5cb14d360caee6fdf28fb569c1ce07d36250cb44cb3db88be96cba2831d60784",
+          "previousRevision": null,
+          "kind": "issue-source",
+          "subjectRef": "issue-product-catalog-policy",
+          "sourceRef": "controlled://owner/issues",
+          "tenantRef": null,
+          "observedAt": "2026-09-17T16:45:00Z",
+          "validUntil": "2026-09-30T00:00:00Z",
+          "claim": "supports",
+          "minimizedFields": [],
+          "metrics": null
+        },
+        {
+          "id": "evidence-retire",
+          "revision": "sha256:e17a1eab60dbaff52724e1c1df38fff061184faf5fc6a6c6a6c246652dc29df8",
+          "previousRevision": null,
+          "kind": "issue-source",
+          "subjectRef": "issue-retire-legacy-claw",
+          "sourceRef": "controlled://owner/issues",
+          "tenantRef": null,
+          "observedAt": "2026-09-17T16:45:00Z",
+          "validUntil": "2026-09-30T00:00:00Z",
+          "claim": "request",
+          "minimizedFields": [],
+          "metrics": null
+        },
+        {
+          "id": "evidence-duplicate",
+          "revision": "sha256:3777ce67450a1baa0632575ba2a463471eefe1cf8e879965201cbb3423a377b3",
+          "previousRevision": null,
+          "kind": "issue-source",
+          "subjectRef": "issue-duplicate-operations",
+          "sourceRef": "controlled://owner/issues",
+          "tenantRef": null,
+          "observedAt": "2026-09-17T16:45:00Z",
+          "validUntil": "2026-09-30T00:00:00Z",
+          "claim": "request",
+          "minimizedFields": [],
+          "metrics": null
+        },
+        {
+          "id": "evidence-unsupported",
+          "revision": "sha256:0af0c35745c1fb5e8130fcf46c900680c7ec711df9627bf1969d50e1eb0178e0",
+          "previousRevision": null,
+          "kind": "issue-source",
+          "subjectRef": "issue-publish-directly",
+          "sourceRef": "controlled://owner/issues",
+          "tenantRef": null,
+          "observedAt": "2026-09-17T16:45:00Z",
+          "validUntil": "2026-09-30T00:00:00Z",
+          "claim": "request",
+          "minimizedFields": [],
+          "metrics": null
+        }
+      ],
+      "signature": {
+        "keyId": "evidence-key",
+        "algorithm": "Ed25519",
+        "value": "8DI4UO219MJrQQPs9Y5Q/CiyIMqMYNJEnGRCIWqe9UERmLEIEBRZJIL+QxtlFydAaWvtYUyF2L4x1fDZL/zwDg=="
+      }
+    },
+    {
+      "id": "independent-product-evidence-envelope",
+      "revision": "sha256:91e11e3098ec2e4666061d8a925b5e71322fdb3bad74a807389c1451838cca7b",
+      "kind": "owner-evidence",
+      "issuerRef": "principal-evidence-custodian-two",
+      "tenantRef": null,
+      "sourceRef": "controlled://owner/independent-product-research",
+      "issuedAt": "2026-09-17T17:35:00Z",
+      "records": [
+        {
+          "id": "evidence-product-oppose",
+          "revision": "sha256:faf11dbea6546d518f032d1384e6d1e35375a4ab1cb90c58b5bf83a6584e80e1",
+          "previousRevision": null,
+          "kind": "issue-source",
+          "subjectRef": "issue-product-catalog-policy",
+          "sourceRef": "controlled://owner/independent-product-research",
+          "tenantRef": null,
+          "observedAt": "2026-09-17T16:45:00Z",
+          "validUntil": "2026-09-30T00:00:00Z",
+          "claim": "opposes",
+          "minimizedFields": [],
+          "metrics": null
+        }
+      ],
+      "signature": {
+        "keyId": "evidence-key-two",
+        "algorithm": "Ed25519",
+        "value": "8NujOOBPNeb/pVy7B3KwFV8n266JKanPUb1zpxSG6zxFIBZsbFvFTVW6+fUyPQg+a+zCQcecv2ubo06XqpSjCg=="
+      }
+    },
+    {
+      "id": "tenant-usage-evidence-envelope",
+      "revision": "sha256:b999b7401a04379db76c97a7d23756fa93a246cacfb7440e7ed14a12d2de56f8",
+      "kind": "usage-evidence",
+      "issuerRef": "principal-usage-issuer",
+      "tenantRef": "tenant-alpha",
+      "sourceRef": "controlled://tenant-alpha/minimized-usage",
+      "issuedAt": "2026-09-17T17:40:00Z",
+      "records": [
+        {
+          "id": "evidence-usage-improve",
+          "revision": "sha256:538496c5d68683289e0cdeed867bac8b4389ba781be028d86e99609628d83f4c",
+          "previousRevision": null,
+          "kind": "usage-summary",
+          "subjectRef": "issue-improve-repository-operations",
+          "sourceRef": "controlled://tenant-alpha/minimized-usage",
+          "tenantRef": "tenant-alpha",
+          "observedAt": "2026-09-17T17:15:00Z",
+          "validUntil": "2026-09-24T00:00:00Z",
+          "claim": "usage-only",
+          "minimizedFields": [
+            "event-count",
+            "failure-count",
+            "success-count"
+          ],
+          "metrics": {
+            "eventCount": 12,
+            "successCount": 7,
+            "failureCount": 5
+          }
+        }
+      ],
+      "signature": {
+        "keyId": "usage-key",
+        "algorithm": "Ed25519",
+        "value": "3dRIgaD4PIluD3tDZJqtAWU2UqleEhEbdzddUaVpCRchBybjv2b8oWe7vOkRleKjJyuVOxx2pV0XCRWcKO5WDg=="
+      }
+    }
+  ],
+  "usagePolicy": {
+    "enabled": true,
+    "allowedTenantRefs": [
+      "tenant-alpha"
+    ],
+    "allowedSourceRefs": [
+      "controlled://tenant-alpha/minimized-usage"
+    ],
+    "allowedEffects": [
+      "create-draft-issue",
+      "reprioritize-existing-issue"
+    ],
+    "maxRecords": 1,
+    "maxMinimizedFields": 3
+  },
+  "coverage": {
+    "selectedClawRefs": [
+      "repository-operations-manager",
+      "repository-compliance-program-manager",
+      "product-manager"
+    ],
+    "issueRefs": [
+      "issue-compose-release-portfolio",
+      "issue-improve-repository-operations",
+      "issue-new-claw-builder",
+      "issue-stale-theme-variant",
+      "issue-product-catalog-policy",
+      "issue-retire-legacy-claw",
+      "issue-duplicate-operations",
+      "issue-publish-directly"
+    ],
+    "evidenceRefs": [
+      "evidence-compose",
+      "evidence-improve",
+      "evidence-new",
+      "evidence-stale",
+      "evidence-product-support",
+      "evidence-product-oppose",
+      "evidence-retire",
+      "evidence-duplicate",
+      "evidence-unsupported",
+      "evidence-usage-improve"
+    ],
+    "grantRefs": [
+      "grant-portfolio-review",
+      "grant-issue-admission",
+      "grant-product-decisions",
+      "grant-retirement-decisions"
+    ]
+  },
+  "authority": {
+    "merge": false,
+    "publish": false,
+    "budgetIncrease": false,
+    "riskAcceptance": false,
+    "externalMutation": false,
+    "productionClawMutation": false,
+    "sensitivePersonalInference": false,
+    "reseal": false
+  }
+}

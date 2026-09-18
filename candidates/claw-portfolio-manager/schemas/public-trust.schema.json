@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/candidates/claw-portfolio-manager-public-trust.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "trustId",
+    "signers"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.clawPortfolioManagerPublicTrust.v1"
+    },
+    "trustId": {
+      "$ref": "#/$defs/id"
+    },
+    "signers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "$ref": "#/$defs/signer"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 96,
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "signer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "keyId",
+        "principalRef",
+        "kind",
+        "purposes",
+        "validFrom",
+        "validUntil",
+        "publicKeyPem"
+      ],
+      "properties": {
+        "keyId": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "system"
+          ]
+        },
+        "purposes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "portfolio-manifest",
+              "issue-manifest",
+              "predecessor-checkpoint",
+              "catalog-source-receipt",
+              "owner-evidence",
+              "usage-evidence",
+              "human-grant",
+              "composition-proof"
+            ]
+          }
+        },
+        "validFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "validUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "publicKeyPem": {
+          "type": "string",
+          "minLength": 100,
+          "maxLength": 1024,
+          "pattern": "^-----BEGIN PUBLIC KEY-----\\n[A-Za-z0-9+/=\\n]+\\n-----END PUBLIC KEY-----\\n$"
+        }
+      }
+    }
+  }
+}
