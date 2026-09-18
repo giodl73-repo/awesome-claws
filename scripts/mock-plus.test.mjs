@@ -245,8 +245,8 @@ test("lifecycle portfolio classifies faults and removes every capability adapter
     "infrastructure-failure",
   ]);
   assert.equal(run.coverage.capabilities.applicableClawCount, 62);
-  assert.equal(run.coverage.capabilities.caseCount, 86);
-  assert.equal(run.coverage.capabilities.killedCount, 86);
+  assert.equal(run.coverage.capabilities.caseCount, 87);
+  assert.equal(run.coverage.capabilities.killedCount, 87);
   assert.deepEqual(run.coverage.capabilities.classes, [
     "bootstrap",
     "clawhub-plugin",

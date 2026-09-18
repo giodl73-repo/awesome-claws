@@ -34,16 +34,15 @@
     },
     "vendorServices": {
       "type": "array",
-      "minItems": 2,
-      "maxItems": 2,
+      "minItems": 1,
+      "maxItems": 32,
       "items": {
         "$ref": "#/$defs/vendorService"
       }
     },
     "subprocessors": {
       "type": "array",
-      "minItems": 1,
-      "maxItems": 1,
+      "maxItems": 64,
       "items": {
         "$ref": "#/$defs/subprocessor"
       }
@@ -58,8 +57,8 @@
     },
     "principals": {
       "type": "array",
-      "minItems": 7,
-      "maxItems": 10,
+      "minItems": 5,
+      "maxItems": 64,
       "items": {
         "$ref": "#/$defs/principal"
       }
@@ -72,47 +71,45 @@
     },
     "evidence": {
       "type": "array",
-      "minItems": 10,
-      "maxItems": 24,
+      "minItems": 3,
+      "maxItems": 64,
       "items": {
         "$ref": "#/$defs/evidence"
       }
     },
     "decisions": {
       "type": "array",
-      "minItems": 6,
-      "maxItems": 6,
+      "minItems": 1,
+      "maxItems": 64,
       "items": {
         "$ref": "#/$defs/decision"
       }
     },
     "remediations": {
       "type": "array",
-      "minItems": 1,
-      "maxItems": 1,
+      "maxItems": 64,
       "items": {
         "$ref": "#/$defs/remediation"
       }
     },
     "exceptions": {
       "type": "array",
-      "minItems": 1,
-      "maxItems": 1,
+      "maxItems": 64,
       "items": {
         "$ref": "#/$defs/exception"
       }
     },
     "riskAcceptanceAttempts": {
       "type": "array",
-      "maxItems": 1,
+      "maxItems": 64,
       "items": {
         "$ref": "#/$defs/riskAcceptanceAttempt"
       }
     },
     "ownerManifests": {
       "type": "array",
-      "minItems": 3,
-      "maxItems": 3,
+      "minItems": 2,
+      "maxItems": 33,
       "items": {
         "$ref": "#/$defs/ownerManifest"
       }
@@ -259,16 +256,16 @@
         },
         "requirements": {
           "type": "array",
-          "minItems": 4,
-          "maxItems": 4,
+          "minItems": 1,
+          "maxItems": 64,
           "items": {
             "$ref": "#/$defs/requirement"
           }
         },
         "cells": {
           "type": "array",
-          "minItems": 6,
-          "maxItems": 6,
+          "minItems": 1,
+          "maxItems": 64,
           "items": {
             "$ref": "#/$defs/requirementCell"
           }
@@ -373,8 +370,7 @@
         },
         "subprocessorRefs": {
           "type": "array",
-          "minItems": 1,
-          "maxItems": 1,
+          "maxItems": 64,
           "uniqueItems": true,
           "items": {
             "$ref": "#/$defs/id"
@@ -400,8 +396,8 @@
         },
         "serviceRefs": {
           "type": "array",
-          "minItems": 2,
-          "maxItems": 2,
+          "minItems": 1,
+          "maxItems": 32,
           "uniqueItems": true,
           "items": {
             "$ref": "#/$defs/id"
@@ -542,8 +538,8 @@
         },
         "decisions": {
           "type": "array",
-          "minItems": 6,
-          "maxItems": 6,
+          "minItems": 1,
+          "maxItems": 64,
           "items": {
             "$ref": "#/$defs/predecessorDecision"
           }
@@ -620,7 +616,6 @@
         "sourceRef",
         "sourceVersion",
         "observedAt",
-        "validUntil",
         "suppliedByRef",
         "sourceContentDigest"
       ],
@@ -814,7 +809,10 @@
           "$ref": "#/$defs/id"
         },
         "status": {
-          "const": "active"
+          "enum": [
+            "active",
+            "expired"
+          ]
         },
         "approvedByRef": {
           "$ref": "#/$defs/id"

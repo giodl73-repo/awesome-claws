@@ -11,8 +11,12 @@
       "vendor-service-alpine-support",
       "vendor-service-brightpay-payroll"
     ],
-    "sharedSubprocessorRef": "subprocessor-shared-cloud",
-    "publicTrustEvidenceRef": "evidence-alpine-assurance-report",
+    "subprocessorRefs": [
+      "subprocessor-shared-cloud"
+    ],
+    "publicTrustEvidenceRefs": [
+      "evidence-alpine-assurance-report"
+    ],
     "remediationRefs": [
       "remediation-alpine-assurance"
     ],

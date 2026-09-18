@@ -20,9 +20,11 @@ import {
   computeRequirementCatalogRevision,
   evaluateRecurringThirdPartyReview,
   ownerManifestPayload,
+  predecessorAuthorityPayload,
   RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS,
   recurringThirdPartyReviewFindings,
   renderReviewProof,
+  sourceReceiptsPayload,
   sourceAuthorityPayload,
 } from "./recurring-third-party-review-evidence-reconciler.mjs";
 import {
@@ -86,6 +88,296 @@ function signWithEphemeralTrust(input) {
   return trust;
 }
 
+function signDetachedWithEphemeralTrust({
+  record,
+  payload,
+  trust,
+  replacedKeyId,
+  signingKeyId,
+}) {
+  const { privateKey, publicKey } = generateKeyPairSync("ed25519");
+  record.signingKeyId = signingKeyId;
+  record.signature = signPayload(null, payload(), privateKey).toString("base64");
+  trust.signers = trust.signers.filter(
+    (item) => item.signingKeyId !== replacedKeyId,
+  );
+  trust.signers.push({
+    ownerRef: record.ownerRef,
+    signingKeyId,
+    algorithm: "Ed25519",
+    publicKeyPem: publicKey.export({ type: "spki", format: "pem" }),
+    validFrom: "2025-01-01T00:00:00Z",
+    validUntil: "2027-12-31T23:59:59Z",
+  });
+}
+
+function readyOneServicePortfolio() {
+  const input = clone();
+  const trust = structuredClone(publicTrust);
+  const receipts = structuredClone(sourceReceipts);
+  const serviceRef = "vendor-service-alpine-support";
+  const retainedCellRefs = new Set([
+    "cell-alpine-assurance",
+    "cell-alpine-security",
+    "cell-alpine-subprocessor",
+  ]);
+  input.vendorServices = input.vendorServices.filter(
+    (item) => item.id === serviceRef,
+  );
+  input.subprocessors[0].serviceRefs = [serviceRef];
+  input.requirementCatalog.requirements =
+    input.requirementCatalog.requirements.filter(
+      (item) => item.id !== "requirement-continuity-test",
+    );
+  input.requirementCatalog.cells = input.requirementCatalog.cells.filter(
+    (item) => retainedCellRefs.has(item.id),
+  );
+  input.requirementCatalog.revision = computeRequirementCatalogRevision(
+    input.requirementCatalog,
+  );
+  input.cycle.requirementCatalogRevision = input.requirementCatalog.revision;
+  input.cycle.cellIndexRevision = computeCellIndexRevision(
+    input.requirementCatalog,
+  );
+  input.predecessorCycle.requirementCatalogRevision =
+    input.requirementCatalog.revision;
+  input.predecessorCycle.cellIndexRevision = input.cycle.cellIndexRevision;
+  input.predecessorCycle.decisions =
+    input.predecessorCycle.decisions.filter((item) =>
+      retainedCellRefs.has(item.cellRef),
+    );
+  input.decisions = input.decisions.filter((item) =>
+    retainedCellRefs.has(item.cellRef),
+  );
+  for (const decision of [
+    ...input.predecessorCycle.decisions,
+    ...input.decisions,
+  ]) {
+    decision.requirementCatalogRevision = input.requirementCatalog.revision;
+    decision.cellIndexRevision = input.cycle.cellIndexRevision;
+  }
+  const assuranceDecision = input.decisions.find(
+    (item) => item.cellRef === "cell-alpine-assurance",
+  );
+  assuranceDecision.decisionType = "evidence-confirmed";
+  assuranceDecision.evidenceRefs = ["evidence-alpine-assurance-report"];
+  assuranceDecision.remediationRef = null;
+  input.remediations = [];
+  input.exceptions = [];
+  input.riskAcceptanceAttempts = [];
+  input.principals = input.principals.filter(
+    (item) =>
+      ![
+        "principal-service-owner-ethan",
+        "principal-remediation-owner-sam",
+        "principal-exception-authority-jordan",
+      ].includes(item.id),
+  );
+  input.ownerManifests = input.ownerManifests.filter(
+    (item) =>
+      item.kind === "requirement-catalog" || item.subjectRef === serviceRef,
+  );
+  const catalogManifest = input.ownerManifests.find(
+    (item) => item.kind === "requirement-catalog",
+  );
+  catalogManifest.subjectDigest = input.requirementCatalog.revision;
+  input.evidence = input.evidence.filter(
+    (item) =>
+      item.id === input.cycle.approvalEvidenceRef ||
+      retainedCellRefs.has(item.subjectRef) ||
+      item.subjectRef === "subprocessor-shared-cloud",
+  );
+  const subprocessorEvidence = input.evidence.find(
+    (item) => item.id === "evidence-shared-subprocessor-disclosure",
+  );
+  subprocessorEvidence.cellRefs = ["cell-alpine-subprocessor"];
+  const assuranceEvidence = input.evidence.find(
+    (item) => item.id === "evidence-alpine-assurance-report",
+  );
+  assuranceEvidence.observedAt = "2026-01-10T12:00:00Z";
+  assuranceEvidence.validUntil = "2027-01-10T12:00:00Z";
+  const evidenceRefs = new Set(input.evidence.map((item) => item.id));
+  receipts.receipts = receipts.receipts.filter((item) =>
+    evidenceRefs.has(item.evidenceRef),
+  );
+
+  input.predecessorCycle.artifactDigest = computePredecessorArtifactDigest(
+    input.predecessorCycle,
+    input.evidence,
+  );
+  signDetachedWithEphemeralTrust({
+    record: input.predecessorCycle.sourceAuthority,
+    payload: () => predecessorAuthorityPayload(input.predecessorCycle),
+    trust,
+    replacedKeyId: "key-third-party-review-predecessor-2026",
+    signingKeyId: "key-ready-predecessor",
+  });
+  signDetachedWithEphemeralTrust({
+    record: catalogManifest,
+    payload: () => ownerManifestPayload(catalogManifest),
+    trust,
+    replacedKeyId: "key-catalog-owner-2026",
+    signingKeyId: "key-ready-catalog-owner",
+  });
+  signDetachedWithEphemeralTrust({
+    record: receipts,
+    payload: () => sourceReceiptsPayload(receipts),
+    trust,
+    replacedKeyId: "key-evidence-receipts-2026",
+    signingKeyId: "key-ready-evidence-receipts",
+  });
+  signDetachedWithEphemeralTrust({
+    record: input.sourceAuthority,
+    payload: () => sourceAuthorityPayload(input),
+    trust,
+    replacedKeyId: "key-third-party-review-2026",
+    signingKeyId: "key-ready-current",
+  });
+  return { input, trust, receipts };
+}
+
+function exceptionTransitionPortfolio({ reopen }) {
+  const input = clone();
+  const trust = structuredClone(publicTrust);
+  const receipts = structuredClone(sourceReceipts);
+  const cellRef = "cell-brightpay-security";
+  input.principals.find(
+    (item) => item.id === "principal-exception-authority-jordan",
+  ).authorityObservedAt = "2026-01-01T12:35:00Z";
+  input.evidence = input.evidence.filter(
+    (item) => item.id !== "evidence-brightpay-security-questionnaire",
+  );
+  receipts.receipts = receipts.receipts.filter(
+    (item) => item.evidenceRef !== "evidence-brightpay-security-questionnaire",
+  );
+  const oldExceptionEvidence = {
+    ...structuredClone(
+      input.evidence.find(
+        (item) => item.id === "evidence-exception-brightpay-security",
+      ),
+    ),
+    id: "evidence-exception-brightpay-security-predecessor",
+    subjectRef: "exception-brightpay-security-predecessor",
+    sourceRef:
+      "controlled://third-party-review/exceptions/brightpay-security-2026-q2",
+    sourceVersion: "v1",
+    observedAt: "2026-01-20T16:05:00Z",
+    validUntil: "2026-07-31T23:59:59Z",
+  };
+  const addReceipt = (evidenceItem, text) => {
+    const bytes = Buffer.from(text, "utf8");
+    evidenceItem.sourceContentDigest = `sha256:${createHash("sha256")
+      .update(bytes)
+      .digest("hex")}`;
+    receipts.receipts.push({
+      evidenceRef: evidenceItem.id,
+      sourceRef: evidenceItem.sourceRef,
+      sourceVersion: evidenceItem.sourceVersion,
+      contentBase64: bytes.toString("base64"),
+      contentDigest: evidenceItem.sourceContentDigest,
+    });
+  };
+  addReceipt(oldExceptionEvidence, "predecessor exception approval\n");
+  input.evidence.push(oldExceptionEvidence);
+  const oldException = {
+    ...structuredClone(input.exceptions[0]),
+    id: "exception-brightpay-security-predecessor",
+    status: "expired",
+    approvedAt: "2026-01-20T16:00:00Z",
+    expiresAt: "2026-07-31T23:59:59Z",
+    evidenceRef: oldExceptionEvidence.id,
+  };
+  oldException.scopeDigest = computeExceptionScopeDigest(oldException);
+  input.exceptions.push(oldException);
+  const predecessorDecision = input.predecessorCycle.decisions.find(
+    (item) => item.cellRef === cellRef,
+  );
+  predecessorDecision.decisionType = "exception-recorded";
+  predecessorDecision.evidenceRefs = [oldExceptionEvidence.id];
+
+  if (reopen) {
+    const currentException = input.exceptions.find(
+      (item) => item.id === "exception-brightpay-security",
+    );
+    input.exceptions = input.exceptions.filter(
+      (item) => item.id !== currentException.id,
+    );
+    input.evidence = input.evidence.filter(
+      (item) => item.id !== currentException.evidenceRef,
+    );
+    receipts.receipts = receipts.receipts.filter(
+      (item) => item.evidenceRef !== currentException.evidenceRef,
+    );
+    const remediationEvidence = {
+      id: "evidence-remediation-brightpay-security",
+      kind: "remediation-record",
+      subjectType: "remediation",
+      subjectRef: "remediation-brightpay-security",
+      cellRefs: [cellRef],
+      sourceClass: "owner-controlled",
+      sourceRef:
+        "controlled://third-party-review/remediations/brightpay-security-2026-q3",
+      sourceVersion: "v1",
+      observedAt: "2026-09-01T14:05:00Z",
+      validUntil: "2026-12-01T14:05:00Z",
+      suppliedByRef: "principal-remediation-owner-sam",
+      sourceContentDigest: "",
+    };
+    addReceipt(remediationEvidence, "brightpay remediation record\n");
+    input.evidence.push(remediationEvidence);
+    const remediation = {
+      id: "remediation-brightpay-security",
+      cellRef,
+      ownerRef: "principal-remediation-owner-sam",
+      state: "in-progress",
+      cause: "evidence-expired",
+      expiredEvidenceRef: oldExceptionEvidence.id,
+      predecessorDecisionRef: predecessorDecision.id,
+      openedAt: "2026-09-01T14:00:00Z",
+      dueAt: "2026-09-30T17:00:00Z",
+      evidenceRef: remediationEvidence.id,
+    };
+    input.remediations.push(remediation);
+    const currentDecision = input.decisions.find(
+      (item) => item.cellRef === cellRef,
+    );
+    currentDecision.decisionType = "evidence-expired-reopened";
+    currentDecision.evidenceRefs = [
+      oldExceptionEvidence.id,
+      remediationEvidence.id,
+    ];
+    currentDecision.remediationRef = remediation.id;
+    currentDecision.exceptionRef = null;
+  }
+
+  input.predecessorCycle.artifactDigest = computePredecessorArtifactDigest(
+    input.predecessorCycle,
+    input.evidence,
+  );
+  signDetachedWithEphemeralTrust({
+    record: input.predecessorCycle.sourceAuthority,
+    payload: () => predecessorAuthorityPayload(input.predecessorCycle),
+    trust,
+    replacedKeyId: "key-third-party-review-predecessor-2026",
+    signingKeyId: "key-exception-transition-predecessor",
+  });
+  signDetachedWithEphemeralTrust({
+    record: receipts,
+    payload: () => sourceReceiptsPayload(receipts),
+    trust,
+    replacedKeyId: "key-source-receipts-2026",
+    signingKeyId: "key-exception-transition-receipts",
+  });
+  signDetachedWithEphemeralTrust({
+    record: input.sourceAuthority,
+    payload: () => sourceAuthorityPayload(input),
+    trust,
+    replacedKeyId: "key-third-party-review-2026",
+    signingKeyId: "key-exception-transition-current",
+  });
+  return { input, trust, receipts };
+}
+
 function resultSummary(evaluation) {
   return {
     valid: evaluation.valid,
@@ -97,8 +389,8 @@ function resultSummary(evaluation) {
     },
     scope: {
       vendorServiceRefs: evaluation.result.scope.vendorServiceRefs,
-      sharedSubprocessorRef: evaluation.result.scope.sharedSubprocessorRef,
-      publicTrustEvidenceRef: evaluation.result.scope.publicTrustEvidenceRef,
+      subprocessorRefs: evaluation.result.scope.subprocessorRefs,
+      publicTrustEvidenceRefs: evaluation.result.scope.publicTrustEvidenceRefs,
       remediationRefs: evaluation.result.scope.remediationRefs,
       exceptionRefs: evaluation.result.scope.exceptionRefs,
       riskAcceptanceAttemptRefs:
@@ -125,6 +417,119 @@ test("accepted bounded fixture is trusted, exact, and intentionally blocked", ()
   assert.deepEqual(evaluation.findings, []);
   assert.deepEqual(resultSummary(evaluation), expected);
   assert.deepEqual(fixture, before, "evaluation must not mutate its inputs");
+});
+
+test("authenticated variable portfolio reaches owner-ready with no blockers", () => {
+  const { input, trust, receipts } = readyOneServicePortfolio();
+  const evaluation = evaluateRecurringThirdPartyReview(input, {
+    asOf,
+    publicTrust: trust,
+    sourceReceipts: receipts,
+  });
+  assert.equal(evaluation.valid, true, JSON.stringify(evaluation.findings, null, 2));
+  assert.deepEqual(evaluation.findings, []);
+  assert.deepEqual(evaluation.result.scope.vendorServiceRefs, [
+    "vendor-service-alpine-support",
+  ]);
+  assert.equal(evaluation.result.coverage.declaredCellRefs.length, 3);
+  assert.deepEqual(evaluation.result.scope.remediationRefs, []);
+  assert.deepEqual(evaluation.result.scope.exceptionRefs, []);
+  assert.deepEqual(evaluation.result.scope.riskAcceptanceAttemptRefs, []);
+  assert.deepEqual(evaluation.result.reopenedCells, []);
+  assert.deepEqual(evaluation.result.blockers, []);
+  assert.equal(evaluation.result.handoff.state, "ready-for-owner-review");
+});
+
+test("owner freshness rules may derive expiry without an explicit validUntil", () => {
+  const { input, trust, receipts } = readyOneServicePortfolio();
+  input.freshnessRules.find(
+    (item) => item.evidenceKind === "assurance-report",
+  ).explicitValidUntilRequired = false;
+  delete input.evidence.find(
+    (item) => item.id === "evidence-alpine-assurance-report",
+  ).validUntil;
+  const freshnessRuleRevision = computeFreshnessRuleRevision(
+    input.freshnessRules,
+  );
+  input.cycle.freshnessRuleRevision = freshnessRuleRevision;
+  input.predecessorCycle.freshnessRuleRevision = freshnessRuleRevision;
+  for (const decision of [
+    ...input.predecessorCycle.decisions,
+    ...input.decisions,
+  ]) {
+    decision.freshnessRuleRevision = freshnessRuleRevision;
+  }
+  input.predecessorCycle.artifactDigest = computePredecessorArtifactDigest(
+    input.predecessorCycle,
+    input.evidence,
+  );
+  signDetachedWithEphemeralTrust({
+    record: input.predecessorCycle.sourceAuthority,
+    payload: () => predecessorAuthorityPayload(input.predecessorCycle),
+    trust,
+    replacedKeyId: "key-ready-predecessor",
+    signingKeyId: "key-age-derived-predecessor",
+  });
+  signDetachedWithEphemeralTrust({
+    record: input.sourceAuthority,
+    payload: () => sourceAuthorityPayload(input),
+    trust,
+    replacedKeyId: "key-ready-current",
+    signingKeyId: "key-age-derived-current",
+  });
+  const evaluation = evaluateRecurringThirdPartyReview(input, {
+    asOf,
+    publicTrust: trust,
+    sourceReceipts: receipts,
+  });
+  assert.equal(evaluation.valid, true, JSON.stringify(evaluation.findings, null, 2));
+  assert.equal(
+    evaluation.result.evidenceStates.find(
+      (item) => item.evidenceRef === "evidence-alpine-assurance-report",
+    ).state,
+    "current",
+  );
+
+  const required = clone();
+  delete required.evidence.find(
+    (item) => item.id === "evidence-alpine-assurance-report",
+  ).validUntil;
+  assert.ok(
+    evaluate(required).findings.some(
+      (item) => item.code === "missing-explicit-evidence-expiry",
+    ),
+  );
+});
+
+test("expired predecessor exceptions can be renewed or reopened", () => {
+  for (const reopen of [false, true]) {
+    const { input, trust, receipts } = exceptionTransitionPortfolio({ reopen });
+    const evaluation = evaluateRecurringThirdPartyReview(input, {
+      asOf,
+      publicTrust: trust,
+      sourceReceipts: receipts,
+    });
+    assert.equal(
+      evaluation.valid,
+      true,
+      `${reopen ? "reopen" : "renew"}: ${JSON.stringify(evaluation.findings, null, 2)}`,
+    );
+    const reopenedCell = evaluation.result.reopenedCells.find(
+      (item) => item.cellRef === "cell-brightpay-security",
+    );
+    if (reopen) {
+      assert.deepEqual(reopenedCell, {
+        cellRef: "cell-brightpay-security",
+        predecessorDecisionRef: "predecessor-decision-brightpay-security",
+        expiredEvidenceRefs: [
+          "evidence-exception-brightpay-security-predecessor",
+        ],
+        remediationRef: "remediation-brightpay-security",
+      });
+    } else {
+      assert.equal(reopenedCell, undefined);
+    }
+  }
 });
 
 test("semantic registry exposes the public validator and example context", () => {
@@ -202,7 +607,34 @@ test("validator normalizes null and non-record contexts and hostile trust serial
         (item) => item.code === "invalid-validation-context",
       ),
     );
+    assert.doesNotThrow(() =>
+      recurringThirdPartyReviewFindings(fixture, context),
+    );
+    assert.ok(
+      recurringThirdPartyReviewFindings(fixture, context).some(
+        (item) => item.code === "invalid-validation-context",
+      ),
+    );
   }
+  let optionProxyRead = false;
+  const optionProxy = new Proxy(
+    {},
+    {
+      get() {
+        optionProxyRead = true;
+        throw new Error("semantic option proxy executed");
+      },
+    },
+  );
+  assert.doesNotThrow(() =>
+    recurringThirdPartyReviewFindings(fixture, optionProxy),
+  );
+  assert.equal(optionProxyRead, false);
+  assert.ok(
+    recurringThirdPartyReviewFindings(fixture, optionProxy).some(
+      (item) => item.code === "invalid-validation-context",
+    ),
+  );
   for (const publicTrustValue of [
     {
       toJSON() {
@@ -642,7 +1074,7 @@ test("public trust is strict and rejects every private PEM label anywhere", () =
   );
 
   const tooManySigners = structuredClone(publicTrust);
-  while (tooManySigners.signers.length < 9) {
+  while (tooManySigners.signers.length < 65) {
     tooManySigners.signers.push({
       ...structuredClone(tooManySigners.signers[0]),
       signingKeyId: `key-extra-${tooManySigners.signers.length}`,
@@ -650,7 +1082,9 @@ test("public trust is strict and rejects every private PEM label anywhere", () =
   }
   assert.ok(
     evaluate(fixture, { publicTrust: tooManySigners }).findings.some(
-      (item) => item.code === "invalid-public-trust-input",
+      (item) =>
+        item.code === "invalid-public-trust-input" ||
+        item.code === "invalid-validation-context",
     ),
   );
 
@@ -1054,11 +1488,23 @@ test("the owner-declared cell index cannot be replaced by inferred applicability
     evaluation.findings.some((item) => item.code === "duplicate-requirement-cell"),
   );
 
-  const duplicateVendor = clone();
-  duplicateVendor.vendorServices[1].vendorId =
-    duplicateVendor.vendorServices[0].vendorId;
+  const sharedVendor = clone();
+  sharedVendor.vendorServices[1].vendorId =
+    sharedVendor.vendorServices[0].vendorId;
+  assert.equal(
+    evaluate(sharedVendor).findings.some(
+      (item) => item.code === "invalid-vendor-service-universe",
+    ),
+    false,
+  );
+
+  const duplicateVendorService = clone();
+  duplicateVendorService.vendorServices[1].vendorId =
+    duplicateVendorService.vendorServices[0].vendorId;
+  duplicateVendorService.vendorServices[1].serviceId =
+    duplicateVendorService.vendorServices[0].serviceId;
   assert.ok(
-    evaluate(duplicateVendor).findings.some(
+    evaluate(duplicateVendorService).findings.some(
       (item) => item.code === "invalid-vendor-service-universe",
     ),
   );
@@ -1110,6 +1556,72 @@ test("expired predecessor evidence must reopen the exact current cell", () => {
     evaluation.findings.some(
       (item) => item.code === "invalid-evidence-confirmed-decision",
     ),
+  );
+
+  const incomplete = clone();
+  const trust = structuredClone(publicTrust);
+  const receipts = structuredClone(sourceReceipts);
+  const secondaryEvidence = {
+    ...structuredClone(
+      incomplete.evidence.find(
+        (item) => item.id === "evidence-alpine-assurance-report",
+      ),
+    ),
+    id: "evidence-alpine-assurance-report-secondary",
+    sourceRef: "https://trust.alpine.example/assurance/soc3-2025-secondary",
+    sourceVersion: "2025-secondary",
+  };
+  const secondaryBytes = Buffer.from("secondary expired assurance report\n");
+  secondaryEvidence.sourceContentDigest = `sha256:${createHash("sha256")
+    .update(secondaryBytes)
+    .digest("hex")}`;
+  incomplete.evidence.push(secondaryEvidence);
+  incomplete.predecessorCycle.decisions[0].evidenceRefs.push(
+    secondaryEvidence.id,
+  );
+  receipts.receipts.push({
+    evidenceRef: secondaryEvidence.id,
+    sourceRef: secondaryEvidence.sourceRef,
+    sourceVersion: secondaryEvidence.sourceVersion,
+    contentBase64: secondaryBytes.toString("base64"),
+    contentDigest: secondaryEvidence.sourceContentDigest,
+  });
+  incomplete.predecessorCycle.artifactDigest =
+    computePredecessorArtifactDigest(
+      incomplete.predecessorCycle,
+      incomplete.evidence,
+    );
+  signDetachedWithEphemeralTrust({
+    record: incomplete.predecessorCycle.sourceAuthority,
+    payload: () => predecessorAuthorityPayload(incomplete.predecessorCycle),
+    trust,
+    replacedKeyId: "key-third-party-review-predecessor-2026",
+    signingKeyId: "key-multiple-expired-predecessor",
+  });
+  signDetachedWithEphemeralTrust({
+    record: receipts,
+    payload: () => sourceReceiptsPayload(receipts),
+    trust,
+    replacedKeyId: "key-source-receipts-2026",
+    signingKeyId: "key-multiple-expired-receipts",
+  });
+  signDetachedWithEphemeralTrust({
+    record: incomplete.sourceAuthority,
+    payload: () => sourceAuthorityPayload(incomplete),
+    trust,
+    replacedKeyId: "key-third-party-review-2026",
+    signingKeyId: "key-multiple-expired-current",
+  });
+  const incompleteResult = evaluateRecurringThirdPartyReview(incomplete, {
+    asOf,
+    publicTrust: trust,
+    sourceReceipts: receipts,
+  });
+  assert.ok(
+    incompleteResult.findings.some(
+      (item) => item.code === "invalid-reopened-decision",
+    ),
+    JSON.stringify(incompleteResult.findings, null, 2),
   );
 });
 
@@ -1203,17 +1715,18 @@ test("typed authority must predate each governed action", () => {
   );
 });
 
-test("typed principal cardinality and evidence closure are exact", () => {
-  const extraReviewer = clone();
-  extraReviewer.principals.push({
-    ...extraReviewer.principals.find(
+test("typed owner cardinality and evidence closure are exact", () => {
+  const extraProgramOwner = clone();
+  extraProgramOwner.principals.push({
+    ...extraProgramOwner.principals.find(
       (item) => item.id === "principal-reviewer-riley",
     ),
-    id: "principal-reviewer-taylor",
+    id: "principal-program-owner-taylor",
     name: "Taylor Gray",
     humanIdentityRef: "controlled://identity/taylor-gray",
+    role: "review-program-owner",
   });
-  const principalResult = evaluate(extraReviewer);
+  const principalResult = evaluate(extraProgramOwner);
   assert.ok(
     principalResult.findings.some(
       (item) => item.code === "invalid-principal-role-cardinality",
@@ -1261,7 +1774,7 @@ test("cell evidence and validity windows remain exact", () => {
   );
 });
 
-test("the one shared subprocessor is reciprocal across both services and cells", () => {
+test("subprocessor relationships are reciprocal across declared services and cells", () => {
   const changed = clone();
   changed.subprocessors[0].serviceRefs = ["vendor-service-alpine-support"];
   const evaluation = evaluate(changed);
@@ -1274,34 +1787,36 @@ test("the one shared subprocessor is reciprocal across both services and cells",
   );
 });
 
-test("the one public trust evidence input cannot be silently reclassified", () => {
+test("evidence source classes require their declared URI scheme", () => {
   const changed = clone();
   changed.evidence.find(
     (item) => item.id === "evidence-alpine-assurance-report",
   ).sourceClass = "owner-controlled";
   const evaluation = evaluate(changed);
   assert.ok(
-    evaluation.findings.some((item) => item.code === "invalid-public-trust-evidence"),
+    evaluation.findings.some((item) => item.code === "invalid-evidence-source-class"),
   );
 
-  const swapped = clone();
-  const report = swapped.evidence.find(
-    (item) => item.id === "evidence-alpine-assurance-report",
-  );
-  const questionnaire = swapped.evidence.find(
-    (item) => item.id === "evidence-brightpay-security-questionnaire",
-  );
-  report.sourceClass = "owner-controlled";
-  report.sourceRef = "controlled://third-party-review/assurance/alpine-2025";
-  questionnaire.sourceClass = "public-trust";
-  questionnaire.sourceRef =
-    "https://trust.brightpay.example/questionnaires/security-2026";
-  const swappedResult = evaluate(swapped);
-  assert.ok(
-    swappedResult.findings.some(
-      (item) => item.code === "invalid-public-trust-report-binding",
-    ),
-  );
+  for (const sourceRef of [
+    "https://localhost/private",
+    "https://user:password@example.com/report",
+    "https://trust.example/report?access_token=secret",
+    "https://storage.example/report?X-Amz-Credential=temporary",
+    "https://storage.example/report?X-Amz-Signature=abcdef",
+    "https://storage.example/report?X-Goog-Signature=abcdef",
+    "https://storage.example/report?sv=1&sig=abcdef",
+  ]) {
+    const unsafePublic = clone();
+    unsafePublic.evidence.find(
+      (item) => item.id === "evidence-alpine-assurance-report",
+    ).sourceRef = sourceRef;
+    assert.ok(
+      evaluate(unsafePublic).findings.some(
+        (item) => item.code === "invalid-evidence-source-class",
+      ),
+      sourceRef,
+    );
+  }
 
   const staleApplicability = clone();
   staleApplicability.evidence.find(
@@ -1535,6 +2050,39 @@ test("public CLI accepts the trusted fixture but reports a blocked handoff", () 
       resolve(sourceRoot, "fixtures", "source-receipts.example.json"),
     ],
     { cwd: root, encoding: "utf8" },
+  );
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.equal(output.valid, true);
+  assert.equal(output.result.handoff.state, "blocked");
+  assert.deepEqual(output.result.handoff.blockerCodes, expected.handoff.blockerCodes);
+});
+
+test("packaged Agent Skill verifier executes without repository dependencies", () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      resolve(
+        sourceRoot,
+        "skills",
+        "recurring-third-party-review-validator",
+        "scripts",
+        "verify.mjs",
+      ),
+      resolve(
+        sourceRoot,
+        "fixtures",
+        "recurring-third-party-review-evidence-reconciler.example.json",
+      ),
+      asOf,
+      resolve(sourceRoot, "fixtures", "public-trust.example.json"),
+      resolve(sourceRoot, "fixtures", "source-receipts.example.json"),
+    ],
+    {
+      cwd: sourceRoot,
+      encoding: "utf8",
+      env: { PATH: process.env.PATH },
+    },
   );
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);

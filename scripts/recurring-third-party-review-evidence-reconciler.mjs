@@ -16,7 +16,7 @@ export const PUBLIC_TRUST_SCHEMA_VERSION =
   "awesomeClaws.recurringThirdPartyReviewEvidenceReconcilerPublicTrust.v1";
 export const SLICE_LIMITS = Object.freeze({
   inputBytes: 1024 * 1024,
-  evidenceRecords: 24,
+  evidenceRecords: 64,
   publicTrustSigners: 8,
   maxDepth: 32,
   maxNodes: 4096,
@@ -54,20 +54,30 @@ const COMPOSITION_INVARIANT_IDS = Object.freeze([
   "predecessor-reopening",
 ]);
 
+const packagedVerifierPath =
+  "/skills/recurring-third-party-review-validator/scripts/verify.mjs";
+const sourceBaseUrl = new URL(import.meta.url).pathname.endsWith(
+  packagedVerifierPath,
+)
+  ? new URL("../../../", import.meta.url)
+  : new URL(
+      "../sources/recurring-third-party-review-evidence-reconciler/",
+      import.meta.url,
+    );
 const schema = JSON.parse(
   readFileSync(
     new URL(
-      "../sources/recurring-third-party-review-evidence-reconciler/schemas/recurring-third-party-review-evidence-reconciler.schema.json",
-      import.meta.url,
+      "schemas/recurring-third-party-review-evidence-reconciler.schema.json",
+      sourceBaseUrl,
     ),
     "utf8",
   ),
 );
 const publicTrustSchema = JSON.parse(
-  readFileSync(new URL("../sources/recurring-third-party-review-evidence-reconciler/schemas/public-trust.schema.json", import.meta.url), "utf8"),
+  readFileSync(new URL("schemas/public-trust.schema.json", sourceBaseUrl), "utf8"),
 );
 const sourceReceiptsSchema = JSON.parse(
-  readFileSync(new URL("../sources/recurring-third-party-review-evidence-reconciler/schemas/source-receipts.schema.json", import.meta.url), "utf8"),
+  readFileSync(new URL("schemas/source-receipts.schema.json", sourceBaseUrl), "utf8"),
 );
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
@@ -509,6 +519,56 @@ function duplicateValues(values) {
   return [...duplicates].sort(compareText);
 }
 
+function hasUnsafePublicHost(hostname) {
+  const host = hostname.toLowerCase().replace(/^\[|\]$/gu, "");
+  if (
+    /^(?:localhost(?:\.localdomain)?|.+\.localhost|0(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|127(?:\.\d{1,3}){3}|169\.254(?:\.\d{1,3}){2}|192\.168(?:\.\d{1,3}){2}|::1|f[cd][0-9a-f:]*|fe[89ab][0-9a-f:]*)$/u.test(
+      host,
+    )
+  ) {
+    return true;
+  }
+  const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/u.exec(host);
+  return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
+}
+
+function isCredentialFreePublicHttpsReference(value) {
+  let reference;
+  try {
+    reference = new URL(value);
+  } catch {
+    return false;
+  }
+  const unsafeQueryKey = (key) => {
+    const compact = key.toLowerCase().replace(/[^a-z0-9]/gu, "");
+    return (
+      /^(?:auth|code|credential|key|password|secret|sig|signature|token)$/u.test(
+        compact,
+      ) ||
+      /(?:accesskey|accesstoken|apikey|authtoken|credential|securitytoken|signature|signed)/u.test(
+        compact,
+      ) ||
+      compact.startsWith("xamz") ||
+      compact.startsWith("xgoog")
+    );
+  };
+  const unsafeQuery =
+    [...reference.searchParams.keys()].some(unsafeQueryKey) ||
+    [...reference.searchParams.values()].some((queryValue) =>
+      /\b(?:access[_-]?token|api[_-]?key|auth|credential|password|secret|token)\s*[:=]/iu.test(
+        queryValue,
+      ),
+    );
+  return (
+    reference.protocol === "https:" &&
+    !reference.username &&
+    !reference.password &&
+    !reference.hash &&
+    !hasUnsafePublicHost(reference.hostname) &&
+    !unsafeQuery
+  );
+}
+
 function containsPrivateKeyMaterial(value, seen = new Set()) {
   if (typeof value === "string") {
     return PRIVATE_KEY_PEM_PATTERN.test(value);
@@ -803,10 +863,15 @@ function detachedSignatureFindings(
 function effectiveExpiry(evidence, freshnessRule) {
   const observedAt = timestamp(evidence?.observedAt);
   const validUntil = timestamp(evidence?.validUntil);
-  if (observedAt === null || validUntil === null || !Number.isInteger(freshnessRule?.maxAgeDays)) {
+  if (
+    observedAt === null ||
+    !Number.isInteger(freshnessRule?.maxAgeDays) ||
+    (freshnessRule.explicitValidUntilRequired && validUntil === null)
+  ) {
     return null;
   }
-  return Math.min(validUntil, observedAt + freshnessRule.maxAgeDays * 86_400_000);
+  const ageExpiry = observedAt + freshnessRule.maxAgeDays * 86_400_000;
+  return validUntil === null ? ageExpiry : Math.min(validUntil, ageExpiry);
 }
 
 function evidenceState(evidence, rule, asOf) {
@@ -916,6 +981,7 @@ function semanticFindings(input, asOf, trustStore) {
   const findings = [...globalIdentityFindings(input)];
   const principals = mapById(input.principals);
   const vendorServices = mapById(input.vendorServices);
+  const subprocessors = mapById(input.subprocessors);
   const requirements = mapById(input.requirementCatalog.requirements);
   const cells = mapById(input.requirementCatalog.cells);
   const freshnessRules = mapById(input.freshnessRules);
@@ -949,7 +1015,7 @@ function semanticFindings(input, asOf, trustStore) {
   const serviceManifestRefs = serviceManifests.map((item) => item.subjectRef);
   const vendorServiceRefs = input.vendorServices.map((item) => item.id);
   if (
-    input.ownerManifests.length !== 3 ||
+    input.ownerManifests.length !== input.vendorServices.length + 1 ||
     !catalogManifest ||
     serviceManifests.length !== input.vendorServices.length ||
     !sameSet(serviceManifestRefs, vendorServiceRefs) ||
@@ -1042,11 +1108,7 @@ function semanticFindings(input, asOf, trustStore) {
   const expectedRoleCounts = new Map([
     ["review-program-owner", 1],
     ["requirement-catalog-owner", 1],
-    ["vendor-service-owner", 2],
     ["evidence-custodian", 1],
-    ["reviewer", 1],
-    ["remediation-owner", 1],
-    ["exception-authority", 1],
   ]);
   for (const [role, expectedCount] of expectedRoleCounts) {
     const actualCount = input.principals.filter((item) => item.role === role).length;
@@ -1054,7 +1116,41 @@ function semanticFindings(input, asOf, trustStore) {
       add(
         "invalid-principal-role-cardinality",
         "$.principals",
-        `The bounded slice requires exactly ${expectedCount} typed human ${role} principal${expectedCount === 1 ? "" : "s"}.`,
+        `The review requires exactly ${expectedCount} typed human ${role} principal${expectedCount === 1 ? "" : "s"}.`,
+        [role],
+      );
+    }
+  }
+  if (input.principals.filter((item) => item.role === "reviewer").length === 0) {
+    add(
+      "invalid-principal-role-cardinality",
+      "$.principals",
+      "The review requires at least one typed human reviewer.",
+      ["reviewer"],
+    );
+  }
+  for (const [role, referenced] of [
+    [
+      "vendor-service-owner",
+      [...new Set(input.vendorServices.map((item) => item.ownerRef))],
+    ],
+    [
+      "remediation-owner",
+      [...new Set(input.remediations.map((item) => item.ownerRef))],
+    ],
+    [
+      "exception-authority",
+      [...new Set(input.exceptions.map((item) => item.approvedByRef))],
+    ],
+  ]) {
+    const declared = input.principals
+      .filter((item) => item.role === role)
+      .map((item) => item.id);
+    if (!sameSet(declared, referenced)) {
+      add(
+        "invalid-principal-role-cardinality",
+        "$.principals",
+        `The ${role} principal set must equal the owners referenced by the review portfolio.`,
         [role],
       );
     }
@@ -1070,7 +1166,7 @@ function semanticFindings(input, asOf, trustStore) {
     add(
       "requirement-catalog-revision-mismatch",
       "$.requirementCatalog.revision",
-      "The owner-approved requirement catalog revision must bind its exact four requirements.",
+      "The owner-approved requirement catalog revision must bind its exact requirement universe.",
       [catalog.id],
     );
   }
@@ -1126,23 +1222,6 @@ function semanticFindings(input, asOf, trustStore) {
       [pair],
     );
   }
-  if (catalog.cells.length !== 6) {
-    add(
-      "invalid-cell-index-cardinality",
-      "$.requirementCatalog.cells",
-      "This bounded falsification slice requires exactly six owner-declared cells.",
-    );
-  }
-  if (
-    catalog.cells.length ===
-    input.vendorServices.length * catalog.requirements.length
-  ) {
-    add(
-      "derived-cartesian-cell-index",
-      "$.requirementCatalog.cells",
-      "Applicability must be supplied as an explicit owner-declared index, not a vendor-by-requirement Cartesian product.",
-    );
-  }
   for (const [index, cell] of catalog.cells.entries()) {
     const vendorService = vendorServices.get(cell.vendorServiceRef);
     const declarationEvidence = evidence.get(cell.declarationEvidenceRef);
@@ -1187,16 +1266,21 @@ function semanticFindings(input, asOf, trustStore) {
     .filter((item) => item.role === "vendor-service-owner")
     .map((item) => item.id);
   if (
-    duplicateValues(input.vendorServices.map((item) => item.vendorId)).length > 0 ||
-    duplicateValues(input.vendorServices.map((item) => item.serviceId)).length > 0 ||
-    duplicateValues(input.vendorServices.map((item) => item.ownerRef)).length > 0 ||
+    duplicateValues(
+      input.vendorServices.map(
+        (item) => `${item.vendorId}\u0000${item.serviceId}`,
+      ),
+    ).length > 0 ||
     !sameSet(
-      input.vendorServices.map((item) => item.ownerRef),
+      [...new Set(input.vendorServices.map((item) => item.ownerRef))],
       serviceOwnerRefs,
     ) ||
     input.vendorServices.some(
       (service) =>
         !catalog.cells.some((cell) => cell.vendorServiceRef === service.id),
+    ) ||
+    input.vendorServices.some((service) =>
+      service.subprocessorRefs.some((ref) => !subprocessors.has(ref)),
     ) ||
     catalog.requirements.some(
       (requirement) =>
@@ -1206,43 +1290,70 @@ function semanticFindings(input, asOf, trustStore) {
     add(
       "invalid-vendor-service-universe",
       "$.vendorServices",
-      "The bounded universe requires two distinct vendor and service identities, with every service and catalog requirement represented by at least one declared cell.",
+      "The owner universe requires distinct vendor and service identities, with every service and catalog requirement represented by at least one declared cell.",
       serviceRefs,
     );
   }
-  const sharedSubprocessor = input.subprocessors[0];
-  if (
-    !sameSet(sharedSubprocessor.serviceRefs, serviceRefs) ||
-    input.vendorServices.some(
-      (service) => !sameSet(service.subprocessorRefs, [sharedSubprocessor.id]),
-    )
-  ) {
-    add(
-      "invalid-shared-subprocessor-binding",
-      "$.subprocessors",
-      "The one shared subprocessor must bind reciprocally to both and only the two reviewed vendor services.",
-      [sharedSubprocessor.id],
+  const coveredSubprocessorCells = new Set();
+  for (const [index, subprocessor] of input.subprocessors.entries()) {
+    const reciprocal =
+      subprocessor.serviceRefs.every(
+        (ref) =>
+          vendorServices.has(ref) &&
+          vendorServices.get(ref).subprocessorRefs.includes(subprocessor.id),
+      ) &&
+      input.vendorServices.every(
+        (service) =>
+          service.subprocessorRefs.includes(subprocessor.id) ===
+          subprocessor.serviceRefs.includes(service.id),
+      );
+    if (!reciprocal) {
+      add(
+        "invalid-shared-subprocessor-binding",
+        `$.subprocessors[${index}]`,
+        "Every subprocessor must bind reciprocally to exactly its declared vendor services.",
+        [subprocessor.id],
+      );
+    }
+    const subprocessorCells = catalog.cells
+      .filter(
+        (cell) =>
+          subprocessor.serviceRefs.includes(cell.vendorServiceRef) &&
+          requirements.get(cell.requirementRef)?.requiredEvidenceKind ===
+            "subprocessor-disclosure",
+      )
+      .map((cell) => cell.id);
+    subprocessorCells.forEach((cellRef) => coveredSubprocessorCells.add(cellRef));
+    const subprocessorEvidence = evidence.get(
+      subprocessor.declarationEvidenceRef,
     );
+    if (
+      subprocessorEvidence?.kind !== "subprocessor-disclosure" ||
+      subprocessorEvidence.subjectType !== "subprocessor" ||
+      subprocessorEvidence.subjectRef !== subprocessor.id ||
+      !sameSet(subprocessorEvidence.cellRefs, subprocessorCells)
+    ) {
+      add(
+        "invalid-shared-subprocessor-evidence",
+        `$.subprocessors[${index}].declarationEvidenceRef`,
+        "Each subprocessor disclosure must cover exactly its explicit requirement cells.",
+        [subprocessor.id],
+      );
+    }
   }
-  const subprocessorEvidence = evidence.get(sharedSubprocessor.declarationEvidenceRef);
-  const subprocessorCells = catalog.cells
+  const expectedSubprocessorCells = catalog.cells
     .filter(
       (cell) =>
         requirements.get(cell.requirementRef)?.requiredEvidenceKind ===
         "subprocessor-disclosure",
     )
     .map((cell) => cell.id);
-  if (
-    subprocessorEvidence?.kind !== "subprocessor-disclosure" ||
-    subprocessorEvidence.subjectType !== "subprocessor" ||
-    subprocessorEvidence.subjectRef !== sharedSubprocessor.id ||
-    !sameSet(subprocessorEvidence.cellRefs, subprocessorCells)
-  ) {
+  if (!sameSet([...coveredSubprocessorCells], expectedSubprocessorCells)) {
     add(
-      "invalid-shared-subprocessor-evidence",
-      "$.subprocessors[0].declarationEvidenceRef",
-      "The shared subprocessor disclosure must cover exactly its two explicit requirement cells.",
-      [sharedSubprocessor.id],
+      "invalid-shared-subprocessor-binding",
+      "$.subprocessors",
+      "Every subprocessor-disclosure cell must be covered by one declared reciprocal subprocessor.",
+      expectedSubprocessorCells,
     );
   }
 
@@ -1355,20 +1466,6 @@ function semanticFindings(input, asOf, trustStore) {
     );
   }
 
-  const publicEvidence = input.evidence.filter(
-    (item) => item.sourceClass === "public-trust",
-  );
-  if (
-    publicEvidence.length !== 1 ||
-    !publicEvidence[0].sourceRef.startsWith("https://")
-  ) {
-    add(
-      "invalid-public-trust-evidence",
-      "$.evidence",
-      "The bounded slice requires exactly one HTTPS public-trust evidence input.",
-      publicEvidence.map((item) => item.id),
-    );
-  }
   const evidenceStates = new Map();
   for (const [index, item] of input.evidence.entries()) {
     const rule = input.freshnessRules.find(
@@ -1411,7 +1508,10 @@ function semanticFindings(input, asOf, trustStore) {
         [item.id],
       );
     }
-    if (timestamp(item.validUntil) <= timestamp(item.observedAt)) {
+    if (
+      timestamp(item.validUntil) !== null &&
+      timestamp(item.validUntil) <= timestamp(item.observedAt)
+    ) {
       add(
         "invalid-evidence-validity-window",
         `$.evidence[${index}].validUntil`,
@@ -1421,7 +1521,7 @@ function semanticFindings(input, asOf, trustStore) {
     }
     if (
       (item.sourceClass === "public-trust" &&
-        !item.sourceRef.startsWith("https://")) ||
+        !isCredentialFreePublicHttpsReference(item.sourceRef)) ||
       (item.sourceClass === "owner-controlled" &&
         !item.sourceRef.startsWith("controlled://"))
     ) {
@@ -1474,35 +1574,11 @@ function semanticFindings(input, asOf, trustStore) {
         add(
           "dangling-evidence-cell",
           `$.evidence[${index}].cellRefs`,
-          "Evidence cell references must resolve inside the exact six-cell index.",
+          "Evidence cell references must resolve inside the owner-declared cell index.",
           [item.id, cellRef],
         );
       }
     }
-  }
-  const expiredReports = input.evidence.filter(
-    (item) =>
-      item.kind === "assurance-report" &&
-      evidenceStates.get(item.id) === "expired",
-  );
-  if (expiredReports.length !== 1) {
-    add(
-      "invalid-expired-report-cardinality",
-      "$.evidence",
-      "This bounded slice requires exactly one expired assurance report.",
-      expiredReports.map((item) => item.id),
-    );
-  }
-  if (
-    expiredReports.length === 1 &&
-    (publicEvidence.length !== 1 || publicEvidence[0].id !== expiredReports[0].id)
-  ) {
-    add(
-      "invalid-public-trust-report-binding",
-      "$.evidence",
-      "The one public-trust input must be the one expired assurance report exercised by this bounded slice.",
-      [...publicEvidence, ...expiredReports].map((item) => item.id),
-    );
   }
   for (const cell of catalog.cells) {
     if (evidenceStates.get(cell.declarationEvidenceRef) !== "current") {
@@ -1524,7 +1600,7 @@ function semanticFindings(input, asOf, trustStore) {
   }
   const consumedEvidenceRefs = new Set([
     ...catalog.cells.map((item) => item.declarationEvidenceRef),
-    sharedSubprocessor.declarationEvidenceRef,
+    ...input.subprocessors.map((item) => item.declarationEvidenceRef),
     cycle.approvalEvidenceRef,
     ...predecessor.decisions.flatMap((item) => item.evidenceRefs),
     ...input.decisions.flatMap((item) => item.evidenceRefs),
@@ -1536,7 +1612,7 @@ function semanticFindings(input, asOf, trustStore) {
     add(
       "inexact-evidence-closure",
       "$.evidence",
-      "Every supplied evidence record must be consumed by the exact cycle, applicability, decision, remediation, exception, or shared-subprocessor contract.",
+      "Every supplied evidence record must be consumed by the exact cycle, applicability, decision, remediation, exception, or subprocessor contract.",
       evidenceIds.filter((id) => !consumedEvidenceRefs.has(id)),
     );
   }
@@ -1655,8 +1731,11 @@ function semanticFindings(input, asOf, trustStore) {
         cells.get(predecessorDecision.cellRef)?.requirementRef,
       );
       return (
-        item?.kind === requirement?.requiredEvidenceKind &&
-        evidenceStates.get(ref) === "current"
+        evidenceStates.get(ref) === "current" &&
+        (item?.kind === requirement?.requiredEvidenceKind ||
+          (currentDecision.decisionType === "exception-recorded" &&
+            item?.kind === "exception-approval" &&
+            item.cellRefs.includes(predecessorDecision.cellRef)))
       );
     });
     if (wasCurrentAtPredecessor && expiredAtCurrent.length > 0 && !hasFreshReplacement) {
@@ -1733,11 +1812,15 @@ function semanticFindings(input, asOf, trustStore) {
     }
     if (item.decisionType === "evidence-expired-reopened") {
       const remediation = remediations.get(item.remediationRef);
+      const expiredPredecessorEvidenceRefs =
+        predecessorDecision?.evidenceRefs.filter(
+          (ref) => evidenceStates.get(ref) === "expired",
+        ) ?? [];
       if (
         item.exceptionRef !== null ||
-        requirementEvidence.length === 0 ||
-        !requirementEvidence.some(
-          (candidate) => evidenceStates.get(candidate.id) === "expired",
+        expiredPredecessorEvidenceRefs.length === 0 ||
+        !expiredPredecessorEvidenceRefs.every((ref) =>
+          item.evidenceRefs.includes(ref),
         ) ||
         remediation?.cellRef !== item.cellRef ||
         remediation?.predecessorDecisionRef !== item.predecessorDecisionRef ||
@@ -1812,7 +1895,7 @@ function semanticFindings(input, asOf, trustStore) {
       add(
         "invalid-expiry-remediation",
         `$.remediations[${index}]`,
-        "The one remediation must be human-owned and causally reopen the exact predecessor cell after evidence expiry.",
+        "Each remediation must be human-owned and causally reopen its exact predecessor cell after evidence expiry.",
         [remediation.id, remediation.cellRef],
       );
     }
@@ -1820,12 +1903,28 @@ function semanticFindings(input, asOf, trustStore) {
 
   for (const [index, exception] of input.exceptions.entries()) {
     const exceptionEvidence = evidence.get(exception.evidenceRef);
-    const consumingDecisions = input.decisions.filter(
+    const currentConsumers = input.decisions.filter(
       (decision) =>
         decision.decisionType === "exception-recorded" &&
         decision.exceptionRef === exception.id &&
         decision.cellRef === exception.cellRef,
     );
+    const predecessorConsumers = predecessor.decisions.filter(
+      (decision) =>
+        decision.decisionType === "exception-recorded" &&
+        decision.cellRef === exception.cellRef &&
+        decision.evidenceRefs.includes(exception.evidenceRef),
+    );
+    const lifecycleValid =
+      exception.status === "active"
+        ? timestamp(exception.expiresAt) >= asOf &&
+          evidenceStates.get(exception.evidenceRef) === "current" &&
+          currentConsumers.length === 1
+        : exception.status === "expired" &&
+          timestamp(exception.expiresAt) < asOf &&
+          evidenceStates.get(exception.evidenceRef) === "expired" &&
+          currentConsumers.length === 0 &&
+          predecessorConsumers.length === 1;
     if (
       !cells.has(exception.cellRef) ||
       !principalWithRoleAt(
@@ -1841,13 +1940,12 @@ function semanticFindings(input, asOf, trustStore) {
       exceptionEvidence.suppliedByRef !== exception.approvedByRef ||
       timestamp(exceptionEvidence.observedAt) < timestamp(exception.approvedAt) ||
       timestamp(exception.approvedAt) > timestamp(exception.expiresAt) ||
-      timestamp(exception.expiresAt) < asOf ||
-      consumingDecisions.length !== 1
+      !lifecycleValid
     ) {
       add(
         "invalid-external-exception",
         `$.exceptions[${index}]`,
-        "The one exception must be current, exact-cell scoped, and supplied by a distinct typed human authority.",
+        "Each exception must be exact-cell scoped, externally approved, and either current-decision active or predecessor-decision expired.",
         [exception.id, exception.cellRef],
       );
     }
@@ -1990,10 +2088,11 @@ function resultFor(input, findings, asOf) {
       requirementRefs: input.requirementCatalog.requirements
         .map((item) => item.id)
         .sort(compareText),
-      sharedSubprocessorRef: input.subprocessors[0].id,
-      publicTrustEvidenceRef: input.evidence.find(
-        (item) => item.sourceClass === "public-trust",
-      )?.id ?? null,
+      subprocessorRefs: input.subprocessors.map((item) => item.id).sort(compareText),
+      publicTrustEvidenceRefs: input.evidence
+        .filter((item) => item.sourceClass === "public-trust")
+        .map((item) => item.id)
+        .sort(compareText),
       remediationRefs: input.remediations.map((item) => item.id).sort(compareText),
       exceptionRefs: input.exceptions.map((item) => item.id).sort(compareText),
       riskAcceptanceAttemptRefs: input.riskAcceptanceAttempts
@@ -2222,10 +2321,10 @@ export function evaluateRecurringThirdPartyReview(input, options = {}) {
 }
 
 const examplePublicTrust = JSON.parse(
-  readFileSync(new URL("../sources/recurring-third-party-review-evidence-reconciler/fixtures/public-trust.example.json", import.meta.url), "utf8"),
+  readFileSync(new URL("fixtures/public-trust.example.json", sourceBaseUrl), "utf8"),
 );
 const exampleSourceReceipts = JSON.parse(
-  readFileSync(new URL("../sources/recurring-third-party-review-evidence-reconciler/fixtures/source-receipts.example.json", import.meta.url), "utf8"),
+  readFileSync(new URL("fixtures/source-receipts.example.json", sourceBaseUrl), "utf8"),
 );
 
 export const RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS = Object.freeze({
@@ -2235,7 +2334,17 @@ export const RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS = Object.freeze({
 });
 
 export function recurringThirdPartyReviewFindings(input, options = RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS) {
-  const resolved = structuredClone(options);
+  const normalizedOptions = normalizeJsonValue(options ?? {}, {
+    ...SLICE_LIMITS,
+    maxBytes: SLICE_LIMITS.validationContextBytes,
+  });
+  if (
+    normalizedOptions.error !== null ||
+    !isRecord(normalizedOptions.value)
+  ) {
+    return evaluateRecurringThirdPartyReview(input, options).findings;
+  }
+  const resolved = normalizedOptions.value;
   if (
     resolved.fixtureTrustProfile ===
     RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS.fixtureTrustProfile
@@ -2274,8 +2383,8 @@ export function renderReviewProof(result) {
 ## Bounded scope
 
 - Vendor/services: ${result.scope.vendorServiceRefs.map((ref) => `\`${ref}\``).join(", ")}
-- Shared subprocessor: \`${result.scope.sharedSubprocessorRef}\`
-- Public trust evidence: \`${result.scope.publicTrustEvidenceRef}\`
+- Subprocessors: ${result.scope.subprocessorRefs.map((ref) => `\`${ref}\``).join(", ") || "none"}
+- Public trust evidence: ${result.scope.publicTrustEvidenceRefs.map((ref) => `\`${ref}\``).join(", ") || "none"}
 - External exception: ${result.scope.exceptionRefs.map((ref) => `\`${ref}\``).join(", ")}
 - Preserved risk-acceptance attempt: ${result.scope.riskAcceptanceAttemptRefs.map((ref) => `\`${ref}\``).join(", ")}
 

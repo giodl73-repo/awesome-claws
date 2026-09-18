@@ -14,8 +14,9 @@ Reconciles one approved recurring third-party review cycle over an exact owner-d
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
-- Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `show_widget` with workspace-only filesystem access.
-- Capability boundary: The base package uses only supplied workspace artifacts and grants no browser, network, shell, MCP, plugin, cron, messaging, ticketing, or source-system capability.
+- Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit`, `exec`, `show_widget` with workspace-only filesystem access.
+- Capability boundary: The base package uses only supplied workspace artifacts and grants no browser, network, MCP, plugin, cron, messaging, ticketing, or source-system capability; local command execution is limited by policy to the packaged dependency-free validator.
+- Capability boundary: Run only node skills/recurring-third-party-review-validator/scripts/verify.mjs with the four approved workspace inputs; do not install dependencies or invoke any other command.
 - Capability boundary: Requirement owners, vendor-service owners, evidence custodians, reviewers, remediation owners, exception authorities, risk owners, and supplier systems retain their existing authority.
 - Capability boundary: Missing, stale, conflicting, unsigned, unauthenticated, duplicated, or out-of-scope evidence produces an exact blocker rather than a score, recommendation, or external action.
 

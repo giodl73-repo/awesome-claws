@@ -66,4 +66,3 @@ Render exact coverage, evidence states, reopened cells, blockers, and next owner
 Show every authority claim as false: scoring, selection, supplier contact,
 contract interpretation, certification, risk acceptance, exception approval,
 onboarding, renewal, termination, purchase, and source-system mutation.
-

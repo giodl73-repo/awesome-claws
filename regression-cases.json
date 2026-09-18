@@ -2224,10 +2224,10 @@
       "requiredEvidence": [
         "One approved current review cycle and one independently signed predecessor cycle with caller-controlled asOf",
         "Owner-approved requirement catalog, exact vendor-service applicability cells, and content-bound revision digests",
-        "Vendor-service and shared-subprocessor manifests signed by their typed owners",
+        "One independently signed catalog manifest plus one signed applicability manifest for every declared vendor service",
         "Evidence-kind freshness rules plus signed source receipts binding exact source bytes, references, versions, and digests",
         "Current and predecessor typed-human decisions with exact cell, revision, evidence, remediation, and exception bindings",
-        "Typed principals, one open remediation, one external exception, and any preserved unauthorized risk-acceptance attempt"
+        "Typed principals and any applicable remediation, external-exception, or preserved unauthorized risk-acceptance-attempt records"
       ],
       "authorityBoundaries": [
         "Do not interpret requirement, contract, policy, assurance-report, questionnaire, subprocessor, or continuity-test content",
@@ -2246,9 +2246,10 @@
         "asset": "assets/third-party-review-status.html"
       },
       "capabilityClasses": [
-        "visual"
+        "visual",
+        "workspace-execution"
       ],
-      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
+      "capabilityDigest": "sha256:56872736c26fdbc5eff84d5a02de0273b0009d5ad725e38ae55855932fa1f3a1"
     },
     {
       "id": "release-coordinator",

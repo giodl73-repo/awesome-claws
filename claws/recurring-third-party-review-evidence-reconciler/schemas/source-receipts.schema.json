@@ -25,8 +25,8 @@
     },
     "receipts": {
       "type": "array",
-      "minItems": 10,
-      "maxItems": 24,
+      "minItems": 3,
+      "maxItems": 64,
       "items": {
         "$ref": "#/$defs/receipt"
       }

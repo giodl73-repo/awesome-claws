@@ -37,6 +37,10 @@ workspace:
       path: templates/recurring-third-party-review-evidence-reconciler.md
     - source: assets/third-party-review-status.html
       path: assets/third-party-review-status.html
+    - source: skills/recurring-third-party-review-validator/SKILL.md
+      path: skills/recurring-third-party-review-validator/SKILL.md
+    - source: skills/recurring-third-party-review-validator/scripts/verify.mjs
+      path: skills/recurring-third-party-review-validator/scripts/verify.mjs
     - source: references/admission-decision.md
       path: references/admission-decision.md
     - source: references/blocked-handoff.md

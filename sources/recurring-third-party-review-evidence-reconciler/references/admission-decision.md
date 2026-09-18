@@ -9,6 +9,11 @@ historical review evidence. The promoted package lives under
 the repository artifact validator, and includes the signed source-receipt
 fixtures and accessible inline review.
 
+The promoted validator retains this exact admitted fixture as its blocked
+example while accepting bounded variable owner-declared portfolios, including
+authenticated clean cycles that require no remediation and reach
+`ready-for-owner-review`.
+
 Status: **NEW CLAW proven by a bounded candidate slice; not a catalog contribution**
 
 Confidence: **high (0.84)**

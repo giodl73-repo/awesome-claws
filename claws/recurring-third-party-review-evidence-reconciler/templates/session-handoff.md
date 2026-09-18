@@ -18,7 +18,7 @@ Summarize the user request and the decision or next action this Claw supports.
 
 ## Exact applicability and freshness
 
-- Render all six owner-declared cells exactly once.
+- Render every owner-declared cell exactly once.
 - Show every evidence state, effective expiry, and the exact predecessor cell
   reopened by expired evidence.
 

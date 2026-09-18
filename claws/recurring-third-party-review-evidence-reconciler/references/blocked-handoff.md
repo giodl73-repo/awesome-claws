@@ -11,7 +11,7 @@
 ## Bounded scope
 
 - Vendor/services: `vendor-service-alpine-support`, `vendor-service-brightpay-payroll`
-- Shared subprocessor: `subprocessor-shared-cloud`
+- Subprocessors: `subprocessor-shared-cloud`
 - Public trust evidence: `evidence-alpine-assurance-report`
 - External exception: `exception-brightpay-security`
 - Preserved risk-acceptance attempt: `risk-attempt-alpine-assurance`
