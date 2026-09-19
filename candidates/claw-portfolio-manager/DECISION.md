@@ -30,11 +30,12 @@ only an executable composition proof and delivery recipe.
    Chief fixtures with their real JSON Schemas and semantic validators;
 2. runs the actual contribution validator and similarity scorer over a complete
    proposal;
-3. derives all eight admission dispositions from evidence and prioritizes
-   COMPOSE/IMPROVE ahead of NEW;
+3. derives all eight admission dispositions end to end from signed owner
+   evidence and prioritizes COMPOSE/IMPROVE ahead of NEW;
 4. optionally executes Catalog Quality, Runtime Evidence budget preflight,
    Regression, and Mock+ inventory proof and emits concrete advisory results;
-5. verifies exact adapter, schema, owner-artifact, validator, registry,
+5. deterministically walks and verifies the complete transitive local import
+   closure from the adapter, plus exact schemas, owner artifacts, registries,
    `package.json`, and `package-lock.json` bytes;
 6. verifies an externally supplied lifecycle-bounded trust pin,
    domain-separated Ed25519 public keys, and signed provider, continuation,
@@ -107,6 +108,8 @@ signatures validate:
 - `NEW` requires `job === "different"` **and** at least one material
   workflow/output/evidence/authority difference, with no feasible COMPOSE or
   IMPROVE path;
+- authenticated product-decision references suppress every automatic
+  disposition and select `PRODUCT_DECISION`, even when composition is feasible;
 - otherwise -> `PRODUCT_DECISION`.
 
 The scorecard always includes all eight dispositions, their eligibility,
@@ -125,16 +128,20 @@ proposal contracts and caller-only classification claims.
 3. Validate the actual Repository Operations, Repository Compliance, and Work
    Chief artifacts with their current schemas and semantic validators.
 4. Verify the provider issue identity, state, base revision, exact minimized
-   bytes, replacement mapping, content revision, completeness root, and
-   provider signature.
+   bytes, replacement mapping, content revision, completeness root, provider
+   signature, and the closed decoded body; reconstruct only typed,
+   subject-bound `evidenceRefs`, `proposalDigest`, and `request`.
 5. Validate the complete contribution proposal, current similarity coverage,
-   signed operating-contract comparison, zero-authority owner mappings, and
-   eight-way compose-first scorecard.
+   the exact selected owner set, signed
+   support/duplicate/lifecycle/variant/product-decision/demand evidence,
+   typed lifecycle and product-decision references, zero-authority owner
+   mappings, and the eight-way compose-first scorecard.
 6. Verify the signed package tree and, when supplied, the bounded runtime
    budget; then run Catalog Quality, Regression, Runtime Evidence, and Mock+ as
    advisory evidence that cannot change classification.
-7. Verify externally supplied receipt lineage and compute a Work Chief
-   capacity/conflict plan without reserving, consuming, or mutating anything.
+7. Verify externally supplied receipt lineage and compute an explicit Work
+   Chief proposed-demand allocation or blocked result from remaining capacity
+   and open conflicts only, without reserving, consuming, or mutating anything.
 8. Verify the signed bootstrap/adopt/manage continuation plan and emit the
    owner-controlled handoff with merge, publication, mutation, budget increase,
    risk acceptance, HR inference, and sensitive-person inference unreachable.
@@ -161,11 +168,18 @@ proposal contracts and caller-only classification claims.
 - `node --test scripts/repository-operations-manager.test.mjs scripts/repository-compliance-program-manager.test.mjs scripts/x3-decision-artifacts.test.mjs scripts/contribution-lib.test.mjs scripts/catalog-quality-score.test.mjs scripts/runtime-evidence.test.mjs scripts/regression-cases.test.mjs scripts/mock-plus.test.mjs`
 - `npm run check`
 
-The focused lane covers exact output, all dispositions, source/provider/
-proposal/package substitution, stateless receipt semantics, all continuation
-modes, trust lifecycle/domain separation, optional usage/evidence, hostile API
-values, and bounded non-echoing CLI files. The owner analogue command and full
-repository check pass.
+The candidate proof is intentionally absent from the default `npm run check`
+gate. Run it explicitly and regenerate exact signed fixtures with
+`npm run regenerate:claw-portfolio-composition` after any
+bound adapter, schema, owner, registry, manifest, or lockfile byte changes.
+
+The focused lane covers exact output, all authenticated dispositions, complete
+transitive import closure, source/provider/proposal/package substitution,
+closed provider-body reconstruction, explicit Work Chief allocation, stateless
+receipt semantics, all continuation modes, trust lifecycle/domain separation,
+optional usage/evidence, hostile values in every public API argument, and
+bounded non-echoing CLI files. The owner analogue command and full repository
+check pass.
 
 ## Landing boundary
 

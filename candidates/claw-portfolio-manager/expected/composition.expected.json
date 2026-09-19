@@ -50,6 +50,28 @@
         "reason": "evidence-does-not-authorize-an-executable-disposition"
       }
     ],
+    "evidence": {
+      "availableOwnerIds": [
+        "repository-operations-manager",
+        "repository-compliance-program-manager",
+        "work-chief-of-staff"
+      ],
+      "exactDuplicate": false,
+      "existingMatchId": null,
+      "productDecisionRefs": [],
+      "productDecisionRequired": false,
+      "proposalOperatingContractDigest": "sha256:02af4fc2ab0c8fbebc901e60179785cd00bcd9479334720cdcccf1efb3bb3ab6",
+      "requiredOwnerIds": [
+        "repository-operations-manager",
+        "repository-compliance-program-manager",
+        "work-chief-of-staff"
+      ],
+      "retirementEvidenceRefs": [],
+      "retirementRequested": false,
+      "supported": true,
+      "variantBasis": "none",
+      "variantRequired": false
+    },
     "materialDifference": true,
     "selected": "COMPOSE"
   },
@@ -115,7 +137,7 @@
       "owner": "composition-adapter",
       "pinExpiresAt": "2026-10-01T00:00:00Z",
       "pinNotBefore": "2026-09-01T00:00:00Z",
-      "revision": "sha256:c4c5865c7c0598edddc1d174aa326d5478e5656b4660b7a04496856f18651866",
+      "revision": "sha256:cbe95448c2754bf492ffe90734ba3077bc5bf2339dada7d9cf87fe36cc866e1c",
       "trustSchemaVersion": "awesomeClaws.clawPortfolioCompositionTrust.v1"
     },
     "minimized-usage-evidence": {
@@ -137,7 +159,7 @@
       "continuationCheckpointRef": "continuation-portfolio-composition",
       "mode": "manage",
       "owner": "repository-operations-manager",
-      "portfolioRevision": "sha256:db49054023676bd714e2464c875e67a55c9cad4683ee1b9a488b4355a5886211",
+      "portfolioRevision": "sha256:4d2bfe94d9430fafc102bc17e243fee7214053ed9aa251b9713706120d5436ce",
       "predecessorCheckpointRef": "checkpoint-weekly-2026-09-13",
       "priorReceiptIds": [
         "receipt-issue-api"
@@ -146,11 +168,11 @@
       "signature": {
         "algorithm": "Ed25519",
         "keyId": "continuation-key",
-        "value": "BcFPf50SvCr3pgzL7pAdDDQf/cdAtMkgc9glD38JdSj5JTN9/2Yo1W2Aiz7rG0b9JxSNl4ZcVpi1eTAHAqwkDg=="
+        "value": "4E8NEDZPaWnntzIpWU1AmS+cANTDzAIzdb22V934lr6JSiDIsg72Usfl9w2c2oLkfrjP2kLLq7a9HhQk+hPYAg=="
       },
       "signedAt": "2026-09-17T17:15:00Z",
       "signerRef": "portfolio-owner",
-      "sourceBindingsRoot": "sha256:85ff6c30ae1f3e6cc091e768e278f4eccbf04172b0e427bef412808c14a987fb",
+      "sourceBindingsRoot": "sha256:d8b378b600804f505325302bf84c78f5eb80e87e351eb24701f1794e685317e3",
       "validUntil": "2026-09-18T17:15:00Z"
     },
     "proposal-owner-handoff": {
@@ -163,23 +185,41 @@
       "continuationCheckpointRef": "continuation-portfolio-composition",
       "externalActionRequired": true,
       "externalMutation": false,
-      "issueRevision": "sha256:a00e0e2c14faad40b2f4ed42896f44229a5dcfbcf427b53d29d8b4e8779c896c",
+      "issueRevision": "sha256:0273edc37ffd7d0eb9382593ee3cefeb6f38ef02cb8f836cdf292736c2ec5232",
       "owner": "work-chief-of-staff",
       "state": "blocked"
     },
     "provider-issue-snapshot": {
       "body": {
-        "byteLength": 241,
-        "contentBase64": "eyJldmlkZW5jZVJlZnMiOlsiaXNzdWUtYXBpIiwiY2hlY2twb2ludC13ZWVrbHktMjAyNi0wOS0xMyJdLCJwcm9wb3NhbERpZ2VzdCI6InNoYTI1NjpjZGRmYzZlNjhjYWI0ZTdkYTk1ODg3YWU3NWM3ZTgwMTM2NmEwMmMzYmFkZDBiNDI4MWIzMmY3OGNiOGQ0OTY3IiwicmVxdWVzdCI6IkNvbXBvc2UgdGhlIG93bmVyIENsYXdzIGludG8gYW4gaXNzdWUtbmF0aXZlIHBvcnRmb2xpbyBzdGV3YXJkc2hpcCB3b3JrZmxvdy4ifQ==",
-        "digest": "sha256:41cefb52c1809e9416888d9ca0e8a8cee093aa1a9200f18143acf28c83afb89a",
+        "byteLength": 493,
+        "contentBase64": "eyJldmlkZW5jZVJlZnMiOlt7ImF1dGhvcml0eSI6InByb3ZpZGVyLWN1c3RvZGlhbi1hdHRlc3RhdGlvbiIsImlkIjoiaXNzdWUtYXBpIiwia2luZCI6InByb3ZpZGVyLWlzc3VlIiwic3ViamVjdFJlZiI6ImNsYXctcG9ydGZvbGlvLW1hbmFnZXIifSx7ImF1dGhvcml0eSI6InJlcG9zaXRvcnktb3BlcmF0aW9ucy1hdHRlc3RhdGlvbiIsImlkIjoiY2hlY2twb2ludC13ZWVrbHktMjAyNi0wOS0xMyIsImtpbmQiOiJjb250aW51YXRpb24tY2hlY2twb2ludCIsInN1YmplY3RSZWYiOiJjb250aW51YXRpb24tcG9ydGZvbGlvLWNvbXBvc2l0aW9uIn1dLCJwcm9wb3NhbERpZ2VzdCI6InNoYTI1NjpjZGRmYzZlNjhjYWI0ZTdkYTk1ODg3YWU3NWM3ZTgwMTM2NmEwMmMzYmFkZDBiNDI4MWIzMmY3OGNiOGQ0OTY3IiwicmVxdWVzdCI6IkNvbXBvc2UgdGhlIG93bmVyIENsYXdzIGludG8gYW4gaXNzdWUtbmF0aXZlIHBvcnRmb2xpbyBzdGV3YXJkc2hpcCB3b3JrZmxvdy4ifQ==",
+        "digest": "sha256:863c0c11e9388cb8695343b8c7494638cf6f8d46f067ac43f293bde79b8cc57d",
         "mediaType": "application/json"
       },
       "capturedAt": "2026-09-17T17:00:00Z",
-      "completenessRoot": "sha256:7b89154b9e687c75d1865e5fc675104775b200590e0800d356d8545fba631067",
+      "completenessRoot": "sha256:c99da46a62b1614f0a31a30415ba3bca3f1d488638bd305bed66390a855f77f3",
+      "decodedBody": {
+        "evidenceRefs": [
+          {
+            "authority": "provider-custodian-attestation",
+            "id": "issue-api",
+            "kind": "provider-issue",
+            "subjectRef": "claw-portfolio-manager"
+          },
+          {
+            "authority": "repository-operations-attestation",
+            "id": "checkpoint-weekly-2026-09-13",
+            "kind": "continuation-checkpoint",
+            "subjectRef": "continuation-portfolio-composition"
+          }
+        ],
+        "proposalDigest": "sha256:cddfc6e68cab4e7da95887ae75c7e801366a02c3badd0b4281b32f78cb8d4967",
+        "request": "Compose the owner Claws into an issue-native portfolio stewardship workflow."
+      },
       "issueRef": "issue-api",
       "owner": "repository-compliance-program-manager",
       "providerIssueId": "ENG-410",
-      "revision": "sha256:a00e0e2c14faad40b2f4ed42896f44229a5dcfbcf427b53d29d8b4e8779c896c",
+      "revision": "sha256:0273edc37ffd7d0eb9382593ee3cefeb6f38ef02cb8f836cdf292736c2ec5232",
       "state": "open",
       "title": {
         "byteLength": 46,
@@ -191,12 +231,18 @@
     },
     "signed-package-tree": {
       "catalogRevision": "0c1bfb3c973a9940f301a5001e77435789993555",
-      "fileCount": 87,
+      "fileCount": 106,
       "manifestRef": "composition-package-manifest",
       "owner": "catalog-quality",
-      "root": "sha256:280adeacacb2dfa9e0a915adb5fcd54932f89317da7a4f817b9831c0e5f829ea"
+      "root": "sha256:460b9b103f699688b401c62b688ace791d73763fe53a90c3dc816740d1f774ce"
     },
     "stateless-budget-plan": {
+      "allocation": {
+        "allocatedAmount": 0,
+        "blockedAmount": 4,
+        "reason": "capacity-conflict",
+        "state": "blocked"
+      },
       "atomicMutationClaim": false,
       "capacityAmount": 20,
       "capacityEnvelopeRef": "capacity-engineering",
@@ -212,9 +258,11 @@
       "priorReceiptIds": [
         "receipt-issue-api"
       ],
-      "proposedIdempotencyKey": "sha256:bfb6fdae1b78ebe05b86327485f309fcd37476ee98e6e64c8e5ff578b0884953",
-      "remainingAmount": -4,
-      "reservationClaim": false
+      "proposedDemand": 4,
+      "proposedIdempotencyKey": "sha256:137775685a2bacad89178c5d22a30676c412cd90cdeaf131aeac9bca80b60aa7",
+      "remainingAmount": -8,
+      "reservationClaim": false,
+      "totalDemand": 28
     },
     "typed-admission-decision": {
       "classification": "COMPOSE",
@@ -226,7 +274,29 @@
         "user": "same",
         "workflow": "different"
       },
-      "issueRevision": "sha256:a00e0e2c14faad40b2f4ed42896f44229a5dcfbcf427b53d29d8b4e8779c896c",
+      "dispositionEvidence": {
+        "availableOwnerIds": [
+          "repository-operations-manager",
+          "repository-compliance-program-manager",
+          "work-chief-of-staff"
+        ],
+        "exactDuplicate": false,
+        "existingMatchId": null,
+        "productDecisionRefs": [],
+        "productDecisionRequired": false,
+        "proposalOperatingContractDigest": "sha256:02af4fc2ab0c8fbebc901e60179785cd00bcd9479334720cdcccf1efb3bb3ab6",
+        "requiredOwnerIds": [
+          "repository-operations-manager",
+          "repository-compliance-program-manager",
+          "work-chief-of-staff"
+        ],
+        "retirementEvidenceRefs": [],
+        "retirementRequested": false,
+        "supported": true,
+        "variantBasis": "none",
+        "variantRequired": false
+      },
+      "issueRevision": "sha256:0273edc37ffd7d0eb9382593ee3cefeb6f38ef02cb8f836cdf292736c2ec5232",
       "nearestMatches": [
         "benefits-realization-manager",
         "customer-success-program-manager",
@@ -287,6 +357,28 @@
             "reason": "evidence-does-not-authorize-an-executable-disposition"
           }
         ],
+        "evidence": {
+          "availableOwnerIds": [
+            "repository-operations-manager",
+            "repository-compliance-program-manager",
+            "work-chief-of-staff"
+          ],
+          "exactDuplicate": false,
+          "existingMatchId": null,
+          "productDecisionRefs": [],
+          "productDecisionRequired": false,
+          "proposalOperatingContractDigest": "sha256:02af4fc2ab0c8fbebc901e60179785cd00bcd9479334720cdcccf1efb3bb3ab6",
+          "requiredOwnerIds": [
+            "repository-operations-manager",
+            "repository-compliance-program-manager",
+            "work-chief-of-staff"
+          ],
+          "retirementEvidenceRefs": [],
+          "retirementRequested": false,
+          "supported": true,
+          "variantBasis": "none",
+          "variantRequired": false
+        },
         "materialDifference": true,
         "selected": "COMPOSE"
       }
@@ -336,7 +428,7 @@
     }
   ],
   "schemaVersion": "awesomeClaws.clawPortfolioCompositionResult.v1",
-  "sourceBindingsRoot": "sha256:85ff6c30ae1f3e6cc091e768e278f4eccbf04172b0e427bef412808c14a987fb",
+  "sourceBindingsRoot": "sha256:d8b378b600804f505325302bf84c78f5eb80e87e351eb24701f1794e685317e3",
   "standaloneCandidateAccepted": false,
   "verdict": "IMPROVE_COMPOSE"
 }

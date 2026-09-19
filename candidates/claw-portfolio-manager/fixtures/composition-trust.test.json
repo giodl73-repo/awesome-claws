@@ -1,12 +1,12 @@
 {
   "schemaVersion": "awesomeClaws.clawPortfolioCompositionTrust.v1",
-  "revision": "sha256:c4c5865c7c0598edddc1d174aa326d5478e5656b4660b7a04496856f18651866",
+  "revision": "sha256:cbe95448c2754bf492ffe90734ba3077bc5bf2339dada7d9cf87fe36cc866e1c",
   "keys": [
     {
       "keyId": "provider-key",
       "signerRef": "provider-custodian",
       "domain": "provider",
-      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAjaeyfX90o8ISpw4rWYe/+maTSvYcOgEo3ftAPw9qrzc=\n-----END PUBLIC KEY-----\n",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA/ZXyYIs77kQufr6eXKthvai/U3TTD3g5MDbX8sljHdM=\n-----END PUBLIC KEY-----\n",
       "notBefore": "2026-09-01T00:00:00Z",
       "expiresAt": "2026-10-01T00:00:00Z"
     },
@@ -14,7 +14,7 @@
       "keyId": "continuation-key",
       "signerRef": "portfolio-owner",
       "domain": "continuation",
-      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAdcBv63M6woziYsNrQ3aIBsn5f6kBku3wnDLJjxXJp9A=\n-----END PUBLIC KEY-----\n",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAAghKbPsYlW3Alb4CvTGQaIjkCePZ69ewlE+4pmbtsjc=\n-----END PUBLIC KEY-----\n",
       "notBefore": "2026-09-01T00:00:00Z",
       "expiresAt": "2026-10-01T00:00:00Z"
     },
@@ -22,7 +22,7 @@
       "keyId": "admission-key",
       "signerRef": "admission-owner",
       "domain": "admission",
-      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAGGVaDzlftLvp9LLY42dQSSkgMuZKe0dJba02tquG0P0=\n-----END PUBLIC KEY-----\n",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAZaSp19w1RFzBe0O3ECZ/YHwGHMFSE6INwLpA8ocOAIg=\n-----END PUBLIC KEY-----\n",
       "notBefore": "2026-09-01T00:00:00Z",
       "expiresAt": "2026-10-01T00:00:00Z"
     },
@@ -30,7 +30,7 @@
       "keyId": "catalog-key",
       "signerRef": "catalog-custodian",
       "domain": "catalog",
-      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAfpBkKy67+sGJv/SVfXp1dqL+XBP8RGlbMQiHPP/CAXo=\n-----END PUBLIC KEY-----\n",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAWgXMxd9/2jL0tXROnaCSBNY3F9LwXr0/37HzsWoZKRM=\n-----END PUBLIC KEY-----\n",
       "notBefore": "2026-09-01T00:00:00Z",
       "expiresAt": "2026-10-01T00:00:00Z"
     },
@@ -38,7 +38,7 @@
       "keyId": "receipt-key",
       "signerRef": "receipt-custodian",
       "domain": "receipt",
-      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAzZI/3ZzYJIa+27DSvsZ1cSe/NAymuPjIQvYTTfvMR54=\n-----END PUBLIC KEY-----\n",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAZO/mbSi0NyIyahJXeqHpOnynQEsVEht78BEKrxzaZ2A=\n-----END PUBLIC KEY-----\n",
       "notBefore": "2026-09-01T00:00:00Z",
       "expiresAt": "2026-10-01T00:00:00Z"
     },
@@ -46,7 +46,7 @@
       "keyId": "usage-key",
       "signerRef": "usage-custodian",
       "domain": "usage",
-      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAmFzfYrLf9dH3uvBZxqzXZzutzNQsx4O3GQwerPIOdPU=\n-----END PUBLIC KEY-----\n",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAxuf2eZWuC0rYhQRPex8r+H7Bw0nL1ExBbMstz9pLDmo=\n-----END PUBLIC KEY-----\n",
       "notBefore": "2026-09-01T00:00:00Z",
       "expiresAt": "2026-10-01T00:00:00Z"
     },
@@ -54,7 +54,7 @@
       "keyId": "runtime-budget-key",
       "signerRef": "runtime-budget-custodian",
       "domain": "runtime-budget",
-      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA8Ushr9GSy13Q1Ck5tEFh8hX2SxWvJOWobg+0hftBhl4=\n-----END PUBLIC KEY-----\n",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAX6OGGaXaUBZqt0+z7I5jr3LXPiZ5/lvax1P68uFdcWY=\n-----END PUBLIC KEY-----\n",
       "notBefore": "2026-09-01T00:00:00Z",
       "expiresAt": "2026-10-01T00:00:00Z"
     }

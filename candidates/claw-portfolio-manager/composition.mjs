@@ -8,10 +8,20 @@ import {
   readFile,
   readdir,
 } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import {
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+} from "node:path";
 import { pathToFileURL } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import {
+  init as initModuleLexer,
+  parse as parseModuleImports,
+} from "es-module-lexer";
 
 import { validateArtifactSemantics } from "../../scripts/artifact-semantics.mjs";
 import { buildCatalogQualityScorecard } from "../../scripts/catalog-quality-score.mjs";
@@ -39,6 +49,8 @@ import {
   normalizeJsonValue,
   sha256Digest,
 } from "./candidate-utils.mjs";
+
+await initModuleLexer();
 
 export const COMPOSITION_INPUT_VERSION =
   "awesomeClaws.clawPortfolioCompositionInput.v1";
@@ -98,6 +110,7 @@ const SOURCE_BINDINGS = Object.freeze([
   ["composition-adapter", "validator", "candidates/claw-portfolio-manager/candidate-utils.mjs"],
   ["composition-adapter", "schema", "candidates/claw-portfolio-manager/schemas/composition-input.schema.json"],
   ["composition-adapter", "schema", "candidates/claw-portfolio-manager/schemas/composition-output.schema.json"],
+  ["composition-adapter", "schema", "candidates/claw-portfolio-manager/schemas/provider-issue-body.schema.json"],
   ["composition-adapter", "schema", "candidates/claw-portfolio-manager/schemas/composition-trust.schema.json"],
   ["composition-adapter", "schema", "candidates/claw-portfolio-manager/schemas/composition-trust-pin.schema.json"],
   ["composition-adapter", "dependency-manifest", "package.json"],
@@ -198,6 +211,11 @@ const inputSchema = JSON.parse(
 const outputSchema = JSON.parse(
   await readFile(new URL("./schemas/composition-output.schema.json", import.meta.url)),
 );
+const providerIssueBodySchema = JSON.parse(
+  await readFile(
+    new URL("./schemas/provider-issue-body.schema.json", import.meta.url),
+  ),
+);
 const trustSchema = JSON.parse(
   await readFile(new URL("./schemas/composition-trust.schema.json", import.meta.url)),
 );
@@ -234,6 +252,7 @@ const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateInput = ajv.compile(inputSchema);
 const validateOutput = ajv.compile(outputSchema);
+const validateProviderIssueBody = ajv.compile(providerIssueBodySchema);
 const validateTrust = ajv.compile(trustSchema);
 const validateTrustPin = ajv.compile(trustPinSchema);
 const validateRepoOps = ajv.compile(repoOpsSchema);
@@ -440,36 +459,122 @@ async function fileBinding(ownerId, role, path) {
   };
 }
 
-export async function expectedSourceBindings() {
-  const declared = await Promise.all(
-    SOURCE_BINDINGS.map(([ownerId, role, path]) =>
-      fileBinding(ownerId, role, path),
-    ),
-  );
-  const byPath = new Map(declared.map((item) => [item.path, item]));
-  for (const ownerId of REQUIRED_OWNER_IDS) {
-    for (const prefix of [`sources/${ownerId}`, `claws/${ownerId}`]) {
-      const entries = await readdir(join(root, ...prefix.split("/")), {
-        recursive: true,
-        withFileTypes: true,
-      });
-      for (const entry of entries) {
-        if (entry.isDirectory()) continue;
-        if (!entry.isFile()) {
-          throw new Error(`Unsupported owner package entry: ${entry.name}`);
+export function localModuleSpecifiers(source) {
+  const specifiers = [];
+  const [imports] = parseModuleImports(source);
+  for (const importRecord of imports) {
+    if (importRecord.type === "import-meta") continue;
+    if (
+      typeof importRecord.specifier !== "string" ||
+      importRecord.specifier.includes("*")
+    ) {
+      throw new Error("Dynamic import specifier is not statically bindable.");
+    }
+    if (
+      importRecord.specifier.startsWith("./") ||
+      importRecord.specifier.startsWith("../")
+    ) {
+      specifiers.push(importRecord.specifier);
+    }
+  }
+  return [...new Set(specifiers)].sort();
+}
+
+export async function localModuleClosure(
+  entryPaths = ["candidates/claw-portfolio-manager/composition.mjs"],
+) {
+  const pending = [...new Set(entryPaths)].sort();
+  const visited = new Set();
+  while (pending.length > 0) {
+    const batch = pending.splice(0).filter((path) => !visited.has(path));
+    const modules = await Promise.all(
+      batch.map(async (path) => {
+        const absolutePath = resolve(root, ...path.split("/"));
+        const relativePath = relative(root, absolutePath);
+        if (
+          isAbsolute(relativePath) ||
+          relativePath === ".." ||
+          relativePath.startsWith(`..\\`) ||
+          relativePath.startsWith("../")
+        ) {
+          throw new Error("Local module import escaped the repository root.");
         }
-        const path = join(entry.parentPath, entry.name)
-          .slice(root.length + 1)
-          .replaceAll("\\", "/");
-        if (!byPath.has(path)) {
-          byPath.set(path, await fileBinding(ownerId, "artifact", path));
+        return {
+          absolutePath,
+          path,
+          source: await readFile(absolutePath, "utf8"),
+        };
+      }),
+    );
+    for (const { absolutePath, path, source } of modules) {
+      visited.add(path);
+      for (const specifier of localModuleSpecifiers(source)) {
+        const importedPath = relative(
+          root,
+          resolve(dirname(absolutePath), specifier),
+        ).replaceAll("\\", "/");
+        if (!visited.has(importedPath) && !pending.includes(importedPath)) {
+          pending.push(importedPath);
         }
       }
     }
+    pending.sort();
   }
-  return [...byPath.values()].sort((left, right) =>
-    left.path < right.path ? -1 : left.path > right.path ? 1 : 0,
+  return [...visited].sort();
+}
+
+async function buildExpectedSourceBindings() {
+  const bindingSpecs = new Map(
+    SOURCE_BINDINGS.map(([ownerId, role, path]) => [
+      path,
+      { ownerId, role, path },
+    ]),
   );
+  for (const path of await localModuleClosure()) {
+    if (!bindingSpecs.has(path)) {
+      bindingSpecs.set(path, {
+        ownerId: "composition-import-closure",
+        role: "validator",
+        path,
+      });
+    }
+  }
+  const ownerTrees = await Promise.all(
+    REQUIRED_OWNER_IDS.flatMap((ownerId) =>
+      [`sources/${ownerId}`, `claws/${ownerId}`].map(async (prefix) => ({
+        ownerId,
+        entries: await readdir(join(root, ...prefix.split("/")), {
+          recursive: true,
+          withFileTypes: true,
+        }),
+      })),
+    ),
+  );
+  for (const { ownerId, entries } of ownerTrees) {
+    for (const entry of entries) {
+      if (entry.isDirectory()) continue;
+      if (!entry.isFile()) {
+        throw new Error(`Unsupported owner package entry: ${entry.name}`);
+      }
+      const path = join(entry.parentPath, entry.name)
+        .slice(root.length + 1)
+        .replaceAll("\\", "/");
+      if (!bindingSpecs.has(path)) {
+        bindingSpecs.set(path, { ownerId, role: "artifact", path });
+      }
+    }
+  }
+  return Promise.all(
+    [...bindingSpecs.values()]
+      .sort((left, right) =>
+        left.path < right.path ? -1 : left.path > right.path ? 1 : 0,
+      )
+      .map(({ ownerId, role, path }) => fileBinding(ownerId, role, path)),
+  );
+}
+
+export async function expectedSourceBindings() {
+  return buildExpectedSourceBindings();
 }
 
 function mediaType(path) {
@@ -478,6 +583,20 @@ function mediaType(path) {
   if (path.endsWith(".png")) return "image/png";
   if (path.endsWith(".md")) return "text/markdown; charset=utf-8";
   return "text/javascript";
+}
+
+async function expectedPackageFiles(bindings) {
+  return Promise.all(
+    bindings.map(async (binding) => {
+      const bytes = await readFile(join(root, ...binding.path.split("/")));
+      return {
+        path: binding.path,
+        mediaType: mediaType(binding.path),
+        byteLength: bytes.length,
+        digest: binding.digest,
+      };
+    }),
+  );
 }
 
 function exactBytes(value) {
@@ -489,23 +608,23 @@ function exactBytes(value) {
   );
 }
 
-export function deriveAdmissionClassification(
-  comparison,
-  options = {},
-) {
-  return deriveAdmissionScorecard(comparison, options).selected;
+function operatingContractDigest(entry) {
+  return sha256Digest({
+    audience: entry.audience,
+    principles: entry.principles,
+    boundaries: entry.boundaries,
+    intake: entry.intake,
+    workflow: entry.workflow,
+    deliverables: entry.deliverables,
+    doneWhen: entry.doneWhen,
+    capabilityGuidance: entry.capabilityGuidance,
+  });
 }
 
-export function deriveAdmissionScorecard(
+function deriveAdmissionScorecard(
   comparison,
-  {
-    compositionFeasible = false,
-    improvementFeasible,
-    exactDuplicate = false,
-    retirementRequested = false,
-    variantRequired = false,
-    supported = true,
-  } = {},
+  evidence,
+  { compositionFeasible, boundOwnerIds, proposalOperatingContractDigest },
 ) {
   const materialDifference = [
     comparison?.workflow,
@@ -513,37 +632,57 @@ export function deriveAdmissionScorecard(
     comparison?.evidence,
     comparison?.authority,
   ].includes("different");
+  const requiredOwnerSetComplete =
+    canonicalJson([...evidence.requiredOwnerIds].sort()) ===
+    canonicalJson([...REQUIRED_OWNER_IDS].sort());
+  const supported =
+    requiredOwnerSetComplete &&
+    evidence.requiredOwnerIds.every((id) =>
+      evidence.availableOwnerIds.includes(id),
+    ) &&
+    evidence.availableOwnerIds.every((id) => boundOwnerIds.has(id));
+  const exactDuplicate =
+    evidence.existingMatch !== null &&
+    evidence.existingMatch.operatingContractDigest ===
+      proposalOperatingContractDigest &&
+    Object.values(comparison).every((value) => value === "same");
+  const retirementRequested =
+    evidence.lifecycle.action === "retire" &&
+    evidence.lifecycle.evidenceRefs.length > 0;
+  const variantRequired = evidence.variantBasis !== "none";
+  const productDecisionRequired = evidence.productDecisionRefs.length > 0;
   const canImprove =
-    improvementFeasible ??
-    (comparison?.job === "same" && materialDifference && !variantRequired);
+    comparison?.job === "same" && materialDifference && !variantRequired;
   const evaluations = [
     {
       classification: "UNSUPPORTED",
-      eligible: supported === false,
+      eligible: !productDecisionRequired && supported === false,
       priority: 1,
       reason: "required-owner-contract-or-support-is-unavailable",
     },
     {
       classification: "DUPLICATE",
-      eligible: exactDuplicate,
+      eligible: !productDecisionRequired && exactDuplicate,
       priority: 2,
       reason: "same-job-and-operating-contract-already-exists",
     },
     {
       classification: "RETIRE",
-      eligible: retirementRequested,
+      eligible: !productDecisionRequired && retirementRequested,
       priority: 3,
       reason: "validated-lifecycle-evidence-requires-retirement",
     },
     {
       classification: "COMPOSE",
-      eligible: compositionFeasible,
+      eligible: !productDecisionRequired && supported && compositionFeasible,
       priority: 4,
       reason: "validated-owner-composition-preserves-the-requested-contract",
     },
     {
       classification: "IMPROVE",
       eligible:
+        supported &&
+        !productDecisionRequired &&
         canImprove &&
         comparison?.job === "same" &&
         materialDifference,
@@ -553,10 +692,11 @@ export function deriveAdmissionScorecard(
     {
       classification: "VARIANT",
       eligible:
+        supported &&
+        !productDecisionRequired &&
         variantRequired &&
         !canImprove &&
         comparison?.job === "same" &&
-        comparison?.user === "different" &&
         !materialDifference,
       priority: 6,
       reason: "same-job-differs-only-by-audience-or-presentation",
@@ -564,6 +704,8 @@ export function deriveAdmissionScorecard(
     {
       classification: "NEW",
       eligible:
+        supported &&
+        !productDecisionRequired &&
         comparison?.job === "different" &&
         materialDifference &&
         !compositionFeasible &&
@@ -584,9 +726,26 @@ export function deriveAdmissionScorecard(
         classification: "PRODUCT_DECISION",
         eligible: selected === "PRODUCT_DECISION",
         priority: 8,
-        reason: "evidence-does-not-authorize-an-executable-disposition",
-      },
+        reason:
+          productDecisionRequired
+            ? "authenticated-product-decision-is-required"
+            : "evidence-does-not-authorize-an-executable-disposition",
+        },
     ],
+    evidence: {
+      supported,
+      requiredOwnerIds: evidence.requiredOwnerIds,
+      availableOwnerIds: evidence.availableOwnerIds,
+      exactDuplicate,
+      existingMatchId: evidence.existingMatch?.id ?? null,
+      retirementRequested,
+      retirementEvidenceRefs: evidence.lifecycle.evidenceRefs,
+      variantRequired,
+      variantBasis: evidence.variantBasis,
+      productDecisionRequired,
+      productDecisionRefs: evidence.productDecisionRefs,
+      proposalOperatingContractDigest,
+    },
   };
 }
 
@@ -633,7 +792,7 @@ export async function composePortfolioPlan(
   inputValue,
   trustValue,
   trustPinValue,
-  { asOf } = {},
+  optionsValue,
 ) {
   const normalizedInput = normalizeJsonValue(inputValue, {
     ...JSON_LIMITS,
@@ -647,16 +806,38 @@ export async function composePortfolioPlan(
     ...JSON_LIMITS,
     maxBytes: 4096,
   });
+  const normalizedOptions = normalizeJsonValue(
+    optionsValue === undefined ? {} : optionsValue,
+    {
+      maxBytes: 1024,
+      maxDepth: 2,
+      maxNodes: 4,
+      maxArrayLength: 0,
+      maxObjectKeys: 1,
+      maxStringLength: 64,
+    },
+  );
   if (
     !normalizedInput.ok ||
     !normalizedTrust.ok ||
-    !normalizedTrustPin.ok
+    !normalizedTrustPin.ok ||
+    !normalizedOptions.ok
   ) {
     return invalid(["unsafe-or-oversized-input"]);
   }
   const input = normalizedInput.value;
   const trust = normalizedTrust.value;
   const trustPin = normalizedTrustPin.value;
+  const options = normalizedOptions.value;
+  if (
+    options === null ||
+    Array.isArray(options) ||
+    Object.keys(options).length !== 1 ||
+    typeof options.asOf !== "string"
+  ) {
+    return invalid(["invalid-options"]);
+  }
+  const asOf = options.asOf;
   const findings = schemaErrors(validateInput, input, "$");
   if (!validateInput(input)) return invalid(findings);
   const asOfMs = timestamp(asOf);
@@ -783,11 +964,38 @@ export async function composePortfolioPlan(
   }
   let issueRequest;
   try {
-    issueRequest = JSON.parse(
+    const parsedIssueRequest = JSON.parse(
       Buffer.from(input.providerIssue.body.contentBase64, "base64").toString(
         "utf8",
       ),
     );
+    const normalizedIssueRequest = normalizeJsonValue(parsedIssueRequest, {
+      maxBytes: 16 * 1024,
+      maxDepth: 4,
+      maxNodes: 96,
+      maxArrayLength: 16,
+      maxObjectKeys: 4,
+      maxStringLength: 2000,
+    });
+    if (
+      !normalizedIssueRequest.ok ||
+      !validateProviderIssueBody(normalizedIssueRequest.value)
+    ) {
+      findings.push("invalid-provider-request");
+    } else {
+      issueRequest = {
+        evidenceRefs: normalizedIssueRequest.value.evidenceRefs.map(
+          ({ authority, id, kind, subjectRef }) => ({
+            authority,
+            id,
+            kind,
+            subjectRef,
+          }),
+        ),
+        proposalDigest: normalizedIssueRequest.value.proposalDigest,
+        request: normalizedIssueRequest.value.request,
+      };
+    }
   } catch {
     findings.push("invalid-provider-request");
   }
@@ -827,10 +1035,12 @@ export async function composePortfolioPlan(
   const nearestCoverage = similarity.matches.filter((item) =>
     comparedAlternatives.has(item.id),
   ).length;
-  const mappedPorts = input.admission.compositionContract?.ownerMappings ?? [];
+  const compositionContract = input.admission.compositionContract;
+  const mappedPorts = compositionContract?.ownerMappings ?? [];
   const compositionContractValid =
-    input.admission.compositionContract?.proposalDigest === proposalDigest &&
-    canonicalJson(input.admission.compositionContract?.requiredOutputPorts) ===
+    compositionContract !== null &&
+    compositionContract.proposalDigest === proposalDigest &&
+    canonicalJson(compositionContract.requiredOutputPorts) ===
       canonicalJson(COMPOSITION_MAPPINGS.map((item) => item.outputPort)) &&
     canonicalJson(mappedPorts) === canonicalJson(COMPOSITION_MAPPINGS) &&
     mappedPorts.every((mapping) =>
@@ -845,27 +1055,98 @@ export async function composePortfolioPlan(
     input.admission.issueRevision !== input.providerIssue.revision ||
     nearestCoverage < Math.min(2, similarity.matches.length) ||
     issueRequest?.proposalDigest !== proposalDigest ||
-    !compositionContractValid
+    (compositionContract !== null && !compositionContractValid)
   ) {
     findings.push("invalid-admission-proposal");
   }
+  const dispositionEvidence = input.admission.dispositionEvidence;
+  const boundOwnerIds = new Set(
+    input.sourceBindings.map((binding) => binding.ownerId),
+  );
+  const requiredOwnerSetComplete =
+    canonicalJson([...dispositionEvidence.requiredOwnerIds].sort()) ===
+    canonicalJson([...REQUIRED_OWNER_IDS].sort());
+  const issueEvidenceRefs = issueRequest?.evidenceRefs ?? [];
+  const issueEvidenceById = new Map(
+    issueEvidenceRefs.map((evidence) => [evidence.id, evidence]),
+  );
+  const providerIssueEvidence = issueEvidenceRefs.filter(
+    (evidence) => evidence.kind === "provider-issue",
+  );
+  const continuationEvidence = issueEvidenceRefs.filter(
+    (evidence) => evidence.kind === "continuation-checkpoint",
+  );
+  const lifecycleEvidenceIds = issueEvidenceRefs
+    .filter((evidence) => evidence.kind === "lifecycle-retirement")
+    .map((evidence) => evidence.id)
+    .sort();
+  const productDecisionEvidenceIds = issueEvidenceRefs
+    .filter((evidence) => evidence.kind === "product-decision-required")
+    .map((evidence) => evidence.id)
+    .sort();
+  const existingMatchEntry = dispositionEvidence.existingMatch
+    ? catalog.entries.find(
+        (entry) => entry.id === dispositionEvidence.existingMatch.id,
+      )
+    : null;
+  if (
+    !requiredOwnerSetComplete ||
+    dispositionEvidence.availableOwnerIds.some(
+      (ownerId) => !boundOwnerIds.has(ownerId),
+    ) ||
+    issueEvidenceById.size !== issueEvidenceRefs.length ||
+    providerIssueEvidence.length !== 1 ||
+    continuationEvidence.length !== 1 ||
+    issueEvidenceRefs.some((evidence) => {
+      if (evidence.kind === "provider-issue") {
+        return (
+          evidence.id !== baseIssue?.id ||
+          evidence.subjectRef !== input.admission.proposal.entry.id
+        );
+      }
+      if (evidence.kind === "continuation-checkpoint") {
+        return (
+          evidence.id !== repoOpsArtifact.run.currentCheckpointId ||
+          evidence.subjectRef !== input.continuation.id
+        );
+      }
+      return evidence.subjectRef !== input.admission.proposal.entry.id;
+    }) ||
+    canonicalJson(
+      [...dispositionEvidence.lifecycle.evidenceRefs].sort(),
+    ) !== canonicalJson(lifecycleEvidenceIds) ||
+    canonicalJson([...dispositionEvidence.productDecisionRefs].sort()) !==
+      canonicalJson(productDecisionEvidenceIds) ||
+    dispositionEvidence.lifecycle.evidenceRefs.some((evidenceRef) => {
+      const evidence = issueEvidenceById.get(evidenceRef);
+      return (
+        evidence?.kind !== "lifecycle-retirement" ||
+        evidence.authority !== "catalog-maintainer-decision"
+      );
+    }) ||
+    dispositionEvidence.productDecisionRefs.some((evidenceRef) => {
+      const evidence = issueEvidenceById.get(evidenceRef);
+      return (
+        evidence?.kind !== "product-decision-required" ||
+        evidence.authority !== "catalog-maintainer-decision"
+      );
+    }) ||
+    (dispositionEvidence.existingMatch !== null &&
+      (!existingMatchEntry ||
+        dispositionEvidence.existingMatch.operatingContractDigest !==
+          operatingContractDigest(existingMatchEntry))) ||
+    (dispositionEvidence.lifecycle.action === "retire") !==
+      (dispositionEvidence.lifecycle.evidenceRefs.length > 0)
+  ) {
+    findings.push("invalid-disposition-evidence");
+  }
   verifySigned(input.admission, "admission", asOf, keys, findings);
 
-  const expectedPackageFiles = actualBindings.map((item) => ({
-    path: item.path,
-    mediaType: mediaType(item.path),
-    byteLength: null,
-    digest: item.digest,
-  }));
-  for (const file of expectedPackageFiles) {
-    file.byteLength = (
-      await readFile(join(root, ...file.path.split("/")))
-    ).length;
-  }
+  const expectedFiles = await expectedPackageFiles(actualBindings);
   if (
     input.packageManifest.catalogRevision !== PINNED_CATALOG_REVISION ||
     canonicalJson(input.packageManifest.files) !==
-      canonicalJson(expectedPackageFiles) ||
+      canonicalJson(expectedFiles) ||
     input.packageManifest.root !== packageRoot(input.packageManifest.files)
   ) {
     findings.push("invalid-package-manifest");
@@ -1054,6 +1335,12 @@ export async function composePortfolioPlan(
     (item) => item.id === input.portfolio.capacityEnvelopeRef,
   );
   if (!capacity) return invalid(["unknown-capacity-envelope"]);
+  if (
+    dispositionEvidence.proposedDemand.capacityEnvelopeRef !== capacity.id ||
+    dispositionEvidence.proposedDemand.unit !== capacity.unit
+  ) {
+    findings.push("invalid-proposed-demand");
+  }
   const committedDemand = workChiefArtifact.workstreams
     .flatMap((item) => item.capacityDemands)
     .filter((item) => item.capacityRef === capacity.id)
@@ -1062,6 +1349,7 @@ export async function composePortfolioPlan(
     .filter(
       (conflict) =>
         conflict.kind === "capacity" &&
+        conflict.state === "open" &&
         conflict.workstreamRefs.some((workstreamRef) =>
           workChiefArtifact.workstreams.some(
             (workstream) =>
@@ -1074,6 +1362,12 @@ export async function composePortfolioPlan(
     )
     .map((item) => item.id)
     .sort();
+  const proposedDemand = dispositionEvidence.proposedDemand.amount;
+  const availableBeforeProposal = capacity.amount - committedDemand;
+  const demandCanBeAllocated =
+    proposedDemand <= Math.max(0, availableBeforeProposal) &&
+    conflictRefs.length === 0;
+  const totalDemand = committedDemand + proposedDemand;
   const emittedPortRefs = {
     "portfolio-run-lineage": input.continuation.id,
     "provider-issue-snapshot": input.providerIssue.id,
@@ -1096,15 +1390,19 @@ export async function composePortfolioPlan(
   }
   const admissionScorecard = deriveAdmissionScorecard(
     input.admission.comparison,
+    dispositionEvidence,
     {
       compositionFeasible:
         compositionContractValid &&
         mappedOutputsEmitted &&
         findings.length === 0,
+      boundOwnerIds,
+      proposalOperatingContractDigest: operatingContractDigest(
+        input.admission.proposal.entry,
+      ),
     },
   );
   const classification = admissionScorecard.selected;
-  if (classification !== "COMPOSE") findings.push("composition-not-lossless");
   if (findings.length) return invalid(findings);
   const result = {
     schemaVersion: COMPOSITION_RESULT_VERSION,
@@ -1142,6 +1440,7 @@ export async function composePortfolioPlan(
         capturedAt: input.providerIssue.capturedAt,
         title: input.providerIssue.title,
         body: input.providerIssue.body,
+        decodedBody: issueRequest,
       },
       "typed-admission-decision": {
         owner: "contribution-admission",
@@ -1151,6 +1450,7 @@ export async function composePortfolioPlan(
         comparison: input.admission.comparison,
         nearestMatches: similarity.matches.map((item) => item.id),
         scorecard: admissionScorecard,
+        dispositionEvidence: admissionScorecard.evidence,
       },
       "signed-package-tree": {
         owner: "catalog-quality",
@@ -1166,9 +1466,27 @@ export async function composePortfolioPlan(
         capacityAmount: capacity.amount,
         capacityUnit: capacity.unit,
         committedDemand,
-        remainingAmount: capacity.amount - committedDemand,
-        overCapacity: committedDemand > capacity.amount,
+        proposedDemand,
+        totalDemand,
+        remainingAmount: capacity.amount - totalDemand,
+        overCapacity: totalDemand > capacity.amount,
         conflictRefs,
+        allocation: demandCanBeAllocated
+          ? {
+              state: "allocated",
+              allocatedAmount: proposedDemand,
+              blockedAmount: 0,
+              reason: null,
+            }
+          : {
+              state: "blocked",
+              allocatedAmount: 0,
+              blockedAmount: proposedDemand,
+              reason:
+                conflictRefs.length > 0
+                  ? "capacity-conflict"
+                  : "capacity-exceeded",
+            },
         priorReceiptIds: input.continuation.priorReceiptIds,
         proposedIdempotencyKey: sha256Digest({
           issueRevision: input.providerIssue.revision,

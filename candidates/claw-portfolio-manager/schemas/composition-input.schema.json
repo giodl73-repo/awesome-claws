@@ -139,6 +139,7 @@
         "proposal",
         "proposalDigest",
         "comparison",
+        "dispositionEvidence",
         "compositionContract",
         "decidedAt",
         "signerRef",
@@ -150,64 +151,144 @@
         "proposal": {"$ref": "#/$defs/proposal"},
         "proposalDigest": {"$ref": "#/$defs/digest"},
         "comparison": {"$ref": "#/$defs/comparison"},
-        "compositionContract": {
+        "dispositionEvidence": {
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "schemaVersion",
-            "proposalDigest",
-            "requiredOutputPorts",
-            "ownerMappings"
+            "requiredOwnerIds",
+            "availableOwnerIds",
+            "existingMatch",
+            "lifecycle",
+            "variantBasis",
+            "productDecisionRefs",
+            "proposedDemand"
           ],
           "properties": {
-            "schemaVersion": {
-              "const": "awesomeClaws.clawPortfolioCompositionContract.v1"
-            },
-            "proposalDigest": {"$ref": "#/$defs/digest"},
-            "requiredOutputPorts": {
+            "requiredOwnerIds": {
               "type": "array",
-              "minItems": 8,
-              "maxItems": 8,
+              "minItems": 1,
+              "maxItems": 16,
               "uniqueItems": true,
               "items": {"$ref": "#/$defs/id"}
             },
-            "ownerMappings": {
-              "type": "array",
-              "minItems": 8,
-              "maxItems": 8,
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": [
-                  "owner",
-                  "outputPort",
-                  "extensionRef",
-                  "authority",
-                  "sourcePaths"
-                ],
-                "properties": {
-                  "owner": {"$ref": "#/$defs/id"},
-                  "outputPort": {"$ref": "#/$defs/id"},
-                  "extensionRef": {"$ref": "#/$defs/id"},
-                  "authority": {
-                    "type": "array",
-                    "maxItems": 0
-                  },
-                  "sourcePaths": {
-                    "type": "array",
-                    "minItems": 1,
-                    "maxItems": 8,
-                    "uniqueItems": true,
-                    "items": {
-                      "type": "string",
-                      "minLength": 3,
-                      "maxLength": 240
+            "availableOwnerIds": {"$ref": "#/$defs/idList"},
+            "existingMatch": {
+              "oneOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["id", "operatingContractDigest"],
+                  "properties": {
+                    "id": {"$ref": "#/$defs/id"},
+                    "operatingContractDigest": {"$ref": "#/$defs/digest"}
+                  }
+                }
+              ]
+            },
+            "lifecycle": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["action", "evidenceRefs"],
+              "properties": {
+                "action": {"enum": ["retain", "retire"]},
+                "evidenceRefs": {"$ref": "#/$defs/idList"}
+              }
+            },
+            "variantBasis": {
+              "enum": [
+                "none",
+                "audience",
+                "industry-vocabulary",
+                "personality",
+                "branding",
+                "presentation"
+              ]
+            },
+            "productDecisionRefs": {"$ref": "#/$defs/idList"},
+            "proposedDemand": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["capacityEnvelopeRef", "amount", "unit"],
+              "properties": {
+                "capacityEnvelopeRef": {"$ref": "#/$defs/id"},
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1000000
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              }
+            }
+          }
+        },
+        "compositionContract": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "schemaVersion",
+                "proposalDigest",
+                "requiredOutputPorts",
+                "ownerMappings"
+              ],
+              "properties": {
+                "schemaVersion": {
+                  "const": "awesomeClaws.clawPortfolioCompositionContract.v1"
+                },
+                "proposalDigest": {"$ref": "#/$defs/digest"},
+                "requiredOutputPorts": {
+                  "type": "array",
+                  "minItems": 8,
+                  "maxItems": 8,
+                  "uniqueItems": true,
+                  "items": {"$ref": "#/$defs/id"}
+                },
+                "ownerMappings": {
+                  "type": "array",
+                  "minItems": 8,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "owner",
+                      "outputPort",
+                      "extensionRef",
+                      "authority",
+                      "sourcePaths"
+                    ],
+                    "properties": {
+                      "owner": {"$ref": "#/$defs/id"},
+                      "outputPort": {"$ref": "#/$defs/id"},
+                      "extensionRef": {"$ref": "#/$defs/id"},
+                      "authority": {
+                        "type": "array",
+                        "maxItems": 0
+                      },
+                      "sourcePaths": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "uniqueItems": true,
+                        "items": {
+                          "type": "string",
+                          "minLength": 3,
+                          "maxLength": 240
+                        }
+                      }
                     }
                   }
                 }
               }
             }
-          }
+          ]
         },
         "decidedAt": {"$ref": "#/$defs/timestamp"},
         "signerRef": {"$ref": "#/$defs/id"},
