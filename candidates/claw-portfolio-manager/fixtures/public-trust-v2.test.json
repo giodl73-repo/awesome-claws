@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "awesomeClaws.clawPortfolioPublicTrust.v2",
+  "root": {
+    "id": "portfolio-public-trust-root",
+    "revision": "sha256:1af5c3c40744e5db717bc2ffbf669fce44f9eff789744cbdf11709ee2583f847",
+    "predecessorRevision": "sha256:981edeaf411ad41c3b2ae91818832db405fcc417e556a52abd0cc0f76b45d262",
+    "issuedAt": "2026-08-31T23:00:00Z",
+    "notBefore": "2026-09-01T00:00:00Z",
+    "expiresAt": "2026-10-01T00:00:00Z",
+    "keysRoot": "sha256:a813a9824986b2198e95306d61ec7da0d119bcf1177ca7e6a54fe2f6ee64bfe0",
+    "signature": {
+      "keyId": "external-trust-root-key",
+      "algorithm": "Ed25519",
+      "value": "SHV9kXrWPWDGmbUFMsPZYx0z2+g7aeLxkPdv9XtJgvK36PMuSk8PUfm/a+NEYYkRgvu9fO5zTz/XgIpjtVe5Dg=="
+    }
+  },
+  "keys": [
+    {
+      "keyId": "catalog-key",
+      "principalRef": "principal-catalog-custodian",
+      "principalKind": "system",
+      "domain": "catalog",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAi/F7qS0MSMQxe5e2eS5/E+E0b9rcx/+T+/QI/SAoE5c=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "catalog-key-retired",
+      "principalRef": "principal-catalog-custodian",
+      "principalKind": "system",
+      "domain": "catalog",
+      "status": "revoked",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": "2026-09-10T00:00:00Z",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA23TeZlweUzNsVXDFqSJyUcxiZ7z8yfAwyUXTTTA6NvQ=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "issue-key",
+      "principalRef": "principal-issue-custodian",
+      "principalKind": "system",
+      "domain": "issue",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEASbhqpAmbjN6eN1MeHCjtt8z+4VF7FMssIskGL+BYJXY=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "usage-key",
+      "principalRef": "principal-usage-issuer",
+      "principalKind": "system",
+      "domain": "usage",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA46otLyibFV5J21/jSP81WIw8AWx9iSYu5YCmeOgFPiM=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "grant-key",
+      "principalRef": "principal-owner",
+      "principalKind": "human",
+      "domain": "human-grant",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAenySm7uVPjogcjDarLKrGg/FmhzSFll3oQsPBr+KZ7k=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "classifier-key",
+      "principalRef": "principal-classifier",
+      "principalKind": "system",
+      "domain": "classification",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAgTN22RY3Oy+PcvGEnj96uO9Sqc2wcDQN8cWBhpjk+c8=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "human-classification-key",
+      "principalRef": "principal-decision-owner",
+      "principalKind": "human",
+      "domain": "classification",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAFzpAshmkwjzYwYao0kuDmbmVB945SnQbqB6yhQTx1Zk=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "product-classification-key",
+      "principalRef": "principal-product-owner",
+      "principalKind": "human",
+      "domain": "classification",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA3ChjtqhWNzeIsGB4TDMmcUijp08/+iKS3lB0ym3csdY=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "retirement-classification-key",
+      "principalRef": "principal-retirement-owner",
+      "principalKind": "human",
+      "domain": "classification",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEANsAW8hCLqZLf4NwB4v7FvY4BVUBY2GJ8IFXuV0Y/Rz0=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "composition-key",
+      "principalRef": "principal-composition-reviewer",
+      "principalKind": "system",
+      "domain": "composition",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAe0j+kGoHeU5NRd7xd06UofeC3+GW/SBhApRp4CpKHv4=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "run-key",
+      "principalRef": "principal-owner",
+      "principalKind": "human",
+      "domain": "run-result",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAExpip4i8HkTtiWWXt/6d003n9LdjuDWvvtJIJ72oywI=\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "keyId": "budget-key",
+      "principalRef": "principal-budget-owner",
+      "principalKind": "human",
+      "domain": "budget",
+      "status": "active",
+      "activatedAt": "2026-09-01T00:00:00Z",
+      "revokedAt": null,
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAm4Syfj6lNruU9WZbT3jI9EMKTmqv7OnDlYkrbxer12Y=\n-----END PUBLIC KEY-----\n"
+    }
+  ]
+}

@@ -1,74 +1,76 @@
-import { createHash, createPublicKey, verify as verifySignature } from "node:crypto";
-import { closeSync, openSync, readFileSync, readSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import {
+  createHash,
+  createPublicKey,
+  verify as verifySignature,
+} from "node:crypto";
+import {
+  closeSync,
+  openSync,
+  readFileSync,
+  readSync,
+} from "node:fs";
+import {
+  readdir,
+  readFile,
+} from "node:fs/promises";
+import {
+  extname,
+  join,
+  relative,
+  resolve,
+} from "node:path";
 import { pathToFileURL } from "node:url";
-import { types as utilTypes } from "node:util";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
-import { buildCatalogQualityScorecard } from "../../scripts/catalog-quality-score.mjs";
 import { readCatalog, root } from "../../scripts/catalog-source.mjs";
 import {
   contributionSimilarityReport,
   validateContributionProposal,
 } from "../../scripts/contribution-lib.mjs";
-import { readExperienceCases } from "../../scripts/experience-cases.mjs";
-import { loadMockPlusContext } from "../../scripts/mock-plus-lib.mjs";
 import {
-  readRegressionCases,
-  runRepositoryRegressionCases,
-} from "../../scripts/regression-cases.mjs";
-import {
-  repositoryComplianceProgramFindings,
-} from "../../scripts/repository-compliance-program-manager.mjs";
-import {
-  repositoryOperationsFindings,
-} from "../../scripts/repository-operations-manager.mjs";
-import {
-  buildScenarios,
-  preflightBudgets,
-  readRuntimeProfile,
-} from "../../scripts/runtime-evidence-lib.mjs";
+  JSON_LIMITS,
+  canonicalJson,
+  normalizeJsonValue,
+  sha256Digest,
+} from "./candidate-utils.mjs";
+import { runStrongestComposition } from "./strongest-composition.mjs";
 
-export const CANDIDATE_SCHEMA_VERSION =
-  "awesomeClaws.clawPortfolioManagerCandidate.v1";
-export const RESULT_SCHEMA_VERSION =
-  "awesomeClaws.clawPortfolioManagerResult.v1";
-export const PUBLIC_TRUST_SCHEMA_VERSION =
-  "awesomeClaws.clawPortfolioManagerPublicTrust.v1";
-export const SOURCE_RECEIPTS_SCHEMA_VERSION =
-  "awesomeClaws.clawPortfolioManagerSourceReceipts.v1";
-export const COMPOSITION_PROOF_SCHEMA_VERSION =
-  "awesomeClaws.clawPortfolioManagerCompositionProof.v1";
-export const BASE_CATALOG_REVISION =
+export const V2_SCHEMA_VERSION =
+  "awesomeClaws.clawPortfolioManagerCandidate.v2";
+export const V2_RESULT_VERSION =
+  "awesomeClaws.clawPortfolioManagerResult.v2";
+export const CLASSIFIER_VERSION = "claw-portfolio-classifier-v2";
+export const PINNED_CATALOG_REVISION =
   "0c1bfb3c973a9940f301a5001e77435789993555";
+export const CLASSIFIER_CODE_DIGEST = sha256Digest({
+  version: CLASSIFIER_VERSION,
+  precedence: [
+    "prohibited-authority",
+    "duplicate",
+    "retire",
+    "product-decision",
+    "variant",
+    "improve",
+    "compose-if-feasible",
+    "new-if-lossy-and-distinct",
+  ],
+});
+export const PINNED_EXTERNAL_ROOT_PUBLIC_KEY_PEM =
+  "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAFTAnp8n6VZ4sPY72cAXktF/YFu0ZN24Upu3eqq9xQJY=\n-----END PUBLIC KEY-----\n";
+export const PINNED_TRUST_ROOT_REVISION =
+  "sha256:1af5c3c40744e5db717bc2ffbf669fce44f9eff789744cbdf11709ee2583f847";
+export const PINNED_TRUST_PREDECESSOR_REVISION =
+  "sha256:981edeaf411ad41c3b2ae91818832db405fcc417e556a52abd0cc0f76b45d262";
 
-export const CLASSIFICATIONS = Object.freeze([
-  "NEW",
-  "IMPROVE",
-  "COMPOSE",
-  "VARIANT",
-  "PRODUCT_DECISION",
-  "RETIRE",
-  "DUPLICATE",
-  "UNSUPPORTED",
-]);
-
-export const CANDIDATE_LIMITS = Object.freeze({
-  inputBytes: 512 * 1024,
-  publicTrustBytes: 64 * 1024,
-  sourceReceiptsBytes: 256 * 1024,
-  compositionProofBytes: 256 * 1024,
-  outputBytes: 512 * 1024,
-  maxDepth: 28,
-  maxNodes: 20_000,
-  maxArrayLength: 256,
-  maxObjectKeys: 128,
-  maxStringLength: 131_072,
+const V2_LIMITS = Object.freeze({
+  inputBytes: 1024 * 1024,
+  trustBytes: 128 * 1024,
+  packageTreeBytes: 2 * 1024 * 1024,
+  outputBytes: 1024 * 1024,
 });
 
-const AUTHORITY_NON_CLAIMS = Object.freeze({
+const AUTHORITY = Object.freeze({
   merge: false,
   publish: false,
   budgetIncrease: false,
@@ -79,82 +81,26 @@ const AUTHORITY_NON_CLAIMS = Object.freeze({
   reseal: false,
 });
 
-const COMPOSITION_VALIDATOR_DESCRIPTOR = Object.freeze({
-  schemaVersion: "awesomeClaws.clawPortfolioManagerCompositionValidator.v1",
-  operation: "exact-required-fact-set",
-  sourcePolicy: "signed-independent-artifact-bytes",
-  authorityPolicy: "no-invented-semantics-or-consequential-authority",
-});
-
-const PINNED_ANALOGUE_FILES = Object.freeze({
-  "scripts/contribution-lib.mjs":
-    "sha256:2022abee643543867a5615e31f738309e67351d52baa28a58dd1cc856009b6ce",
-  "scripts/repository-operations-manager.mjs":
-    "sha256:5dd45f766a680e8c4e974acc09e74bc1770f69713dc36dccd5b4ba344851a1ea",
-  "sources/repository-operations-manager/schemas/repository-operations.schema.json":
-    "sha256:ed96bbfc7068e11493a75461c8c02c1fa9a6f3298de69dd5df5f3cd71baac677",
-  "sources/repository-operations-manager/fixtures/repository-operations.example.json":
-    "sha256:e04a703ffcbd362afa57e3e616858d3f0d0182f5de2f59ac32612883f9ea03c6",
-  "scripts/repository-compliance-program-manager.mjs":
-    "sha256:0163b1580ead609f7722c417b78a063395045c9542fbc5aa7d78f888417dd202",
-  "sources/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json":
-    "sha256:11249af3ac39950f054aa8cb1d0c7d2c9da016ae1b9f814cbf0e72ea6d9dfb57",
-  "sources/repository-compliance-program-manager/fixtures/repository-compliance-program.example.json":
-    "sha256:8aff6f0ba5f3c54b16dffcbb56c739af813d7ba6aa93e9fa1852fdc27b203a87",
-  "scripts/catalog-quality-score.mjs":
-    "sha256:8b022814145f628b29c391831f39e181134adbb9eab43059a6264982c592c7db",
-  "scripts/regression-cases.mjs":
-    "sha256:72c10a0bd9f7b7df8d6d5aae61af4366b0c1e633cd26f0fc094ad358db98470e",
-  "scripts/runtime-evidence-lib.mjs":
-    "sha256:c89526bee2d916d28c1b47d6fc76e56de2d550cb90dc4bc869dd3bbbb23e6f91",
-  "scripts/mock-plus-lib.mjs":
-    "sha256:5aa6a14c9aa3bdca71864de2456296235d013e802fb95cc8595e0820418a8d19",
-});
-const PINNED_CATALOG_ENTRY_DIGESTS = Object.freeze({
-  "repository-operations-manager":
-    "sha256:f89be6f6a3b5a23ee5598df1f6c974eb010a3e0830b11972c0368c1e79ea1842",
-  "repository-compliance-program-manager":
-    "sha256:cad53dc0b2ea776461a4ec49b632dcc45879a96258cf26f4773a749baef9eab9",
-  "product-manager":
-    "sha256:f8080dffb4849290fe7cb66e3e3ca798aa0858fe6a7225ad2712bf5325c513dd",
-});
-
-const candidateSchema = JSON.parse(
-  readFileSync(
-    new URL("./schemas/claw-portfolio-manager.schema.json", import.meta.url),
-    "utf8",
-  ),
+const schema = JSON.parse(
+  readFileSync(new URL("./schemas/claw-portfolio-manager.schema.json", import.meta.url)),
 );
-const publicTrustSchema = JSON.parse(
-  readFileSync(new URL("./schemas/public-trust.schema.json", import.meta.url), "utf8"),
+const trustSchema = JSON.parse(
+  readFileSync(new URL("./schemas/public-trust.schema.json", import.meta.url)),
 );
-const sourceReceiptsSchema = JSON.parse(
-  readFileSync(new URL("./schemas/source-receipts.schema.json", import.meta.url), "utf8"),
+const packageTreeSchema = JSON.parse(
+  readFileSync(new URL("./schemas/package-tree-v1.schema.json", import.meta.url)),
 );
-const compositionProofSchema = JSON.parse(
-  readFileSync(new URL("./schemas/composition-proof.schema.json", import.meta.url), "utf8"),
-);
-
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
-const validateCandidateSchema = ajv.compile(candidateSchema);
-const validatePublicTrustSchema = ajv.compile(publicTrustSchema);
-const validateSourceReceiptsSchema = ajv.compile(sourceReceiptsSchema);
-const validateCompositionProofSchema = ajv.compile(compositionProofSchema);
-
-function compareText(left, right) {
-  return String(left) < String(right) ? -1 : String(left) > String(right) ? 1 : 0;
-}
+const validateSchema = ajv.compile(schema);
+const validateTrustSchema = ajv.compile(trustSchema);
+const validatePackageTreeSchema = ajv.compile(packageTreeSchema);
 
 function isRecord(value) {
-  return (
-    value !== null &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  );
+  return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
-function records(value) {
+function rows(value) {
   return Array.isArray(value) ? value.filter(isRecord) : [];
 }
 
@@ -164,326 +110,42 @@ function strings(value) {
     : [];
 }
 
-function sortedStrings(value) {
-  return [...strings(value)].sort(compareText);
+function compare(left, right) {
+  return String(left) < String(right)
+    ? -1
+    : String(left) > String(right)
+      ? 1
+      : 0;
 }
 
-function canonicalJsonInner(value, ancestors) {
-  if (value === null) return "null";
-  if (typeof value === "string" || typeof value === "boolean") {
-    return JSON.stringify(value);
-  }
-  if (typeof value === "number") {
-    if (!Number.isFinite(value)) {
-      throw new TypeError("Canonical JSON requires finite numbers.");
-    }
-    return JSON.stringify(value);
-  }
-  if (Array.isArray(value)) {
-    if (ancestors.has(value)) {
-      throw new TypeError("Canonical JSON cannot encode cycles.");
-    }
-    const next = new Set(ancestors).add(value);
-    return `[${value.map((item) => canonicalJsonInner(item, next)).join(",")}]`;
-  }
-  if (isRecord(value)) {
-    if (ancestors.has(value)) {
-      throw new TypeError("Canonical JSON cannot encode cycles.");
-    }
-    const next = new Set(ancestors).add(value);
-    return `{${Object.keys(value)
-      .sort(compareText)
-      .map((key) => `${JSON.stringify(key)}:${canonicalJsonInner(value[key], next)}`)
-      .join(",")}}`;
-  }
-  throw new TypeError(`Unsupported canonical JSON value: ${typeof value}.`);
-}
-
-export function canonicalJson(value) {
-  return canonicalJsonInner(value, new Set());
-}
-
-export function sha256Digest(value) {
-  return `sha256:${createHash("sha256").update(canonicalJson(value)).digest("hex")}`;
-}
-
-function sha256Bytes(value) {
-  return `sha256:${createHash("sha256").update(value).digest("hex")}`;
-}
-
-function withoutSignature(value) {
-  const { signature: _signature, ...unsigned } = value;
-  return unsigned;
-}
-
-export function computeBudgetRevision(value) {
-  const { revision: _revision, ...content } = value;
-  return sha256Digest(content);
-}
-
-export function computePrincipalRoot(principals) {
-  return sha256Digest(
-    records(principals)
-      .map((item) => ({
-        id: item.id,
-        kind: item.kind,
-        roles: sortedStrings(item.roles),
-      }))
-      .sort((left, right) => compareText(left.id, right.id)),
-  );
-}
-
-export function computeGrantRoot(grants) {
-  return sha256Digest(
-    records(grants)
-      .map((item) => ({
-        ...item,
-        issueRefs: sortedStrings(item.issueRefs),
-        classifications: sortedStrings(item.classifications),
-      }))
-      .sort((left, right) => compareText(left.id, right.id)),
-  );
-}
-
-export function computeUsagePolicyRevision(value) {
-  return sha256Digest({
-    ...value,
-    allowedTenantRefs: sortedStrings(value.allowedTenantRefs),
-    allowedSourceRefs: sortedStrings(value.allowedSourceRefs),
-    allowedEffects: sortedStrings(value.allowedEffects),
-  });
-}
-
-export function computeEvidenceRecordRevision(value) {
-  const { revision: _revision, ...content } = value;
-  return sha256Digest(content);
-}
-
-export function computeEvidenceEnvelopeRevision(value) {
-  const { revision: _revision, signature: _signature, ...content } = value;
-  return sha256Digest(content);
-}
-
-export function computeIssueSourceDigest(value) {
-  const {
-    revision: _revision,
-    sourceDigest: _sourceDigest,
-    ...source
-  } = value;
-  return sha256Digest(source);
-}
-
-export function computeIssueRevision(value) {
-  return sha256Digest({
-    id: value.id,
-    previousRevision: value.previousRevision,
-    sourceDigest: value.sourceDigest,
-  });
-}
-
-export function computeIssueUniverseRoot(issues) {
-  return sha256Digest(
-    records(issues)
-      .map((item) => ({ id: item.id, revision: item.revision }))
-      .sort((left, right) => compareText(left.id, right.id)),
-  );
-}
-
-export function computePortfolioManifestRevision(value) {
-  const { revision: _revision, signature: _signature, ...content } = value;
-  return sha256Digest(content);
-}
-
-export function computeIssueManifestRevision(value) {
-  const { revision: _revision, signature: _signature, ...content } = value;
-  return sha256Digest(content);
-}
-
-export function computePredecessorRevision(value) {
-  const { revision: _revision, signature: _signature, ...content } = value;
-  return sha256Digest(content);
-}
-
-export function computeSourceReceiptsRevision(value) {
-  const { revision: _revision, signature: _signature, ...content } = value;
-  return sha256Digest(content);
-}
-
-export function signedPayload(value) {
-  return Buffer.from(canonicalJson(withoutSignature(value)), "utf8");
-}
-
-function finding(code, path) {
-  return { code, path };
-}
-
-function uniqueFindings(findings) {
-  const seen = new Set();
-  return findings
-    .filter((item) => {
-      const key = `${item.code}\0${item.path}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .sort(
-      (left, right) =>
-        compareText(left.code, right.code) ||
-        compareText(left.path, right.path),
-    );
-}
-
-function normalizeJsonValue(value, limits) {
-  let nodes = 0;
-  let stringBytes = 0;
-  const ancestors = new Set();
-
-  function fail(code) {
-    return { ok: false, code };
-  }
-
-  function visit(item, depth) {
-    nodes += 1;
-    if (nodes > limits.maxNodes) return fail("node-limit");
-    if (depth > limits.maxDepth) return fail("depth-limit");
-    if (item === null || typeof item === "boolean") {
-      return { ok: true, value: item };
-    }
-    if (typeof item === "string") {
-      const bytes = Buffer.byteLength(item);
-      stringBytes += bytes;
-      if (bytes > limits.maxStringLength || stringBytes > limits.maxBytes) {
-        return fail("string-limit");
-      }
-      return { ok: true, value: item };
-    }
-    if (typeof item === "number") {
-      return Number.isFinite(item)
-        ? { ok: true, value: item }
-        : fail("non-finite-number");
-    }
-    if (
-      typeof item === "symbol" ||
-      typeof item === "bigint" ||
-      typeof item === "function" ||
-      typeof item === "undefined"
-    ) {
-      return fail("non-json-value");
-    }
-    if (utilTypes.isProxy(item)) return fail("proxy");
-    if (ancestors.has(item)) return fail("cycle");
-
-    let keys;
-    let descriptors;
-    let prototype;
-    try {
-      keys = Reflect.ownKeys(item);
-      descriptors = Object.getOwnPropertyDescriptors(item);
-      prototype = Object.getPrototypeOf(item);
-    } catch {
-      return fail("hostile-object");
-    }
-    if (keys.some((key) => typeof key === "symbol")) return fail("symbol-key");
-
-    if (Array.isArray(item)) {
-      if (prototype !== Array.prototype) return fail("non-plain-array");
-      if (item.length > limits.maxArrayLength) return fail("array-limit");
-      const dataKeys = keys.filter((key) => key !== "length");
-      if (
-        dataKeys.length !== item.length ||
-        dataKeys.some((key, index) => key !== String(index))
-      ) {
-        return fail("sparse-or-custom-array");
-      }
-      if (
-        dataKeys.some((key) => {
-          const descriptor = descriptors[key];
-          return (
-            !descriptor ||
-            !descriptor.enumerable ||
-            !Object.hasOwn(descriptor, "value") ||
-            Object.hasOwn(descriptor, "get") ||
-            Object.hasOwn(descriptor, "set")
-          );
-        })
-      ) {
-        return fail("accessor-or-hidden-state");
-      }
-      ancestors.add(item);
-      const output = [];
-      for (const key of dataKeys) {
-        const child = visit(descriptors[key].value, depth + 1);
-        if (!child.ok) {
-          ancestors.delete(item);
-          return child;
-        }
-        output.push(child.value);
-      }
-      ancestors.delete(item);
-      return { ok: true, value: output };
-    }
-
-    if (prototype !== Object.prototype && prototype !== null) {
-      return fail("non-plain-object");
-    }
-    if (keys.length > limits.maxObjectKeys) return fail("object-key-limit");
-    if (
-      keys.some((key) => {
-        const descriptor = descriptors[key];
-        return (
-          !descriptor ||
-          !descriptor.enumerable ||
-          !Object.hasOwn(descriptor, "value") ||
-          Object.hasOwn(descriptor, "get") ||
-          Object.hasOwn(descriptor, "set")
-        );
-      })
-    ) {
-      return fail("accessor-or-hidden-state");
-    }
-    ancestors.add(item);
-    const output = Object.create(null);
-    for (const key of keys) {
-      if (["__proto__", "constructor", "prototype"].includes(key)) {
-        ancestors.delete(item);
-        return fail("prototype-key");
-      }
-      const child = visit(descriptors[key].value, depth + 1);
-      if (!child.ok) {
-        ancestors.delete(item);
-        return child;
-      }
-      output[key] = child.value;
-    }
-    ancestors.delete(item);
-    return { ok: true, value: output };
-  }
-
-  const normalized = visit(value, 0);
-  if (!normalized.ok) return normalized;
-  try {
-    if (Buffer.byteLength(canonicalJson(normalized.value)) > limits.maxBytes) {
-      return fail("byte-limit");
-    }
-  } catch {
-    return fail("canonicalization");
-  }
-  return normalized;
-}
-
-function normalize(value, maxBytes) {
-  return normalizeJsonValue(value, {
-    ...CANDIDATE_LIMITS,
-    maxBytes,
-  });
+function sorted(value) {
+  return [...strings(value)].sort(compare);
 }
 
 function timestamp(value) {
-  if (
-    typeof value !== "string" ||
-    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/u.test(
+  if (typeof value !== "string") return null;
+  const match =
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-](\d{2}):(\d{2}))$/u.exec(
       value,
-    )
+    );
+  if (!match) return null;
+  const [, yearText, monthText, dayText, hourText, minuteText, secondText] =
+    match;
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+  const maximumDay =
+    month >= 1 && month <= 12
+      ? new Date(Date.UTC(year === 0 ? 400 : year, month, 0)).getUTCDate()
+      : 0;
+  if (
+    day < 1 ||
+    day > maximumDay ||
+    Number(hourText) > 23 ||
+    Number(minuteText) > 59 ||
+    Number(secondText) > 59 ||
+    (match[7] !== "Z" &&
+      (Number(match[8]) > 23 || Number(match[9]) > 59))
   ) {
     return null;
   }
@@ -491,10 +153,50 @@ function timestamp(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+export function grantActiveAt(grant, instant) {
+  const value = timestamp(instant);
+  const notBefore = timestamp(grant?.notBefore);
+  const expiresAt = timestamp(grant?.expiresAt);
+  return (
+    value !== null &&
+    notBefore !== null &&
+    expiresAt !== null &&
+    notBefore <= value &&
+    expiresAt >= value
+  );
+}
+
+export function budgetPeriodContains(period, instant) {
+  const value = timestamp(instant);
+  const start = timestamp(`${period?.startsOn}T00:00:00Z`);
+  const end = timestamp(`${period?.endsOn}T00:00:00Z`);
+  const dayAfterEnd = end === null ? null : end + 86_400_000;
+  return (
+    value !== null &&
+    start !== null &&
+    end !== null &&
+    start <= end &&
+    start <= value &&
+    value < dayAfterEnd
+  );
+}
+
+function exactKeys(value, keys) {
+  return (
+    isRecord(value) &&
+    Object.keys(value).length === keys.length &&
+    keys.every((key) => Object.hasOwn(value, key))
+  );
+}
+
+function mapById(value) {
+  return new Map(rows(value).map((item) => [item.id, item]));
+}
+
 function sameSet(left, right) {
   if (!Array.isArray(left) || !Array.isArray(right)) return false;
-  const a = [...left].sort(compareText);
-  const b = [...right].sort(compareText);
+  const a = [...left].sort(compare);
+  const b = [...right].sort(compare);
   return (
     new Set(a).size === a.length &&
     new Set(b).size === b.length &&
@@ -503,87 +205,40 @@ function sameSet(left, right) {
   );
 }
 
-function mapById(value) {
-  return new Map(
-    records(value)
-      .filter((item) => typeof item.id === "string")
-      .map((item) => [item.id, item]),
-  );
+function finding(code, path) {
+  return { code, path };
 }
 
-function duplicateIds(collections) {
+function uniqueFindings(value) {
   const seen = new Set();
-  const duplicates = new Set();
-  for (const items of collections) {
-    for (const item of records(items)) {
-      if (typeof item.id !== "string") continue;
-      if (seen.has(item.id)) duplicates.add(item.id);
-      seen.add(item.id);
-    }
-  }
-  return [...duplicates].sort(compareText);
-}
-
-function containsCredentialMaterial(value, seen = new Set()) {
-  if (typeof value === "string") {
-    return (
-      /-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----/iu.test(value) ||
-      /\b(?:password|secret|api[_-]?key|access[_-]?token|bearer)\s*[:=]\s*\S+/iu.test(
-        value,
-      )
+  return value
+    .filter((item) => {
+      const key = `${item.code}\0${item.path}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort(
+      (left, right) =>
+        compare(left.code, right.code) || compare(left.path, right.path),
     );
-  }
-  if (!value || typeof value !== "object" || seen.has(value)) return false;
-  seen.add(value);
-  return Object.values(value).some((item) =>
-    containsCredentialMaterial(item, seen),
-  );
 }
 
-function unsafePublicHost(hostname) {
-  const host = hostname.toLowerCase().replace(/^\[|\]$/gu, "");
-  if (
-    /^(?:localhost(?:\.localdomain)?|.+\.localhost|0(?:\.\d{1,3}){3}|10(?:\.\d{1,3}){3}|127(?:\.\d{1,3}){3}|169\.254(?:\.\d{1,3}){2}|192\.168(?:\.\d{1,3}){2}|::|::1|::ffff:.*|f[cd][0-9a-f:]*|fe[89ab][0-9a-f:]*|ff[0-9a-f:]*)$/u.test(
-      host,
-    )
-  ) {
-    return true;
-  }
-  const match = /^172\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/u.exec(host);
-  return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
-}
-
-function safeSourceReference(value) {
-  if (typeof value !== "string") return false;
-  if (value.startsWith("controlled://")) {
-    return /^controlled:\/\/[a-z0-9][a-z0-9./_-]*$/u.test(value);
-  }
-  if (!value.startsWith("https://")) return false;
-  try {
-    const url = new URL(value);
-    const unsafeQueryKey =
-      /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
-    return (
-      url.protocol === "https:" &&
-      !url.username &&
-      !url.password &&
-      !url.hash &&
-      !unsafePublicHost(url.hostname) &&
-      ![...url.searchParams.keys()].some((key) => unsafeQueryKey.test(key))
-    );
-  } catch {
-    return false;
-  }
-}
-
-function schemaFindings(validate, value, prefix) {
+function schemaFindings(validate, value, path) {
   if (validate(value)) return [];
   return (validate.errors ?? []).map((error) =>
     finding(
       "invalid-schema",
-      `${prefix}${error.instancePath || "/"}#${error.keyword}`,
+      `${path}${error.instancePath || "/"}#${error.keyword}`,
     ),
   );
+}
+
+function normalize(value, maxBytes) {
+  return normalizeJsonValue(value, {
+    ...JSON_LIMITS,
+    maxBytes,
+  });
 }
 
 function strictBase64(value) {
@@ -596,2277 +251,2315 @@ function strictBase64(value) {
   }
 }
 
-function publicKeyRecord(signer) {
+function bytesDigest(value) {
+  return `sha256:${createHash("sha256").update(value).digest("hex")}`;
+}
+
+function unsigned(value) {
+  const { signature: _signature, ...content } = value;
+  return content;
+}
+
+function signedPayload(value) {
+  return Buffer.from(canonicalJson(unsigned(value)), "utf8");
+}
+
+function contentRevision(value) {
+  const { revision: _revision, signature: _signature, ...content } = value;
+  return sha256Digest(content);
+}
+
+export function computeProviderIssueRevision(value) {
+  const {
+    revision: _revision,
+    observedAt: _observedAt,
+    ...content
+  } = value;
+  return sha256Digest(content);
+}
+
+export function computeProviderSnapshotRoot(issues) {
+  return sha256Digest(
+    rows(issues)
+      .map((item) => ({
+        id: item.id,
+        repository: item.repository,
+        providerIssueId: item.providerIssueId,
+        number: item.number,
+        revision: item.revision,
+        etag: item.etag,
+      }))
+      .sort((left, right) => compare(left.id, right.id)),
+  );
+}
+
+export function computeProviderSnapshotRevision(value) {
+  return contentRevision(value);
+}
+
+export function computeCompositionAssessmentIdempotency(value) {
+  return sha256Digest({
+    runId: value.runId,
+    decisionId: value.decisionId,
+    issueRef: value.issueRef,
+    issueRevision: value.issueRevision,
+    graphDigest: value.graphDigest,
+    proposedClawRefs: sorted(value.proposedClawRefs),
+    lossIds: sorted(value.lossIds),
+  });
+}
+
+export function computeClassificationDecisionDigest(value) {
+  return sha256Digest(unsigned(value));
+}
+
+export function computeGrantDigest(value) {
+  return sha256Digest(unsigned(value));
+}
+
+export function computeRunIdempotencyKey(value) {
+  return sha256Digest({
+    id: value.id,
+    decisionId: value.decisionId,
+    mode: value.mode,
+    budgetPeriodRef: value.budgetPeriodRef,
+    portfolioRevision: value.portfolioRevision,
+    providerSnapshotRef: value.providerSnapshotRef,
+    providerSnapshotRevision: value.providerSnapshotRevision,
+    providerSnapshotCompletenessRoot:
+      value.providerSnapshotCompletenessRoot,
+    packageTreeRef: value.packageTreeRef,
+    packageTreeRevision: value.packageTreeRevision,
+    predecessorResultDigest: value.predecessorResultDigest,
+    predecessorDecisionDigest: value.predecessorDecisionDigest,
+    predecessorBudgetDigest: value.predecessorBudgetDigest,
+  });
+}
+
+export function computeReservationIdempotency(value) {
+  return sha256Digest({
+    periodId: value.periodId,
+    runId: value.runId,
+    decisionId: value.decisionId,
+    issueRef: value.issueRef,
+    issueRevision: value.issueRevision,
+    classification: value.classification,
+    amounts: value.amounts,
+  });
+}
+
+export function reservationIdForIssue(issueRef, issueRevision) {
+  return `reservation-${sha256Digest({
+    issueRef,
+    issueRevision,
+  }).slice("sha256:".length)}`;
+}
+
+export function planIdForIssue(decisionId, issueRef) {
+  const readable = `plan-${decisionId}-${issueRef}`;
+  return readable.length <= 120
+    ? readable
+    : `plan-${sha256Digest({ decisionId, issueRef }).slice("sha256:".length)}`;
+}
+
+export function computeBudgetLedgerRevision(value) {
+  return contentRevision(value);
+}
+
+export const BUDGET_HISTORY_GENESIS = sha256Digest({
+  ledger: "claw-portfolio-budget-history",
+  generation: 0,
+});
+
+export function computeBudgetHistoryEntryDigest(value) {
+  return sha256Digest({
+    sequence: value.sequence,
+    periodId: value.periodId,
+    runId: value.runId,
+    decisionId: value.decisionId,
+    runIdempotencyKey: value.runIdempotencyKey,
+    reservationIdempotencyKeys: sorted(
+      value.reservationIdempotencyKeys,
+    ),
+    previousEntryDigest: value.previousEntryDigest,
+  });
+}
+
+export function computeBudgetHistoryRoot(history) {
+  return history.length === 0
+    ? BUDGET_HISTORY_GENESIS
+    : history.at(-1).entryDigest;
+}
+
+export function computeUsageRecordRevision(value) {
+  const { revision: _revision, ...content } = value;
+  return sha256Digest(content);
+}
+
+export function computeUsageEnvelopeRevision(value) {
+  return contentRevision(value);
+}
+
+export function computeTrustKeysRoot(keys) {
+  return sha256Digest(
+    rows(keys)
+      .map((item) => ({ ...item }))
+      .sort((left, right) => compare(left.keyId, right.keyId)),
+  );
+}
+
+export function computeTrustRootRevision(value) {
+  return contentRevision(value);
+}
+
+export function computePackageTreeRoot(files) {
+  return sha256Digest(
+    rows(files)
+      .map((item) => ({
+        path: item.path,
+        mediaType: item.mediaType,
+        byteLength: item.byteLength,
+        digest: item.digest,
+      }))
+      .sort((left, right) => compare(left.path, right.path)),
+  );
+}
+
+export function computePackageManifestRoot(trees) {
+  return sha256Digest(
+    rows(trees)
+      .map((item) => ({
+        clawId: item.clawId,
+        root: item.root,
+      }))
+      .sort((left, right) => compare(left.clawId, right.clawId)),
+  );
+}
+
+export function computePackageManifestRevision(value) {
+  return contentRevision(value);
+}
+
+function publicKeyRecord(pem) {
   try {
-    const key = createPublicKey({
-      key: signer.publicKeyPem,
-      format: "pem",
-    });
+    const key = createPublicKey({ key: pem, format: "pem" });
     if (key.type !== "public" || key.asymmetricKeyType !== "ed25519") return null;
     const der = key.export({ type: "spki", format: "der" });
-    if (der.length !== 44) return null;
-    const canonicalPem = key.export({ type: "spki", format: "pem" }).toString();
-    if (canonicalPem !== signer.publicKeyPem) return null;
-    return {
-      key,
-      fingerprint: sha256Bytes(der),
-    };
+    if (
+      der.length !== 44 ||
+      key.export({ type: "spki", format: "pem" }).toString() !== pem
+    ) {
+      return null;
+    }
+    return { key, fingerprint: bytesDigest(der) };
   } catch {
     return null;
   }
 }
 
-function validateTrustStore(trustStore, findings, path = "$.validationContext.publicTrust") {
-  findings.push(...schemaFindings(validatePublicTrustSchema, trustStore, path));
-  if (!validatePublicTrustSchema(trustStore)) return new Map();
-  if (containsCredentialMaterial(trustStore)) {
-    findings.push(finding("private-or-credential-material", path));
-    return new Map();
+function verifyTrust(trust, asOf, findings) {
+  findings.push(...schemaFindings(validateTrustSchema, trust, "$.trust"));
+  if (!validateTrustSchema(trust)) return new Map();
+  const asOfMs = timestamp(asOf);
+  const rootKey = publicKeyRecord(PINNED_EXTERNAL_ROOT_PUBLIC_KEY_PEM);
+  const signature = strictBase64(trust.root.signature.value);
+  if (
+    !rootKey ||
+    !signature ||
+    trust.root.keysRoot !== computeTrustKeysRoot(trust.keys) ||
+    trust.root.revision !== computeTrustRootRevision(trust.root) ||
+    trust.root.revision !== PINNED_TRUST_ROOT_REVISION ||
+    trust.root.predecessorRevision !==
+      PINNED_TRUST_PREDECESSOR_REVISION ||
+    timestamp(trust.root.issuedAt) === null ||
+    timestamp(trust.root.notBefore) === null ||
+    timestamp(trust.root.expiresAt) === null ||
+    timestamp(trust.root.issuedAt) > timestamp(trust.root.notBefore) ||
+    timestamp(trust.root.notBefore) > asOfMs ||
+    timestamp(trust.root.expiresAt) < asOfMs ||
+    !verifySignature(null, signedPayload(trust.root), rootKey.key, signature)
+  ) {
+    findings.push(finding("invalid-externally-pinned-trust-root", "$.trust.root"));
   }
-  const signers = new Map();
+  const byId = new Map();
   const fingerprints = new Map();
-  for (const [index, signer] of trustStore.signers.entries()) {
-    const keyRecord = publicKeyRecord(signer);
-    if (!keyRecord) {
-      findings.push(
-        finding("invalid-ed25519-spki", `${path}.signers[${index}].publicKeyPem`),
-      );
+  for (const [index, item] of trust.keys.entries()) {
+    const record = publicKeyRecord(item.publicKeyPem);
+    const activated = timestamp(item.activatedAt);
+    const revoked = item.revokedAt === null ? null : timestamp(item.revokedAt);
+    if (
+      !record ||
+      activated === null ||
+      activated < timestamp(trust.root.notBefore) ||
+      activated > timestamp(trust.root.expiresAt) ||
+      activated > asOfMs ||
+      (item.status === "active" && item.revokedAt !== null) ||
+      (item.status === "revoked" &&
+        (revoked === null || revoked <= activated || revoked > asOfMs))
+    ) {
+      findings.push(finding("invalid-trust-key-lifecycle", `$.trust.keys[${index}]`));
       continue;
     }
-    if (signers.has(signer.keyId)) {
-      findings.push(finding("duplicate-trust-key", `${path}.signers[${index}].keyId`));
+    if (byId.has(item.keyId) || fingerprints.has(record.fingerprint)) {
+      findings.push(finding("shared-or-duplicate-trust-key", `$.trust.keys[${index}]`));
+      continue;
     }
-    const reusedBy = fingerprints.get(keyRecord.fingerprint);
-    if (reusedBy && reusedBy !== signer.principalRef) {
-      findings.push(
-        finding(
-          "cross-principal-key-reuse",
-          `${path}.signers[${index}].publicKeyPem`,
-        ),
-      );
-    }
-    fingerprints.set(keyRecord.fingerprint, signer.principalRef);
-    signers.set(signer.keyId, { ...signer, ...keyRecord });
+    byId.set(item.keyId, { ...item, ...record });
+    fingerprints.set(record.fingerprint, item.domain);
   }
-  return signers;
+  const activeDomains = new Set(
+    [...byId.values()]
+      .filter((item) => item.status === "active")
+      .map((item) => item.domain),
+  );
+  for (const domain of [
+    "catalog",
+    "issue",
+    "usage",
+    "human-grant",
+    "classification",
+    "composition",
+    "run-result",
+    "budget",
+  ]) {
+    if (!activeDomains.has(domain)) {
+      findings.push(finding("missing-active-trust-domain", `$.trust.keys.${domain}`));
+    }
+  }
+  return byId;
 }
 
 function verifySigned({
   value,
-  payload,
-  purpose,
+  domain,
   principalRef,
   principalKind,
   signedAt,
-  signers,
-  path,
+  asOf,
+  keys,
   findings,
+  path,
 }) {
-  const signer = signers.get(value?.signature?.keyId);
+  const signer = keys.get(value?.signature?.keyId);
   const signature = strictBase64(value?.signature?.value);
   const signedMs = timestamp(signedAt);
   if (
-    value?.signature?.algorithm !== "Ed25519" ||
     !signer ||
-    !signature ||
+    !["active", "revoked"].includes(signer.status) ||
+    signer.domain !== domain ||
     signer.principalRef !== principalRef ||
-    signer.kind !== principalKind ||
-    !signer.purposes.includes(purpose) ||
+    signer.principalKind !== principalKind ||
     signedMs === null ||
-    timestamp(signer.validFrom) > signedMs ||
-    timestamp(signer.validUntil) < signedMs ||
-    !verifySignature(null, payload, signer.key, signature)
+    signedMs > timestamp(asOf) ||
+    timestamp(signer.activatedAt) > signedMs ||
+    (signer.status === "revoked" &&
+      (signer.revokedAt === null ||
+        timestamp(signer.revokedAt) <= signedMs)) ||
+    !signature ||
+    !verifySignature(null, signedPayload(value), signer.key, signature)
   ) {
-    findings.push(finding("invalid-signature", path));
+    findings.push(finding("invalid-domain-signature", path));
     return false;
   }
   return true;
 }
 
-function principalHasRole(principals, principalRef, role, kind) {
-  const principal = principals.get(principalRef);
+function bytesValue(value, path, findings) {
+  const bytes = strictBase64(value?.contentBase64);
+  if (
+    !bytes ||
+    bytes.length !== value.byteLength ||
+    bytesDigest(bytes) !== value.digest
+  ) {
+    findings.push(finding("invalid-exact-bytes", path));
+    return null;
+  }
+  return bytes;
+}
+
+function safePackagePath(value) {
   return (
-    principal?.kind === kind &&
-    strings(principal.roles).includes(role)
+    typeof value === "string" &&
+    value.length > 0 &&
+    !value.includes("\\") &&
+    !value.startsWith("/") &&
+    !value.split("/").includes("..")
   );
 }
 
-function classificationFor(issue) {
-  const signals = issue.signals;
-  if (signals.duplicateOfIssueRef !== null) return "DUPLICATE";
-  if (issue.requestedAuthority.length > 0 || signals.unsupportedReason !== null) {
-    return "UNSUPPORTED";
-  }
-  if (signals.retirementSignal) return "RETIRE";
-  if (
-    signals.requiresProductDecision ||
-    signals.conflictingEvidenceRefs.length > 0
-  ) {
-    return "PRODUCT_DECISION";
-  }
-  if (
-    signals.compositionPreservesJob &&
-    signals.compositionClawRefs.length >= 2 &&
-    signals.newInvariantIds.length === 0
-  ) {
-    return "COMPOSE";
-  }
-  if (signals.sameRepeatableJob && issue.affectedClaws.length > 0) {
-    return "IMPROVE";
-  }
-  if (signals.variantOnly) return "VARIANT";
-  if (signals.newInvariantIds.length > 0) return "NEW";
+function validUniqueStrings(value, maximum = 32) {
+  return (
+    Array.isArray(value) &&
+    value.length <= maximum &&
+    value.every(
+      (item) =>
+        typeof item === "string" &&
+        item.length > 0 &&
+        item.length <= 120,
+    ) &&
+    new Set(value).size === value.length
+  );
+}
+
+function mediaType(path) {
+  const extension = extname(path).toLowerCase();
+  if (extension === ".json") return "application/json";
+  if (extension === ".yml" || extension === ".yaml") return "application/yaml";
+  if (extension === ".png") return "image/png";
+  if (extension === ".md") return "text/markdown; charset=utf-8";
+  if (extension === ".html") return "text/html; charset=utf-8";
+  if (extension === ".txt") return "text/plain; charset=utf-8";
+  if (extension === ".svg") return "image/svg+xml";
   return null;
 }
 
-function classificationBasisCount(issue) {
-  const signals = issue.signals;
-  return [
-    signals.duplicateOfIssueRef !== null,
-    issue.requestedAuthority.length > 0 || signals.unsupportedReason !== null,
-    signals.retirementSignal,
-    signals.requiresProductDecision ||
-      signals.conflictingEvidenceRefs.length > 0,
-    signals.compositionPreservesJob,
-    signals.sameRepeatableJob,
-    signals.variantOnly,
-    signals.newInvariantIds.length > 0,
-  ].filter(Boolean).length;
+async function listFiles(path) {
+  const entries = await readdir(path, { withFileTypes: true });
+  const output = { files: [], unsafeEntries: [] };
+  for (const entry of entries) {
+    const child = join(path, entry.name);
+    if (entry.isDirectory()) {
+      const nested = await listFiles(child);
+      output.files.push(...nested.files);
+      output.unsafeEntries.push(...nested.unsafeEntries);
+    } else if (entry.isFile()) {
+      output.files.push(child);
+    } else {
+      output.unsafeEntries.push(child);
+    }
+  }
+  return output;
 }
 
-function expectedDemandShape(classification) {
-  if (["NEW", "IMPROVE", "COMPOSE"].includes(classification)) {
+async function expectedPackageFiles(clawId, catalogById, targetRoot) {
+  const entry = catalogById.get(clawId);
+  if (!entry) {
     return {
-      candidateSlots: classification === "NEW" ? 1 : 0,
-      admissionSlots: 1,
+      records: [],
+      unsafeEntries: [],
+      missingCatalogEntry: true,
     };
   }
-  return { candidateSlots: 0, admissionSlots: 0 };
-}
-
-function applicableGrants(grants, issue, classification, kind) {
-  return records(grants).filter(
-    (grant) =>
-      grant.kind === kind &&
-      strings(grant.issueRefs).includes(issue.id) &&
-      strings(grant.classifications).includes(classification),
-  );
-}
-
-function evidenceRecords(input) {
-  return input.evidenceEnvelopes.flatMap((envelope) =>
-    envelope.records.map((record) => ({
-      ...record,
-      envelopeRef: envelope.id,
-      envelopeKind: envelope.kind,
-      envelopeIssuerRef: envelope.issuerRef,
-      envelopeTenantRef: envelope.tenantRef,
-      envelopeSourceRef: envelope.sourceRef,
-    })),
-  );
-}
-
-function issueIsStale(issue, evidenceById, asOfMs) {
-  const freshAfter = timestamp(issue.signals.freshAfter);
-  return issue.evidenceRefs.some((ref) => {
-    const evidence = evidenceById.get(ref);
-    return (
-      !evidence ||
-      timestamp(evidence.observedAt) < freshAfter ||
-      timestamp(evidence.validUntil) < asOfMs
-    );
-  });
-}
-
-function issueHasConflict(issue, evidenceById) {
-  const conflicting = issue.signals.conflictingEvidenceRefs.map((ref) =>
-    evidenceById.get(ref),
-  );
-  const supporting = conflicting.filter((item) => item?.claim === "supports");
-  const opposing = conflicting.filter((item) => item?.claim === "opposes");
-  return supporting.some((left) =>
-    opposing.some(
-      (right) =>
-        left.envelopeRef !== right.envelopeRef &&
-        left.envelopeIssuerRef !== right.envelopeIssuerRef &&
-        left.envelopeSourceRef !== right.envelopeSourceRef,
-    ),
-  );
-}
-
-function invalidResult(findings) {
+  const virtualBytes = Buffer.from(`${canonicalJson(entry)}\n`, "utf8");
+  const records = [
+    {
+      path: "catalog-entry.json",
+      mediaType: "application/json",
+      byteLength: virtualBytes.length,
+      digest: bytesDigest(virtualBytes),
+    },
+  ];
+  const unsafeEntries = [];
+  for (const prefix of ["sources", "claws"]) {
+    const base = join(targetRoot, prefix, clawId);
+    let listed;
+    try {
+      listed = await listFiles(base);
+    } catch {
+      unsafeEntries.push(base);
+      continue;
+    }
+    unsafeEntries.push(...listed.unsafeEntries);
+    for (const file of listed.files) {
+      let content;
+      try {
+        content = await readFile(file);
+      } catch {
+        unsafeEntries.push(file);
+        continue;
+      }
+      const path = relative(targetRoot, file).replaceAll("\\", "/");
+      records.push({
+        path,
+        mediaType: mediaType(path),
+        byteLength: content.length,
+        digest: bytesDigest(content),
+      });
+    }
+  }
   return {
-    schemaVersion: RESULT_SCHEMA_VERSION,
-    resultStatus: "invalid",
-    findings: uniqueFindings(findings),
-    authority: { ...AUTHORITY_NON_CLAIMS },
+    records: records.sort((left, right) => compare(left.path, right.path)),
+    unsafeEntries,
+    missingCatalogEntry: false,
   };
 }
 
-async function catalogSourceFindings(input, sourceReceipts, signers, findings) {
+async function validatePackageTree(
+  manifest,
+  input,
+  keys,
+  findings,
+  targetRoot,
+) {
   findings.push(
-    ...schemaFindings(
-      validateSourceReceiptsSchema,
-      sourceReceipts,
-      "$.validationContext.sourceReceipts",
-    ),
+    ...schemaFindings(validatePackageTreeSchema, manifest, "$.packageTree"),
   );
-  if (!validateSourceReceiptsSchema(sourceReceipts)) return;
-  if (containsCredentialMaterial(sourceReceipts)) {
-    findings.push(
-      finding(
-        "private-or-credential-material",
-        "$.validationContext.sourceReceipts",
-      ),
-    );
-    return;
-  }
+  if (!validatePackageTreeSchema(manifest)) return;
   const principals = mapById(input.principals);
+  const catalog = await readCatalog({ loadResources: false });
+  const catalogById = new Map(catalog.entries.map((item) => [item.id, item]));
   if (
-    !principalHasRole(
+    manifest.revision !== computePackageManifestRevision(manifest) ||
+    manifest.root !== computePackageManifestRoot(manifest.trees) ||
+    manifest.catalogRevision !== input.run.catalogRevision ||
+    manifest.catalogRevision !== PINNED_CATALOG_REVISION ||
+    input.run.packageTreeRef !== manifest.id ||
+    !principalHas(
       principals,
-      sourceReceipts.issuerRef,
+      manifest.custodianRef,
       "catalog-source-custodian",
       "system",
+    ) ||
+    !sameSet(
+      manifest.trees.map((item) => item.clawId),
+      input.onboarding.selectedClawIds,
     )
   ) {
-    findings.push(
-      finding(
-        "invalid-catalog-source-custodian",
-        "$.validationContext.sourceReceipts.issuerRef",
-      ),
-    );
-  }
-  if (
-    sourceReceipts.revision !== computeSourceReceiptsRevision(sourceReceipts)
-  ) {
-    findings.push(
-      finding(
-        "invalid-source-receipts-revision",
-        "$.validationContext.sourceReceipts.revision",
-      ),
-    );
+    findings.push(finding("invalid-package-tree-root", "$.packageTree"));
   }
   verifySigned({
-    value: sourceReceipts,
-    payload: signedPayload(sourceReceipts),
-    purpose: "catalog-source-receipt",
-    principalRef: sourceReceipts.issuerRef,
+    value: manifest,
+    domain: "catalog",
+    principalRef: manifest.custodianRef,
     principalKind: "system",
-    signedAt: sourceReceipts.issuedAt,
-    signers,
-    path: "$.validationContext.sourceReceipts.signature",
+    signedAt: manifest.capturedAt,
+    asOf: input.run.asOf,
+    keys,
     findings,
+    path: "$.packageTree.signature",
   });
-  const receiptById = mapById(sourceReceipts.receipts);
-  for (const [index, receipt] of sourceReceipts.receipts.entries()) {
-    const bytes = strictBase64(receipt.contentBase64);
+  for (const [index, tree] of manifest.trees.entries()) {
+    const expected = await expectedPackageFiles(tree.clawId, catalogById, targetRoot);
     if (
-      !bytes ||
-      bytes.length !== receipt.byteLength ||
-      sha256Bytes(bytes) !== receipt.digest
+      expected.missingCatalogEntry ||
+      expected.unsafeEntries.length > 0 ||
+      expected.records.some((item) => item.mediaType === null) ||
+      tree.root !== computePackageTreeRoot(tree.files) ||
+      canonicalJson(tree.files) !== canonicalJson(expected.records) ||
+      tree.files.some((item) => !safePackagePath(item.path))
     ) {
       findings.push(
-        finding(
-          "invalid-source-byte-receipt",
-          `$.validationContext.sourceReceipts.receipts[${index}]`,
-        ),
-      );
-    }
-    if (bytes && containsCredentialMaterial(bytes.toString("utf8"))) {
-      findings.push(
-        finding(
-          "credential-bearing-source-bytes",
-          `$.validationContext.sourceReceipts.receipts[${index}]`,
-        ),
-      );
-    }
-    let entry = null;
-    try {
-      if (bytes) entry = JSON.parse(bytes.toString("utf8"));
-    } catch {
-      findings.push(
-        finding(
-          "catalog-source-bytes-mismatch",
-          `$.validationContext.sourceReceipts.receipts[${index}]`,
-        ),
-      );
-    }
-    const expectedBytes = entry
-      ? Buffer.from(`${canonicalJson(entry)}\n`, "utf8")
-      : null;
-    if (
-      !bytes ||
-      !expectedBytes ||
-      !bytes.equals(expectedBytes) ||
-      entry.id !== receipt.clawId ||
-      PINNED_CATALOG_ENTRY_DIGESTS[receipt.clawId] !== receipt.digest ||
-      receipt.sourceRef !== `catalog.json#entries/${receipt.clawId}`
-    ) {
-      findings.push(
-        finding(
-          "catalog-source-bytes-mismatch",
-          `$.validationContext.sourceReceipts.receipts[${index}]`,
-        ),
-      );
-    }
-  }
-  const selected = input.portfolioManifest.selectedClaws;
-  if (
-    !sameSet(
-      selected.map((item) => item.sourceReceiptRef),
-      sourceReceipts.receipts.map((item) => item.id),
-    )
-  ) {
-    findings.push(
-      finding(
-        "source-receipt-coverage-mismatch",
-        "$.portfolioManifest.selectedClaws",
-      ),
-    );
-  }
-  for (const [index, selectedClaw] of selected.entries()) {
-    const receipt = receiptById.get(selectedClaw.sourceReceiptRef);
-    if (
-      !receipt ||
-      receipt.clawId !== selectedClaw.clawId ||
-      receipt.digest !== selectedClaw.clawRevision
-    ) {
-      findings.push(
-        finding(
-          "selected-claw-source-mismatch",
-          `$.portfolioManifest.selectedClaws[${index}]`,
-        ),
+        finding("package-tree-resource-substitution", `$.packageTree.trees[${index}]`),
       );
     }
   }
 }
 
-function validateSignedEvidence(input, principals, signers, asOfMs, findings) {
-  const recordIds = new Set();
-  for (const [envelopeIndex, envelope] of input.evidenceEnvelopes.entries()) {
-    const path = `$.evidenceEnvelopes[${envelopeIndex}]`;
-    const expectedRole =
-      envelope.kind === "usage-evidence"
-        ? "usage-evidence-issuer"
-        : "issue-evidence-custodian";
-    const expectedPurpose =
-      envelope.kind === "usage-evidence" ? "usage-evidence" : "owner-evidence";
-    const expectedKind = envelope.kind === "usage-evidence" ? "system" : "human";
-    if (
-      !principalHasRole(
-        principals,
-        envelope.issuerRef,
-        expectedRole,
-        expectedKind,
-      )
-    ) {
-      findings.push(finding("invalid-evidence-issuer", `${path}.issuerRef`));
-    }
-    if (envelope.revision !== computeEvidenceEnvelopeRevision(envelope)) {
-      findings.push(finding("invalid-evidence-envelope-revision", `${path}.revision`));
-    }
-    verifySigned({
-      value: envelope,
-      payload: signedPayload(envelope),
-      purpose: expectedPurpose,
-      principalRef: envelope.issuerRef,
-      principalKind: expectedKind,
-      signedAt: envelope.issuedAt,
-      signers,
-      path: `${path}.signature`,
-      findings,
-    });
-    const issuedMs = timestamp(envelope.issuedAt);
-    if (
-      issuedMs === null ||
-      issuedMs > asOfMs ||
-      !safeSourceReference(envelope.sourceRef)
-    ) {
-      findings.push(finding("invalid-evidence-envelope", path));
-    }
-    for (const [recordIndex, record] of envelope.records.entries()) {
-      const recordPath = `${path}.records[${recordIndex}]`;
-      if (recordIds.has(record.id)) {
-        findings.push(finding("duplicate-evidence-identity", `${recordPath}.id`));
-      }
-      recordIds.add(record.id);
-      if (record.revision !== computeEvidenceRecordRevision(record)) {
-        findings.push(finding("invalid-evidence-revision", `${recordPath}.revision`));
-      }
-      const observedMs = timestamp(record.observedAt);
-      const validUntilMs = timestamp(record.validUntil);
-      if (
-        observedMs === null ||
-        validUntilMs === null ||
-        issuedMs === null ||
-        observedMs > issuedMs ||
-        observedMs > validUntilMs ||
-        (record.kind === "usage-summary" && validUntilMs < asOfMs) ||
-        validUntilMs > asOfMs + 366 * 86_400_000 ||
-        !safeSourceReference(record.sourceRef)
-      ) {
-        findings.push(finding("invalid-evidence-chronology", recordPath));
-      }
-      if (
-        record.kind === "usage-summary" &&
-        (envelope.kind !== "usage-evidence" ||
-          record.tenantRef !== envelope.tenantRef ||
-          record.sourceRef !== envelope.sourceRef ||
-          !isRecord(record.metrics) ||
-          record.metrics.successCount + record.metrics.failureCount >
-            record.metrics.eventCount)
-      ) {
-        findings.push(finding("invalid-usage-record", recordPath));
-      }
-      if (
-        record.kind !== "usage-summary" &&
-        (envelope.kind !== "owner-evidence" ||
-          record.tenantRef !== null ||
-          record.sourceRef !== envelope.sourceRef ||
-          record.metrics !== null ||
-          record.minimizedFields.length !== 0)
-      ) {
-        findings.push(finding("invalid-owner-evidence-record", recordPath));
-      }
-    }
-  }
-}
-
-function validateGrants(input, principals, signers, asOfMs, findings) {
-  for (const [index, grant] of input.grants.entries()) {
-    const path = `$.grants[${index}]`;
-    const issuer = principals.get(grant.issuerRef);
-    const grantee = principals.get(grant.granteeRef);
-    const requiredGranteeRole = {
-      "portfolio-review": "portfolio-owner",
-      "issue-admission-review": "issue-owner",
-      "product-decision-review": "product-decision-owner",
-      "retirement-review": "retirement-owner",
-    }[grant.kind];
-    const issuedMs = timestamp(grant.issuedAt);
-    const notBeforeMs = timestamp(grant.notBefore);
-    const expiresMs = timestamp(grant.expiresAt);
-    if (
-      issuer?.kind !== "human" ||
-      !strings(issuer.roles).includes("grant-issuer") ||
-      grantee?.kind !== "human" ||
-      !strings(grantee?.roles).includes(requiredGranteeRole) ||
-      grant.portfolioRef !== input.portfolioManifest.id ||
-      issuedMs === null ||
-      notBeforeMs === null ||
-      expiresMs === null ||
-      issuedMs > notBeforeMs ||
-      notBeforeMs > asOfMs ||
-      expiresMs < asOfMs ||
-      expiresMs <= notBeforeMs
-    ) {
-      findings.push(finding("invalid-human-grant", path));
-    }
-    verifySigned({
-      value: grant,
-      payload: signedPayload(grant),
-      purpose: "human-grant",
-      principalRef: grant.issuerRef,
-      principalKind: "human",
-      signedAt: grant.issuedAt,
-      signers,
-      path: `${path}.signature`,
-      findings,
-    });
-  }
-}
-
-function semanticFindings(input, context) {
-  const findings = [];
-  const asOfMs = timestamp(context.asOf);
-  const principals = mapById(input.principals);
-  const issues = mapById(input.issues);
-  const grants = mapById(input.grants);
-  const budgetGrant = grants.get(input.budget.grantRef);
-  const allEvidence = evidenceRecords(input);
-  const evidenceById = mapById(allEvidence);
-
+function decodeRequest(issue, findings, path, catalogEntries) {
+  const title = bytesValue(issue.title, `${path}.title`, findings);
+  const body = bytesValue(issue.body, `${path}.body`, findings);
   if (
-    asOfMs === null ||
-    input.run.asOf !== context.asOf ||
-    input.run.portfolioManifestRef !== input.portfolioManifest.id ||
-    input.run.issueManifestRef !== input.issueManifest.id ||
-    input.run.predecessorRef !== input.predecessor.id ||
-    input.run.budgetRef !== input.budget.id
+    !title ||
+    !body ||
+    issue.title.mediaType !== "text/plain; charset=utf-8" ||
+    issue.body.mediaType !== "application/json"
   ) {
-    findings.push(finding("invalid-run-context", "$.run"));
-  }
-  if (input.portfolioManifest.catalogRevision !== BASE_CATALOG_REVISION) {
-    findings.push(
-      finding("unpinned-catalog-revision", "$.portfolioManifest.catalogRevision"),
-    );
-  }
-
-  const duplicateIdentityValues = duplicateIds([
-    input.principals,
-    input.grants,
-    input.issues,
-    input.evidenceEnvelopes,
-    allEvidence,
-    [
-      input.portfolioManifest,
-      input.issueManifest,
-      input.predecessor,
-      input.budget,
-    ],
-  ]);
-  if (duplicateIdentityValues.length > 0) {
-    findings.push(finding("duplicate-global-identity", "$"));
-  }
-
-  if (
-    input.budget.revision !== computeBudgetRevision(input.budget) ||
-    input.portfolioManifest.budgetRevision !== input.budget.revision ||
-    input.portfolioManifest.principalRoot !==
-      computePrincipalRoot(input.principals) ||
-    input.portfolioManifest.grantRoot !== computeGrantRoot(input.grants) ||
-    input.portfolioManifest.usagePolicyRevision !==
-      computeUsagePolicyRevision(input.usagePolicy) ||
-    input.budget.ownerRef !== input.portfolioManifest.ownerRef ||
-    budgetGrant?.kind !== "portfolio-review" ||
-    budgetGrant?.portfolioRef !== input.portfolioManifest.id ||
-    budgetGrant?.granteeRef !== input.budget.ownerRef ||
-    !sameSet(
-      budgetGrant?.issueRefs,
-      input.issues.map((item) => item.id),
-    ) ||
-    !sameSet(budgetGrant?.classifications, CLASSIFICATIONS)
-  ) {
-    findings.push(finding("invalid-budget-binding", "$.budget"));
-  }
-  if (
-    input.portfolioManifest.revision !==
-      computePortfolioManifestRevision(input.portfolioManifest) ||
-    input.issueManifest.revision !==
-      computeIssueManifestRevision(input.issueManifest) ||
-    input.predecessor.revision !==
-      computePredecessorRevision(input.predecessor)
-  ) {
-    findings.push(finding("invalid-revision-seal", "$"));
-  }
-  if (
-    input.portfolioManifest.predecessorRevision !== input.predecessor.revision ||
-    input.issueManifest.predecessorRevision !== input.predecessor.revision
-  ) {
-    findings.push(finding("invalid-predecessor-binding", "$.predecessor"));
-  }
-
-  const predecessorMs = timestamp(input.predecessor.capturedAt);
-  const portfolioSignedMs = timestamp(input.portfolioManifest.signedAt);
-  const issueSignedMs = timestamp(input.issueManifest.signedAt);
-  if (
-    predecessorMs === null ||
-    portfolioSignedMs === null ||
-    issueSignedMs === null ||
-    predecessorMs >= portfolioSignedMs ||
-    predecessorMs >= issueSignedMs ||
-    portfolioSignedMs > asOfMs ||
-    issueSignedMs > asOfMs ||
-    timestamp(context.sourceReceipts.issuedAt) > portfolioSignedMs
-  ) {
-    findings.push(finding("invalid-manifest-chronology", "$"));
-  }
-
-  const issueRoot = computeIssueUniverseRoot(input.issues);
-  const issueIds = input.issues.map((item) => item.id);
-  const selectedIds = input.portfolioManifest.selectedClaws.map(
-    (item) => item.clawId,
-  );
-  if (
-    input.portfolioManifest.issueUniverseRoot !== issueRoot ||
-    input.issueManifest.issueUniverseRoot !== issueRoot ||
-    !sameSet(input.issueManifest.issueRefs, issueIds) ||
-    !sameSet(input.coverage.issueRefs, issueIds) ||
-    !sameSet(input.coverage.selectedClawRefs, selectedIds) ||
-    !sameSet(input.coverage.grantRefs, input.grants.map((item) => item.id)) ||
-    !sameSet(
-      input.coverage.evidenceRefs,
-      allEvidence.map((item) => item.id),
-    ) ||
-    !sameSet(
-      input.portfolioManifest.grantRefs,
-      input.grants.map((item) => item.id),
-    )
-  ) {
-    findings.push(finding("invalid-closed-world-coverage", "$.coverage"));
-  }
-
-  const predecessorIssues = new Map(
-    input.predecessor.issueRevisions.map((item) => [
-      item.issueRef,
-      item.revision,
-    ]),
-  );
-  for (const [index, issue] of input.issues.entries()) {
-    const path = `$.issues[${index}]`;
-    if (
-      issue.sourceDigest !== computeIssueSourceDigest(issue) ||
-      issue.revision !== computeIssueRevision(issue)
-    ) {
-      findings.push(finding("invalid-issue-revision", path));
-    }
-    const previous = predecessorIssues.get(issue.id);
-    const openedMs = timestamp(issue.openedAt);
-    if (
-      (previous === undefined && issue.previousRevision !== null) ||
-      (previous !== undefined && issue.previousRevision !== previous)
-    ) {
-      findings.push(finding("invalid-issue-history", `${path}.previousRevision`));
-    }
-    if (
-      openedMs === null ||
-      timestamp(issue.observedAt) === null ||
-      openedMs > timestamp(issue.observedAt) ||
-      timestamp(issue.observedAt) > issueSignedMs ||
-      timestamp(issue.observedAt) <= predecessorMs ||
-      (previous !== undefined && openedMs > predecessorMs) ||
-      (previous === undefined && openedMs <= predecessorMs)
-    ) {
-      findings.push(finding("invalid-issue-chronology", path));
-    }
-    const affectedIds = issue.affectedClaws.map((item) => item.clawId);
-    if (new Set(affectedIds).size !== affectedIds.length) {
-      findings.push(finding("duplicate-affected-claw", `${path}.affectedClaws`));
-    }
-    for (const affected of issue.affectedClaws) {
-      const selected = input.portfolioManifest.selectedClaws.find(
-        (item) => item.clawId === affected.clawId,
-      );
-      if (!selected || selected.clawRevision !== affected.clawRevision) {
-        findings.push(finding("invalid-affected-claw", `${path}.affectedClaws`));
-      }
-    }
-    if (
-      issue.evidenceRefs.some((ref) => !evidenceById.has(ref)) ||
-      issue.evidenceRefs.some(
-        (ref) => evidenceById.get(ref)?.subjectRef !== issue.id,
-      ) ||
-      issue.evidenceRefs.some(
-        (ref) =>
-          timestamp(evidenceById.get(ref)?.observedAt) >
-          timestamp(issue.observedAt),
-      ) ||
-      issue.evidenceRefs.some(
-        (ref) => evidenceById.get(ref)?.kind === "usage-summary",
-      )
-    ) {
-      findings.push(finding("invalid-issue-evidence-binding", `${path}.evidenceRefs`));
-    }
-    if (
-      issue.evidenceRefs.some(
-        (ref) =>
-          timestamp(evidenceById.get(ref)?.observedAt) >
-          timestamp(issue.observedAt),
-      )
-    ) {
-      findings.push(
-        finding(
-          "evidence-after-issue-snapshot",
-          `${path}.evidenceBindings`,
-        ),
-      );
-    }
-    if (
-      !sameSet(
-        issue.evidenceRefs,
-        records(issue.evidenceBindings).map((item) => item.evidenceRef),
-      ) ||
-      records(issue.evidenceBindings).some(
-        (binding) =>
-          evidenceById.get(binding.evidenceRef)?.revision !==
-          binding.evidenceRevision,
-      )
-    ) {
-      findings.push(
-        finding(
-          "invalid-issue-evidence-revision-binding",
-          `${path}.evidenceBindings`,
-        ),
-      );
-    }
-    if (
-      issue.evidenceRefs.some(
-        (ref) => evidenceById.get(ref)?.kind === "usage-summary",
-      ) ||
-      issue.signals.conflictingEvidenceRefs.some(
-        (ref) => evidenceById.get(ref)?.kind === "usage-summary",
-      )
-    ) {
-      findings.push(
-        finding(
-          "usage-evidence-cannot-drive-admission",
-          `${path}.evidenceRefs`,
-        ),
-      );
-    }
-    if (
-      issue.signals.conflictingEvidenceRefs.some(
-        (ref) => !issue.evidenceRefs.includes(ref),
-      ) ||
-      (issue.signals.conflictingEvidenceRefs.length > 0 &&
-        !issueHasConflict(issue, evidenceById))
-    ) {
-      findings.push(
-        finding(
-          "invalid-conflicting-evidence",
-          `${path}.signals.conflictingEvidenceRefs`,
-        ),
-      );
-    }
-    if (
-      issue.signals.duplicateOfIssueRef !== null &&
-      (!issues.has(issue.signals.duplicateOfIssueRef) ||
-        issue.signals.duplicateOfIssueRef === issue.id ||
-        issues.get(issue.signals.duplicateOfIssueRef)?.signals
-          .duplicateOfIssueRef !== null)
-    ) {
-      findings.push(
-        finding("invalid-duplicate-reference", `${path}.signals.duplicateOfIssueRef`),
-      );
-    }
-    if (
-      issue.signals.compositionClawRefs.some(
-        (ref) => !selectedIds.includes(ref),
-      )
-    ) {
-      findings.push(
-        finding(
-          "invalid-composition-reference",
-          `${path}.signals.compositionClawRefs`,
-        ),
-      );
-    }
-    if (
-      (issue.signals.sameRepeatableJob &&
-        issue.affectedClaws.length === 0) ||
-      (issue.signals.compositionPreservesJob &&
-        issue.signals.compositionClawRefs.length < 2) ||
-      (issue.signals.retirementSignal &&
-        issue.affectedClaws.length === 0) ||
-      classificationFor(issue) === null
-    ) {
-      findings.push(
-        finding(
-          "incomplete-classification-signal",
-          `${path}.signals`,
-        ),
-      );
-    }
-    if (classificationBasisCount(issue) > 1) {
-      findings.push(finding("ambiguous-classification-signals", `${path}.signals`));
-    }
-    const classification = classificationFor(issue);
-    const expectedDemand = expectedDemandShape(classification);
-    if (
-      issue.demand.candidateSlots !== expectedDemand.candidateSlots ||
-      issue.demand.admissionSlots !== expectedDemand.admissionSlots ||
-      (expectedDemand.admissionSlots === 0 &&
-        (issue.demand.workUnits !== 0 ||
-          issue.demand.costMicros !== 0 ||
-          issue.demand.durationMinutes !== 0))
-    ) {
-      findings.push(finding("invalid-budget-demand", `${path}.demand`));
-    }
-  }
-
-  if (
-    !sameSet(
-      input.predecessor.issueRevisions.map((item) => item.issueRef),
-      input.issues
-        .filter((item) => item.previousRevision !== null)
-        .map((item) => item.id),
-    ) ||
-    new Set(input.predecessor.issueRevisions.map((item) => item.issueRef)).size !==
-      input.predecessor.issueRevisions.length
-  ) {
-    findings.push(finding("invalid-predecessor-coverage", "$.predecessor.issueRevisions"));
-  }
-
-  validateGrants(input, principals, context.signers, asOfMs, findings);
-  validateSignedEvidence(input, principals, context.signers, asOfMs, findings);
-
-  const referencedOwnerEvidence = new Set(
-    input.issues.flatMap((issue) => issue.evidenceRefs),
-  );
-  for (const evidence of allEvidence) {
-    const isUsage = evidence.kind === "usage-summary";
-    if (!isUsage && !referencedOwnerEvidence.has(evidence.id)) {
-      findings.push(finding("orphan-owner-evidence", "$.evidenceEnvelopes"));
-    }
-    if (isUsage) {
-      if (
-        !issues.has(evidence.subjectRef) ||
-        !input.usagePolicy.enabled ||
-        !input.usagePolicy.allowedTenantRefs.includes(evidence.tenantRef) ||
-        !input.usagePolicy.allowedSourceRefs.includes(evidence.sourceRef) ||
-        evidence.minimizedFields.length > input.usagePolicy.maxMinimizedFields ||
-        !sameSet(evidence.minimizedFields, [
-          "event-count",
-          "failure-count",
-          "success-count",
-        ])
-      ) {
-        findings.push(finding("usage-policy-violation", "$.evidenceEnvelopes"));
-      }
-      if (!issues.has(evidence.subjectRef)) {
-        findings.push(
-          finding(
-            "usage-subject-outside-issue-universe",
-            "$.evidenceEnvelopes",
-          ),
-        );
-      }
-    }
-  }
-  const usageCount = allEvidence.filter(
-    (item) => item.kind === "usage-summary",
-  ).length;
-  if (usageCount > input.usagePolicy.maxRecords) {
-    findings.push(finding("usage-record-limit", "$.usagePolicy.maxRecords"));
-  }
-
-  const knownSourceRefs = new Set([
-    ...input.evidenceEnvelopes.map((item) => item.sourceRef),
-    ...allEvidence.map((item) => item.sourceRef),
-  ]);
-  if ([...knownSourceRefs].some((value) => !safeSourceReference(value))) {
-    findings.push(finding("unsafe-source-reference", "$.evidenceEnvelopes"));
-  }
-  if (
-    containsCredentialMaterial(input) ||
-    containsCredentialMaterial(context.publicTrust) ||
-    containsCredentialMaterial(context.sourceReceipts)
-  ) {
-    findings.push(finding("private-or-credential-material", "$"));
-  }
-  if (
-    canonicalJson(input.authority) !== canonicalJson(AUTHORITY_NON_CLAIMS)
-  ) {
-    findings.push(finding("prohibited-authority-contract", "$.authority"));
-  }
-
-  const grantChecks = [
-    [
-      input.portfolioManifest,
-      "portfolio-manifest",
-      input.portfolioManifest.ownerRef,
-      input.portfolioManifest.signedAt,
-      "portfolio-owner",
-      "human",
-      "$.portfolioManifest",
-    ],
-    [
-      input.issueManifest,
-      "issue-manifest",
-      input.issueManifest.ownerRef,
-      input.issueManifest.signedAt,
-      "issue-owner",
-      "human",
-      "$.issueManifest",
-    ],
-    [
-      input.predecessor,
-      "predecessor-checkpoint",
-      input.predecessor.ownerRef,
-      input.predecessor.capturedAt,
-      "portfolio-owner",
-      "human",
-      "$.predecessor",
-    ],
-  ];
-  for (const [
-    value,
-    purpose,
-    principalRef,
-    signedAt,
-    role,
-    kind,
-    path,
-  ] of grantChecks) {
-    if (!principalHasRole(principals, principalRef, role, kind)) {
-      findings.push(finding("invalid-owner-authority", `${path}.ownerRef`));
-    }
-    verifySigned({
-      value,
-      payload: signedPayload(value),
-      purpose,
-      principalRef,
-      principalKind: kind,
-      signedAt,
-      signers: context.signers,
-      path: `${path}.signature`,
-      findings,
-    });
-  }
-
-  for (const issue of input.issues) {
-    const classification = classificationFor(issue);
-    const kind =
-      classification === "PRODUCT_DECISION"
-        ? "product-decision-review"
-        : classification === "RETIRE"
-          ? "retirement-review"
-          : "issue-admission-review";
-    const matches = applicableGrants(
-      input.grants,
-      issue,
-      classification,
-      kind,
-    );
-    if (matches.length === 0) {
-      findings.push(finding("missing-exact-human-grant", `$.issues.${issue.id}`));
-    } else if (matches.length > 1) {
-      findings.push(
-        finding("ambiguous-human-grant", `$.issues.${issue.id}`),
-      );
-    }
-  }
-
-  return uniqueFindings(findings);
-}
-
-function deriveUsageEffects(input, evidence, asOf = input.run.asOf) {
-  if (!input.usagePolicy.enabled) return [];
-  const asOfMs = timestamp(asOf);
-  const mayReprioritize = input.usagePolicy.allowedEffects.includes(
-    "reprioritize-existing-issue",
-  );
-  const mayCreateDraft =
-    input.usagePolicy.allowedEffects.includes("create-draft-issue");
-  return evidence
-    .filter((item) => item.kind === "usage-summary")
-    .filter(
-      (item) =>
-        asOfMs !== null &&
-        timestamp(item.observedAt) <= asOfMs &&
-        timestamp(item.validUntil) >= asOfMs,
-    )
-    .filter((item) =>
-      input.issues.some((candidate) => candidate.id === item.subjectRef),
-    )
-    .flatMap((item) => {
-      const issue = input.issues.find((candidate) => candidate.id === item.subjectRef);
-      const effects = [];
-      if (mayReprioritize) {
-        const delta = item.metrics.failureCount > 0 ? 1 : 0;
-        effects.push({
-          evidenceRef: item.id,
-          issueRef: item.subjectRef,
-          effect: "reprioritize-existing-issue",
-          basePriority: issue.basePriority,
-          advisoryPriority: Math.min(100, issue.basePriority + delta),
-          classificationChanged: false,
-          productionMutation: false,
-        });
-      }
-      if (mayCreateDraft) {
-        effects.push({
-          evidenceRef: item.id,
-          sourceIssueRef: item.subjectRef,
-          proposedIssueRef: `draft-usage-followup-${item.id}`,
-          effect: "create-draft-issue",
-          affectedClaws: issue.affectedClaws.map((item) => ({ ...item })),
-          requiresOwnerAdmission: true,
-          classificationChanged: false,
-          productionMutation: false,
-        });
-      }
-      return effects;
-    })
-    .sort((left, right) =>
-      compareText(
-        `${left.issueRef ?? left.sourceIssueRef}\0${left.effect}`,
-        `${right.issueRef ?? right.sourceIssueRef}\0${right.effect}`,
-      ),
-    );
-}
-
-function resultFor(input, asOf) {
-  const allEvidence = evidenceRecords(input);
-  const evidenceById = mapById(allEvidence);
-  const asOfMs = timestamp(asOf);
-  const used = {
-    candidateCount: 0,
-    admissions: 0,
-    workUnits: 0,
-    costMicros: 0,
-    durationMinutes: 0,
-  };
-  const limits = {
-    candidateCount: input.budget.maxCandidateCount,
-    admissions: input.budget.maxAdmissions,
-    workUnits: input.budget.maxWorkUnits,
-    costMicros: input.budget.maxCostMicros,
-    durationMinutes: input.budget.maxDurationMinutes,
-  };
-  const outcomes = new Map();
-
-  const allocationOrder = [...input.issues].sort(
-    (left, right) =>
-      right.basePriority - left.basePriority ||
-      compareText(left.id, right.id),
-  );
-  for (const issue of allocationOrder) {
-    const classification = classificationFor(issue);
-    const stale = issueIsStale(issue, evidenceById, asOfMs);
-    const conflict = issue.signals.conflictingEvidenceRefs.length > 0;
-    const rationale = [];
-    let state;
-    let plan = null;
-    let exceeded = [];
-    let prHandoff =
-      classification === "VARIANT"
-        ? "outside-curated-catalog"
-        : "draft-or-pr-ready-plan-only";
-
-    if (
-      classification === "UNSUPPORTED" &&
-      issue.requestedAuthority.length > 0
-    ) {
-      state = "blocked-authority";
-      rationale.push("prohibited-authority-request");
-    } else if (stale) {
-      state = "blocked-stale-evidence";
-      rationale.push("evidence-outside-freshness-window");
-    } else if (classification === "DUPLICATE") {
-      state = "owner-action-required";
-      rationale.push("exact-duplicate-reference");
-    } else if (classification === "UNSUPPORTED") {
-      state = "unsupported";
-      rationale.push("outside-catalog-contract");
-    } else if (conflict) {
-      state = "blocked-conflicting-evidence";
-      rationale.push("independent-evidence-conflict");
-    } else if (classification === "PRODUCT_DECISION") {
-      state = "owner-decision-required";
-      rationale.push("catalog-direction-owner-decision");
-    } else if (classification === "RETIRE") {
-      state = "owner-decision-required";
-      rationale.push("retirement-owner-decision");
-    } else if (classification === "VARIANT") {
-      state = "variant-outside-catalog";
-      rationale.push("not-curated-catalog-material");
-      prHandoff = "outside-curated-catalog";
-    } else {
-      const demand = {
-        candidateCount: issue.demand.candidateSlots,
-        admissions: issue.demand.admissionSlots,
-        workUnits: issue.demand.workUnits,
-        costMicros: issue.demand.costMicros,
-        durationMinutes: issue.demand.durationMinutes,
-      };
-      exceeded = Object.keys(limits).filter(
-        (key) => used[key] + demand[key] > limits[key],
-      );
-      if (exceeded.length > 0) {
-        state = "blocked-budget";
-        rationale.push("owner-budget-cap");
-      } else {
-        state = "plan-ready";
-        for (const key of Object.keys(used)) used[key] += demand[key];
-        rationale.push(
-          classification === "NEW"
-            ? "distinct-operating-contract"
-            : classification === "IMPROVE"
-              ? "existing-job-preserved"
-              : classification === "COMPOSE"
-                ? "composition-preserves-job"
-                : "presentation-or-context-variant",
-        );
-        plan = {
-          kind: {
-            NEW: "candidate-plan",
-            IMPROVE: "improvement-plan",
-            COMPOSE: "composition-plan",
-            VARIANT: "variant-plan",
-          }[classification],
-          issueRef: issue.id,
-          affectedClaws: issue.affectedClaws.map((item) => ({ ...item })),
-          compositionClawRefs: sortedStrings(
-            issue.signals.compositionClawRefs,
-          ),
-          handoff: "owner-decision-or-draft-pr",
-          branchMutation: false,
-          productionMutation: false,
-        };
-      }
-    }
-
-    const grantKind =
-      classification === "PRODUCT_DECISION"
-        ? "product-decision-review"
-        : classification === "RETIRE"
-          ? "retirement-review"
-          : "issue-admission-review";
-    const [grant] = applicableGrants(
-      input.grants,
-      issue,
-      classification,
-      grantKind,
-    );
-    outcomes.set(issue.id, {
-      issueRef: issue.id,
-      issueRevision: issue.revision,
-      classification,
-      state,
-      rationale,
-      evidenceRefs: [...issue.evidenceRefs],
-      evidenceLinks: issue.evidenceBindings.map((item) => ({ ...item })),
-      affectedClaws: issue.affectedClaws.map((item) => ({ ...item })),
-      plan,
-      blockedBudgetDimensions: exceeded,
-      ownerHandoff: {
-        grantRef: grant.id,
-        granteeRef: grant.granteeRef,
-        decisionRequired: state !== "plan-ready",
-        prHandoff,
-        externalMutation: false,
-      },
-    });
-  }
-
-  const issueResults = input.issueManifest.issueRefs.map((ref) => outcomes.get(ref));
-  const classifications = issueResults.map((item) => item.classification);
-  const usageRecords = allEvidence.filter(
-    (item) => item.kind === "usage-summary",
-  );
-  const effects = deriveUsageEffects(input, allEvidence);
-  const result = {
-    schemaVersion: RESULT_SCHEMA_VERSION,
-    resultStatus: issueResults.some((item) => item.state.startsWith("blocked-"))
-      ? "blocked-owner-handoff"
-      : "ready-for-owner-review",
-    run: {
-      id: input.run.id,
-      asOf,
-      portfolioManifestRef: input.portfolioManifest.id,
-      portfolioRevision: input.portfolioManifest.revision,
-      issueManifestRef: input.issueManifest.id,
-      issueManifestRevision: input.issueManifest.revision,
-      predecessorRef: input.predecessor.id,
-      predecessorRevision: input.predecessor.revision,
-    },
-    portfolio: {
-      selectedClaws: input.portfolioManifest.selectedClaws.map((item) => ({
-        clawId: item.clawId,
-        clawRevision: item.clawRevision,
-        sourceReceiptRef: item.sourceReceiptRef,
-      })),
-      exactCoverage: true,
-      productionMutation: false,
-    },
-    issues: issueResults,
-    budget: {
-      budgetRef: input.budget.id,
-      budgetRevision: input.budget.revision,
-      limits,
-      used,
-      withinCaps: Object.keys(limits).every((key) => used[key] <= limits[key]),
-      increaseAllowed: false,
-    },
-    usage: {
-      supplied: usageRecords.length > 0,
-      effects,
-      classificationAuthority: false,
-      correctnessOrSafetyOverride: false,
-      productionMutation: false,
-    },
-    antiCountIncentives: {
-      rawClawCountObjective: false,
-      newClassifiedCount: classifications.filter((item) => item === "NEW").length,
-      acceptedNewCandidateCount: issueResults.filter(
-        (item) =>
-          item.classification === "NEW" && item.state === "plan-ready",
-      ).length,
-      improveOrComposeCount: classifications.filter((item) =>
-        ["IMPROVE", "COMPOSE"].includes(item),
-      ).length,
-      avoidedNewCount: classifications.filter((item) =>
-        ["IMPROVE", "COMPOSE", "VARIANT", "DUPLICATE"].includes(item),
-      ).length,
-      composeFirstSatisfied: issueResults.some(
-        (item) =>
-          item.classification === "COMPOSE" && item.state === "plan-ready",
-      ),
-    },
-    authority: { ...AUTHORITY_NON_CLAIMS },
-    findings: [],
-  };
-  return {
-    ...result,
-    resultDigest: sha256Digest(result),
-  };
-}
-
-export async function evaluateClawPortfolio(input, options = {}) {
-  const normalizedInput = normalize(input, CANDIDATE_LIMITS.inputBytes);
-  if (!normalizedInput.ok) {
-    return invalidResult([
-      finding("unsafe-or-oversized-input", `$.input#${normalizedInput.code}`),
-    ]);
-  }
-  const normalizedAsOf = normalize(
-    options.asOf,
-    CANDIDATE_LIMITS.maxStringLength,
-  );
-  const normalizedPublicTrust = normalize(
-    options.publicTrust,
-    CANDIDATE_LIMITS.publicTrustBytes,
-  );
-  const normalizedSourceReceipts = normalize(
-    options.sourceReceipts,
-    CANDIDATE_LIMITS.sourceReceiptsBytes,
-  );
-  if (
-    !normalizedAsOf.ok ||
-    !normalizedPublicTrust.ok ||
-    !normalizedSourceReceipts.ok
-  ) {
-    return invalidResult([
-      finding(
-        "unsafe-or-oversized-validation-context",
-        `$.validationContext#${
-          normalizedAsOf.code ??
-          normalizedPublicTrust.code ??
-          normalizedSourceReceipts.code
-        }`,
-      ),
-    ]);
-  }
-  const candidate = normalizedInput.value;
-  const context = {
-    asOf: normalizedAsOf.value,
-    publicTrust: normalizedPublicTrust.value,
-    sourceReceipts: normalizedSourceReceipts.value,
-  };
-  const findings = schemaFindings(validateCandidateSchema, candidate, "$");
-  const signers = validateTrustStore(context.publicTrust, findings);
-  context.signers = signers;
-  if (
-    isRecord(candidate) &&
-    candidate.schemaVersion === CANDIDATE_SCHEMA_VERSION &&
-    validateCandidateSchema(candidate) &&
-    validatePublicTrustSchema(context.publicTrust) &&
-    isRecord(context.sourceReceipts)
-  ) {
-    await catalogSourceFindings(
-      candidate,
-      context.sourceReceipts,
-      signers,
-      findings,
-    );
-    findings.push(...semanticFindings(candidate, context));
-  }
-  const unique = uniqueFindings(findings);
-  return unique.length > 0
-    ? invalidResult(unique)
-    : resultFor(candidate, context.asOf);
-}
-
-function candidateProposal() {
-  return {
-    schemaVersion: 1,
-    entry: {
-      id: "claw-portfolio-manager",
-      name: "Claw Portfolio Manager",
-      category: "engineering",
-      maintenance: {
-        status: "active",
-        maintainers: ["@giodl73-repo"],
-        lastVerified: "2026-09-17",
-      },
-      description:
-        "Stewards an owner-authenticated Claw portfolio and exact issue queue into compose-first, evidence-backed, budget-bounded candidate and owner-decision plans without mutating production Claws or assuming publication authority.",
-      audience:
-        "Claw catalog owners and repository maintainers managing a bounded portfolio over time.",
-      principles: [
-        "Keep owner manifests and source systems authoritative",
-        "Prefer improvement and composition before new Claw count",
-        "Bind every proposal to exact source and issue revisions",
-      ],
-      boundaries: [
-        "Do not merge, publish, mutate production Claws, increase budget, accept risk, or grant authority",
-        "Do not infer sensitive personal facts or let optional usage evidence override correctness or safety",
-        "Do not omit a selected Claw or issue from an authenticated closed-world manifest",
-      ],
-      intake: [
-        "Signed portfolio and issue manifests with exact source bytes and revisions",
-        "Exact issue queue, predecessor, evidence, typed human grants, and caller time",
-        "Exact candidate, admission, work, cost, and duration budgets",
-      ],
-      workflow: [
-        "Authenticate and reconcile the closed portfolio and issue universe",
-        "Validate immutable source, issue, evidence, and predecessor lineage",
-        "Classify every issue with compose-first admission semantics",
-        "Allocate only within exact owner budgets and produce owner handoffs",
-      ],
-      deliverables: [
-        "Exact issue classification ledger",
-        "Evidence and affected-Claw bindings",
-        "Candidate, improvement, composition, or owner-decision plan",
-        "Budget and blocked-state ledger",
-      ],
-      example: {
-        request:
-          "Reconcile this signed Claw portfolio and issue queue into bounded proposals without changing production.",
-        outcome:
-          "A complete source-bound classification, budget, and owner-handoff ledger.",
-      },
-      doneWhen: [
-        "Every selected Claw and issue is covered exactly once",
-        "Every accepted plan fits every budget dimension",
-        "Every consequential action remains owner-controlled",
-      ],
-      capabilityGuidance: [
-        "The candidate has read-only repository evidence and local proposal output only.",
-        "Any future issue writing or draft branch capability requires separate explicit installation and receipt proof.",
-      ],
-      resources: [],
-    },
-    contribution: {
-      problem:
-        "Claw owners currently join catalog, issue, evidence, and budget state manually and cannot prove a complete compose-first portfolio decision.",
-      repeatableJob:
-        "Reconcile one signed Claw subset and exact issue queue into bounded evidence-backed proposals and owner decisions.",
-      proofPlan:
-        "Execute authenticated source, issue, budget, usage, classification, composition, and authority invariants over one closed fixture.",
-      existingAlternatives: [
-        {
-          id: "benefits-realization-manager",
-          overlap:
-            "Both maintain an evidence-backed portfolio and preserve outcome attribution.",
-          difference:
-            "Benefits Realization Manager reconciles approved initiative benefit claims, not Claw admission and catalog lifecycle issues.",
-        },
-        {
-          id: "incident-response",
-          overlap:
-            "Both preserve exact evidence, blockers, owners, and revision-bound operational handoffs.",
-          difference:
-            "Incident Response coordinates one active incident rather than a recurring Claw portfolio and admission queue.",
-        },
-        {
-          id: "release-coordinator",
-          overlap:
-            "Both bind evidence and owner approvals into a repository-facing readiness handoff.",
-          difference:
-            "Release Coordinator decides readiness for one release candidate rather than classifying and budgeting Claw portfolio work.",
-        },
-        {
-          id: "data-migration-planner",
-          overlap:
-            "Both produce evidence-backed, budget-aware plans with blockers and owner decisions.",
-          difference:
-            "Data Migration Planner owns one migration mapping and cutover plan, not catalog admission or issue lifecycle.",
-        },
-        {
-          id: "repository-operations-manager",
-          overlap:
-            "Both reconcile a revision-bound repository portfolio and preserve owner authority.",
-          difference:
-            "Repository Operations Manager tracks pull requests and releases, not Claw admission classifications and candidate budgets.",
-        },
-        {
-          id: "repository-compliance-program-manager",
-          overlap:
-            "Both reconcile an exact issue universe with typed evidence and owner controls.",
-          difference:
-            "Repository Compliance Program Manager tracks remediation obligations and may execute bounded issue writes, not Claw portfolio admission.",
-        },
-        {
-          id: "work-chief-of-staff",
-          overlap:
-            "Both compose specialist Claw artifacts under portfolio constraints.",
-          difference:
-            "Work Chief of Staff coordinates operating commitments, not catalog lifecycle and admission decisions.",
-        },
-        {
-          id: "product-manager",
-          overlap:
-            "Both preserve product decisions, alternatives, evidence, and validation budgets.",
-          difference:
-            "Product Manager handles one product decision rather than a closed issue and Claw portfolio.",
-        },
-        {
-          id: "software-maintainer",
-          overlap:
-            "Both produce revision-bound draft or PR-ready repository handoffs.",
-          difference:
-            "Software Maintainer implements one approved change while this candidate never changes code or production Claws.",
-        },
-      ],
-    },
-  };
-}
-
-function requiredCompositionFacts(input, result) {
-  const portfolioFact = {
-    selectedClaws: result.portfolio.selectedClaws,
-    portfolioRevision: result.run.portfolioRevision,
-  };
-  const issueFact = {
-    resultStatus: result.resultStatus,
-    issues: result.issues.map((item) => ({
-      issueRef: item.issueRef,
-      issueRevision: item.issueRevision,
-      classification: item.classification,
-      state: item.state,
-      rationale: item.rationale,
-      evidenceRefs: item.evidenceRefs,
-      evidenceLinks: item.evidenceLinks,
-      affectedClaws: item.affectedClaws,
-      plan: item.plan,
-      blockedBudgetDimensions: item.blockedBudgetDimensions,
-      ownerHandoff: item.ownerHandoff,
-    })),
-  };
-  return [
-    {
-      id: "closed-claw-source-coverage",
-      valueDigest: sha256Digest(portfolioFact),
-    },
-    {
-      id: "closed-issue-admission-coverage",
-      valueDigest: sha256Digest(issueFact),
-    },
-    {
-      id: "multi-axis-owner-budget",
-      valueDigest: sha256Digest(result.budget),
-    },
-    {
-      id: "advisory-usage-isolation",
-      valueDigest: sha256Digest({
-        usage: result.usage,
-        classifications: result.issues.map((item) => ({
-          issueRef: item.issueRef,
-          classification: item.classification,
-        })),
-      }),
-    },
-    {
-      id: "proposal-only-authority",
-      valueDigest: sha256Digest(result.authority),
-    },
-    {
-      id: "immutable-predecessor-lineage",
-      valueDigest: sha256Digest({
-        predecessorRevision: result.run.predecessorRevision,
-        issueRevisions: input.predecessor.issueRevisions,
-      }),
-    },
-  ];
-}
-
-function currentCompositionFacts({
-  repositoryOperationsArtifact,
-  repositoryComplianceArtifact,
-}) {
-  const repositoryNonClaims =
-    repositoryOperationsArtifact.handoff?.published !== true &&
-    repositoryOperationsArtifact.handoff?.mutationApplied !== true;
-  const complianceNonClaims =
-    repositoryComplianceArtifact.authority?.codeChange === "not-claimed" &&
-    repositoryComplianceArtifact.authority?.riskAcceptance === "not-claimed" &&
-    repositoryComplianceArtifact.authority?.issueClosure === "not-claimed" &&
-    repositoryComplianceArtifact.authority?.issueMutation === "not-claimed";
-  return [
-    {
-      id: "proposal-only-authority",
-      valueDigest:
-        repositoryNonClaims && complianceNonClaims
-          ? sha256Digest(AUTHORITY_NON_CLAIMS)
-          : sha256Digest({ unsafe: true }),
-    },
-  ];
-}
-
-function exactKeys(value, keys) {
-  return (
-    isRecord(value) &&
-    Object.keys(value).length === keys.length &&
-    keys.every((key) => Object.hasOwn(value, key))
-  );
-}
-
-function parseCompositionSourceArtifact(sourceArtifact) {
-  if (
-    !exactKeys(sourceArtifact, ["id", "digest", "bytesBase64"]) ||
-    typeof sourceArtifact.id !== "string"
-  ) {
+    findings.push(finding("invalid-issue-media-type", path));
     return null;
   }
-  const bytes = strictBase64(sourceArtifact.bytesBase64);
-  if (
-    !bytes ||
-    bytes.length === 0 ||
-    bytes.length > CANDIDATE_LIMITS.compositionProofBytes ||
-    sha256Bytes(bytes) !== sourceArtifact.digest
-  ) {
-    return null;
-  }
-  let parsed;
+  let request;
+  let titleText;
+  let bodyText;
   try {
-    parsed = JSON.parse(bytes.toString("utf8"));
+    const decoder = new TextDecoder("utf-8", { fatal: true });
+    titleText = decoder.decode(title);
+    bodyText = decoder.decode(body);
+    request = JSON.parse(bodyText);
   } catch {
+    findings.push(finding("invalid-typed-issue-body", `${path}.body`));
     return null;
   }
-  const normalized = normalize(parsed, CANDIDATE_LIMITS.compositionProofBytes);
   if (
-    !normalized.ok ||
-    canonicalJson(normalized.value) !== bytes.toString("utf8") ||
-    normalized.value.artifactId !== sourceArtifact.id
+    !exactKeys(request, [
+      "schemaVersion",
+      "requestType",
+      "basePriority",
+      "affectedClawIds",
+      "compositionClawIds",
+      "newInvariantIds",
+      "requiredPortTypes",
+      "requiredOutputType",
+      "requestedAuthority",
+      "duplicateOfIssueNumber",
+      "demand",
+      "evidenceRefs",
+      "candidateProposal",
+    ]) ||
+    request.schemaVersion !== "awesomeClaws.portfolioIssueRequest.v1" ||
+    ![
+      "improve",
+      "new-capability",
+      "compose",
+      "variant",
+      "product-decision",
+      "retire",
+      "unsupported",
+    ].includes(request.requestType) ||
+    !Number.isInteger(request.basePriority) ||
+    request.basePriority < 0 ||
+    request.basePriority > 100 ||
+    !validUniqueStrings(request.affectedClawIds) ||
+    !validUniqueStrings(request.compositionClawIds) ||
+    !validUniqueStrings(request.newInvariantIds) ||
+    !validUniqueStrings(request.requiredPortTypes) ||
+    typeof request.requiredOutputType !== "string" ||
+    request.requiredOutputType.length === 0 ||
+    request.requiredOutputType.length > 120 ||
+    !validUniqueStrings(request.requestedAuthority) ||
+    request.requestedAuthority.some(
+      (item) =>
+        ![
+          "merge",
+          "publish",
+          "budget-increase",
+          "risk-acceptance",
+          "external-mutation",
+          "production-claw-mutation",
+          "sensitive-personal-inference",
+        ].includes(item),
+    ) ||
+    !validUniqueStrings(request.evidenceRefs) ||
+    (request.duplicateOfIssueNumber !== null &&
+      (!Number.isInteger(request.duplicateOfIssueNumber) ||
+        request.duplicateOfIssueNumber < 1)) ||
+    !exactKeys(request.demand, [
+      "candidateCount",
+      "admissions",
+      "workUnits",
+      "costMicros",
+      "durationMinutes",
+    ]) ||
+    Object.values(request.demand).some(
+      (value) =>
+        !Number.isInteger(value) ||
+        value < 0 ||
+        value > 1000000000000,
+    ) ||
+    (request.requestType === "new-capability"
+      ? !isRecord(request.candidateProposal) ||
+        !exactKeys(request.candidateProposal, ["proposal", "comparison"]) ||
+        validateContributionProposal(
+          request.candidateProposal.proposal,
+          catalogEntries,
+        ).length > 0 ||
+        !exactKeys(request.candidateProposal.comparison, [
+          "user",
+          "job",
+          "workflow",
+          "outputs",
+          "authority",
+          "proof",
+        ]) ||
+        Object.values(request.candidateProposal.comparison).some(
+          (item) => !["same", "different"].includes(item),
+        )
+      : request.candidateProposal !== null)
   ) {
+    findings.push(finding("invalid-typed-issue-body", `${path}.body`));
     return null;
   }
-  return normalized.value;
+  return {
+    ...request,
+    title: titleText,
+    bodyDigest: issue.body.digest,
+  };
 }
 
-function compositionFactsFromSources(sourceArtifacts) {
-  if (
-    !Array.isArray(sourceArtifacts) ||
-    sourceArtifacts.length !== 2 ||
-    new Set(sourceArtifacts.map((item) => item?.id)).size !== 2
-  ) {
-    return null;
-  }
-  const parsed = sourceArtifacts.map(parseCompositionSourceArtifact);
-  if (parsed.some((item) => item === null)) return null;
-  const portfolio = parsed.find((item) => item.kind === "portfolio-lineage");
-  const admission = parsed.find((item) => item.kind === "issue-admission");
-  if (
-    !exactKeys(portfolio, [
-      "schemaVersion",
-      "artifactId",
-      "kind",
-      "selectedClaws",
-      "portfolioRevision",
-      "predecessorRevision",
-      "issueRevisions",
-      "authority",
-    ]) ||
-    portfolio.schemaVersion !==
-      "awesomeClaws.clawPortfolioManagerCompositionSource.v1" ||
-    !Array.isArray(portfolio.selectedClaws) ||
-    !Array.isArray(portfolio.issueRevisions) ||
-    canonicalJson(portfolio.authority) !== canonicalJson(AUTHORITY_NON_CLAIMS) ||
-    !exactKeys(admission, [
-      "schemaVersion",
-      "artifactId",
-      "kind",
-      "resultStatus",
-      "issues",
-      "budget",
-      "usage",
-    ]) ||
-    admission.schemaVersion !==
-      "awesomeClaws.clawPortfolioManagerCompositionSource.v1" ||
-    !Array.isArray(admission.issues) ||
-    !isRecord(admission.budget) ||
-    !isRecord(admission.usage)
-  ) {
-    return null;
-  }
-  const issueFact = {
-    resultStatus: admission.resultStatus,
-    issues: admission.issues.map((item) => ({
-      issueRef: item.issueRef,
-      issueRevision: item.issueRevision,
-      classification: item.classification,
-      state: item.state,
-      rationale: item.rationale,
-      evidenceRefs: item.evidenceRefs,
-      evidenceLinks: item.evidenceLinks,
-      affectedClaws: item.affectedClaws,
-      plan: item.plan,
-      blockedBudgetDimensions: item.blockedBudgetDimensions,
-      ownerHandoff: item.ownerHandoff,
-    })),
+function expectedCompositionAssessment(
+  request,
+  issue,
+  graph,
+  selectedClawIds,
+) {
+  const selected = new Set(selectedClawIds);
+  const selectedNodes = graph.nodes.filter((item) =>
+    request.compositionClawIds.includes(item.id),
+  );
+  const adapterId = "strongest-current-composition-adapter";
+  const adapter = graph.nodes.find((item) => item.id === adapterId);
+  if (!adapter) return null;
+  const selectedEdges = graph.edges.filter(
+    (edge) =>
+      request.compositionClawIds.includes(edge.from.node) &&
+      edge.to.node === adapterId,
+  );
+  const nodeById = new Map(graph.nodes.map((item) => [item.id, item]));
+  const requiredOwnerNodes = [
+    ...new Set(
+      graph.edges
+        .filter((edge) => edge.to.node === adapterId)
+        .map((edge) => nodeById.get(edge.from.node))
+        .filter(
+          (item) => item?.kind === "schema-semantic-owner-artifact",
+        )
+        .map((item) => item.id),
+    ),
+  ];
+  const connectedOutputTypes = new Set(
+    selectedEdges.map((edge) =>
+      nodeById
+        .get(edge.from.node)
+        ?.ports.find((item) => item.id === edge.from.port)?.type,
+    ),
+  );
+  const selectedAdapterInputs = new Set(
+    selectedEdges
+      .filter((edge) => {
+        const source = nodeById
+          .get(edge.from.node)
+          ?.ports.find((candidate) => candidate.id === edge.from.port);
+        return source && request.requiredPortTypes.includes(source.type);
+      })
+      .map((edge) => edge.to.port),
+  );
+  const requestedOutput = adapter?.ports.find(
+    (item) =>
+      item.direction === "output" &&
+      item.type === request.requiredOutputType,
+  );
+  const targetContract = graph.nodes
+    .find((item) => item.id === "target-claw-portfolio-manager")
+    ?.ports.find((item) => item.type === request.requiredOutputType);
+  const outputComplete =
+    requestedOutput &&
+    (targetContract === undefined ||
+      sameSet(requestedOutput.fields, targetContract.fields));
+  const outputDerivedFromSelection =
+    requestedOutput?.derivedFrom?.length > 0 &&
+    sameSet(requestedOutput.derivedFrom, [...selectedAdapterInputs]);
+  const compatible =
+    request.compositionClawIds.length >= 2 &&
+    request.compositionClawIds.every(
+      (item) =>
+        selected.has(item) &&
+        selectedNodes.some((nodeValue) => nodeValue.id === item) &&
+        selectedEdges.some((edge) => {
+          if (edge.from.node !== item) return false;
+          const outputType = nodeById
+            .get(edge.from.node)
+            ?.ports.find((candidate) => candidate.id === edge.from.port)?.type;
+          return request.requiredPortTypes.includes(outputType);
+        }),
+    ) &&
+    requiredOwnerNodes.every((item) =>
+      request.compositionClawIds.includes(item),
+    ) &&
+    request.requiredPortTypes.length > 0 &&
+    request.requiredPortTypes.every((type) =>
+      connectedOutputTypes.has(type),
+    ) &&
+    outputComplete &&
+    outputDerivedFromSelection &&
+    adapter.ports
+      .filter((item) => item.direction === "input")
+      .every((item) =>
+        graph.edges.some(
+          (edge) =>
+            edge.to.node === adapterId && edge.to.port === item.id,
+        ),
+      );
+  const requestedLosses = graph.losses.filter((item) =>
+    request.newInvariantIds.includes(item.targetPort) &&
+    request.requiredPortTypes.includes(item.requiredType),
+  );
+  const relevant =
+    request.requestType === "compose" ||
+    request.requestType === "new-capability";
+  return {
+    feasible:
+      request.requestType === "compose" &&
+      compatible,
+    proposedClawRefs:
+      request.requestType === "compose"
+        ? sorted(request.compositionClawIds)
+        : [],
+    requiredPortTypes: sorted(request.requiredPortTypes),
+    requiredOutputType: request.requiredOutputType,
+    lossIds:
+      request.requestType === "new-capability"
+        ? requestedLosses.map((item) => item.id)
+        : [],
+    relevant,
+    issueRevision: issue.revision,
+    graphDigest: graph.graphDigest,
   };
+}
+
+function automaticClassification(request, composition) {
+  if (request.requestedAuthority.length > 0 || request.requestType === "unsupported") {
+    return "UNSUPPORTED";
+  }
+  if (request.duplicateOfIssueNumber !== null) return "DUPLICATE";
+  if (composition.feasible) return "COMPOSE";
+  return null;
+}
+
+function humanDecisionIsCoherent(
+  decision,
+  request,
+  composition,
+  catalogIds,
+  reportedNearestIds,
+) {
+  const comparison = decision.comparison;
+  const operationalDimensions = [
+    comparison.job,
+    comparison.workflow,
+    comparison.outputs,
+    comparison.authority,
+    comparison.proof,
+  ];
   if (
-    portfolio.selectedClaws.length === 0 ||
-    portfolio.issueRevisions.length === 0 ||
-    admission.issues.length === 0 ||
-    new Set(portfolio.selectedClaws.map((item) => item.clawId)).size !==
-      portfolio.selectedClaws.length ||
-    new Set(portfolio.issueRevisions.map((item) => item.issueRef)).size !==
-      portfolio.issueRevisions.length ||
-    new Set(admission.issues.map((item) => item.issueRef)).size !==
-      admission.issues.length ||
-    admission.issues.some(
+    comparison.nearestClawIds.length === 0 ||
+    comparison.nearestClawIds.some((item) => !catalogIds.has(item))
+  ) {
+    return false;
+  }
+  if (decision.classification === "NEW") {
+    return (
+      canonicalJson({
+        user: comparison.user,
+        job: comparison.job,
+        workflow: comparison.workflow,
+        outputs: comparison.outputs,
+        authority: comparison.authority,
+        proof: comparison.proof,
+      }) === canonicalJson(request.candidateProposal?.comparison) &&
+      comparison.nearestClawIds.length >= 3 &&
+      reportedNearestIds.filter((item) =>
+        comparison.nearestClawIds.includes(item),
+      ).length >= Math.min(2, reportedNearestIds.length) &&
+      !composition.feasible &&
+      request.newInvariantIds.length > 0 &&
+      composition.lossIds.length === request.newInvariantIds.length &&
+      request.newInvariantIds.every((item) =>
+        composition.lossIds.includes(`loss-${item}`),
+      ) &&
+      operationalDimensions.includes("different")
+    );
+  }
+  if (decision.classification === "IMPROVE") {
+    return (
+      decision.affectedClawIds.length > 0 &&
+      comparison.job === "same" &&
+      [comparison.workflow, comparison.outputs, comparison.proof].includes(
+        "different",
+      )
+    );
+  }
+  if (decision.classification === "VARIANT") {
+    return (
+      comparison.job === "same" &&
+      comparison.workflow === "same" &&
+      comparison.outputs === "same" &&
+      comparison.authority === "same" &&
+      comparison.proof === "same"
+    );
+  }
+  if (decision.classification === "PRODUCT_DECISION") {
+    return comparison.authority === "different";
+  }
+  if (decision.classification === "RETIRE") {
+    return (
+      decision.affectedClawIds.length > 0 &&
+      comparison.proof === "different"
+    );
+  }
+  return false;
+}
+
+function expectedRationale(classification) {
+  return {
+    NEW: ["typed-loss-remains"],
+    IMPROVE: ["existing-job-preserved"],
+    COMPOSE: ["typed-composition-feasible"],
+    VARIANT: ["not-curated-catalog-material"],
+    PRODUCT_DECISION: ["owner-product-decision"],
+    RETIRE: ["owner-retirement-decision"],
+    DUPLICATE: ["provider-duplicate"],
+    UNSUPPORTED: ["prohibited-or-unsupported-request"],
+  }[classification];
+}
+
+function addAmounts(left, right) {
+  return Object.fromEntries(
+    Object.keys(left).map((key) => [key, left[key] + right[key]]),
+  );
+}
+
+function validAmounts(value) {
+  return (
+    exactKeys(value, [
+      "candidateCount",
+      "admissions",
+      "workUnits",
+      "costMicros",
+      "durationMinutes",
+    ]) &&
+    Object.values(value).every(
+      (amount) =>
+        Number.isInteger(amount) &&
+        amount >= 0 &&
+        amount <= 1_000_000_000_000,
+    )
+  );
+}
+
+function fits(cumulative, demand, caps) {
+  return Object.keys(caps).every(
+    (key) => cumulative[key] + demand[key] <= caps[key],
+  );
+}
+
+function withinCaps(amounts, caps) {
+  return Object.keys(caps).every((key) => amounts[key] <= caps[key]);
+}
+
+function classificationDemandIsValid(classification, demand) {
+  if (classification === "NEW") {
+    return demand.candidateCount === 1 && demand.admissions === 1;
+  }
+  if (["IMPROVE", "COMPOSE"].includes(classification)) {
+    return demand.candidateCount === 0 && demand.admissions === 1;
+  }
+  return Object.values(demand).every((value) => value === 0);
+}
+
+function validReplayHistory(
+  previousBudget,
+  previousResult,
+  previousDecisions,
+) {
+  const runIds = previousBudget?.usedRunIds;
+  const decisionIds = previousBudget?.usedDecisionIds;
+  const keys = previousBudget?.usedIdempotencyKeys;
+  const reservations = previousBudget?.reservations;
+  const history = previousBudget?.history;
+  const latest = Array.isArray(history) ? history.at(-1) : null;
+  return (
+    validUniqueStrings(runIds, 256) &&
+    validUniqueStrings(decisionIds, 256) &&
+    validUniqueStrings(keys, 512) &&
+    keys.every((item) => /^sha256:[0-9a-f]{64}$/u.test(item)) &&
+    validAmounts(previousBudget?.caps) &&
+    validAmounts(previousBudget?.cumulativeAfter) &&
+    Array.isArray(reservations) &&
+    reservations.every(
+      (item) =>
+        exactKeys(item, [
+          "id",
+          "periodId",
+          "runId",
+          "decisionId",
+          "issueRef",
+          "issueRevision",
+          "classification",
+          "idempotencyKey",
+          "amounts",
+          "state",
+        ]) &&
+        /^sha256:[0-9a-f]{64}$/u.test(item.issueRevision) &&
+        ["NEW", "IMPROVE", "COMPOSE"].includes(item.classification) &&
+        ["reserved", "consumed"].includes(item.state) &&
+        validAmounts(item.amounts) &&
+        classificationDemandIsValid(item.classification, item.amounts) &&
+        item.idempotencyKey === computeReservationIdempotency(item),
+    ) &&
+    new Set(reservations.map((item) => item.id)).size === reservations.length &&
+    new Set(reservations.map((item) => item.idempotencyKey)).size ===
+      reservations.length &&
+    new Set(
+      reservations.map((item) => `${item.issueRef}\0${item.issueRevision}`),
+    ).size === reservations.length &&
+    Array.isArray(history) &&
+    history.length > 0 &&
+    history.every(
+      (item, index) =>
+        exactKeys(item, [
+          "sequence",
+          "periodId",
+          "runId",
+          "decisionId",
+          "runIdempotencyKey",
+          "reservationIdempotencyKeys",
+          "previousEntryDigest",
+          "entryDigest",
+        ]) &&
+        item.sequence === index + 1 &&
+        item.previousEntryDigest ===
+          (index === 0
+            ? BUDGET_HISTORY_GENESIS
+            : history[index - 1].entryDigest) &&
+        item.entryDigest === computeBudgetHistoryEntryDigest(item) &&
+        validUniqueStrings(item.reservationIdempotencyKeys, 64) &&
+        item.reservationIdempotencyKeys.every((key) =>
+          /^sha256:[0-9a-f]{64}$/u.test(key),
+        ),
+    ) &&
+    previousBudget.historyRoot === computeBudgetHistoryRoot(history) &&
+    sameSet(runIds, history.map((item) => item.runId)) &&
+    sameSet(decisionIds, history.map((item) => item.decisionId)) &&
+    sameSet(
+      keys,
+      history.flatMap((item) => [
+        item.runIdempotencyKey,
+        ...item.reservationIdempotencyKeys,
+      ]),
+    ) &&
+    sameSet(
+      history.flatMap((item) => item.reservationIdempotencyKeys),
+      reservations.map((item) => item.idempotencyKey),
+    ) &&
+    latest?.runId === previousResult?.runId &&
+    latest?.periodId === previousBudget.periodId &&
+    latest?.decisionId === previousResult?.decisionId &&
+    latest?.runIdempotencyKey === previousResult?.idempotencyKey &&
+    reservations.every(
+      (item) => {
+        const entry = history.find((candidate) => candidate.runId === item.runId);
+        return (
+          keys.includes(item.idempotencyKey) &&
+          entry?.decisionId === item.decisionId &&
+          entry?.periodId === item.periodId &&
+          entry.reservationIdempotencyKeys.includes(item.idempotencyKey)
+        );
+      },
+    ) &&
+    reservations
+      .filter((item) => item.runId === latest?.runId)
+      .every((item) => item.periodId === previousBudget.periodId) &&
+    rows(previousDecisions?.decisions)
+      .filter((item) => ["reserved", "completed"].includes(item.state))
+      .every((decision) =>
+        reservations.some(
+          (item) =>
+            item.issueRef === decision.issueRef &&
+            item.issueRevision === decision.issueRevision &&
+            item.classification === decision.classification &&
+            item.state ===
+              (decision.state === "completed" ? "consumed" : "reserved"),
+        ),
+      ) &&
+    reservations.every((item) =>
+      rows(previousDecisions?.decisions).some(
+        (decision) =>
+          decision.issueRef === item.issueRef &&
+          decision.issueRevision === item.issueRevision &&
+          decision.classification === item.classification &&
+          decision.state ===
+            (item.state === "consumed" ? "completed" : "reserved"),
+      ),
+    ) &&
+    canonicalJson(
+      reservations
+        .filter((item) => item.periodId === previousBudget.periodId)
+        .reduce(
+        (total, item) => addAmounts(total, item.amounts),
+        {
+          candidateCount: 0,
+          admissions: 0,
+          workUnits: 0,
+          costMicros: 0,
+          durationMinutes: 0,
+        },
+        ),
+    ) === canonicalJson(previousBudget.cumulativeAfter) &&
+    withinCaps(previousBudget.cumulativeAfter, previousBudget.caps)
+  );
+}
+
+function validDecisionHistory(previousDecisions) {
+  const decisions = previousDecisions?.decisions;
+  if (
+    !Array.isArray(decisions) ||
+    decisions.length === 0 ||
+    decisions.some(
       (item) =>
         !exactKeys(item, [
           "issueRef",
           "issueRevision",
           "classification",
           "state",
-          "rationale",
-          "evidenceRefs",
-          "evidenceLinks",
-          "affectedClaws",
-          "plan",
-          "blockedBudgetDimensions",
-          "ownerHandoff",
         ]) ||
-        !CLASSIFICATIONS.includes(item.classification) ||
-        !Array.isArray(item.rationale) ||
-        !Array.isArray(item.evidenceRefs) ||
-        !Array.isArray(item.evidenceLinks) ||
-        !Array.isArray(item.affectedClaws) ||
-        !Array.isArray(item.blockedBudgetDimensions) ||
-        !isRecord(item.ownerHandoff),
+        typeof item.issueRef !== "string" ||
+        !/^sha256:[0-9a-f]{64}$/u.test(item.issueRevision) ||
+        ![
+          "NEW",
+          "IMPROVE",
+          "COMPOSE",
+          "VARIANT",
+          "PRODUCT_DECISION",
+          "RETIRE",
+          "DUPLICATE",
+          "UNSUPPORTED",
+        ].includes(item.classification) ||
+        !["reserved", "completed", "blocked", "decision-required"].includes(
+          item.state,
+        ),
     )
   ) {
-    return null;
+    return false;
   }
-  return [
-    {
-      id: "closed-claw-source-coverage",
-      valueDigest: sha256Digest({
-        selectedClaws: portfolio.selectedClaws,
-        portfolioRevision: portfolio.portfolioRevision,
-      }),
-    },
-    {
-      id: "closed-issue-admission-coverage",
-      valueDigest: sha256Digest(issueFact),
-    },
-    {
-      id: "multi-axis-owner-budget",
-      valueDigest: sha256Digest(admission.budget),
-    },
-    {
-      id: "advisory-usage-isolation",
-      valueDigest: sha256Digest({
-        usage: admission.usage,
-        classifications: admission.issues.map((item) => ({
-          issueRef: item.issueRef,
-          classification: item.classification,
-        })),
-      }),
-    },
-    {
-      id: "proposal-only-authority",
-      valueDigest: sha256Digest(portfolio.authority),
-    },
-    {
-      id: "immutable-predecessor-lineage",
-      valueDigest: sha256Digest({
-        predecessorRevision: portfolio.predecessorRevision,
-        issueRevisions: portfolio.issueRevisions,
-      }),
-    },
-  ];
+  const identities = decisions.map(
+    (item) =>
+      `${item.issueRef}\0${item.issueRevision}`,
+  );
+  return new Set(identities).size === identities.length;
 }
 
-function compositionSourceArtifact(value) {
+function expectedReservations(
+  input,
+  requests,
+  decisions,
+  priorIssueDecisions = new Set(),
+) {
+  const decisionByIssue =
+    decisions instanceof Map
+      ? decisions
+      : new Map(decisions.map((item) => [item.issueRef, item]));
+  const eligible = [...requests.entries()]
+    .map(([issueRef, request]) => ({
+      issueRef,
+      request,
+      classification: decisionByIssue.get(issueRef)?.classification,
+    }))
+    .filter((item) =>
+      ["IMPROVE", "COMPOSE", "NEW"].includes(item.classification),
+    )
+    .filter(
+      (item) =>
+        !priorIssueDecisions.has(
+          `${item.issueRef}\0${decisionByIssue.get(item.issueRef)?.issueRevision}`,
+        ),
+    )
+    .sort((left, right) => {
+      const tier = { IMPROVE: 0, COMPOSE: 0, NEW: 1 };
+      return (
+        tier[left.classification] - tier[right.classification] ||
+        right.request.basePriority - left.request.basePriority ||
+        compare(left.issueRef, right.issueRef)
+      );
+    });
+  let cumulative = { ...input.budgetLedger.cumulativeBefore };
+  const reservations = [];
+  for (const item of eligible) {
+    if (!fits(cumulative, item.request.demand, input.budgetLedger.caps)) continue;
+    const reservation = {
+      id: reservationIdForIssue(
+        item.issueRef,
+        decisionByIssue.get(item.issueRef).issueRevision,
+      ),
+      periodId: input.budgetLedger.period.id,
+      runId: input.run.id,
+      decisionId: input.run.decisionId,
+      issueRef: item.issueRef,
+      issueRevision: decisionByIssue.get(item.issueRef).issueRevision,
+      classification: item.classification,
+      idempotencyKey: "",
+      amounts: { ...item.request.demand },
+      state: "reserved",
+    };
+    reservation.idempotencyKey = computeReservationIdempotency(reservation);
+    reservations.push(reservation);
+    cumulative = addAmounts(cumulative, item.request.demand);
+  }
+  return { reservations, cumulative };
+}
+
+function bytesRecord(value) {
   const bytes = Buffer.from(canonicalJson(value), "utf8");
   return {
-    id: value.artifactId,
-    digest: sha256Bytes(bytes),
-    bytesBase64: bytes.toString("base64"),
+    mediaType: "application/json",
+    byteLength: bytes.length,
+    digest: bytesDigest(bytes),
+    contentBase64: bytes.toString("base64"),
   };
 }
 
-export function createFutureCompositionSourceArtifacts(input, result) {
-  return [
-    compositionSourceArtifact({
-      schemaVersion:
-        "awesomeClaws.clawPortfolioManagerCompositionSource.v1",
-      artifactId: "future-portfolio-lineage",
-      kind: "portfolio-lineage",
-      selectedClaws: result.portfolio.selectedClaws,
-      portfolioRevision: result.run.portfolioRevision,
-      predecessorRevision: result.run.predecessorRevision,
-      issueRevisions: input.predecessor.issueRevisions,
-      authority: result.authority,
-    }),
-    compositionSourceArtifact({
-      schemaVersion:
-        "awesomeClaws.clawPortfolioManagerCompositionSource.v1",
-      artifactId: "future-issue-admission",
-      kind: "issue-admission",
-      resultStatus: result.resultStatus,
-      issues: result.issues.map((item) => ({
-        issueRef: item.issueRef,
-        issueRevision: item.issueRevision,
-        classification: item.classification,
-        state: item.state,
-        rationale: item.rationale,
-        evidenceRefs: item.evidenceRefs,
-        evidenceLinks: item.evidenceLinks,
-        affectedClaws: item.affectedClaws,
-        plan: item.plan,
-        blockedBudgetDimensions: item.blockedBudgetDimensions,
-        ownerHandoff: item.ownerHandoff,
-      })),
-      budget: result.budget,
-      usage: result.usage,
-    }),
-  ];
-}
-
-async function pinnedAnalogueStatus() {
-  const records = [];
-  for (const [relativePath, expectedDigest] of Object.entries(
-    PINNED_ANALOGUE_FILES,
-  )) {
-    const bytes = await readFile(join(root, ...relativePath.split("/")));
-    records.push({
-      path: relativePath,
-      expectedDigest,
-      observedDigest: sha256Bytes(bytes),
-      valid: sha256Bytes(bytes) === expectedDigest,
-    });
+function decodeCanonicalRecord(value, path, findings) {
+  const bytes = bytesValue(value, path, findings);
+  if (!bytes) return null;
+  try {
+    const parsed = JSON.parse(bytes.toString("utf8"));
+    if (canonicalJson(parsed) !== bytes.toString("utf8")) {
+      findings.push(finding("noncanonical-predecessor-bytes", path));
+      return null;
+    }
+    return parsed;
+  } catch {
+    findings.push(finding("invalid-predecessor-bytes", path));
+    return null;
   }
-  return records;
 }
 
-async function executeActualAnalogueProof(asOf) {
-  const pins = await pinnedAnalogueStatus();
-  const [
-    catalog,
-    experienceCases,
-    regressionRegistry,
-    mockContext,
-    runtimeProfile,
-  ] = await Promise.all([
-    readCatalog({ loadResources: false }),
-    readCatalog({ loadResources: false }).then((value) =>
-      readExperienceCases(value),
-    ),
-    readRegressionCases(),
-    loadMockPlusContext(),
-    readRuntimeProfile(),
-  ]);
-  const analogueIds = [
-    "repository-operations-manager",
-    "repository-compliance-program-manager",
-    "work-chief-of-staff",
-    "product-manager",
-    "software-maintainer",
-  ];
-  const entries = catalog.entries.filter((entry) =>
-    analogueIds.includes(entry.id),
-  );
-  const contributions = (
-    await Promise.all(
-    entries.map((entry) =>
-      readFile(join(root, "contributions", `${entry.id}.json`), "utf8").then(
-        JSON.parse,
-        () => null,
-      ),
-    ),
-    )
-  ).filter(Boolean);
-  const selectedExperience = experienceCases.filter((item) =>
-    analogueIds.includes(item.id),
-  );
-  const selectedRegression = regressionRegistry.cases.filter((item) =>
-    analogueIds.includes(item.id),
-  );
-  const quality = await buildCatalogQualityScorecard({
-    catalog: { entries },
-    contributions,
-    experienceCases: selectedExperience,
-    regressionCases: selectedRegression,
-    asOf: asOf.slice(0, 10),
-  });
-  const regression = await runRepositoryRegressionCases({
-    onlyIds: analogueIds,
-  });
-  const runtimeScenarios = selectedRegression.map((contract) => ({
-    id: contract.id,
-    scenarios: buildScenarios(contract).map((item) => item.scenarioType),
-  }));
-  const runtimeBudget = preflightBudgets({
-    mode: "mock",
-    selectedTrialCount: selectedRegression.length * 3,
-    catalogClawCount: catalog.entries.length,
-    limits: {
-      concurrency: 1,
-      trialTimeoutMs: 120_000,
-      cleanupTimeoutMs: 30_000,
-      infrastructureRetries: 0,
-      maxInputTokensPerTrial: 1,
-      maxOutputTokensPerTrial: 1,
-      maxTotalTokens: selectedRegression.length * 3 * 2,
-      maxUsd: null,
-    },
-    pricing: {
-      inputUsdPerMillion: 0,
-      outputUsdPerMillion: 0,
-    },
-  });
-  const proposal = candidateProposal();
-  const proposalErrors = validateContributionProposal(
-    proposal,
-    catalog.entries,
-  );
-  const similarity = contributionSimilarityReport(
-    proposal.entry,
-    catalog.entries,
-  );
-
-  const repositoryOperationsSchema = JSON.parse(
-    await readFile(
-      join(
-        root,
-        "sources",
-        "repository-operations-manager",
-        "schemas",
-        "repository-operations.schema.json",
-      ),
-      "utf8",
-    ),
-  );
-  const repositoryOperationsArtifact = JSON.parse(
-    await readFile(
-      join(
-        root,
-        "sources",
-        "repository-operations-manager",
-        "fixtures",
-        "repository-operations.example.json",
-      ),
-      "utf8",
-    ),
-  );
-  const repositoryComplianceSchema = JSON.parse(
-    await readFile(
-      join(
-        root,
-        "sources",
-        "repository-compliance-program-manager",
-        "schemas",
-        "repository-compliance-program.schema.json",
-      ),
-      "utf8",
-    ),
-  );
-  const repositoryComplianceArtifact = JSON.parse(
-    await readFile(
-      join(
-        root,
-        "sources",
-        "repository-compliance-program-manager",
-        "fixtures",
-        "repository-compliance-program.example.json",
-      ),
-      "utf8",
-    ),
-  );
-  const analogueAjv = new Ajv2020({ allErrors: true, strict: true });
-  addFormats(analogueAjv);
-  const validateRepositoryOperations = analogueAjv.compile(
-    repositoryOperationsSchema,
-  );
-  const validateRepositoryCompliance = analogueAjv.compile(
-    repositoryComplianceSchema,
-  );
-  const repositoryOperationsValid =
-    validateRepositoryOperations(repositoryOperationsArtifact) &&
-    repositoryOperationsFindings(repositoryOperationsArtifact, {
-      asOf: repositoryOperationsArtifact.run.asOf,
-    }).length === 0;
-  const repositoryComplianceValid =
-    validateRepositoryCompliance(repositoryComplianceArtifact) &&
-    repositoryComplianceProgramFindings(repositoryComplianceArtifact, {
-      asOf: repositoryComplianceArtifact.run.asOf,
-    }).length === 0;
-  const selectedMockPlus = mockContext.inventory.entries.filter((item) =>
-    analogueIds.includes(item.id),
-  );
-
-  return {
-    valid:
-      pins.every((item) => item.valid) &&
-      entries.length === analogueIds.length &&
-      proposalErrors.length === 0 &&
-      repositoryOperationsValid &&
-      repositoryComplianceValid &&
-      regression.length === analogueIds.length &&
-      quality.scores.every((item) => item.gates.qualified) &&
-      runtimeScenarios.every(
-        (item) =>
-          canonicalJson(item.scenarios) ===
-          canonicalJson([
-            "accepted-task",
-            "missing-conflicting-evidence",
-            "prohibited-authority",
-          ]),
-      ) &&
-      runtimeBudget.tokenBudgetCoversSelectedWorstCase &&
-      hasExactMockPlusCoverage(analogueIds, selectedMockPlus),
-    pins,
-    proposalErrors,
-    similarity,
-    quality: quality.scores.map((item) => ({
-      id: item.id,
-      total: item.total,
-      qualified: item.gates.qualified,
-    })),
-    regression: regression.map((item) => item.id),
-    runtimeScenarios,
-    runtimeProfile: runtimeProfile.schemaVersion,
-    mockPlus: selectedMockPlus
-      .map((item) => ({
-        id: item.id,
-        schema: item.schema.registered,
-        semantics: item.semanticValidator,
-      })),
-    repositoryOperationsArtifact,
-    repositoryComplianceArtifact,
-  };
-}
-
-export function hasExactMockPlusCoverage(requiredIds, entries) {
+function principalHas(principals, id, role, kind) {
+  const principal = principals.get(id);
   return (
-    sameSet(
-      requiredIds,
-      records(entries).map((item) => item.id),
-    ) &&
-    records(entries).every(
-      (item) =>
-        item.semanticValidator === true &&
-        item.applicableFamilies?.schema === true &&
-        item.applicableFamilies?.semantics === true,
-    )
+    principal?.kind === kind &&
+    strings(principal.roles).includes(role)
   );
 }
 
-export function compositionProofPayload(value) {
-  return signedPayload(value);
+function authenticatedPrincipals(keys) {
+  const rolesByPrincipal = new Map();
+  for (const key of keys.values()) {
+    if (key.status !== "active") continue;
+    const role = {
+      catalog: "catalog-source-custodian",
+      issue: "issue-source-custodian",
+      usage: "usage-evidence-issuer",
+      "human-grant": "grant-issuer",
+      composition: "composition-reviewer",
+      "run-result": "portfolio-owner",
+      budget: "budget-owner",
+      classification:
+        key.principalKind === "human" ? "decision-owner" : "classifier",
+    }[key.domain];
+    if (!role) continue;
+    const current = rolesByPrincipal.get(key.principalRef) ?? {
+      id: key.principalRef,
+      kind: key.principalKind,
+      roles: [],
+    };
+    if (current.kind !== key.principalKind) return null;
+    current.roles.push(role);
+    rolesByPrincipal.set(key.principalRef, current);
+  }
+  return new Map(
+    [...rolesByPrincipal.entries()].map(([id, value]) => [
+      id,
+      {
+        ...value,
+        roles: [...new Set(value.roles)].sort(compare),
+      },
+    ]),
+  );
 }
 
-function validateFutureComposition({
-  proof,
-  publicTrust,
-  candidatePrincipalRefs,
-  requiredFacts,
-  asOf,
-}) {
-  const findings = [];
-  const normalizedProof = normalize(
-    proof,
-    CANDIDATE_LIMITS.compositionProofBytes,
+function exactIssueIdentities(issues) {
+  const ids = issues.map((item) => item.id);
+  const providerIds = issues.map((item) => item.providerIssueId);
+  const numbers = issues.map(
+    (item) =>
+      `${item.repository.provider}/${item.repository.owner}/${item.repository.name}#${item.number}`,
   );
-  const normalizedTrust = normalize(
-    publicTrust,
-    CANDIDATE_LIMITS.publicTrustBytes,
+  return (
+    new Set(ids).size === ids.length &&
+    new Set(providerIds).size === providerIds.length &&
+    new Set(numbers).size === numbers.length
   );
-  if (!normalizedProof.ok || !normalizedTrust.ok) {
-    return { valid: false, findings: [finding("invalid-future-composition", "$")] };
-  }
-  const value = normalizedProof.value;
-  const trustValue = normalizedTrust.value;
-  findings.push(
-    ...schemaFindings(validateCompositionProofSchema, value, "$.futureComposition"),
-  );
-  const signers = validateTrustStore(
-    trustValue,
-    findings,
-    "$.futureCompositionTrust",
-  );
-  if (
-    !validateCompositionProofSchema(value) ||
-    !validatePublicTrustSchema(trustValue)
-  ) {
-    return { valid: false, findings: uniqueFindings(findings) };
-  }
-  const signer = signers.get(value.signature.keyId);
-  const candidatePrincipalSet = new Set(candidatePrincipalRefs);
-  const candidateSigners = publicTrust.signers.filter((item) =>
-    candidatePrincipalSet.has(item.principalRef),
-  );
-  const candidateFingerprints = new Set(
-    candidateSigners
-      .map(publicKeyRecord)
-      .filter(Boolean)
-      .map((item) => item.fingerprint),
-  );
-  if (
-    !signer ||
-    candidateFingerprints.has(signer.fingerprint) ||
-    candidatePrincipalSet.has(signer.principalRef)
-  ) {
-    findings.push(
-      finding(
-        "non-independent-composition-authority",
-        "$.futureComposition.signature",
-      ),
+}
+
+function hasExactCanonicalIssueUrl(issue) {
+  try {
+    const url = new URL(issue.url);
+    return (
+      url.protocol === "https:" &&
+      url.hostname === "github.com" &&
+      !url.username &&
+      !url.password &&
+      !url.search &&
+      !url.hash &&
+      url.pathname ===
+        `/${issue.repository.owner}/${issue.repository.name}/issues/${issue.number}` &&
+      url.href ===
+        `https://github.com/${issue.repository.owner}/${issue.repository.name}/issues/${issue.number}`
     );
+  } catch {
+    return false;
+  }
+}
+
+function hasSafeControlledSource(scope) {
+  try {
+    const url = new URL(scope.sourceRef);
+    return (
+      url.protocol === "controlled:" &&
+      url.hostname === scope.tenantRef &&
+      !url.username &&
+      !url.password &&
+      !url.port &&
+      !url.search &&
+      !url.hash &&
+      url.pathname !== "/" &&
+      url.href === scope.sourceRef
+    );
+  } catch {
+    return false;
+  }
+}
+
+function invalidResult(findings) {
+  return {
+    schemaVersion: V2_RESULT_VERSION,
+    resultStatus: "invalid",
+    findings: uniqueFindings(findings),
+    authority: { ...AUTHORITY },
+  };
+}
+
+export function compositionAdmissionFinding(graph) {
+  if (graph?.verdict === "NEW") return null;
+  return graph?.verdict === "COMPOSE"
+    ? finding("lossless-composition-requires-candidate-deletion", "$.composition")
+    : finding("stale-or-invalid-composition-proof", "$.composition");
+}
+
+function prReadyPlan(input, issue, request, decision, assessment) {
+  const composition =
+    decision.classification === "COMPOSE"
+      ? {
+          clawRefs: sorted(assessment.proposedClawRefs),
+          requiredPortTypes: sorted(assessment.requiredPortTypes),
+          requiredOutputType: assessment.requiredOutputType,
+        }
+      : null;
+  return {
+    schemaVersion: "awesomeClaws.clawPortfolioPrReadyPlan.v1",
+    id: planIdForIssue(input.run.decisionId, issue.id),
+    issueRef: issue.id,
+    issueRevision: issue.revision,
+    classification: decision.classification,
+    requestType: request.requestType,
+    affectedClawIds: sorted(decision.affectedClawIds),
+    evidenceRefs: sorted(request.evidenceRefs),
+    packageTreeRevision: input.run.packageTreeRevision,
+    composition,
+    steps: [
+      "prepare-draft-change-against-bound-package-revisions",
+      "run-required-validation-and-attach-evidence",
+      "request-owner-decision-before-opening-or-merging",
+    ],
+    authority: {
+      externalMutation: false,
+      merge: false,
+      publish: false,
+    },
+  };
+}
+
+export async function evaluatePortfolioV2(
+  inputValue,
+  {
+    asOf,
+    publicTrust,
+    packageTree,
+    targetRoot = root,
+  } = {},
+) {
+  const inputNormalized = normalize(inputValue, V2_LIMITS.inputBytes);
+  const trustNormalized = normalize(publicTrust, V2_LIMITS.trustBytes);
+  const treeNormalized = normalize(packageTree, V2_LIMITS.packageTreeBytes);
+  if (!inputNormalized.ok || !trustNormalized.ok || !treeNormalized.ok) {
+    return invalidResult([
+      finding("unsafe-or-oversized-input", "$"),
+    ]);
+  }
+  const input = inputNormalized.value;
+  const trust = trustNormalized.value;
+  const tree = treeNormalized.value;
+  const inputSchemaFindings = schemaFindings(validateSchema, input, "$");
+  const trustSchemaFindings = schemaFindings(
+    validateTrustSchema,
+    trust,
+    "$.trust",
+  );
+  const treeSchemaFindings = schemaFindings(
+    validatePackageTreeSchema,
+    tree,
+    "$.packageTree",
+  );
+  const findings = [
+    ...inputSchemaFindings,
+    ...trustSchemaFindings,
+    ...treeSchemaFindings,
+  ];
+  const asOfMs = timestamp(asOf);
+  if (
+    inputSchemaFindings.length > 0 ||
+    asOfMs === null ||
+    input.run.asOf !== asOf
+  ) {
+    findings.push(finding("invalid-run-context", "$.run.asOf"));
+    return invalidResult(findings);
+  }
+  if (trustSchemaFindings.length > 0 || treeSchemaFindings.length > 0) {
+    return invalidResult(findings);
+  }
+  const graph = await runStrongestComposition();
+  const compositionFinding = compositionAdmissionFinding(graph);
+  if (compositionFinding) findings.push(compositionFinding);
+  const catalogEntries = (await readCatalog({ loadResources: false })).entries;
+  const catalogIds = new Set(catalogEntries.map((item) => item.id));
+  const keys = verifyTrust(trust, asOf, findings);
+  const trustedPrincipals = authenticatedPrincipals(keys);
+  const principals = trustedPrincipals ?? new Map();
+  if (
+    trustedPrincipals === null ||
+    canonicalJson(
+      [...mapById(input.principals).values()]
+        .map((item) => ({
+          id: item.id,
+          kind: item.kind,
+          roles: sorted(item.roles),
+        }))
+        .sort((left, right) => compare(left.id, right.id)),
+    ) !==
+      canonicalJson(
+        [...principals.values()].sort((left, right) =>
+          compare(left.id, right.id),
+        ),
+      )
+  ) {
+    findings.push(finding("unauthenticated-principal-roster", "$.principals"));
+  }
+  await validatePackageTree(tree, input, keys, findings, targetRoot);
+
+  const duplicateGlobal = new Set();
+  const seenGlobal = new Set();
+  for (const collection of [
+    input.principals,
+    input.grants,
+    input.providerSnapshot.issues,
+    input.compositionAssessments,
+    input.classificationDecisions,
+    input.budgetLedger.reservations,
+    input.usageEnvelopes,
+    input.usageEnvelopes.flatMap((item) => item.records),
+  ]) {
+    for (const item of rows(collection)) {
+      if (seenGlobal.has(item.id)) duplicateGlobal.add(item.id);
+      seenGlobal.add(item.id);
+    }
+  }
+  if (duplicateGlobal.size > 0) {
+    findings.push(finding("duplicate-global-identity", "$"));
+  }
+
+  verifySigned({
+    value: input.run,
+    domain: "run-result",
+    principalRef: input.run.signerRef,
+    principalKind: "human",
+    signedAt: input.run.signedAt,
+    asOf,
+    keys,
+    findings,
+    path: "$.run.signature",
+  });
+  verifySigned({
+    value: input.onboarding,
+    domain: "run-result",
+    principalRef: input.onboarding.ownerRef,
+    principalKind: "human",
+    signedAt: input.onboarding.signedAt,
+    asOf,
+    keys,
+    findings,
+    path: "$.onboarding.signature",
+  });
+  if (
+    !principalHas(
+      principals,
+      input.onboarding.ownerRef,
+      "portfolio-owner",
+      "human",
+    ) ||
+    input.run.signerRef !== input.onboarding.ownerRef ||
+    input.run.mode !== input.onboarding.mode ||
+    input.run.portfolioRevision !== tree.root ||
+    input.run.providerSnapshotRef !== input.providerSnapshot.id ||
+    input.run.providerSnapshotRevision !== input.providerSnapshot.revision ||
+    input.run.providerSnapshotCompletenessRoot !==
+      input.providerSnapshot.completenessRoot ||
+    input.run.packageTreeRef !== tree.id ||
+    input.run.packageTreeRevision !== tree.revision ||
+    input.run.budgetPeriodRef !== input.budgetLedger.period.id ||
+    input.run.idempotencyKey !== computeRunIdempotencyKey(input.run) ||
+    timestamp(input.run.signedAt) > asOfMs ||
+    timestamp(input.onboarding.signedAt) > timestamp(input.run.signedAt) ||
+    timestamp(tree.capturedAt) > timestamp(input.run.signedAt) ||
+    timestamp(input.providerSnapshot.capturedAt) >
+      timestamp(input.run.signedAt) ||
+    input.compositionAssessments.some(
+      (item) => timestamp(item.assessedAt) > timestamp(input.run.signedAt),
+    ) ||
+    input.classificationDecisions.some(
+      (item) => timestamp(item.decidedAt) > timestamp(input.run.signedAt),
+    ) ||
+    timestamp(input.budgetLedger.issuedAt) > timestamp(input.run.signedAt) ||
+    input.usageEnvelopes.some(
+      (item) => timestamp(item.issuedAt) > timestamp(input.run.signedAt),
+    ) ||
+    (input.predecessor &&
+      timestamp(input.predecessor.capturedAt) >
+        timestamp(input.run.signedAt))
+  ) {
+    findings.push(finding("invalid-run-binding", "$.run"));
+  }
+  const modeLists = [
+    input.onboarding.roles,
+    input.onboarding.jobs,
+    input.onboarding.processes,
+    input.onboarding.capabilities,
+  ];
+  if (
+    (input.run.mode === "bootstrap" &&
+      modeLists.some((items) => items.length === 0)) ||
+    (input.run.mode !== "bootstrap" &&
+      modeLists.some((items) => items.length !== 0))
+  ) {
+    findings.push(finding("invalid-onboarding-mode", "$.onboarding"));
+  }
+
+  const snapshot = input.providerSnapshot;
+  if (
+    snapshot.revision !== computeProviderSnapshotRevision(snapshot) ||
+    snapshot.completenessRoot !== computeProviderSnapshotRoot(snapshot.issues) ||
+    input.run.providerSnapshotRef !== snapshot.id ||
+    !sameSet(snapshot.issueRefs, snapshot.issues.map((item) => item.id)) ||
+    !exactIssueIdentities(snapshot.issues) ||
+    timestamp(snapshot.capturedAt) > asOfMs ||
+    !principalHas(
+      principals,
+      snapshot.custodianRef,
+      "issue-source-custodian",
+      "system",
+    )
+  ) {
+    findings.push(finding("invalid-provider-snapshot", "$.providerSnapshot"));
   }
   verifySigned({
-    value,
-    payload: compositionProofPayload(value),
-    purpose: "composition-proof",
-    principalRef: value.signerRef,
-    principalKind: "human",
-    signedAt: value.signedAt,
-    signers,
-    path: "$.futureComposition.signature",
+    value: snapshot,
+    domain: "issue",
+    principalRef: snapshot.custodianRef,
+    principalKind: "system",
+    signedAt: snapshot.capturedAt,
+    asOf,
+    keys,
     findings,
+    path: "$.providerSnapshot.signature",
   });
-  if (
-    value.validatorDigest !== sha256Digest(COMPOSITION_VALIDATOR_DESCRIPTOR) ||
-    timestamp(value.signedAt) > timestamp(asOf)
-  ) {
-    findings.push(
-      finding("invalid-composition-validator", "$.futureComposition.validatorDigest"),
-    );
+  const requests = new Map();
+  for (const [index, issue] of snapshot.issues.entries()) {
+    const path = `$.providerSnapshot.issues[${index}]`;
+    if (
+      canonicalJson(issue.repository) !== canonicalJson(snapshot.repository) ||
+      issue.revision !== computeProviderIssueRevision(issue) ||
+      timestamp(issue.observedAt) > timestamp(snapshot.capturedAt) ||
+      !hasExactCanonicalIssueUrl(issue)
+    ) {
+      findings.push(finding("invalid-provider-issue-receipt", path));
+    }
+    const request = decodeRequest(issue, findings, path, catalogEntries);
+    if (request) {
+      if (!sameSet(request.evidenceRefs, [`source-${issue.id}`])) {
+        findings.push(finding("unresolved-issue-evidence", `${path}.body`));
+      }
+      requests.set(issue.id, request);
+    }
   }
-  const bytes = strictBase64(value.artifact.bytesBase64);
-  let artifact;
-  if (
-    !bytes ||
-    sha256Bytes(bytes) !== value.artifact.digest ||
-    bytes.length > CANDIDATE_LIMITS.compositionProofBytes
-  ) {
-    findings.push(
-      finding("invalid-composition-artifact", "$.futureComposition.artifact"),
-    );
-  } else {
-    try {
-      artifact = JSON.parse(bytes.toString("utf8"));
-    } catch {
+  const issueByNumber = new Map(
+    snapshot.issues.map((item) => [item.number, item]),
+  );
+  for (const issue of snapshot.issues) {
+    const request = requests.get(issue.id);
+    if (request?.duplicateOfIssueNumber === null) continue;
+    const target = issueByNumber.get(request?.duplicateOfIssueNumber);
+    const targetRequest = target ? requests.get(target.id) : null;
+    if (
+      !target ||
+      target.id === issue.id ||
+      targetRequest?.duplicateOfIssueNumber !== null
+    ) {
       findings.push(
-        finding("invalid-composition-artifact", "$.futureComposition.artifact"),
+        finding(
+          "invalid-duplicate-target",
+          `$.providerSnapshot.issues.${issue.id}`,
+        ),
       );
     }
   }
-  const exactArtifact =
-    isRecord(artifact) &&
-    Object.keys(artifact).length === 3 &&
-    artifact.schemaVersion ===
-      "awesomeClaws.clawPortfolioManagerCompositionFacts.v1" &&
-    Array.isArray(artifact.sourceArtifacts) &&
-    artifact.sourceArtifacts.length >= 2 &&
-    artifact.sourceArtifacts.every(
-      (item) => parseCompositionSourceArtifact(item) !== null,
-    ) &&
-    Array.isArray(artifact.facts) &&
-    artifact.facts.every(
-      (item) =>
-        isRecord(item) &&
-        Object.keys(item).length === 2 &&
-        typeof item.id === "string" &&
-        /^sha256:[0-9a-f]{64}$/u.test(item.valueDigest),
-    ) &&
-    new Set(artifact.sourceArtifacts.map((item) => item.id)).size ===
-      artifact.sourceArtifacts.length &&
-    new Set(artifact.facts.map((item) => item.id)).size ===
-      artifact.facts.length &&
-    canonicalJson(
-      [...artifact.facts].sort((left, right) => compareText(left.id, right.id)),
-    ) ===
-      canonicalJson(
-        [...(compositionFactsFromSources(artifact.sourceArtifacts) ?? [])].sort(
-          (left, right) => compareText(left.id, right.id),
-        ),
-      ) &&
-    canonicalJson(
-      [...artifact.facts].sort((left, right) => compareText(left.id, right.id)),
-    ) ===
-      canonicalJson(
-        [...requiredFacts].sort((left, right) => compareText(left.id, right.id)),
-      );
-  if (!exactArtifact) {
-    findings.push(
-      finding("incomplete-composition-fact-graph", "$.futureComposition.artifact"),
-    );
-  }
-  if (containsCredentialMaterial(value) || containsCredentialMaterial(trustValue)) {
-    findings.push(finding("private-or-credential-material", "$.futureComposition"));
-  }
-  return {
-    valid: findings.length === 0,
-    findings: uniqueFindings(findings),
-    sourceArtifacts: artifact?.sourceArtifacts ?? [],
-  };
-}
 
-export function createFutureCompositionFactArtifact(sourceArtifacts) {
-  const facts = compositionFactsFromSources(sourceArtifacts);
-  if (facts === null) {
-    throw new TypeError(
-      "Future composition source artifacts must execute the exact closed validator contract.",
-    );
-  }
-  const value = {
-    schemaVersion: "awesomeClaws.clawPortfolioManagerCompositionFacts.v1",
-    sourceArtifacts: [...sourceArtifacts].sort((left, right) =>
-      compareText(left.id, right.id),
-    ),
-    facts: [...facts].sort((left, right) =>
-      compareText(left.id, right.id),
-    ),
-  };
-  const bytes = Buffer.from(canonicalJson(value), "utf8");
-  return {
-    value,
-    bytesBase64: bytes.toString("base64"),
-    digest: sha256Bytes(bytes),
-  };
-}
-
-export function compositionValidatorDigest() {
-  return sha256Digest(COMPOSITION_VALIDATOR_DESCRIPTOR);
-}
-
-export async function assessStrongestComposition(options = {}) {
-  const inputSnapshot = normalize(options.input, CANDIDATE_LIMITS.inputBytes);
-  const trustSnapshot = normalize(
-    options.publicTrust,
-    CANDIDATE_LIMITS.publicTrustBytes,
-  );
-  const receiptsSnapshot = normalize(
-    options.sourceReceipts,
-    CANDIDATE_LIMITS.sourceReceiptsBytes,
-  );
-  const futureSnapshot =
-    options.futureComposition === undefined
-      ? { ok: true, value: undefined }
-      : normalize(
-          options.futureComposition,
-          CANDIDATE_LIMITS.compositionProofBytes,
-        );
+  const assessments = mapById(input.compositionAssessments);
+  const decisions = mapById(input.classificationDecisions);
   if (
-    !inputSnapshot.ok ||
-    !trustSnapshot.ok ||
-    !receiptsSnapshot.ok ||
-    !futureSnapshot.ok
+    !sameSet(
+      snapshot.issueRefs,
+      input.compositionAssessments.map((item) => item.issueRef),
+    ) ||
+    !sameSet(
+      snapshot.issueRefs,
+      input.classificationDecisions.map((item) => item.issueRef),
+    )
   ) {
-    return {
-      schemaVersion: "awesomeClaws.clawPortfolioManagerCompositionAssessment.v1",
-      verdict: "undetermined",
-      confidence: 0,
-      candidateEvaluation: invalidResult([
-        finding("unsafe-composition-assessment-input", "$"),
-      ]),
-      missingInvariantIds: [],
-      deleteCandidate: false,
-    };
+    findings.push(finding("issue-decision-coverage-mismatch", "$"));
   }
-  const input = inputSnapshot.value;
-  const publicTrust = trustSnapshot.value;
-  const sourceReceipts = receiptsSnapshot.value;
-  const futureComposition = futureSnapshot.value;
-  const asOf = options.asOf;
-  const result = await evaluateClawPortfolio(input, {
-    asOf,
-    publicTrust,
-    sourceReceipts,
-  });
-  if (result.resultStatus === "invalid") {
-    return {
-      schemaVersion: "awesomeClaws.clawPortfolioManagerCompositionAssessment.v1",
-      verdict: "undetermined",
-      confidence: 0,
-      candidateEvaluation: result,
-      missingInvariantIds: [],
-      deleteCandidate: false,
-    };
-  }
-  const analogue = await executeActualAnalogueProof(asOf);
-  const requiredFacts = requiredCompositionFacts(input, result);
-  const currentFacts = analogue.valid
-    ? currentCompositionFacts(analogue)
-    : [];
-  const currentById = new Map(currentFacts.map((item) => [item.id, item]));
-  const missing = requiredFacts.filter(
-    (item) => currentById.get(item.id)?.valueDigest !== item.valueDigest,
-  );
-  let future = null;
-  if (futureComposition) {
-    future = validateFutureComposition({
-      proof: futureComposition,
-      publicTrust,
-      candidatePrincipalRefs: input.principals.map((item) => item.id),
-      requiredFacts,
+  const decisionByIssue = new Map();
+  for (const [index, decision] of input.classificationDecisions.entries()) {
+    const issue = snapshot.issues.find((item) => item.id === decision.issueRef);
+    const request = requests.get(decision.issueRef);
+    const assessment = assessments.get(decision.compositionAssessmentRef);
+    const expectedAssessment =
+      request && issue
+        ? expectedCompositionAssessment(
+            request,
+            issue,
+            graph,
+            input.onboarding.selectedClawIds,
+          )
+        : null;
+    const automatic =
+      request && assessment
+        ? automaticClassification(request, assessment)
+        : null;
+    const expected = automatic ?? decision.classification;
+    const assessmentValid =
+      expectedAssessment &&
+      assessment &&
+      assessment.issueRef === decision.issueRef &&
+      assessment.runId === input.run.id &&
+      assessment.decisionId === input.run.decisionId &&
+      assessment.issueRevision === issue.revision &&
+      assessment.graphDigest === expectedAssessment.graphDigest &&
+      sameSet(
+        assessment.requiredPortTypes,
+        expectedAssessment.requiredPortTypes,
+      ) &&
+      assessment.requiredOutputType ===
+        expectedAssessment.requiredOutputType &&
+      assessment.feasible === expectedAssessment.feasible &&
+      sameSet(
+        assessment.proposedClawRefs,
+        expectedAssessment.proposedClawRefs,
+      ) &&
+      sameSet(assessment.lossIds, expectedAssessment.lossIds) &&
+      timestamp(assessment.assessedAt) >= timestamp(issue.observedAt) &&
+      timestamp(assessment.assessedAt) >= timestamp(snapshot.capturedAt) &&
+      timestamp(assessment.assessedAt) <= timestamp(decision.decidedAt) &&
+      principalHas(
+        principals,
+        assessment.reviewerRef,
+        "composition-reviewer",
+        "system",
+      );
+    if (!assessmentValid) {
+      findings.push(
+        finding(
+          "invalid-composition-assessment",
+          `$.classificationDecisions[${index}]`,
+        ),
+      );
+    }
+    if (assessment) {
+      verifySigned({
+        value: assessment,
+        domain: "composition",
+        principalRef: assessment.reviewerRef,
+        principalKind: "system",
+        signedAt: assessment.assessedAt,
+        asOf,
+        keys,
+        findings,
+        path: `$.compositionAssessments.${assessment.id}.signature`,
+      });
+    }
+    const typedComparison =
+      decision.decisionKind === "typed-classifier" &&
+      automatic !== null &&
+      decision.comparison.nearestClawIds.length === 0 &&
+      [
+        decision.comparison.user,
+        decision.comparison.job,
+        decision.comparison.workflow,
+        decision.comparison.outputs,
+        decision.comparison.authority,
+        decision.comparison.proof,
+      ].every((item) => item === "not-applicable");
+    const humanComparison =
+      decision.decisionKind === "human-decision" &&
+      automatic === null &&
+      request &&
+      assessment &&
+      humanDecisionIsCoherent(
+        decision,
+        request,
+        assessment,
+        catalogIds,
+        request
+          ? contributionSimilarityReport(
+              request.candidateProposal?.proposal?.entry ?? {},
+              catalogEntries,
+            ).matches.map((item) => item.id)
+          : [],
+      );
+    const expectedDeciderKind =
+      decision.decisionKind === "human-decision" ? "human" : "system";
+    const expectedDeciderRole =
+      decision.decisionKind === "human-decision"
+        ? "decision-owner"
+        : "classifier";
+    if (
+      !issue ||
+      !request ||
+      decision.issueRevision !== issue.revision ||
+      decision.runId !== input.run.id ||
+      decision.decisionId !== input.run.decisionId ||
+      decision.classification !== expected ||
+      decision.classifierVersion !== CLASSIFIER_VERSION ||
+      decision.classifierCodeDigest !== CLASSIFIER_CODE_DIGEST ||
+      !sameSet(decision.rationaleCodes, expectedRationale(expected)) ||
+      !sameSet(decision.affectedClawIds, request.affectedClawIds) ||
+      request.affectedClawIds.some(
+        (item) => !input.onboarding.selectedClawIds.includes(item),
+      ) ||
+      !classificationDemandIsValid(
+        decision.classification,
+        request.demand,
+      ) ||
+      timestamp(decision.decidedAt) > asOfMs ||
+      (!typedComparison && !humanComparison) ||
+      !principalHas(
+        principals,
+        decision.deciderRef,
+        expectedDeciderRole,
+        expectedDeciderKind,
+      )
+    ) {
+      findings.push(
+        finding(
+          "invalid-classification-decision",
+          `$.classificationDecisions[${index}]`,
+        ),
+      );
+    }
+    verifySigned({
+      value: decision,
+      domain: "classification",
+      principalRef: decision.deciderRef,
+      principalKind: expectedDeciderKind,
+      signedAt: decision.decidedAt,
       asOf,
+      keys,
+      findings,
+      path: `$.classificationDecisions[${index}].signature`,
+    });
+    decisionByIssue.set(decision.issueRef, decision);
+  }
+
+  for (const [index, grant] of input.grants.entries()) {
+    if (
+      !principalHas(principals, grant.issuerRef, "grant-issuer", "human") ||
+      !principals.has(grant.granteeRef) ||
+      timestamp(grant.issuedAt) > timestamp(grant.notBefore) ||
+      timestamp(grant.notBefore) >= timestamp(grant.expiresAt)
+    ) {
+      findings.push(finding("invalid-human-grant", `$.grants[${index}]`));
+    }
+    verifySigned({
+      value: grant,
+      domain: "human-grant",
+      principalRef: grant.issuerRef,
+      principalKind: "human",
+      signedAt: grant.issuedAt,
+      asOf,
+      keys,
+      findings,
+      path: `$.grants[${index}].signature`,
     });
   }
-  const futureClears = future?.valid === true;
-  return {
-    schemaVersion: "awesomeClaws.clawPortfolioManagerCompositionAssessment.v1",
-    verdict: futureClears
-      ? "COMPOSE"
-      : analogue.valid && missing.length > 0
-        ? "NEW"
-        : "undetermined",
-    confidence: futureClears ? 0.99 : analogue.valid ? 0.9 : 0,
-    candidateEvaluation: {
-      resultStatus: result.resultStatus,
-      resultDigest: result.resultDigest,
-    },
-    analogueValidation: {
-      valid: analogue.valid,
-      pins: analogue.pins,
-      proposalErrors: analogue.proposalErrors,
-      nearestMatches: analogue.similarity.matches.map((item) => ({
-        id: item.id,
-        score: item.score,
+  const portfolioGrants = input.grants.filter(
+    (item) =>
+      item.scope === "portfolio-review" &&
+      item.granteeRef === input.onboarding.ownerRef &&
+      sameSet(item.issueRefs, snapshot.issueRefs),
+  );
+  if (portfolioGrants.length !== 1) {
+    findings.push(finding("invalid-portfolio-review-grant", "$.grants"));
+  }
+  if (
+    portfolioGrants.length === 1 &&
+    !grantActiveAt(portfolioGrants[0], input.run.signedAt)
+  ) {
+    findings.push(finding("invalid-portfolio-review-grant", "$.grants"));
+  }
+  for (const decision of input.classificationDecisions) {
+    const requiredScope =
+      decision.classification === "PRODUCT_DECISION"
+        ? "product-decision-review"
+        : decision.classification === "RETIRE"
+          ? "retirement-review"
+          : "classification-review";
+    const matches = input.grants.filter(
+      (item) =>
+        item.scope === requiredScope &&
+        item.issueRefs.includes(decision.issueRef) &&
+        grantActiveAt(item, decision.decidedAt) &&
+        (decision.decisionKind !== "human-decision" ||
+          item.granteeRef === decision.deciderRef) &&
+        principalHas(
+          principals,
+          item.granteeRef,
+          "decision-owner",
+          "human",
+        ),
+    );
+    if (matches.length !== 1) {
+      findings.push(
+        finding(
+          "invalid-decision-review-grant",
+          `$.classificationDecisions.${decision.id}`,
+        ),
+      );
+    }
+  }
+  const budgetGrant = input.grants.find(
+    (item) => item.id === input.budgetLedger.grantRef,
+  );
+  const budgetLease = input.budgetLedger.lease;
+  const decodedPreviousDecisions =
+    input.run.mode === "manage" && input.predecessor
+      ? decodeCanonicalRecord(
+          input.predecessor.decisions,
+          "$.predecessor.decisions",
+          findings,
+        )
+      : null;
+  const priorIssueDecisions = new Set(
+    rows(decodedPreviousDecisions?.decisions)
+      .filter((item) => ["reserved", "completed"].includes(item.state))
+      .map(
+        (item) =>
+          `${item.issueRef}\0${item.issueRevision}`,
+      ),
+  );
+  const priorWorkByIssueRevision = new Map(
+    rows(decodedPreviousDecisions?.decisions)
+      .filter((item) => ["reserved", "completed"].includes(item.state))
+      .map((item) => [
+        `${item.issueRef}\0${item.issueRevision}`,
+        item.classification,
+      ]),
+  );
+  for (const decision of input.classificationDecisions) {
+    const priorClassification = priorWorkByIssueRevision.get(
+      `${decision.issueRef}\0${decision.issueRevision}`,
+    );
+    if (
+      priorClassification !== undefined &&
+      priorClassification !== decision.classification
+    ) {
+      findings.push(
+        finding(
+          "invalid-completed-work-reclassification",
+          `$.classificationDecisions.${decision.id}`,
+        ),
+      );
+    }
+  }
+  const expectedBudget = expectedReservations(
+    input,
+    requests,
+    decisionByIssue,
+    priorIssueDecisions,
+  );
+  const reservedDecisionTimes = input.budgetLedger.reservations.map(
+    (reservation) =>
+      timestamp(decisionByIssue.get(reservation.issueRef)?.decidedAt),
+  );
+  if (
+    input.budgetLedger.revision !==
+      computeBudgetLedgerRevision(input.budgetLedger) ||
+    input.budgetLedger.runId !== input.run.id ||
+    input.budgetLedger.decisionId !== input.run.decisionId ||
+    input.budgetLedger.period.id !== input.run.budgetPeriodRef ||
+    budgetLease.periodId !== input.budgetLedger.period.id ||
+    budgetLease.runId !== input.run.id ||
+    budgetLease.decisionId !== input.run.decisionId ||
+    budgetLease.expectedCheckpointDigest !==
+      input.budgetLedger.predecessorBudgetDigest ||
+    budgetLease.issuerRef !== input.budgetLedger.ownerRef ||
+    timestamp(budgetLease.issuedAt) >
+      timestamp(input.budgetLedger.issuedAt) ||
+    timestamp(input.budgetLedger.issuedAt) >
+      timestamp(budgetLease.expiresAt) ||
+    !budgetPeriodContains(input.budgetLedger.period, asOf) ||
+    budgetGrant?.scope !== "budget-reservation" ||
+    budgetGrant?.granteeRef !== input.budgetLedger.ownerRef ||
+    !sameSet(budgetGrant?.issueRefs, snapshot.issueRefs) ||
+    !grantActiveAt(budgetGrant, input.budgetLedger.issuedAt) ||
+    reservedDecisionTimes.some(
+      (decidedAt) =>
+        decidedAt === null ||
+        decidedAt > timestamp(input.budgetLedger.issuedAt),
+    ) ||
+    !principalHas(
+      principals,
+      input.budgetLedger.ownerRef,
+      "budget-owner",
+      "human",
+    ) ||
+    canonicalJson(input.budgetLedger.reservations) !==
+      canonicalJson(expectedBudget.reservations) ||
+    canonicalJson(input.budgetLedger.cumulativeAfter) !==
+      canonicalJson(expectedBudget.cumulative) ||
+    !withinCaps(
+      input.budgetLedger.cumulativeBefore,
+      input.budgetLedger.caps,
+    ) ||
+    !withinCaps(
+      input.budgetLedger.cumulativeAfter,
+      input.budgetLedger.caps,
+    )
+  ) {
+    findings.push(finding("invalid-cumulative-budget-ledger", "$.budgetLedger"));
+  }
+  verifySigned({
+    value: budgetLease,
+    domain: "budget",
+    principalRef: budgetLease.issuerRef,
+    principalKind: "human",
+    signedAt: budgetLease.issuedAt,
+    asOf,
+    keys,
+    findings,
+    path: "$.budgetLedger.lease.signature",
+  });
+  verifySigned({
+    value: input.budgetLedger,
+    domain: "budget",
+    principalRef: input.budgetLedger.ownerRef,
+    principalKind: "human",
+    signedAt: input.budgetLedger.issuedAt,
+    asOf,
+    keys,
+    findings,
+    path: "$.budgetLedger.signature",
+  });
+
+  const priorRunIds = new Set();
+  const priorDecisionIds = new Set();
+  const priorIdempotencyKeys = new Set();
+  if (input.run.mode === "manage") {
+    if (!input.predecessor) {
+      findings.push(finding("missing-predecessor", "$.predecessor"));
+    } else {
+      const previousResult = decodeCanonicalRecord(
+        input.predecessor.result,
+        "$.predecessor.result",
+        findings,
+      );
+      const previousDecisions = decodedPreviousDecisions;
+      const previousBudget = decodeCanonicalRecord(
+        input.predecessor.budget,
+        "$.predecessor.budget",
+        findings,
+      );
+      const previousPeriodStart = timestamp(
+        `${previousBudget?.periodStart}T00:00:00Z`,
+      );
+      const previousPeriodEnd = timestamp(
+        `${previousBudget?.periodEnd}T00:00:00Z`,
+      );
+      if (
+        input.run.predecessorResultDigest !== input.predecessor.result.digest ||
+        input.run.predecessorDecisionDigest !==
+          input.predecessor.decisions.digest ||
+        input.run.predecessorBudgetDigest !== input.predecessor.budget.digest ||
+        input.budgetLedger.predecessorBudgetDigest !==
+          input.predecessor.budget.digest ||
+        input.predecessor.runId !== previousResult?.runId ||
+        input.predecessor.decisionId !== previousResult?.decisionId ||
+        !exactKeys(previousResult, [
+          "schemaVersion",
+          "runId",
+          "decisionId",
+          "idempotencyKey",
+          "resultDigest",
+        ]) ||
+        previousResult?.schemaVersion !==
+          "awesomeClaws.clawPortfolioPreviousResult.v1" ||
+        !/^sha256:[0-9a-f]{64}$/u.test(
+          previousResult?.idempotencyKey ?? "",
+        ) ||
+        !/^sha256:[0-9a-f]{64}$/u.test(
+          previousResult?.resultDigest ?? "",
+        ) ||
+        !exactKeys(previousDecisions, ["schemaVersion", "decisions"]) ||
+        previousDecisions?.schemaVersion !==
+          "awesomeClaws.clawPortfolioPreviousDecisions.v1" ||
+        !validDecisionHistory(previousDecisions) ||
+        !exactKeys(previousBudget, [
+          "schemaVersion",
+          "periodId",
+          "periodStart",
+          "periodEnd",
+          "caps",
+          "cumulativeAfter",
+          "reservations",
+          "usedRunIds",
+          "usedDecisionIds",
+          "usedIdempotencyKeys",
+          "history",
+          "historyRoot",
+        ]) ||
+        previousBudget?.schemaVersion !==
+          "awesomeClaws.clawPortfolioPreviousBudget.v1" ||
+        previousPeriodStart === null ||
+        previousPeriodEnd === null ||
+        previousPeriodStart > previousPeriodEnd ||
+        !validReplayHistory(
+          previousBudget,
+          previousResult,
+          previousDecisions,
+        ) ||
+        (previousBudget?.periodId === input.budgetLedger.period.id
+          ? previousBudget.periodStart !==
+              input.budgetLedger.period.startsOn ||
+            previousBudget.periodEnd !== input.budgetLedger.period.endsOn ||
+            canonicalJson(previousBudget.caps) !==
+              canonicalJson(input.budgetLedger.caps) ||
+            canonicalJson(input.budgetLedger.cumulativeBefore) !==
+              canonicalJson(previousBudget?.cumulativeAfter)
+          : previousPeriodEnd + 86_400_000 >
+              timestamp(
+                `${input.budgetLedger.period.startsOn}T00:00:00Z`,
+              ) ||
+            Object.values(input.budgetLedger.cumulativeBefore).some(
+              (value) => value !== 0,
+            )) ||
+        !Array.isArray(previousDecisions?.decisions)
+      ) {
+        findings.push(finding("invalid-predecessor-lineage", "$.predecessor"));
+      }
+      priorRunIds.add(previousResult?.runId);
+      priorDecisionIds.add(previousResult?.decisionId);
+      priorIdempotencyKeys.add(previousResult?.idempotencyKey);
+      for (const item of strings(previousBudget?.usedRunIds)) {
+        priorRunIds.add(item);
+      }
+      for (const item of strings(previousBudget?.usedDecisionIds)) {
+        priorDecisionIds.add(item);
+      }
+      for (const item of strings(previousBudget?.usedIdempotencyKeys)) {
+        priorIdempotencyKeys.add(item);
+      }
+      for (const item of rows(previousBudget?.reservations)) {
+        priorIdempotencyKeys.add(item.idempotencyKey);
+      }
+      verifySigned({
+        value: input.predecessor,
+        domain: "run-result",
+        principalRef: input.onboarding.ownerRef,
+        principalKind: "human",
+        signedAt: input.predecessor.capturedAt,
+        asOf,
+        keys,
+        findings,
+        path: "$.predecessor.signature",
+      });
+    }
+  } else if (
+    input.predecessor !== null ||
+    input.run.predecessorResultDigest !== null ||
+    input.run.predecessorDecisionDigest !== null ||
+    input.run.predecessorBudgetDigest !== null ||
+    input.budgetLedger.predecessorBudgetDigest !== null
+  ) {
+    findings.push(finding("unexpected-first-run-predecessor", "$.predecessor"));
+  }
+  if (
+    input.run.mode !== "manage" &&
+    Object.values(input.budgetLedger.cumulativeBefore).some(
+      (value) => value !== 0,
+    )
+  ) {
+    findings.push(
+      finding(
+        "invalid-first-run-budget-baseline",
+        "$.budgetLedger.cumulativeBefore",
+      ),
+    );
+  }
+  if (
+    priorRunIds.has(input.run.id) ||
+    priorDecisionIds.has(input.run.decisionId) ||
+    priorIdempotencyKeys.has(input.run.idempotencyKey) ||
+    input.budgetLedger.reservations.some((item) =>
+      priorIdempotencyKeys.has(item.idempotencyKey),
+    ) ||
+    input.budgetLedger.reservations.some((item) => {
+      const issue = snapshot.issues.find(
+        (candidate) => candidate.id === item.issueRef,
+      );
+      return priorIssueDecisions.has(
+        `${item.issueRef}\0${issue?.revision}`,
+      );
+    })
+  ) {
+    findings.push(finding("replayed-run-or-budget", "$.run"));
+  }
+
+  const issueIds = new Set(snapshot.issueRefs);
+  const approvedUsageScopes = new Set(
+    input.onboarding.approvedUsageScopes
+      .filter(hasSafeControlledSource)
+      .map((item) => `${item.tenantRef}\0${item.sourceRef}`),
+  );
+  if (
+    approvedUsageScopes.size !== input.onboarding.approvedUsageScopes.length
+  ) {
+    findings.push(
+      finding("invalid-owner-approved-usage-scope", "$.onboarding"),
+    );
+  }
+  for (const [envelopeIndex, envelope] of input.usageEnvelopes.entries()) {
+    if (
+      !principalHas(
+        principals,
+        envelope.issuerRef,
+        "usage-evidence-issuer",
+        "system",
+      ) ||
+      !approvedUsageScopes.has(
+        `${envelope.tenantRef}\0${envelope.sourceRef}`,
+      ) ||
+      !hasSafeControlledSource(envelope) ||
+      envelope.revision !== computeUsageEnvelopeRevision(envelope)
+    ) {
+      findings.push(
+        finding("invalid-usage-envelope", `$.usageEnvelopes[${envelopeIndex}]`),
+      );
+    }
+    verifySigned({
+      value: envelope,
+      domain: "usage",
+      principalRef: envelope.issuerRef,
+      principalKind: "system",
+      signedAt: envelope.issuedAt,
+      asOf,
+      keys,
+      findings,
+      path: `$.usageEnvelopes[${envelopeIndex}].signature`,
+    });
+    for (const record of envelope.records) {
+      if (
+        record.revision !== computeUsageRecordRevision(record) ||
+        !issueIds.has(record.issueRef) ||
+        record.tenantRef !== envelope.tenantRef ||
+        record.sourceRef !== envelope.sourceRef ||
+        timestamp(record.observedAt) > timestamp(envelope.issuedAt) ||
+        timestamp(record.validUntil) < asOfMs ||
+        record.successCount + record.failureCount > record.eventCount ||
+        !sameSet(record.minimizedFields, [
+          "event-count",
+          "success-count",
+          "failure-count",
+        ])
+      ) {
+        findings.push(
+          finding("invalid-minimized-usage", `$.usageEnvelopes.${record.id}`),
+        );
+      }
+    }
+  }
+  if (canonicalJson(input.authority) !== canonicalJson(AUTHORITY)) {
+    findings.push(finding("invalid-authority-contract", "$.authority"));
+  }
+
+  const unique = uniqueFindings(findings);
+  if (unique.length > 0) return invalidResult(unique);
+
+  const reservationByIssue = new Map(
+    input.budgetLedger.reservations.map((item) => [item.issueRef, item]),
+  );
+  const issueResults = snapshot.issueRefs.map((issueRef) => {
+    const issue = snapshot.issues.find((item) => item.id === issueRef);
+    const request = requests.get(issueRef);
+    const decision = decisionByIssue.get(issueRef);
+    const assessment = assessments.get(decision.compositionAssessmentRef);
+    const reservation = reservationByIssue.get(issueRef);
+    const priorState = rows(decodedPreviousDecisions?.decisions).find(
+      (item) =>
+        item.issueRef === issueRef &&
+        item.issueRevision === issue.revision &&
+        ["reserved", "completed"].includes(item.state),
+    )?.state;
+    const state =
+      decision.classification === "VARIANT"
+        ? "variant-outside-catalog"
+        : ["PRODUCT_DECISION", "RETIRE"].includes(decision.classification)
+          ? "owner-decision-required"
+          : decision.classification === "DUPLICATE"
+            ? "owner-action-required"
+            : decision.classification === "UNSUPPORTED"
+              ? "blocked-authority"
+              : priorState === "completed"
+                ? "previously-completed"
+                : priorState === "reserved"
+                  ? "previously-reserved"
+                  : reservation
+                    ? "plan-ready"
+                    : "blocked-budget";
+    return {
+      issueRef,
+      issueRevision: issue.revision,
+      provider: {
+        repository: issue.repository,
+        providerIssueId: issue.providerIssueId,
+        number: issue.number,
+        url: issue.url,
+        state: issue.state,
+        revision: issue.revision,
+        etag: issue.etag,
+        titleDigest: issue.title.digest,
+        bodyDigest: issue.body.digest,
+      },
+      classification: decision.classification,
+      rationaleCodes: decision.rationaleCodes,
+      affectedClawIds: decision.affectedClawIds,
+      evidenceRefs: request.evidenceRefs,
+      evidenceLinks: request.evidenceRefs.map((ref) => ({
+        ref,
+        sourceIssueRef: issue.id,
+        sourceIssueRevision: issue.revision,
       })),
-      quality: analogue.quality,
-      regression: analogue.regression,
-      runtimeScenarios: analogue.runtimeScenarios,
-      runtimeProfile: analogue.runtimeProfile,
-      mockPlus: analogue.mockPlus,
+      state,
+      reservationRef: reservation?.id ?? null,
+      ownerHandoff: {
+        decisionId: input.run.decisionId,
+        grantRefs: input.grants
+          .filter((item) => item.issueRefs.includes(issueRef))
+          .map((item) => item.id),
+        prReadyPlan:
+          state === "plan-ready"
+            ? prReadyPlan(input, issue, request, decision, assessment)
+            : null,
+        externalMutation: false,
+      },
+    };
+  });
+  const usageEffects = input.usageEnvelopes.flatMap((envelope) =>
+    envelope.records.flatMap((record) => [
+      {
+        evidenceRef: record.id,
+        issueRef: record.issueRef,
+        effect: "reprioritize-existing-issue",
+        priorityDelta: record.failureCount > 0 ? 1 : 0,
+        advisoryOnly: true,
+        productionMutation: false,
+      },
+      {
+        evidenceRef: record.id,
+        issueRef: record.issueRef,
+        effect: "create-draft-issue",
+        requiresAdmission: true,
+        advisoryOnly: true,
+        productionMutation: false,
+      },
+    ]),
+  );
+  const result = {
+    schemaVersion: V2_RESULT_VERSION,
+    resultStatus: issueResults.some((item) => item.state.startsWith("blocked-"))
+      ? "blocked-owner-handoff"
+      : "ready-for-owner-review",
+    run: {
+      id: input.run.id,
+      decisionId: input.run.decisionId,
+      mode: input.run.mode,
+      asOf,
+      idempotencyKey: input.run.idempotencyKey,
+      portfolioRevision: input.run.portfolioRevision,
+      providerSnapshotRevision: snapshot.revision,
+      packageTreeRevision: tree.revision,
+      predecessorResultDigest: input.run.predecessorResultDigest,
+      predecessorDecisionDigest: input.run.predecessorDecisionDigest,
+      predecessorBudgetDigest: input.run.predecessorBudgetDigest,
     },
-    requiredFacts,
-    currentFacts,
-    preservedInvariantIds: requiredFacts
-      .filter(
-        (item) => currentById.get(item.id)?.valueDigest === item.valueDigest,
-      )
-      .map((item) => item.id),
-    missingInvariantIds: futureClears ? [] : missing.map((item) => item.id),
-    futureComposition: future,
-    deleteCandidate: futureClears,
+    onboarding: {
+      mode: input.onboarding.mode,
+      selectedClawIds: input.onboarding.selectedClawIds,
+      firstRun: input.run.mode !== "manage",
+    },
+    issues: issueResults,
+    budget: {
+      ledgerRef: input.budgetLedger.id,
+      ledgerRevision: input.budgetLedger.revision,
+      leaseRef: input.budgetLedger.lease.id,
+      atomicCheckpointConsumption: true,
+      period: input.budgetLedger.period,
+      caps: input.budgetLedger.caps,
+      cumulativeBefore: input.budgetLedger.cumulativeBefore,
+      reservations: input.budgetLedger.reservations,
+      cumulativeAfter: input.budgetLedger.cumulativeAfter,
+      withinCaps: Object.keys(input.budgetLedger.caps).every(
+        (key) =>
+          input.budgetLedger.cumulativeAfter[key] <=
+          input.budgetLedger.caps[key],
+      ),
+      replayed: false,
+      increaseAllowed: false,
+    },
+    usage: {
+      supplied: usageEffects.length > 0,
+      effects: usageEffects,
+      correctnessOrSafetyOverride: false,
+      productionMutation: false,
+    },
+    composition: {
+      graphDigest: graph.graphDigest,
+      currentVerdict: graph.verdict,
+      typedLossIds: graph.losses.map((item) => item.id),
+      reachableAuthority: graph.reachableAuthority,
+    },
+    antiCountIncentives: {
+      rawClawCountObjective: false,
+      composeOrImproveReservedBeforeNew: true,
+      reservedNewCount: input.budgetLedger.reservations.filter(
+        (item) => item.classification === "NEW",
+      ).length,
+      reservedComposeOrImproveCount: input.budgetLedger.reservations.filter(
+        (item) => ["COMPOSE", "IMPROVE"].includes(item.classification),
+      ).length,
+    },
+    authority: { ...AUTHORITY },
+    findings: [],
   };
+  const sealed = {
+    ...result,
+    resultDigest: sha256Digest(result),
+  };
+  return JSON.parse(canonicalJson(sealed));
 }
 
-export function renderPortfolioProof(result) {
+export function renderPortfolioV2Proof(result) {
   if (result.resultStatus === "invalid") {
-    return [
-      "# Claw Portfolio Manager proof",
-      "",
-      "**Status:** invalid",
-      "",
-      ...result.findings.map((item) => `- \`${item.code}\` at \`${item.path}\``),
-      "",
-    ].join("\n");
+    return `# Claw Portfolio Manager V2 proof\n\n**Status:** invalid\n\n${result.findings
+      .map((item) => `- \`${item.code}\` at \`${item.path}\``)
+      .join("\n")}\n`;
   }
   const rows = result.issues
     .map(
       (item) =>
-        `| \`${item.issueRef}\` | ${item.classification} | ${item.state} | ${item.rationale.join(", ")} |`,
+        `| ${item.provider.number} | ${item.classification} | ${item.state} | ${item.rationaleCodes.join(", ")} |`,
     )
     .join("\n");
-  return `# Claw Portfolio Manager candidate proof
+  return `# Claw Portfolio Manager V2 proof
 
 **Status:** ${result.resultStatus}
+**Mode:** ${result.run.mode}
+**Run / decision:** \`${result.run.id}\` / \`${result.run.decisionId}\`
 **Result digest:** \`${result.resultDigest}\`
-**Portfolio revision:** \`${result.run.portfolioRevision}\`
-**Issue manifest revision:** \`${result.run.issueManifestRevision}\`
 
 | Issue | Classification | State | Rationale |
-| --- | --- | --- | --- |
+| ---: | --- | --- | --- |
 ${rows}
 
-Budget use: ${result.budget.used.candidateCount}/${result.budget.limits.candidateCount} candidates, ${result.budget.used.admissions}/${result.budget.limits.admissions} admissions, ${result.budget.used.workUnits}/${result.budget.limits.workUnits} work units, ${result.budget.used.costMicros}/${result.budget.limits.costMicros} cost micros, ${result.budget.used.durationMinutes}/${result.budget.limits.durationMinutes} minutes.
-
-Compose-first: ${result.antiCountIncentives.composeFirstSatisfied}. Raw Claw count objective: ${result.antiCountIncentives.rawClawCountObjective}.
-
-Every output is a proposal or owner handoff. Merge, publication, budget increase,
-risk acceptance, external mutation, production Claw mutation, sensitive-person
-inference, and resealing remain structurally false.
+The signed budget ledger reserves IMPROVE and COMPOSE before NEW and remains
+within every cumulative period cap. Usage creates only advisory issue proposals
+or priority hints. Production mutation, merge, publication, risk acceptance,
+budget increase, sensitive-person inference, and resealing remain false.
 `;
 }
 
@@ -2886,9 +2579,7 @@ function readBoundedJson(path, maximumBytes) {
       if (count === 0) break;
       total += count;
     }
-    if (total > maximumBytes) {
-      throw new Error("bounded-input-exceeded");
-    }
+    if (total > maximumBytes) throw new Error("bounded-input-exceeded");
     return JSON.parse(buffer.subarray(0, total).toString("utf8"));
   } finally {
     closeSync(descriptor);
@@ -2904,44 +2595,46 @@ async function runCli() {
   const inputPath = process.argv[2];
   const asOf = valueAfter("--as-of");
   const trustPath = valueAfter("--trust");
-  const receiptsPath = valueAfter("--source-receipts");
-  const markdown = process.argv.includes("--markdown");
-  if (!inputPath || !asOf || !trustPath || !receiptsPath) {
+  const packageTreePath = valueAfter("--package-tree");
+  if (!inputPath || !asOf || !trustPath || !packageTreePath) {
     process.stderr.write(
-      "usage: node claw-portfolio-manager.mjs <input.json> --as-of <timestamp> --trust <public-trust.json> --source-receipts <source-receipts.json> [--markdown]\n",
+      "usage: node claw-portfolio-manager.mjs <input.json> --as-of <timestamp> --trust <trust.json> --package-tree <package-tree.json> [--markdown]\n",
     );
     process.exitCode = 2;
     return;
   }
   try {
-    const result = await evaluateClawPortfolio(
-      readBoundedJson(inputPath, CANDIDATE_LIMITS.inputBytes),
+    const result = await evaluatePortfolioV2(
+      readBoundedJson(inputPath, V2_LIMITS.inputBytes),
       {
         asOf,
-        publicTrust: readBoundedJson(
-          trustPath,
-          CANDIDATE_LIMITS.publicTrustBytes,
-        ),
-        sourceReceipts: readBoundedJson(
-          receiptsPath,
-          CANDIDATE_LIMITS.sourceReceiptsBytes,
+        publicTrust: readBoundedJson(trustPath, V2_LIMITS.trustBytes),
+        packageTree: readBoundedJson(
+          packageTreePath,
+          V2_LIMITS.packageTreeBytes,
         ),
       },
     );
-    const output = markdown
-      ? renderPortfolioProof(result)
+    const output = process.argv.includes("--markdown")
+      ? renderPortfolioV2Proof(result)
       : `${JSON.stringify(result, null, 2)}\n`;
-    if (Buffer.byteLength(output) > CANDIDATE_LIMITS.outputBytes) {
+    if (Buffer.byteLength(output) > V2_LIMITS.outputBytes) {
       throw new Error("bounded-output-exceeded");
     }
     process.stdout.write(output);
     process.exitCode = result.resultStatus === "invalid" ? 1 : 0;
   } catch {
     process.stdout.write(
-      `${JSON.stringify(invalidResult([finding("bounded-cli-failure", "$")]))}\n`,
+      `${JSON.stringify(
+        invalidResult([finding("bounded-cli-failure", "$")]),
+      )}\n`,
     );
     process.exitCode = 1;
   }
+}
+
+export function predecessorBytes(value) {
+  return bytesRecord(value);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

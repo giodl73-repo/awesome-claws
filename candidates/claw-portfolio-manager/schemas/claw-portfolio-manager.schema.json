@@ -1,90 +1,70 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://awesome-claws.dev/candidates/claw-portfolio-manager.schema.json",
-  "title": "Claw Portfolio Manager candidate input",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schemaVersion",
     "run",
+    "onboarding",
     "principals",
     "grants",
-    "portfolioManifest",
-    "issueManifest",
+    "providerSnapshot",
+    "compositionAssessments",
+    "classificationDecisions",
+    "budgetLedger",
     "predecessor",
-    "budget",
-    "issues",
-    "evidenceEnvelopes",
-    "usagePolicy",
-    "coverage",
+    "usageEnvelopes",
     "authority"
   ],
   "properties": {
-    "schemaVersion": {
-      "const": "awesomeClaws.clawPortfolioManagerCandidate.v1"
-    },
-    "run": {
-      "$ref": "#/$defs/run"
-    },
+    "schemaVersion": {"const": "awesomeClaws.clawPortfolioManagerCandidate.v2"},
+    "run": {"$ref": "#/$defs/run"},
+    "onboarding": {"$ref": "#/$defs/onboarding"},
     "principals": {
       "type": "array",
-      "minItems": 5,
-      "maxItems": 16,
-      "items": {
-        "$ref": "#/$defs/principal"
-      }
+      "minItems": 7,
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/principal"}
     },
     "grants": {
       "type": "array",
-      "minItems": 4,
-      "maxItems": 16,
-      "items": {
-        "$ref": "#/$defs/grant"
-      }
+      "minItems": 3,
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/grant"}
     },
-    "portfolioManifest": {
-      "$ref": "#/$defs/portfolioManifest"
-    },
-    "issueManifest": {
-      "$ref": "#/$defs/issueManifest"
-    },
-    "predecessor": {
-      "$ref": "#/$defs/predecessor"
-    },
-    "budget": {
-      "$ref": "#/$defs/budget"
-    },
-    "issues": {
-      "type": "array",
-      "minItems": 7,
-      "maxItems": 16,
-      "items": {
-        "$ref": "#/$defs/issue"
-      }
-    },
-    "evidenceEnvelopes": {
+    "providerSnapshot": {"$ref": "#/$defs/providerSnapshot"},
+    "compositionAssessments": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/compositionAssessment"}
+    },
+    "classificationDecisions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/classificationDecision"}
+    },
+    "budgetLedger": {"$ref": "#/$defs/budgetLedger"},
+    "predecessor": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/predecessor"}
+      ]
+    },
+    "usageEnvelopes": {
+      "type": "array",
       "maxItems": 8,
-      "items": {
-        "$ref": "#/$defs/evidenceEnvelope"
-      }
+      "items": {"$ref": "#/$defs/usageEnvelope"}
     },
-    "usagePolicy": {
-      "$ref": "#/$defs/usagePolicy"
-    },
-    "coverage": {
-      "$ref": "#/$defs/coverage"
-    },
-    "authority": {
-      "$ref": "#/$defs/authority"
-    }
+    "authority": {"$ref": "#/$defs/authority"}
   },
   "$defs": {
     "id": {
       "type": "string",
       "minLength": 3,
-      "maxLength": 96,
+      "maxLength": 120,
       "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
     },
     "digest": {
@@ -96,59 +76,23 @@
       "format": "date-time",
       "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
     },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
     "idList": {
       "type": "array",
       "maxItems": 32,
       "uniqueItems": true,
-      "items": {
-        "$ref": "#/$defs/id"
-      }
-    },
-    "nullableId": {
-      "oneOf": [
-        {
-          "type": "null"
-        },
-        {
-          "$ref": "#/$defs/id"
-        }
-      ]
-    },
-    "nullableDigest": {
-      "oneOf": [
-        {
-          "type": "null"
-        },
-        {
-          "$ref": "#/$defs/digest"
-        }
-      ]
-    },
-    "nullableTimestamp": {
-      "oneOf": [
-        {
-          "type": "null"
-        },
-        {
-          "$ref": "#/$defs/timestamp"
-        }
-      ]
+      "items": {"$ref": "#/$defs/id"}
     },
     "signature": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "keyId",
-        "algorithm",
-        "value"
-      ],
+      "required": ["keyId", "algorithm", "value"],
       "properties": {
-        "keyId": {
-          "$ref": "#/$defs/id"
-        },
-        "algorithm": {
-          "const": "Ed25519"
-        },
+        "keyId": {"$ref": "#/$defs/id"},
+        "algorithm": {"const": "Ed25519"},
         "value": {
           "type": "string",
           "minLength": 86,
@@ -157,60 +101,160 @@
         }
       }
     },
+    "amounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateCount",
+        "admissions",
+        "workUnits",
+        "costMicros",
+        "durationMinutes"
+      ],
+      "properties": {
+        "candidateCount": {"type": "integer", "minimum": 0, "maximum": 32},
+        "admissions": {"type": "integer", "minimum": 0, "maximum": 64},
+        "workUnits": {"type": "integer", "minimum": 0, "maximum": 100000},
+        "costMicros": {"type": "integer", "minimum": 0, "maximum": 1000000000000},
+        "durationMinutes": {"type": "integer", "minimum": 0, "maximum": 525600}
+      }
+    },
     "run": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "id",
+        "decisionId",
+        "mode",
         "asOf",
-        "portfolioManifestRef",
-        "issueManifestRef",
-        "predecessorRef",
-        "budgetRef",
-        "outputMode"
+        "budgetPeriodRef",
+        "catalogRevision",
+        "portfolioRevision",
+        "providerSnapshotRef",
+        "providerSnapshotRevision",
+        "providerSnapshotCompletenessRoot",
+        "packageTreeRef",
+        "packageTreeRevision",
+        "predecessorResultDigest",
+        "predecessorDecisionDigest",
+        "predecessorBudgetDigest",
+        "idempotencyKey",
+        "signedAt",
+        "signerRef",
+        "signature"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
+        "id": {"$ref": "#/$defs/id"},
+        "decisionId": {"$ref": "#/$defs/id"},
+        "mode": {"enum": ["bootstrap", "adopt", "manage"]},
+        "asOf": {"$ref": "#/$defs/timestamp"},
+        "budgetPeriodRef": {"$ref": "#/$defs/id"},
+        "catalogRevision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "portfolioRevision": {"$ref": "#/$defs/digest"},
+        "providerSnapshotRef": {"$ref": "#/$defs/id"},
+        "providerSnapshotRevision": {"$ref": "#/$defs/digest"},
+        "providerSnapshotCompletenessRoot": {"$ref": "#/$defs/digest"},
+        "packageTreeRef": {"$ref": "#/$defs/id"},
+        "packageTreeRevision": {"$ref": "#/$defs/digest"},
+        "predecessorResultDigest": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/digest"}]
         },
-        "asOf": {
-          "$ref": "#/$defs/timestamp"
+        "predecessorDecisionDigest": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/digest"}]
         },
-        "portfolioManifestRef": {
-          "$ref": "#/$defs/id"
+        "predecessorBudgetDigest": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/digest"}]
         },
-        "issueManifestRef": {
-          "$ref": "#/$defs/id"
+        "idempotencyKey": {"$ref": "#/$defs/digest"},
+        "signedAt": {"$ref": "#/$defs/timestamp"},
+        "signerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
+      }
+    },
+    "bootstrapEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "label": {"type": "string", "minLength": 1, "maxLength": 160}
+      }
+    },
+    "onboarding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "ownerRef",
+        "selectedClawIds",
+        "approvedUsageScopes",
+        "roles",
+        "jobs",
+        "processes",
+        "capabilities",
+        "signedAt",
+        "signature"
+      ],
+      "properties": {
+        "mode": {"enum": ["bootstrap", "adopt", "manage"]},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "selectedClawIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
         },
-        "predecessorRef": {
-          "$ref": "#/$defs/id"
+        "approvedUsageScopes": {
+          "type": "array",
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["tenantRef", "sourceRef"],
+            "properties": {
+              "tenantRef": {"$ref": "#/$defs/id"},
+              "sourceRef": {
+                "type": "string",
+                "minLength": 16,
+                "maxLength": 512,
+                "pattern": "^controlled://"
+              }
+            }
+          }
         },
-        "budgetRef": {
-          "$ref": "#/$defs/id"
+        "roles": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {"$ref": "#/$defs/bootstrapEntry"}
         },
-        "outputMode": {
-          "const": "proposal-only"
-        }
+        "jobs": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {"$ref": "#/$defs/bootstrapEntry"}
+        },
+        "processes": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {"$ref": "#/$defs/bootstrapEntry"}
+        },
+        "capabilities": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {"$ref": "#/$defs/bootstrapEntry"}
+        },
+        "signedAt": {"$ref": "#/$defs/timestamp"},
+        "signature": {"$ref": "#/$defs/signature"}
       }
     },
     "principal": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "kind",
-        "roles"
-      ],
+      "required": ["id", "kind", "roles"],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "kind": {
-          "enum": [
-            "human",
-            "system"
-          ]
-        },
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["human", "system"]},
         "roles": {
           "type": "array",
           "minItems": 1,
@@ -219,13 +263,14 @@
           "items": {
             "enum": [
               "portfolio-owner",
-              "issue-owner",
-              "product-decision-owner",
-              "retirement-owner",
-              "grant-issuer",
+              "issue-source-custodian",
               "catalog-source-custodian",
-              "issue-evidence-custodian",
-              "usage-evidence-issuer"
+              "classifier",
+              "composition-reviewer",
+              "usage-evidence-issuer",
+              "grant-issuer",
+              "decision-owner",
+              "budget-owner"
             ]
           }
         }
@@ -238,282 +283,272 @@
         "id",
         "issuerRef",
         "granteeRef",
-        "kind",
-        "portfolioRef",
+        "scope",
         "issueRefs",
-        "classifications",
         "issuedAt",
         "notBefore",
         "expiresAt",
         "signature"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "issuerRef": {
-          "$ref": "#/$defs/id"
-        },
-        "granteeRef": {
-          "$ref": "#/$defs/id"
-        },
-        "kind": {
+        "id": {"$ref": "#/$defs/id"},
+        "issuerRef": {"$ref": "#/$defs/id"},
+        "granteeRef": {"$ref": "#/$defs/id"},
+        "scope": {
           "enum": [
             "portfolio-review",
-            "issue-admission-review",
+            "classification-review",
             "product-decision-review",
-            "retirement-review"
+            "retirement-review",
+            "budget-reservation"
           ]
         },
-        "portfolioRef": {
-          "$ref": "#/$defs/id"
-        },
-        "issueRefs": {
-          "$ref": "#/$defs/idList"
-        },
-        "classifications": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 8,
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/classification"
-          }
-        },
-        "issuedAt": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "notBefore": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "expiresAt": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "signature": {
-          "$ref": "#/$defs/signature"
-        }
+        "issueRefs": {"$ref": "#/$defs/idList"},
+        "issuedAt": {"$ref": "#/$defs/timestamp"},
+        "notBefore": {"$ref": "#/$defs/timestamp"},
+        "expiresAt": {"$ref": "#/$defs/timestamp"},
+        "signature": {"$ref": "#/$defs/signature"}
       }
     },
-    "clawRef": {
+    "repositoryIdentity": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "clawId",
-        "clawRevision"
-      ],
+      "required": ["provider", "owner", "name", "nodeId"],
       "properties": {
-        "clawId": {
-          "$ref": "#/$defs/id"
-        },
-        "clawRevision": {
-          "$ref": "#/$defs/digest"
-        }
+        "provider": {"const": "github"},
+        "owner": {"$ref": "#/$defs/id"},
+        "name": {"$ref": "#/$defs/id"},
+        "nodeId": {"type": "string", "minLength": 8, "maxLength": 128}
       }
     },
-    "selectedClaw": {
+    "bytes": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "clawId",
-        "clawRevision",
-        "sourceReceiptRef"
-      ],
+      "required": ["mediaType", "byteLength", "digest", "contentBase64"],
       "properties": {
-        "clawId": {
-          "$ref": "#/$defs/id"
-        },
-        "clawRevision": {
-          "$ref": "#/$defs/digest"
-        },
-        "sourceReceiptRef": {
-          "$ref": "#/$defs/id"
-        }
-      }
-    },
-    "portfolioManifest": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "id",
-        "revision",
-        "predecessorRevision",
-        "ownerRef",
-        "signedAt",
-        "catalogRevision",
-        "selectedClaws",
-        "issueUniverseRoot",
-        "budgetRevision",
-        "principalRoot",
-        "grantRoot",
-        "usagePolicyRevision",
-        "grantRefs",
-        "signature"
-      ],
-      "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "revision": {
-          "$ref": "#/$defs/digest"
-        },
-        "predecessorRevision": {
-          "$ref": "#/$defs/digest"
-        },
-        "ownerRef": {
-          "$ref": "#/$defs/id"
-        },
-        "signedAt": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "catalogRevision": {
+        "mediaType": {"enum": ["text/plain; charset=utf-8", "application/json"]},
+        "byteLength": {"type": "integer", "minimum": 0, "maximum": 65536},
+        "digest": {"$ref": "#/$defs/digest"},
+        "contentBase64": {
           "type": "string",
-          "pattern": "^[0-9a-f]{40}$"
-        },
-        "selectedClaws": {
-          "type": "array",
-          "minItems": 2,
-          "maxItems": 8,
-          "items": {
-            "$ref": "#/$defs/selectedClaw"
-          }
-        },
-        "issueUniverseRoot": {
-          "$ref": "#/$defs/digest"
-        },
-        "budgetRevision": {
-          "$ref": "#/$defs/digest"
-        },
-        "principalRoot": {
-          "$ref": "#/$defs/digest"
-        },
-        "grantRoot": {
-          "$ref": "#/$defs/digest"
-        },
-        "usagePolicyRevision": {
-          "$ref": "#/$defs/digest"
-        },
-        "grantRefs": {
-          "type": "array",
-          "minItems": 4,
-          "maxItems": 16,
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/id"
-          }
-        },
-        "signature": {
-          "$ref": "#/$defs/signature"
+          "maxLength": 90000,
+          "pattern": "^[A-Za-z0-9+/]*={0,2}$"
         }
       }
     },
-    "issueManifest": {
+    "providerIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "repository",
+        "providerIssueId",
+        "number",
+        "url",
+        "state",
+        "revision",
+        "etag",
+        "title",
+        "body",
+        "observedAt"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "repository": {"$ref": "#/$defs/repositoryIdentity"},
+        "providerIssueId": {"type": "string", "minLength": 1, "maxLength": 128},
+        "number": {"type": "integer", "minimum": 1, "maximum": 2147483647},
+        "url": {"type": "string", "format": "uri", "pattern": "^https://"},
+        "state": {"enum": ["open", "closed"]},
+        "revision": {"$ref": "#/$defs/digest"},
+        "etag": {"type": "string", "minLength": 1, "maxLength": 256},
+        "title": {"$ref": "#/$defs/bytes"},
+        "body": {"$ref": "#/$defs/bytes"},
+        "observedAt": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    "providerSnapshot": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "id",
         "revision",
-        "predecessorRevision",
-        "ownerRef",
-        "signedAt",
+        "repository",
+        "custodianRef",
+        "capturedAt",
         "issueRefs",
-        "issueUniverseRoot",
+        "issues",
+        "completenessRoot",
         "signature"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "revision": {
-          "$ref": "#/$defs/digest"
-        },
-        "predecessorRevision": {
-          "$ref": "#/$defs/digest"
-        },
-        "ownerRef": {
-          "$ref": "#/$defs/id"
-        },
-        "signedAt": {
-          "$ref": "#/$defs/timestamp"
-        },
+        "id": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/digest"},
+        "repository": {"$ref": "#/$defs/repositoryIdentity"},
+        "custodianRef": {"$ref": "#/$defs/id"},
+        "capturedAt": {"$ref": "#/$defs/timestamp"},
         "issueRefs": {
           "type": "array",
-          "minItems": 7,
-          "maxItems": 16,
+          "minItems": 1,
+          "maxItems": 32,
           "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/id"
-          }
+          "items": {"$ref": "#/$defs/id"}
         },
-        "issueUniverseRoot": {
-          "$ref": "#/$defs/digest"
+        "issues": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {"$ref": "#/$defs/providerIssue"}
         },
-        "signature": {
-          "$ref": "#/$defs/signature"
-        }
+        "completenessRoot": {"$ref": "#/$defs/digest"},
+        "signature": {"$ref": "#/$defs/signature"}
       }
     },
-    "predecessorIssue": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "issueRef",
-        "revision"
-      ],
-      "properties": {
-        "issueRef": {
-          "$ref": "#/$defs/id"
-        },
-        "revision": {
-          "$ref": "#/$defs/digest"
-        }
-      }
-    },
-    "predecessor": {
+    "compositionAssessment": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "id",
-        "revision",
-        "ownerRef",
-        "capturedAt",
-        "portfolioRevision",
-        "issueManifestRevision",
-        "issueRevisions",
+        "runId",
+        "decisionId",
+        "issueRef",
+        "issueRevision",
+        "graphDigest",
+        "requiredPortTypes",
+        "requiredOutputType",
+        "feasible",
+        "proposedClawRefs",
+        "lossIds",
+        "assessedAt",
+        "reviewerRef",
         "signature"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "revision": {
-          "$ref": "#/$defs/digest"
-        },
-        "ownerRef": {
-          "$ref": "#/$defs/id"
-        },
-        "capturedAt": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "portfolioRevision": {
-          "$ref": "#/$defs/digest"
-        },
-        "issueManifestRevision": {
-          "$ref": "#/$defs/digest"
-        },
-        "issueRevisions": {
+        "id": {"$ref": "#/$defs/id"},
+        "runId": {"$ref": "#/$defs/id"},
+        "decisionId": {"$ref": "#/$defs/id"},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "graphDigest": {"$ref": "#/$defs/digest"},
+        "requiredPortTypes": {
           "type": "array",
-          "minItems": 1,
           "maxItems": 16,
-          "items": {
-            "$ref": "#/$defs/predecessorIssue"
-          }
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 120}
         },
-        "signature": {
-          "$ref": "#/$defs/signature"
-        }
+        "requiredOutputType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "feasible": {"type": "boolean"},
+        "proposedClawRefs": {"$ref": "#/$defs/idList"},
+        "lossIds": {"$ref": "#/$defs/idList"},
+        "assessedAt": {"$ref": "#/$defs/timestamp"},
+        "reviewerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
       }
     },
-    "budget": {
+    "classificationDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "runId",
+        "decisionId",
+        "issueRef",
+        "issueRevision",
+        "decisionKind",
+        "classification",
+        "comparison",
+        "rationaleCodes",
+        "affectedClawIds",
+        "compositionAssessmentRef",
+        "classifierVersion",
+        "classifierCodeDigest",
+        "decidedAt",
+        "deciderRef",
+        "signature"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "runId": {"$ref": "#/$defs/id"},
+        "decisionId": {"$ref": "#/$defs/id"},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "decisionKind": {"enum": ["typed-classifier", "human-decision"]},
+        "classification": {
+          "enum": [
+            "NEW",
+            "IMPROVE",
+            "COMPOSE",
+            "VARIANT",
+            "PRODUCT_DECISION",
+            "RETIRE",
+            "DUPLICATE",
+            "UNSUPPORTED"
+          ]
+        },
+        "comparison": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "user",
+            "job",
+            "workflow",
+            "outputs",
+            "authority",
+            "proof",
+            "nearestClawIds"
+          ],
+          "properties": {
+            "user": {"enum": ["same", "different", "not-applicable"]},
+            "job": {"enum": ["same", "different", "not-applicable"]},
+            "workflow": {"enum": ["same", "different", "not-applicable"]},
+            "outputs": {"enum": ["same", "different", "not-applicable"]},
+            "authority": {"enum": ["same", "different", "not-applicable"]},
+            "proof": {"enum": ["same", "different", "not-applicable"]},
+            "nearestClawIds": {"$ref": "#/$defs/idList"}
+          }
+        },
+        "rationaleCodes": {"$ref": "#/$defs/idList"},
+        "affectedClawIds": {"$ref": "#/$defs/idList"},
+        "compositionAssessmentRef": {"$ref": "#/$defs/id"},
+        "classifierVersion": {"const": "claw-portfolio-classifier-v2"},
+        "classifierCodeDigest": {"$ref": "#/$defs/digest"},
+        "decidedAt": {"$ref": "#/$defs/timestamp"},
+        "deciderRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
+      }
+    },
+    "reservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "periodId",
+        "runId",
+        "decisionId",
+        "issueRef",
+        "issueRevision",
+        "classification",
+        "idempotencyKey",
+        "amounts",
+        "state"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "periodId": {"$ref": "#/$defs/id"},
+        "runId": {"$ref": "#/$defs/id"},
+        "decisionId": {"$ref": "#/$defs/id"},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "classification": {"enum": ["NEW", "IMPROVE", "COMPOSE"]},
+        "idempotencyKey": {"$ref": "#/$defs/digest"},
+        "amounts": {"$ref": "#/$defs/amounts"},
+        "state": {"enum": ["reserved", "consumed"]}
+      }
+    },
+    "budgetLedger": {
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -521,375 +556,152 @@
         "revision",
         "ownerRef",
         "grantRef",
-        "maxCandidateCount",
-        "maxAdmissions",
-        "maxWorkUnits",
-        "maxCostMicros",
-        "maxDurationMinutes"
+        "period",
+        "runId",
+        "decisionId",
+        "predecessorBudgetDigest",
+        "lease",
+        "caps",
+        "cumulativeBefore",
+        "reservations",
+        "cumulativeAfter",
+        "issuedAt",
+        "signature"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
+        "id": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/digest"},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "grantRef": {"$ref": "#/$defs/id"},
+        "period": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "startsOn", "endsOn"],
+          "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "startsOn": {"$ref": "#/$defs/date"},
+            "endsOn": {"$ref": "#/$defs/date"}
+          }
         },
-        "revision": {
-          "$ref": "#/$defs/digest"
+        "runId": {"$ref": "#/$defs/id"},
+        "decisionId": {"$ref": "#/$defs/id"},
+        "predecessorBudgetDigest": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/digest"}]
         },
-        "ownerRef": {
-          "$ref": "#/$defs/id"
-        },
-        "grantRef": {
-          "$ref": "#/$defs/id"
-        },
-        "maxCandidateCount": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 8
-        },
-        "maxAdmissions": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 16
-        },
-        "maxWorkUnits": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 1000
-        },
-        "maxCostMicros": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000000000
-        },
-        "maxDurationMinutes": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 10080
-        }
-      }
-    },
-    "demand": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "candidateSlots",
-        "admissionSlots",
-        "workUnits",
-        "costMicros",
-        "durationMinutes"
-      ],
-      "properties": {
-        "candidateSlots": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1
-        },
-        "admissionSlots": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1
-        },
-        "workUnits": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000
-        },
-        "costMicros": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000000000
-        },
-        "durationMinutes": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 10080
-        }
-      }
-    },
-    "signals": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "sameRepeatableJob",
-        "compositionPreservesJob",
-        "compositionClawRefs",
-        "newInvariantIds",
-        "variantOnly",
-        "requiresProductDecision",
-        "retirementSignal",
-        "unsupportedReason",
-        "duplicateOfIssueRef",
-        "conflictingEvidenceRefs",
-        "freshAfter"
-      ],
-      "properties": {
-        "sameRepeatableJob": {
-          "type": "boolean"
-        },
-        "compositionPreservesJob": {
-          "type": "boolean"
-        },
-        "compositionClawRefs": {
-          "$ref": "#/$defs/idList"
-        },
-        "newInvariantIds": {
-          "$ref": "#/$defs/idList"
-        },
-        "variantOnly": {
-          "type": "boolean"
-        },
-        "requiresProductDecision": {
-          "type": "boolean"
-        },
-        "retirementSignal": {
-          "type": "boolean"
-        },
-        "unsupportedReason": {
-          "oneOf": [
-            {
-              "type": "null"
+        "lease": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schemaVersion",
+            "id",
+            "storeRef",
+            "periodId",
+            "runId",
+            "decisionId",
+            "expectedCheckpointDigest",
+            "state",
+            "issuedAt",
+            "expiresAt",
+            "issuerRef",
+            "signature"
+          ],
+          "properties": {
+            "schemaVersion": {
+              "const": "awesomeClaws.clawPortfolioBudgetLease.v1"
             },
-            {
-              "enum": [
-                "outside-catalog-scope",
-                "requests-direct-production-action",
-                "requests-sensitive-person-inference"
-              ]
-            }
-          ]
+            "id": {"$ref": "#/$defs/id"},
+            "storeRef": {"$ref": "#/$defs/id"},
+            "periodId": {"$ref": "#/$defs/id"},
+            "runId": {"$ref": "#/$defs/id"},
+            "decisionId": {"$ref": "#/$defs/id"},
+            "expectedCheckpointDigest": {
+              "oneOf": [{"type": "null"}, {"$ref": "#/$defs/digest"}]
+            },
+            "state": {"const": "exclusive-cas-granted"},
+            "issuedAt": {"$ref": "#/$defs/timestamp"},
+            "expiresAt": {"$ref": "#/$defs/timestamp"},
+            "issuerRef": {"$ref": "#/$defs/id"},
+            "signature": {"$ref": "#/$defs/signature"}
+          }
         },
-        "duplicateOfIssueRef": {
-          "$ref": "#/$defs/nullableId"
+        "caps": {"$ref": "#/$defs/amounts"},
+        "cumulativeBefore": {"$ref": "#/$defs/amounts"},
+        "reservations": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {"$ref": "#/$defs/reservation"}
         },
-        "conflictingEvidenceRefs": {
-          "$ref": "#/$defs/idList"
-        },
-        "freshAfter": {
-          "$ref": "#/$defs/timestamp"
-        }
+        "cumulativeAfter": {"$ref": "#/$defs/amounts"},
+        "issuedAt": {"$ref": "#/$defs/timestamp"},
+        "signature": {"$ref": "#/$defs/signature"}
       }
     },
-    "issue": {
+    "predecessor": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "id",
-        "revision",
-        "previousRevision",
-        "sourceDigest",
-        "openedAt",
-        "observedAt",
-        "basePriority",
-        "affectedClaws",
-        "evidenceRefs",
-        "evidenceBindings",
-        "requestedAuthority",
-        "signals",
-        "demand"
+        "capturedAt",
+        "runId",
+        "decisionId",
+        "result",
+        "decisions",
+        "budget",
+        "signature"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "revision": {
-          "$ref": "#/$defs/digest"
-        },
-        "previousRevision": {
-          "$ref": "#/$defs/nullableDigest"
-        },
-        "sourceDigest": {
-          "$ref": "#/$defs/digest"
-        },
-        "openedAt": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "observedAt": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "basePriority": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 100
-        },
-        "affectedClaws": {
-          "type": "array",
-          "maxItems": 8,
-          "items": {
-            "$ref": "#/$defs/clawRef"
-          }
-        },
-        "evidenceRefs": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 8,
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/$defs/id"
-          }
-        },
-        "evidenceBindings": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 8,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "evidenceRef",
-              "evidenceRevision"
-            ],
-            "properties": {
-              "evidenceRef": {
-                "$ref": "#/$defs/id"
-              },
-              "evidenceRevision": {
-                "$ref": "#/$defs/digest"
-              }
-            }
-          }
-        },
-        "requestedAuthority": {
-          "type": "array",
-          "maxItems": 6,
-          "uniqueItems": true,
-          "items": {
-            "enum": [
-              "merge",
-              "publish",
-              "increase-budget",
-              "accept-risk",
-              "external-mutation",
-              "infer-sensitive-personal-facts"
-            ]
-          }
-        },
-        "signals": {
-          "$ref": "#/$defs/signals"
-        },
-        "demand": {
-          "$ref": "#/$defs/demand"
-        }
+        "id": {"$ref": "#/$defs/id"},
+        "capturedAt": {"$ref": "#/$defs/timestamp"},
+        "runId": {"$ref": "#/$defs/id"},
+        "decisionId": {"$ref": "#/$defs/id"},
+        "result": {"$ref": "#/$defs/bytes"},
+        "decisions": {"$ref": "#/$defs/bytes"},
+        "budget": {"$ref": "#/$defs/bytes"},
+        "signature": {"$ref": "#/$defs/signature"}
       }
     },
-    "usageMetrics": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "eventCount",
-        "successCount",
-        "failureCount"
-      ],
-      "properties": {
-        "eventCount": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000000
-        },
-        "successCount": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000000
-        },
-        "failureCount": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000000
-        }
-      }
-    },
-    "evidenceRecord": {
+    "usageRecord": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "id",
+        "issueRef",
         "revision",
-        "previousRevision",
-        "kind",
-        "subjectRef",
-        "sourceRef",
         "tenantRef",
+        "sourceRef",
         "observedAt",
         "validUntil",
-        "claim",
-        "minimizedFields",
-        "metrics"
+        "eventCount",
+        "successCount",
+        "failureCount",
+        "minimizedFields"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "revision": {
-          "$ref": "#/$defs/digest"
-        },
-        "previousRevision": {
-          "$ref": "#/$defs/nullableDigest"
-        },
-        "kind": {
-          "enum": [
-            "issue-source",
-            "runtime-correctness",
-            "catalog-quality",
-            "usage-summary"
-          ]
-        },
-        "subjectRef": {
-          "$ref": "#/$defs/id"
-        },
-        "sourceRef": {
-          "type": "string",
-          "minLength": 14,
-          "maxLength": 512,
-          "pattern": "^(?:controlled://|https://).+"
-        },
-        "tenantRef": {
-          "$ref": "#/$defs/nullableId"
-        },
-        "observedAt": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "validUntil": {
-          "$ref": "#/$defs/timestamp"
-        },
-        "claim": {
-          "enum": [
-            "supports",
-            "opposes",
-            "request",
-            "regression",
-            "usage-only"
-          ]
-        },
+        "id": {"$ref": "#/$defs/id"},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/digest"},
+        "tenantRef": {"$ref": "#/$defs/id"},
+        "sourceRef": {"type": "string", "pattern": "^controlled://"},
+        "observedAt": {"$ref": "#/$defs/timestamp"},
+        "validUntil": {"$ref": "#/$defs/timestamp"},
+        "eventCount": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "successCount": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "failureCount": {"type": "integer", "minimum": 0, "maximum": 1000000},
         "minimizedFields": {
           "type": "array",
-          "maxItems": 4,
+          "minItems": 3,
+          "maxItems": 3,
           "uniqueItems": true,
-          "items": {
-            "enum": [
-              "event-count",
-              "success-count",
-              "failure-count",
-              "outcome-code"
-            ]
-          }
-        },
-        "metrics": {
-          "oneOf": [
-            {
-              "type": "null"
-            },
-            {
-              "$ref": "#/$defs/usageMetrics"
-            }
-          ]
+          "items": {"enum": ["event-count", "success-count", "failure-count"]}
         }
       }
     },
-    "evidenceEnvelope": {
+    "usageEnvelope": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "id",
         "revision",
-        "kind",
         "issuerRef",
         "tenantRef",
         "sourceRef",
@@ -898,120 +710,19 @@
         "signature"
       ],
       "properties": {
-        "id": {
-          "$ref": "#/$defs/id"
-        },
-        "revision": {
-          "$ref": "#/$defs/digest"
-        },
-        "kind": {
-          "enum": [
-            "owner-evidence",
-            "usage-evidence"
-          ]
-        },
-        "issuerRef": {
-          "$ref": "#/$defs/id"
-        },
-        "tenantRef": {
-          "$ref": "#/$defs/nullableId"
-        },
-        "sourceRef": {
-          "type": "string",
-          "minLength": 14,
-          "maxLength": 512,
-          "pattern": "^(?:controlled://|https://).+"
-        },
-        "issuedAt": {
-          "$ref": "#/$defs/timestamp"
-        },
+        "id": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/digest"},
+        "issuerRef": {"$ref": "#/$defs/id"},
+        "tenantRef": {"$ref": "#/$defs/id"},
+        "sourceRef": {"type": "string", "pattern": "^controlled://"},
+        "issuedAt": {"$ref": "#/$defs/timestamp"},
         "records": {
           "type": "array",
           "minItems": 1,
           "maxItems": 32,
-          "items": {
-            "$ref": "#/$defs/evidenceRecord"
-          }
+          "items": {"$ref": "#/$defs/usageRecord"}
         },
-        "signature": {
-          "$ref": "#/$defs/signature"
-        }
-      }
-    },
-    "usagePolicy": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "enabled",
-        "allowedTenantRefs",
-        "allowedSourceRefs",
-        "allowedEffects",
-        "maxRecords",
-        "maxMinimizedFields"
-      ],
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "allowedTenantRefs": {
-          "$ref": "#/$defs/idList"
-        },
-        "allowedSourceRefs": {
-          "type": "array",
-          "maxItems": 8,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "minLength": 14,
-            "maxLength": 512,
-            "pattern": "^(?:controlled://|https://).+"
-          }
-        },
-        "allowedEffects": {
-          "type": "array",
-          "maxItems": 2,
-          "uniqueItems": true,
-          "items": {
-            "enum": [
-              "create-draft-issue",
-              "reprioritize-existing-issue"
-            ]
-          }
-        },
-        "maxRecords": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 32
-        },
-        "maxMinimizedFields": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 4
-        }
-      }
-    },
-    "coverage": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "selectedClawRefs",
-        "issueRefs",
-        "evidenceRefs",
-        "grantRefs"
-      ],
-      "properties": {
-        "selectedClawRefs": {
-          "$ref": "#/$defs/idList"
-        },
-        "issueRefs": {
-          "$ref": "#/$defs/idList"
-        },
-        "evidenceRefs": {
-          "$ref": "#/$defs/idList"
-        },
-        "grantRefs": {
-          "$ref": "#/$defs/idList"
-        }
+        "signature": {"$ref": "#/$defs/signature"}
       }
     },
     "authority": {
@@ -1028,43 +739,15 @@
         "reseal"
       ],
       "properties": {
-        "merge": {
-          "const": false
-        },
-        "publish": {
-          "const": false
-        },
-        "budgetIncrease": {
-          "const": false
-        },
-        "riskAcceptance": {
-          "const": false
-        },
-        "externalMutation": {
-          "const": false
-        },
-        "productionClawMutation": {
-          "const": false
-        },
-        "sensitivePersonalInference": {
-          "const": false
-        },
-        "reseal": {
-          "const": false
-        }
+        "merge": {"const": false},
+        "publish": {"const": false},
+        "budgetIncrease": {"const": false},
+        "riskAcceptance": {"const": false},
+        "externalMutation": {"const": false},
+        "productionClawMutation": {"const": false},
+        "sensitivePersonalInference": {"const": false},
+        "reseal": {"const": false}
       }
-    },
-    "classification": {
-      "enum": [
-        "NEW",
-        "IMPROVE",
-        "COMPOSE",
-        "VARIANT",
-        "PRODUCT_DECISION",
-        "RETIRE",
-        "DUPLICATE",
-        "UNSUPPORTED"
-      ]
     }
   }
 }

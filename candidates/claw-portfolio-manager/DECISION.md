@@ -1,249 +1,294 @@
 # Claw Portfolio Manager admission decision
 
-Status: **NEW CLAW proven by a bounded candidate slice; not a catalog contribution**
+Status: **NEW CLAW remains after repaired strongest-composition proof; candidate-only**
 
-Confidence: **high (0.90)**
+Confidence: **0.85**
 
-This slice is deliberately candidate-only. Apart from a narrow `npm run check`
-bridge that executes this candidate's test and verifier, it does not add or
-change a catalog entry, contribution record, regression case, Experience case,
-screenshot, generated Claw package, chooser entry, artifact-validator registry,
-semantic-recipe registry, or another public registry surface.
+This repair supersedes the original V1 proof. It does not modify `catalog.json`,
+`sources/`, generated Claw packages, contribution policy, Experience,
+regression, quality, Runtime Evidence, or semantic-recipe registries. The only
+repository-level bridge remains the candidate test and verifier in
+`npm run check`.
 
 ## Frame
 
-Repository Operations Manager, Repository Compliance Program Manager, Product
-Manager, Work Chief of Staff, Software Maintainer, and the contribution
-admission, quality, Regression, Runtime Evidence, and Mock+ systems already work
-for their owner domains and remain authoritative there.
+Repository Operations Manager, Repository Compliance Program Manager, Work
+Chief of Staff, contribution admission/scoring, Catalog Quality, Regression,
+Runtime Evidence, and Mock+ already work and remain authoritative.
 
-The missing shared capability is an issue-native stewardship loop over one
-owner-authenticated Claw portfolio. It must reconcile an exact selected catalog
-subset and exact issue universe into compose-first classifications, bounded
-candidate or improvement plans, and explicit owner decisions without becoming
-a publisher, merger, risk owner, or source of authority.
+The repaired falsifiable thesis is:
 
-Today a catalog owner must manually join catalog revisions, issue state,
-distinctness comparisons, runtime or outcome evidence, budget limits, and
-review authority. The measurable deletion target is that manual spreadsheet or
-ad hoc issue-label join: every selected Claw and issue should appear exactly
-once in one source-authenticated handoff, and every accepted plan should fit all
-five owner budget dimensions.
+> Their actual schema- and semantic-valid artifacts can be connected through a
+> typed, no-sidecar adapter to emit the complete Claw Portfolio Manager ledger
+> without invented fields or reachable consequential authority.
 
-The falsifiable thesis was:
+If that graph becomes lossless, this candidate must be rejected and deleted.
+The V2 control test demonstrates that every current loss is independently
+clearable and that clearing all losses changes the verdict to `COMPOSE`.
 
-> Repository Operations Manager plus Repository Compliance Program Manager and
-> the existing admission, quality, Regression, Runtime Evidence, and Mock+
-> mechanisms preserve the complete Claw portfolio job without a new operating
-> contract.
+## Executed strongest composition
 
-If a validated composition graph preserves the exact six required facts, this
-candidate is redundant and must be deleted. The executable composition test has
-both outcomes:
+`strongest-composition.mjs` executes and pins:
 
-- the internally pinned current analogue graph returns `NEW`; and
-- an independently signed, authority-safe future graph containing exact source
-  artifact bytes and every required fact returns `COMPOSE` with
-  `deleteCandidate: true`.
+- Repository Operations Manager schema, fixture, semantic validator, and
+  first-run/predecessor checkpoint contract;
+- Repository Compliance Program Manager schema, fixture, semantic validator,
+  provider issue identities, snapshot index, issue idempotency, mutation
+  receipts, and predecessor coverage;
+- Work Chief of Staff schema, fixture, semantic validator, source-artifact,
+  capacity, conflict, decision-right, and blocked-handoff contracts;
+- contribution proposal validation and weighted similarity;
+- the exact `catalog.json` bytes used by contribution similarity and
+  classification, plus every registry and reader consumed by the quality,
+  Regression, Runtime Evidence, and Mock+ executions;
+- Catalog Quality scoring for all three analogues;
+- deterministic Regression scenarios;
+- Runtime Evidence scenarios and budget preflight; and
+- Mock+ schema and semantic-validator coverage.
 
-The owner-first proposal is:
+Every graph node records exact code, schema, validator, and artifact digests.
+Ports and edges are closed typed records. The current adapter consumes only
+repository owner artifacts and outputs a partial ledger; it consumes no
+candidate fact sidecar.
 
-```text
-working repository, issue, catalog, product, quality, and runtime owner systems
-+ signed closed-world Claw admission and budget reconciliation
--> one reviewable portfolio proposal and owner handoff
-```
+The adapter also exposes explicit partial outputs toward seven target ports.
+Reachability traverses each source-to-adapter-to-target path and requires an
+exact closed field set at the target. The eighth target, external trust, has no
+current source port. The loss ledger therefore records the fields missing after
+real transformation rather than treating the absence of direct edges as proof.
+Each requested composition output must derive from exactly all declared input
+ports; unrelated extra inputs or an incomplete target-shaped output fail.
 
-Catalog semantics, source Claw content, issue content, product direction,
-quality and runtime evidence, budgets, approval, repository mutation, branch
-creation, PR creation, merge, publication, risk acceptance, and retirement
-decisions remain owner-controlled.
+Contribution admission validates the candidate's own operating contract, not
+an existing analogue's proposal. Its comparison set is generated from the
+candidate's current weighted-similarity results, and every reported nearest
+match is discussed before the graph can support `NEW`.
 
-### V1 boundaries
+### Reachable authority
 
-The bounded slice handles one catalog revision, one three-Claw subset, one
-predecessor checkpoint, eight exact issues, two accepted non-new plans, one
-budget-blocked new request, one stale variant, one conflicting product decision,
-one retirement signal, one duplicate, one prohibited-authority request, and one
-optional minimized usage summary.
+Repository Compliance exposes a typed `issue-mutation` output carrying
+`external-mutation`. No edge connects that port to the composition adapter or
+target handoff. The graph therefore reports:
 
-It produces JSON and Markdown proposals only. It cannot merge, publish, increase
-a budget, accept risk, mutate an external system or production Claw, infer
-sensitive personal facts, sign or reseal owner evidence, or optimize for raw
-Claw count. Those powers are structurally `false` in both accepted and rejected
-results.
+- reachable prohibited authority: **none**;
+- unused authority port:
+  `repository-compliance-program-manager.issue-mutation`; and
+- proposal-only authority: safe.
 
-## Audit and internal comparison
+Unused installed capability no longer forces `NEW`.
 
-The comparison executes source, schemas, fixtures, and validators instead of
-inferring capability from names. Exact SHA-256 pins cover the analogue
-validators and representative artifacts in
-`claw-portfolio-manager.mjs:53-78`.
+### Graph-derived typed losses
 
-| Existing contract | Classification | Reusable seam | Remaining gap |
-| --- | --- | --- | --- |
-| Repository Operations Manager | Reuse | Exact roster and checkpoint lineage, immutable source evidence, typed principals, closed ledgers, caller time, blocker/readiness derivation, and structural mutation non-claims (`scripts/repository-operations-manager.mjs`; `sources/repository-operations-manager/schemas/repository-operations.schema.json`). | Its universe is repositories, PR heads, checks, builds, and release trains. It does not model Claw source bytes, admission classifications, catalog lifecycle, or candidate/admission budgets. |
-| Repository Compliance Program Manager | Reuse, but avoid its mutation capability | Exact issue totality, idempotency, typed owner authority, predecessor reopening, controlled receipts, and no issue close (`scripts/repository-compliance-program-manager.mjs:385-1059`; `sources/repository-compliance-program-manager/references/issue-writer-capability-contract.md`). | Its issues are derived remediation obligations. It can execute policy-bounded issue create/update calls, while this candidate must emit plans only and classify Claw improvement, composition, addition, product decision, and retirement. |
-| Contribution admission and similarity | Reuse | `validateContributionProposal` enforces the proposal shape and real existing alternatives; `contributionSimilarityReport` provides the repository's weighted lexical comparison (`scripts/contribution-lib.mjs:104-168,202-291`). | The report is advisory and evaluates one proposal. It has no signed closed issue universe, composition result, retirement path, predecessor, usage boundary, or portfolio budget. |
-| Catalog Quality | Reuse as evidence only | The actual deterministic scorecard separates distinctness, operating contract, evidence, authority, Experience, verification, and stewardship (`scripts/catalog-quality-score.mjs:22-30,267-343`). | It explicitly scores repository-observable quality, not issue priority, admission authority, live behavior, or portfolio allocation. The candidate never folds this score into correctness or safety. |
-| Runtime Evidence | Adapt | Exact synthetic scenarios, non-echoing evidence, credential redaction, explicit cost/token preflight, and separation from Mock+ (`scripts/runtime-evidence-lib.mjs:149-328,822-1030`). | Its budget is trial execution cost and tokens, not candidate count, admissions, work, cost, and elapsed portfolio capacity. Runtime or usage evidence remains advisory here. |
-| Regression and Mock+ | Reuse | Every selected analogue executes accepted, missing/conflicting-evidence, and prohibited-authority scenarios; Mock+ confirms registered schema and semantic-validator coverage (`scripts/regression-cases.mjs:184-344`; `scripts/mock-plus-lib.mjs:264-410`). | These mechanisms prove existing package contracts. They do not jointly make a portfolio admission decision. |
-| Work Chief of Staff | Adapt | Source-linked specialist portfolio composition, capacity conflicts, separate principals, and blocked commitments (`catalog.json:11780-11885`). | Its unit is an operating commitment across leaders and functions, not an issue-native Claw catalog lifecycle. |
-| Product Manager | Reuse | Evidence-separated product decisions, non-goals, owner, measures, and validation budget (`catalog.json:7601-7695`). | It handles one product choice, not exact totality across a versioned issue queue. |
-| Software Maintainer | Reuse for downstream handoff | Exact repository revision, bounded diff, tests, reviews, and owner-controlled publication (`catalog.json:9679-9803`). | It implements one approved repository change. The portfolio manager stops before branch or production mutation. |
+The current graph remains lossy at eight target ports:
 
-The repository's actual similarity algorithm reports Benefits Realization
-Manager, Incident Response, Release Coordinator, Repository Operations Manager,
-and Data Migration Planner as the five lexical nearest entries. The candidate's
-internal proposal discusses all five plus the stronger issue and portfolio
-analogues. Similarity remains advisory, as required by
-`docs/contribution-admission.md`.
+| Target port | Nearest actual analogue output | Exact loss |
+| --- | --- | --- |
+| `portfolio-run-lineage` | Repository Operations roster, `firstRun`, predecessor checkpoint, current checkpoint digest | No run/decision identity tied to predecessor result, decision, and cumulative budget bytes. |
+| `provider-issue-snapshot` | Repository Compliance provider issue ID, URL, state, revision, owner-content digest, issue snapshot index | No exact repository identity, issue number/ETag, minimized title/body bytes, source-custodian signature, and provider completeness root in one source snapshot. |
+| `typed-admission-decision` | Contribution advisory similarity, quality, Regression, Runtime Evidence, Mock+ | No provider-revision-bound classifier or signed human classification that includes composition feasibility. |
+| `signed-package-tree` | Work Chief source artifact ref/version/owner | No catalog-revision-bound tree covering the catalog entry and every material source/package file path, media type, byte length, and digest. |
+| `cumulative-budget-ledger` | Work Chief capacity envelopes | No period-bound cumulative reservations/usage with run, decision, predecessor, and idempotency replay protection. |
+| `externally-pinned-trust` | None | No externally pinned signed trust revision with activation, revocation, rotation, and incompatible signer domains. |
+| `minimized-usage-evidence` | Runtime Evidence usage/efficiency observation | No independently signed tenant/source-scoped minimized usage envelope restricted to advisory issue effects. |
+| `proposal-owner-handoff` | Repository Operations and Work Chief private blocked handoffs | No single classification/evidence/affected-Claw/blocked-state/owner-decision/PR-ready-plan ledger. |
 
-The executed current analogue graph preserves useful identity, issue,
-reconciliation, and proof mechanisms, but it does not preserve any of the six
-exact graph-derived facts because Repository Compliance Program Manager carries
-an approved issue create/update capability while this candidate is
-proposal-only:
+These losses are calculated from target type/field contracts and available
+related ports. They are not permanent booleans. Each loss carries an exact
+future-control schema, validator digest, artifact digest, output type, and field
+set. A malformed or incomplete future control does not clear its port.
+Future-control inputs pass through the same bounded JSON normalization as the
+candidate evaluator, so cyclic, accessor-bearing, proxied, oversized, or deeply
+nested values are rejected without being canonicalized or echoed. Each signed
+control is also bound to the exact pinned source revision and a caller-evaluated
+validity window; stale controls are rejected.
 
-1. `closed-claw-source-coverage`;
-2. `closed-issue-admission-coverage`;
-3. `multi-axis-owner-budget`;
-4. `advisory-usage-isolation`; and
-5. `proposal-only-authority`; and
-6. `immutable-predecessor-lineage`.
+## Repaired distinct contract
 
-These are not permanently hard-coded gaps. The future composition control
-derives the required value digests from the accepted candidate result, verifies
-an independently signed exact-byte fact artifact with a pinned generic
-validator digest, rejects reused candidate trust, and clears the candidate only
-when the future fact set is exact and authority-safe.
+Because the current graph is not lossless, V2 implements only the irreducible
+ports above.
 
-## External comparison
+### Authenticated issue source
 
-Current official sources were used as semantic comparators:
+The owner input is a signed provider snapshot containing:
 
-- [GitHub Issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/learning-about-issues/about-issues)
-  is the correct owner system for ideas, feedback, tasks, bugs, hierarchy,
-  dependencies, and repository-linked work. Useful precedent: keep the workflow
-  issue-native. This candidate does not replace issue content or status.
-- [GitHub Copilot cloud agent](https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent)
-  can research a repository, plan changes, work on a branch, and let a developer
-  decide when to create a PR. Useful precedent: reviewable branch work and human
-  handoff. Deliberate difference: this slice cannot create or push a branch or
-  PR, because admission and publication authority are not yet granted.
-- [Backstage's software catalog model](https://backstage.io/docs/features/software-catalog/system-model/)
-  keeps components, APIs, resources, systems, domains, and ownership explicit.
-  Useful precedent: stable typed identities and owner-controlled system
-  boundaries. Deliberate difference: a catalog graph alone does not classify or
-  budget an issue queue.
+- GitHub repository owner/name/node identity;
+- immutable provider issue ID and number;
+- exact URL, state, revision, and ETag;
+- exact minimized title/body media type, bytes, byte length, and SHA-256 digest;
+- source-custodian identity and issue-domain Ed25519 signature; and
+- exact issue membership and snapshot completeness root.
 
-The candidate stays smaller than all three systems: it consumes exact identities
-and signed evidence, emits a bounded proposal, and leaves every external state
-change to the owner system.
+Classification is never selected from caller booleans. The exact body is a
+strict typed issue-form payload. A domain-separated classifier signs one
+revision-bound decision per issue. A separately signed composition assessment
+binds the executed graph digest, feasibility, proposed Claws, and typed losses.
+NEW also requires a complete repository-valid contribution proposal in those
+authenticated issue bytes: full operating contract, proof plan, and at least
+three substantive existing-alternative comparisons. Weighted nearest matches
+and the signed dimension decision are derived from that proposal rather than
+technical invariant names.
+VARIANT is accepted only when job, workflow, outputs, authority, and proof
+remain unchanged; an evidence-model change must use another admission class.
+Omission, duplicate provider identity, repository substitution, body
+substitution, decision omission, or stale decision binding fails closed.
 
-## Role evaluation
+### Signed package trees
 
-Four repository roles from different tension clusters produced concrete
-constraints:
+The signed package-tree manifest covers each selected Claw's:
 
-| Lens | Finding applied |
-| --- | --- |
-| Claws repo steward (H) | Keep all files under `candidates/claw-portfolio-manager/`; do not touch `catalog.json`, `sources/`, `claws/`, `generated/`, contribution, Experience, regression, or semantic registries before admission. |
-| Power user (B) | Replace the manual join with one command and one exact artifact. The fixture must show accepted, blocked, stale, conflict, duplicate, product, retirement, and authority outcomes without adding a dashboard or service. |
-| CISO (A) | Require detached signatures, strict Ed25519 SPKI, independent issuer scopes, immutable revisions, closed coverage, caller time, bounded inputs, and fail-closed authority. No narrative-only safety claims. |
-| Founder/simplicity (A) | Keep the slice removable JSON plus one validator and CLI. Do not add a platform, daemon, issue integration, generated package, or vendor-specific dependency. |
+- canonical catalog-entry bytes;
+- every file under `sources/<claw-id>/`;
+- every material file under `claws/<claw-id>/`, including package, workspace,
+  profile, resource, and screenshot files; and
+- path, media type, byte length, digest, per-Claw tree root, portfolio root,
+  catalog revision, source custodian, and signature.
 
-No role finding justified a public registry change or an external mutation
-capability.
+The verifier rereads the actual repository bytes. Omission, extra file, path
+substitution, size drift, digest drift, root drift, or any symbolic or otherwise
+unsupported filesystem entry fails.
 
-## Slice and proof
+### Enforced compose-first budget
 
-The candidate contains:
+The classifier makes one each of `NEW`, `IMPROVE`, `COMPOSE`, `VARIANT`,
+`PRODUCT_DECISION`, `RETIRE`, `DUPLICATE`, and `UNSUPPORTED`.
 
-- `schemas/claw-portfolio-manager.schema.json`: strict draft-2020-12 input
-  shape with bounded cardinalities and no open extension objects;
-- `schemas/public-trust.schema.json`: closed owner/key/purpose/time trust input;
-- `schemas/source-receipts.schema.json`: independently signed exact catalog-entry
-  byte receipts;
-- `schemas/composition-proof.schema.json`: a closed future-deletion graph;
-- `fixtures/portfolio.input.json`: the exact bounded scenario;
-- `fixtures/public-trust.test.json`: public Ed25519 SPKI only;
-- `fixtures/source-receipts.test.json`: exact canonical source bytes, lengths,
-  digests, issuer, time, and detached signature for each selected Claw;
-- `claw-portfolio-manager.mjs`: descriptor-first bounded normalization, schema
-  and semantic validation, signature and source-byte verification, exact
-  coverage and chronology, deterministic classification and budgeting,
-  advisory-only usage, composition falsification, Markdown rendering, and a
-  non-echoing bounded CLI;
-- `expected/portfolio.expected.json`: exact deterministic result;
-- `proof/portfolio-handoff.md`: human-readable proof derived from that result;
-- `verify.mjs`: one-command fixture, proof, and composition verification; and
-- `claw-portfolio-manager.test.mjs`: accepted and adversarial regression proof.
+Allocation sorts feasible `IMPROVE` and `COMPOSE` ahead of `NEW`, then applies
+priority. In the bounded fixture the NEW issue has the highest raw priority,
+but COMPOSE and IMPROVE consume the two available admission reservations first;
+NEW remains budget-blocked.
 
-Run:
+The signed ledger binds:
 
-```powershell
-node candidates\claw-portfolio-manager\verify.mjs
-node --test candidates\claw-portfolio-manager\claw-portfolio-manager.test.mjs
-```
+- budget period, run ID, decision ID, predecessor budget digest;
+- cumulative state before and after;
+- exact per-issue candidate/admission/work/cost/time amounts;
+- reservation and run idempotency keys; and
+- consumed prior run/decision/reservation identities.
 
-The fixture produces exactly one each of `NEW`, `IMPROVE`, `COMPOSE`,
-`VARIANT`, `PRODUCT_DECISION`, `RETIRE`, `DUPLICATE`, and `UNSUPPORTED`.
-Composition and improvement plans consume 2/2 admissions, 7/10 work units,
-300000/500000 cost micros, and 45/60 minutes. The `NEW` issue is blocked before
-allocation by the zero-candidate cap; no budget dimension overruns. Usage
-evidence produces one draft follow-up issue proposal and raises one advisory
-priority by one, but changes no classification, budget order, correctness,
-safety, or production state.
+Every allocation also consumes an independently signed, time-bounded exclusive
+CAS lease from the budget authority. The lease binds the exact predecessor
+checkpoint, period, run, and decision, so concurrent workers cannot both obtain
+a valid claim on the same budget head. The candidate verifies the receipt but
+does not mutate the lease store itself.
 
-Adversarial tests cover malformed JSON, cycles, excessive depth, strings and
-arrays, accessors, proxies, symbols, non-enumerables, sparse arrays, duplicate
-identities, oversized files, non-SPKI and non-Ed25519 keys, private material,
-unsafe references, source-byte substitution, signature tampering, cross-owner
-key reuse, stale evidence, conflicting evidence, chronology, predecessor
-binding, coherent omission, issue/source/usage revision tampering, evidence
-laundering, grant scope and expiry, budget evasion, prohibited authority,
-non-echoing failures, exact analogue execution, and reachable safe future
-composition deletion.
+Changing run IDs cannot replay the same decision or budget, and the supplied
+predecessor result must match the final history entry rather than any earlier
+member. Stable issue identity excludes observation time, while blocked work may
+be reconsidered when capacity becomes available; only reserved or completed
+work suppresses another reservation for the same issue revision, regardless of
+later reclassification. A classification change for already reserved or
+completed work is rejected rather than attributing that work to a new plan.
+Prior reserved/completed decisions must correspond
+one-to-one with full historical reservations, and their amounts must sum exactly
+to the predecessor period's cumulative usage. Older period-tagged reservations
+remain in lifetime replay history without carrying their spend into a later
+period. Prior period dates must parse, be ordered, and end before a later period
+may reset cumulative usage.
+
+### Bootstrap, adopt, and manage
+
+Three accepted fixtures prove:
+
+- `bootstrap`: owner-signed role, job, process, and capability lists plus the
+  selected initial Claw subset;
+- `adopt`: owner-signed adoption of an exact package-tree-bound subset; and
+- `manage`: exact prior result, decision, and budget bytes and digests.
+
+Bootstrap/adopt require no predecessor and a zero cumulative budget baseline.
+Manage requires all three predecessor records. Mode, predecessor, run,
+decision, package tree, provider snapshot, and budget period must agree.
+
+The owner-signed onboarding record also contains the exact approved
+tenant/source pairs for optional minimized usage. A usage issuer cannot expand
+that scope.
+
+### Externally pinned trust
+
+Public trust V2 has an externally pinned Ed25519 SPKI root. The root signs its
+revision, predecessor revision, activation window, keys root, and key records.
+Key records enforce activation/revocation chronology at the caller-controlled
+evaluation time, unique SPKI fingerprints, and one incompatible domain per key:
+
+`catalog`, `issue`, `usage`, `human-grant`, `classification`, `composition`,
+`run-result`, or `budget`.
+
+Effective principal roles are derived only from those signed key domains and
+principal kinds. The caller-supplied principal projection must match that
+authenticated roster exactly; adding or reassigning a role cannot grant
+authority.
+
+The fixture includes an old revoked catalog key and an active replacement.
+Shared-key, cross-domain, inactive, revoked, unpinned-root, and chronology
+probes fail.
+
+Any reachable prohibited authority makes the composition proof `BLOCKED`; it
+cannot be reinterpreted as evidence for retaining a `NEW` candidate.
+
+## Authority and usage boundary
+
+The accepted and invalid outputs structurally keep merge, publication, budget
+increase, risk acceptance, external mutation, production Claw mutation,
+sensitive-person inference, and resealing false.
+
+Authenticated usage is tenant/source/revision/time scoped and contains exactly
+event, success, and failure counts. It can produce only an advisory priority
+hint or a draft issue proposal requiring ordinary admission. It cannot alter
+classification, correctness, safety, authority, budget ordering, or production
+state.
+
+Each `plan-ready` result embeds its versioned, evidence-bound plan, including
+the exact issue revision, affected Claws, package-tree revision, composition
+contract when applicable, validation steps, and structural non-authority. It
+does not return a path to an artifact that the evaluator did not create.
+
+## Proof surface
+
+Canonical files:
+
+- `claw-portfolio-manager.mjs`
+- `claw-portfolio-manager.test.mjs`
+- `strongest-composition.mjs`
+- `candidate-utils.mjs`
+- `schemas/claw-portfolio-manager.schema.json`
+- `schemas/public-trust.schema.json`
+- `schemas/package-tree-v1.schema.json`
+- `fixtures/bootstrap-v2.input.json`
+- `fixtures/adopt-v2.input.json`
+- `fixtures/manage-v2.input.json`
+- `fixtures/public-trust-v2.test.json`
+- `fixtures/package-tree-v1.test.json`
+- `expected/manage-v2.expected.json`
+- `proof/manage-v2-handoff.md`
+- `verify.mjs`
+
+The adversarial suite covers provider omission/substitution, typed classifier
+drift, compose-first priority inversion, run/budget replay, exact predecessor
+bytes, package file substitution, trust-root drift, revoked/shared/domain-reused
+keys, unauthenticated principal-role escalation, bootstrap/adopt/manage
+mismatch, usage expansion/expiry, structural authority, malformed JSON, cycles,
+accessors, proxies, symbols,
+non-enumerables, prototype keys, oversized files, and bounded non-echoing CLI
+failures.
 
 ## Verdict
 
-**NEW CLAW, confidence 0.90.**
+**NEW, confidence 0.85.**
 
-The irreducible contract is:
+This verdict does not rely on the presence of Repository Compliance mutation
+capability. It relies only on the eight typed graph losses above. If actual
+analogue evolution supplies those ports losslessly with safe reachable
+authority, `runStrongestComposition` returns `COMPOSE`; admission must stop and
+this candidate directory should be deleted in favor of the emitted composition
+recipe.
 
-> Reconcile one independently authenticated, source-byte-bound Claw portfolio
-> and one exact owner issue universe across immutable predecessor revisions;
-> classify every issue as NEW, IMPROVE, COMPOSE, VARIANT, PRODUCT_DECISION,
-> RETIRE, DUPLICATE, or UNSUPPORTED; allocate only within exact candidate,
-> admission, work, cost, and time caps; allow independently authenticated,
-> tenant/source-scoped minimized usage evidence to propose a draft issue or
-> inform priority but never correctness, safety, authority, or production state;
-> and emit only
-> evidence-linked proposal and owner/PR handoffs.
+## Independent-review challenges
 
-Repository Operations Manager plus Repository Compliance Program Manager and
-the existing admission/evidence tools preserve important parts of this job, but
-their executed artifacts do not jointly preserve the six facts above.
-Composition is therefore rejected today, not forever.
+An independent reviewer should challenge:
 
-## Deletion and challenge ledger
-
-| Current workaround or risk | Candidate proof | Delete or challenge gate |
-| --- | --- | --- |
-| Manual join of catalog subset and issue queue | Signed manifests, exact source bytes, immutable revisions, and exact coverage | Delete when a validated composition emits the same closed source and issue fact digests. |
-| New-Claw count as an implicit success metric | Compose-first classifications and explicit avoided-new metrics | Challenge whether the anti-count measures influence any later human process; this slice proves only artifact behavior. |
-| Ad hoc work estimates | Five exact independent caps and pre-allocation rejection | Challenge production cost/work accounting and reservation concurrency; this slice proves deterministic planning only. |
-| Usage telemetry silently steering behavior | Independent usage issuer, tenant/source scope, aggregate fields, and draft-issue/priority-only proposals | Challenge production minimization, retention, consent, and issuer rotation; no live usage source is proven. |
-| Narrative authority boundaries | Structural false gates in input and output | Challenge any future issue-writing, branch, or PR capability separately; none exists here. |
-| Analogue gap becoming permanent | Signed exact future composition fact graph | Delete this whole directory when that graph returns `COMPOSE`. |
-
-An independent reviewer should especially challenge whether a new adapter over
-Repository Operations Manager, Repository Compliance Program Manager, Product
-Manager, and Work Chief of Staff can preserve the six missing facts without
-inventing semantics. They should also challenge production key discovery,
-rotation, revocation, and receipt issuance; extraction of structured issue
-signals from real issue text; whether canonical catalog-entry bytes are the
-right source unit versus complete package bytes; and whether real repository
-owners accept the proposed budget dimensions. None of those claims is proven by
-this bounded fixture.
+1. whether any existing owner artifact can be mapped to one of the eight target
+   port types without adding a sidecar or inventing semantics;
+2. whether every material source/package file is correctly included;
+3. production issue-provider snapshot issuance and title/body minimization;
+4. production external trust-root custody, rotation, and revocation;
+5. cumulative budget concurrency across multiple workers; and
+6. whether the typed classifier rules are sufficient before public admission.

@@ -1,0 +1,382 @@
+{
+  "schemaVersion": "awesomeClaws.clawPortfolioPackageTree.v1",
+  "id": "package-tree-september",
+  "revision": "sha256:9884213989f1c5f4b54c1d799f35e930617d5a20d1518f6efa40734c55fdaf0b",
+  "catalogRevision": "0c1bfb3c973a9940f301a5001e77435789993555",
+  "custodianRef": "principal-catalog-custodian",
+  "capturedAt": "2026-09-17T16:30:00Z",
+  "trees": [
+    {
+      "clawId": "repository-compliance-program-manager",
+      "files": [
+        {
+          "path": "catalog-entry.json",
+          "mediaType": "application/json",
+          "byteLength": 8711,
+          "digest": "sha256:cad53dc0b2ea776461a4ec49b632dcc45879a96258cf26f4773a749baef9eab9"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/CLAW.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 3958,
+          "digest": "sha256:274234480cb9595ffd69390bac4fe7eed0f5a1a1012493b508b88ecc185fff6d"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/README.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 3034,
+          "digest": "sha256:ed6b7b80ba99ab50a7a24ec6a51579316e36e35ca7020075ad0a1f8290b571c3"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/fixtures/repository-compliance-program.example.json",
+          "mediaType": "application/json",
+          "byteLength": 55557,
+          "digest": "sha256:8aff6f0ba5f3c54b16dffcbb56c739af813d7ba6aa93e9fa1852fdc27b203a87"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/fixtures/session-demo.json",
+          "mediaType": "application/json",
+          "byteLength": 4217,
+          "digest": "sha256:e2fcd26e683917e4a23c13afdc9cdf199766006e3c2a46ad34f52f8e02f4a7ee"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/package.json",
+          "mediaType": "application/json",
+          "byteLength": 193,
+          "digest": "sha256:ad1c4ae760a6c6f845860423ccab60dc9431ed6d4f614af0d6eb2a75b22419aa"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/profiles/openclaw.yml",
+          "mediaType": "application/yaml",
+          "byteLength": 208,
+          "digest": "sha256:f962a8d21c1c4deb1c01a27e763a656806f8a9494324cca2329fa6deccc987d8"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/references/issue-writer-capability-contract.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 2948,
+          "digest": "sha256:0eddf9628bdd7632e4ebe748d1026fa3d3718eb157c76c214554c70b3d21f191"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json",
+          "mediaType": "application/json",
+          "byteLength": 31233,
+          "digest": "sha256:11249af3ac39950f054aa8cb1d0c7d2c9da016ae1b9f814cbf0e72ea6d9dfb57"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/screenshot.png",
+          "mediaType": "image/png",
+          "byteLength": 147521,
+          "digest": "sha256:12e5ea0cd9aac6d88179d91ba6b10e41163861f3ce9ea07d096cc5d0255b9ee2"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/templates/repository-compliance-program.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 3056,
+          "digest": "sha256:87ec8231e1485b1f2b15c0f0be932cef6548dcc7b79c9018ed368c6ca1a924ae"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/templates/session-handoff.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 3761,
+          "digest": "sha256:a5ae602552e47ba471d39ecd21b3c18ff26af748e7b681a6d9ae98c778529212"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/templates/session-report.template.json",
+          "mediaType": "application/json",
+          "byteLength": 785,
+          "digest": "sha256:a61e6dca1f0c4c34ee10243664be433bad7d086370f79e42b60213228ddaab47"
+        },
+        {
+          "path": "claws/repository-compliance-program-manager/workspace/AGENTS.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 6648,
+          "digest": "sha256:74aae1568320cf1069f7503b66600829746c026c415c3629fe2464d82280fec7"
+        },
+        {
+          "path": "sources/repository-compliance-program-manager/fixtures/repository-compliance-program.example.json",
+          "mediaType": "application/json",
+          "byteLength": 55557,
+          "digest": "sha256:8aff6f0ba5f3c54b16dffcbb56c739af813d7ba6aa93e9fa1852fdc27b203a87"
+        },
+        {
+          "path": "sources/repository-compliance-program-manager/fixtures/session-demo.json",
+          "mediaType": "application/json",
+          "byteLength": 4217,
+          "digest": "sha256:e2fcd26e683917e4a23c13afdc9cdf199766006e3c2a46ad34f52f8e02f4a7ee"
+        },
+        {
+          "path": "sources/repository-compliance-program-manager/references/issue-writer-capability-contract.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 2948,
+          "digest": "sha256:0eddf9628bdd7632e4ebe748d1026fa3d3718eb157c76c214554c70b3d21f191"
+        },
+        {
+          "path": "sources/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json",
+          "mediaType": "application/json",
+          "byteLength": 31233,
+          "digest": "sha256:11249af3ac39950f054aa8cb1d0c7d2c9da016ae1b9f814cbf0e72ea6d9dfb57"
+        },
+        {
+          "path": "sources/repository-compliance-program-manager/templates/repository-compliance-program.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 3056,
+          "digest": "sha256:87ec8231e1485b1f2b15c0f0be932cef6548dcc7b79c9018ed368c6ca1a924ae"
+        },
+        {
+          "path": "sources/repository-compliance-program-manager/templates/session-handoff.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 3761,
+          "digest": "sha256:a5ae602552e47ba471d39ecd21b3c18ff26af748e7b681a6d9ae98c778529212"
+        },
+        {
+          "path": "sources/repository-compliance-program-manager/templates/session-report.template.json",
+          "mediaType": "application/json",
+          "byteLength": 785,
+          "digest": "sha256:a61e6dca1f0c4c34ee10243664be433bad7d086370f79e42b60213228ddaab47"
+        }
+      ],
+      "root": "sha256:5cd264bf840489f4faecdfbfd202daf49be8b92304acb8ec3dd54b670cfad783"
+    },
+    {
+      "clawId": "repository-operations-manager",
+      "files": [
+        {
+          "path": "catalog-entry.json",
+          "mediaType": "application/json",
+          "byteLength": 11705,
+          "digest": "sha256:f89be6f6a3b5a23ee5598df1f6c974eb010a3e0830b11972c0368c1e79ea1842"
+        },
+        {
+          "path": "claws/repository-operations-manager/CLAW.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 3231,
+          "digest": "sha256:166ba12b744266b19e490155bc49ff73f3a7468b0921e29b7083ad3cbd33ae1a"
+        },
+        {
+          "path": "claws/repository-operations-manager/README.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 2546,
+          "digest": "sha256:3dcf92fe2a3254e9ebf0941bdcc6dad56b7784b92332862f11cda7349594abfc"
+        },
+        {
+          "path": "claws/repository-operations-manager/fixtures/repository-operations.example.json",
+          "mediaType": "application/json",
+          "byteLength": 61853,
+          "digest": "sha256:e04a703ffcbd362afa57e3e616858d3f0d0182f5de2f59ac32612883f9ea03c6"
+        },
+        {
+          "path": "claws/repository-operations-manager/fixtures/session-demo.json",
+          "mediaType": "application/json",
+          "byteLength": 4488,
+          "digest": "sha256:9d03524da986b2658f365ae8315b37bd29609e3ae3c713b2d2cc18b9b6bd5968"
+        },
+        {
+          "path": "claws/repository-operations-manager/package.json",
+          "mediaType": "application/json",
+          "byteLength": 185,
+          "digest": "sha256:b8d1ea7b77ed07e77346ff63610b7dfb8db8182002a6b7e157fb0b2db4c9412d"
+        },
+        {
+          "path": "claws/repository-operations-manager/schemas/repository-operations.schema.json",
+          "mediaType": "application/json",
+          "byteLength": 38052,
+          "digest": "sha256:ed96bbfc7068e11493a75461c8c02c1fa9a6f3298de69dd5df5f3cd71baac677"
+        },
+        {
+          "path": "claws/repository-operations-manager/screenshot.png",
+          "mediaType": "image/png",
+          "byteLength": 186546,
+          "digest": "sha256:d6738bff98c9d2e3f6b310e02e49155f88e0855c2909b8d59b06c64d1ade05e2"
+        },
+        {
+          "path": "claws/repository-operations-manager/templates/repository-operations.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 20232,
+          "digest": "sha256:86686631a053ee2248c58f0b173e20a812cf190feb7d2b87a6a0c8da0a61a726"
+        },
+        {
+          "path": "claws/repository-operations-manager/templates/session-handoff.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 4676,
+          "digest": "sha256:028efa9772d5c00fb8ad0d45fc40499f9a3d81b95e3cf994d0136e1e58ef155b"
+        },
+        {
+          "path": "claws/repository-operations-manager/templates/session-report.template.json",
+          "mediaType": "application/json",
+          "byteLength": 998,
+          "digest": "sha256:17927a57fcf483fe67d405a48d27f0fc59b33ad339bd7f3682c4295b70df319d"
+        },
+        {
+          "path": "claws/repository-operations-manager/workspace/AGENTS.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 10459,
+          "digest": "sha256:52e96cb2aa83985fb2c4f8a4f9930e36726ca5a035e40fc20d951d646b2aa5e8"
+        },
+        {
+          "path": "sources/repository-operations-manager/fixtures/repository-operations.example.json",
+          "mediaType": "application/json",
+          "byteLength": 61853,
+          "digest": "sha256:e04a703ffcbd362afa57e3e616858d3f0d0182f5de2f59ac32612883f9ea03c6"
+        },
+        {
+          "path": "sources/repository-operations-manager/fixtures/session-demo.json",
+          "mediaType": "application/json",
+          "byteLength": 4488,
+          "digest": "sha256:9d03524da986b2658f365ae8315b37bd29609e3ae3c713b2d2cc18b9b6bd5968"
+        },
+        {
+          "path": "sources/repository-operations-manager/schemas/repository-operations.schema.json",
+          "mediaType": "application/json",
+          "byteLength": 38052,
+          "digest": "sha256:ed96bbfc7068e11493a75461c8c02c1fa9a6f3298de69dd5df5f3cd71baac677"
+        },
+        {
+          "path": "sources/repository-operations-manager/templates/repository-operations.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 20232,
+          "digest": "sha256:86686631a053ee2248c58f0b173e20a812cf190feb7d2b87a6a0c8da0a61a726"
+        },
+        {
+          "path": "sources/repository-operations-manager/templates/session-handoff.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 4676,
+          "digest": "sha256:028efa9772d5c00fb8ad0d45fc40499f9a3d81b95e3cf994d0136e1e58ef155b"
+        },
+        {
+          "path": "sources/repository-operations-manager/templates/session-report.template.json",
+          "mediaType": "application/json",
+          "byteLength": 998,
+          "digest": "sha256:17927a57fcf483fe67d405a48d27f0fc59b33ad339bd7f3682c4295b70df319d"
+        }
+      ],
+      "root": "sha256:835c4997d5ad733d71ca5eaeadcb4ad052ed6d661ec0aa338f800acbe01910ed"
+    },
+    {
+      "clawId": "work-chief-of-staff",
+      "files": [
+        {
+          "path": "catalog-entry.json",
+          "mediaType": "application/json",
+          "byteLength": 6763,
+          "digest": "sha256:1a2bfd1fe9a62da745e1cff63f2fd0e575736b2ccf90a3d2cd93901456248988"
+        },
+        {
+          "path": "claws/work-chief-of-staff/CLAW.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 3390,
+          "digest": "sha256:14bb3e50588ef952e740a64bdca688c209ea508f5dc0821884180c6a1eb91ae5"
+        },
+        {
+          "path": "claws/work-chief-of-staff/README.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 2341,
+          "digest": "sha256:df4b9087a0baf4f03291cbc14c9c9970c597b54737ec078c6ad57f7fc7bc6ea2"
+        },
+        {
+          "path": "claws/work-chief-of-staff/fixtures/operating-portfolio.example.json",
+          "mediaType": "application/json",
+          "byteLength": 26660,
+          "digest": "sha256:8a8ad689b975f58b0be19ec52abfaa9f633dcffe631214689be3865951e78e67"
+        },
+        {
+          "path": "claws/work-chief-of-staff/fixtures/session-demo.json",
+          "mediaType": "application/json",
+          "byteLength": 3346,
+          "digest": "sha256:ce1baa7a5fd6108d87d18038ff8291d6219b0f5a299e1a292e438b4e1d52ba18"
+        },
+        {
+          "path": "claws/work-chief-of-staff/package.json",
+          "mediaType": "application/json",
+          "byteLength": 175,
+          "digest": "sha256:1cbb319fbac19589f28bb728a4a306f82a40954b21db8ceaf0e7abbef6dd16db"
+        },
+        {
+          "path": "claws/work-chief-of-staff/profiles/openclaw.yml",
+          "mediaType": "application/yaml",
+          "byteLength": 206,
+          "digest": "sha256:914754c7fd45d69a7f7c6976cd899bfcf9524a3702da212d589b6f3dc0ba4b6f"
+        },
+        {
+          "path": "claws/work-chief-of-staff/schemas/operating-portfolio.schema.json",
+          "mediaType": "application/json",
+          "byteLength": 18345,
+          "digest": "sha256:b5bb22d109dacd1a9377774e45b69ab06c7eb4b11471aa7cbf7152f8165c372a"
+        },
+        {
+          "path": "claws/work-chief-of-staff/screenshot.png",
+          "mediaType": "image/png",
+          "byteLength": 102860,
+          "digest": "sha256:2810b4836f151d8aa1fabd515ce1b4364175d0dacfeb6ad47daa6ffc85fc8ba7"
+        },
+        {
+          "path": "claws/work-chief-of-staff/templates/operating-portfolio.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 1906,
+          "digest": "sha256:7578caaf016620bcc3db0a461361a61e38bf12673830cdd430d38b94e744af39"
+        },
+        {
+          "path": "claws/work-chief-of-staff/templates/session-handoff.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 761,
+          "digest": "sha256:3f1b41f7e419581ad5fd162206348c3e4f56d355f58c1e1e71ef3716d233f0ae"
+        },
+        {
+          "path": "claws/work-chief-of-staff/templates/session-report.template.json",
+          "mediaType": "application/json",
+          "byteLength": 525,
+          "digest": "sha256:2d0ee5f5f64b00720d55067f2d1ea32882c86236208387ec8acefe870e803e6d"
+        },
+        {
+          "path": "claws/work-chief-of-staff/workspace/AGENTS.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 5053,
+          "digest": "sha256:5ec3adbc05a1700d47a33db1ecd0cb10be6fccc54261b43b51416632764beb47"
+        },
+        {
+          "path": "sources/work-chief-of-staff/fixtures/operating-portfolio.example.json",
+          "mediaType": "application/json",
+          "byteLength": 26660,
+          "digest": "sha256:8a8ad689b975f58b0be19ec52abfaa9f633dcffe631214689be3865951e78e67"
+        },
+        {
+          "path": "sources/work-chief-of-staff/fixtures/session-demo.json",
+          "mediaType": "application/json",
+          "byteLength": 3346,
+          "digest": "sha256:ce1baa7a5fd6108d87d18038ff8291d6219b0f5a299e1a292e438b4e1d52ba18"
+        },
+        {
+          "path": "sources/work-chief-of-staff/schemas/operating-portfolio.schema.json",
+          "mediaType": "application/json",
+          "byteLength": 18345,
+          "digest": "sha256:b5bb22d109dacd1a9377774e45b69ab06c7eb4b11471aa7cbf7152f8165c372a"
+        },
+        {
+          "path": "sources/work-chief-of-staff/templates/operating-portfolio.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 1906,
+          "digest": "sha256:7578caaf016620bcc3db0a461361a61e38bf12673830cdd430d38b94e744af39"
+        },
+        {
+          "path": "sources/work-chief-of-staff/templates/session-handoff.md",
+          "mediaType": "text/markdown; charset=utf-8",
+          "byteLength": 761,
+          "digest": "sha256:3f1b41f7e419581ad5fd162206348c3e4f56d355f58c1e1e71ef3716d233f0ae"
+        },
+        {
+          "path": "sources/work-chief-of-staff/templates/session-report.template.json",
+          "mediaType": "application/json",
+          "byteLength": 525,
+          "digest": "sha256:2d0ee5f5f64b00720d55067f2d1ea32882c86236208387ec8acefe870e803e6d"
+        }
+      ],
+      "root": "sha256:066c04d53a3b13013073011de970b4db3970be7dcb5d885bed61672a0f475882"
+    }
+  ],
+  "root": "sha256:3342cc64f0de6ca5c7d49d819bb13069f9d79db9fae4df7b97b612131fb889eb",
+  "signature": {
+    "keyId": "catalog-key",
+    "algorithm": "Ed25519",
+    "value": "uLKg39y5LQSWL3dS9zKZCZADif3wIKVi91RaaVB1Zbb4yxa/33JPuFBlxYhSS8/EsArpEW2r6+vX2kNoYi02Dw=="
+  }
+}
