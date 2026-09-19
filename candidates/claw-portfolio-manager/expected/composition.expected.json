@@ -1,0 +1,429 @@
+{
+  "admissionScorecard": {
+    "candidates": [
+      {
+        "classification": "DUPLICATE",
+        "eligible": false,
+        "priority": 1,
+        "reason": "same-job-and-operating-contract-already-exists"
+      },
+      {
+        "classification": "UNSUPPORTED",
+        "eligible": false,
+        "priority": 2,
+        "reason": "required-owner-contract-or-support-is-unavailable"
+      },
+      {
+        "classification": "RETIRE",
+        "eligible": false,
+        "priority": 3,
+        "reason": "validated-lifecycle-evidence-requires-retirement"
+      },
+      {
+        "classification": "COMPOSE",
+        "eligible": true,
+        "priority": 4,
+        "reason": "validated-owner-composition-preserves-the-requested-contract"
+      },
+      {
+        "classification": "IMPROVE",
+        "eligible": false,
+        "priority": 5,
+        "reason": "same-job-needs-a-material-owner-contract-improvement"
+      },
+      {
+        "classification": "VARIANT",
+        "eligible": false,
+        "priority": 6,
+        "reason": "same-job-differs-only-by-audience-or-presentation"
+      },
+      {
+        "classification": "NEW",
+        "eligible": false,
+        "priority": 7,
+        "reason": "distinct-job-and-material-operating-contract-difference"
+      },
+      {
+        "classification": "PRODUCT_DECISION",
+        "eligible": false,
+        "priority": 8,
+        "reason": "evidence-does-not-authorize-an-executable-disposition"
+      }
+    ],
+    "evidence": {
+      "availableOwnerIds": [
+        "repository-operations-manager",
+        "repository-compliance-program-manager",
+        "work-chief-of-staff"
+      ],
+      "exactDuplicate": false,
+      "existingMatchId": null,
+      "productDecisionRefs": [],
+      "productDecisionRequired": false,
+      "proposalOperatingContractDigest": "sha256:02af4fc2ab0c8fbebc901e60179785cd00bcd9479334720cdcccf1efb3bb3ab6",
+      "requiredOwnerIds": [
+        "repository-operations-manager",
+        "repository-compliance-program-manager",
+        "work-chief-of-staff"
+      ],
+      "retirementEvidenceRefs": [],
+      "retirementRequested": false,
+      "supported": true,
+      "variantBasis": "none",
+      "variantRequired": false
+    },
+    "materialDifference": false,
+    "selected": "COMPOSE"
+  },
+  "authority": {
+    "atomicMutation": false,
+    "budgetIncrease": false,
+    "externalMutation": false,
+    "hrInference": false,
+    "merge": false,
+    "publish": false,
+    "riskAcceptance": false,
+    "sensitivePersonalInference": false
+  },
+  "classification": "COMPOSE",
+  "confidence": 0.92,
+  "optionalEvidence": {
+    "advisoryOnly": true,
+    "catalogQuality": {
+      "qualifiedOwnerIds": [
+        "repository-compliance-program-manager",
+        "repository-operations-manager",
+        "work-chief-of-staff"
+      ],
+      "totals": {
+        "repository-compliance-program-manager": 100,
+        "repository-operations-manager": 100,
+        "work-chief-of-staff": 100
+      }
+    },
+    "mockPlus": {
+      "registeredOwnerIds": [
+        "repository-operations-manager",
+        "repository-compliance-program-manager",
+        "work-chief-of-staff"
+      ]
+    },
+    "regression": {
+      "passedOwnerIds": [
+        "repository-compliance-program-manager",
+        "repository-operations-manager",
+        "work-chief-of-staff"
+      ]
+    },
+    "requiredForClassification": false,
+    "runtime": {
+      "profileSchemaVersion": "awesomeClaws.runtimeEvidenceProfile.v1",
+      "scenarioCount": 9,
+      "selectedEstimateTokens": 16200,
+      "selectedEstimateUsd": 0.0216
+    }
+  },
+  "ports": {
+    "externally-pinned-trust": {
+      "keyIds": [
+        "admission-key",
+        "catalog-key",
+        "catalog-maintainer-key",
+        "continuation-key",
+        "provider-key",
+        "receipt-key",
+        "runtime-budget-key",
+        "usage-key"
+      ],
+      "owner": "composition-adapter",
+      "pinExpiresAt": "2026-10-01T00:00:00Z",
+      "pinNotBefore": "2026-09-01T00:00:00Z",
+      "revision": "sha256:b1309f5e465460501f39b412e99fc4e8024d9ce9d95da8836f8e0ef15075e242",
+      "trustSchemaVersion": "awesomeClaws.clawPortfolioCompositionTrust.v1"
+    },
+    "minimized-usage-evidence": {
+      "advisoryOnly": true,
+      "allowedIssueEffects": [
+        "create",
+        "reprioritize"
+      ],
+      "eventCount": 12,
+      "evidenceRef": "usage-issue-api",
+      "externalMutation": false,
+      "failureCount": 3,
+      "owner": "runtime-evidence",
+      "sourceRef": "controlled://tenant-alpha/minimized-usage",
+      "successCount": 9,
+      "tenantRef": "tenant-alpha"
+    },
+    "portfolio-run-lineage": {
+      "continuationCheckpointRef": "continuation-portfolio-composition",
+      "mode": "manage",
+      "owner": "repository-operations-manager",
+      "portfolioRevision": "sha256:9f99b970d48a42188d97a220cdf374cfce77d6dd248133d2c9e421f716eaf704",
+      "predecessorCheckpointRef": "checkpoint-weekly-2026-09-13",
+      "priorReceiptIds": [
+        "receipt-issue-api"
+      ],
+      "runId": "run-weekly-2026-09-13",
+      "signature": {
+        "algorithm": "Ed25519",
+        "keyId": "continuation-key",
+        "value": "oQKSkmy5E8djVUONaklnZPK3W46fxBZKFdrRrtSC+hQ6orCCqvvUkQ4qWg8Ru8EuCc1PiBLVSEGR164QF3CIDQ=="
+      },
+      "signedAt": "2026-09-17T17:15:00Z",
+      "signerRef": "portfolio-owner",
+      "sourceBindingsRoot": "sha256:7cff6b0d77baaea6a3f222abc0de7760199d3429205f772b10c13583fe680330",
+      "validUntil": "2026-09-18T17:15:00Z"
+    },
+    "proposal-owner-handoff": {
+      "classification": "COMPOSE",
+      "composition": [
+        "repository-operations-manager",
+        "repository-compliance-program-manager",
+        "work-chief-of-staff"
+      ],
+      "continuationCheckpointRef": "continuation-portfolio-composition",
+      "externalActionRequired": true,
+      "externalMutation": false,
+      "issueRevision": "sha256:0273edc37ffd7d0eb9382593ee3cefeb6f38ef02cb8f836cdf292736c2ec5232",
+      "owner": "work-chief-of-staff",
+      "state": "blocked"
+    },
+    "provider-issue-snapshot": {
+      "body": {
+        "byteLength": 493,
+        "contentBase64": "eyJldmlkZW5jZVJlZnMiOlt7ImF1dGhvcml0eSI6InByb3ZpZGVyLWN1c3RvZGlhbi1hdHRlc3RhdGlvbiIsImlkIjoiaXNzdWUtYXBpIiwia2luZCI6InByb3ZpZGVyLWlzc3VlIiwic3ViamVjdFJlZiI6ImNsYXctcG9ydGZvbGlvLW1hbmFnZXIifSx7ImF1dGhvcml0eSI6InJlcG9zaXRvcnktb3BlcmF0aW9ucy1hdHRlc3RhdGlvbiIsImlkIjoiY2hlY2twb2ludC13ZWVrbHktMjAyNi0wOS0xMyIsImtpbmQiOiJjb250aW51YXRpb24tY2hlY2twb2ludCIsInN1YmplY3RSZWYiOiJjb250aW51YXRpb24tcG9ydGZvbGlvLWNvbXBvc2l0aW9uIn1dLCJwcm9wb3NhbERpZ2VzdCI6InNoYTI1NjpjZGRmYzZlNjhjYWI0ZTdkYTk1ODg3YWU3NWM3ZTgwMTM2NmEwMmMzYmFkZDBiNDI4MWIzMmY3OGNiOGQ0OTY3IiwicmVxdWVzdCI6IkNvbXBvc2UgdGhlIG93bmVyIENsYXdzIGludG8gYW4gaXNzdWUtbmF0aXZlIHBvcnRmb2xpbyBzdGV3YXJkc2hpcCB3b3JrZmxvdy4ifQ==",
+        "digest": "sha256:863c0c11e9388cb8695343b8c7494638cf6f8d46f067ac43f293bde79b8cc57d",
+        "mediaType": "application/json"
+      },
+      "capturedAt": "2026-09-17T17:00:00Z",
+      "completenessRoot": "sha256:c99da46a62b1614f0a31a30415ba3bca3f1d488638bd305bed66390a855f77f3",
+      "decodedBody": {
+        "evidenceRefs": [
+          {
+            "authority": "provider-custodian-attestation",
+            "id": "issue-api",
+            "kind": "provider-issue",
+            "subjectRef": "claw-portfolio-manager"
+          },
+          {
+            "authority": "repository-operations-attestation",
+            "id": "checkpoint-weekly-2026-09-13",
+            "kind": "continuation-checkpoint",
+            "subjectRef": "continuation-portfolio-composition"
+          }
+        ],
+        "proposalDigest": "sha256:cddfc6e68cab4e7da95887ae75c7e801366a02c3badd0b4281b32f78cb8d4967",
+        "request": "Compose the owner Claws into an issue-native portfolio stewardship workflow."
+      },
+      "issueRef": "issue-api",
+      "owner": "repository-compliance-program-manager",
+      "providerIssueId": "ENG-410",
+      "revision": "sha256:0273edc37ffd7d0eb9382593ee3cefeb6f38ef02cb8f836cdf292736c2ec5232",
+      "state": "open",
+      "title": {
+        "byteLength": 46,
+        "contentBase64": "Q29tcG9zZSBwb3J0Zm9saW8gc3Rld2FyZHNoaXAgZnJvbSBvd25lciBDbGF3cw==",
+        "digest": "sha256:c32c6330b048dd2426df7a418ba6d63c27041f645f3c0c2157e60eff5b20948f",
+        "mediaType": "text/plain; charset=utf-8"
+      },
+      "url": "https://issues.example.invalid/ENG-410"
+    },
+    "signed-package-tree": {
+      "catalogRevision": "0c1bfb3c973a9940f301a5001e77435789993555",
+      "fileCount": 106,
+      "manifestRef": "composition-package-manifest",
+      "owner": "catalog-quality",
+      "root": "sha256:b2bbe3c60b095ed6cc9ee77ae55d64137c578a1641a0c7b952be626bab27304b"
+    },
+    "stateless-budget-plan": {
+      "allocation": {
+        "allocatedAmount": 0,
+        "blockedAmount": 4,
+        "reason": "capacity-conflict",
+        "state": "blocked"
+      },
+      "atomicMutationClaim": false,
+      "capacityAmount": 20,
+      "capacityEnvelopeRef": "capacity-engineering",
+      "capacityUnit": "person-weeks",
+      "committedDemand": 24,
+      "conflictRefs": [
+        "conflict-engineering-capacity"
+      ],
+      "externalReceiptRequired": true,
+      "mode": "stateless-proposal",
+      "overCapacity": true,
+      "owner": "work-chief-of-staff",
+      "priorReceiptIds": [
+        "receipt-issue-api"
+      ],
+      "proposedDemand": 4,
+      "proposedIdempotencyKey": "sha256:5cf4db8d61f5472b5a5b46adcde3ba260850bfa8e47ca8e2b1411f93f1f11653",
+      "remainingAmount": -8,
+      "reservationClaim": false,
+      "totalDemand": 28
+    },
+    "typed-admission-decision": {
+      "catalogMaintainerDecisions": [],
+      "classification": "COMPOSE",
+      "comparison": null,
+      "dispositionEvidence": {
+        "availableOwnerIds": [
+          "repository-operations-manager",
+          "repository-compliance-program-manager",
+          "work-chief-of-staff"
+        ],
+        "exactDuplicate": false,
+        "existingMatchId": null,
+        "productDecisionRefs": [],
+        "productDecisionRequired": false,
+        "proposalOperatingContractDigest": "sha256:02af4fc2ab0c8fbebc901e60179785cd00bcd9479334720cdcccf1efb3bb3ab6",
+        "requiredOwnerIds": [
+          "repository-operations-manager",
+          "repository-compliance-program-manager",
+          "work-chief-of-staff"
+        ],
+        "retirementEvidenceRefs": [],
+        "retirementRequested": false,
+        "supported": true,
+        "variantBasis": "none",
+        "variantRequired": false
+      },
+      "issueRevision": "sha256:0273edc37ffd7d0eb9382593ee3cefeb6f38ef02cb8f836cdf292736c2ec5232",
+      "nearestMatches": [
+        "benefits-realization-manager",
+        "customer-success-program-manager",
+        "partner-business-manager",
+        "household-steward",
+        "workflow-operator"
+      ],
+      "owner": "contribution-admission",
+      "proposalDigest": "sha256:cddfc6e68cab4e7da95887ae75c7e801366a02c3badd0b4281b32f78cb8d4967",
+      "scorecard": {
+        "candidates": [
+          {
+            "classification": "DUPLICATE",
+            "eligible": false,
+            "priority": 1,
+            "reason": "same-job-and-operating-contract-already-exists"
+          },
+          {
+            "classification": "UNSUPPORTED",
+            "eligible": false,
+            "priority": 2,
+            "reason": "required-owner-contract-or-support-is-unavailable"
+          },
+          {
+            "classification": "RETIRE",
+            "eligible": false,
+            "priority": 3,
+            "reason": "validated-lifecycle-evidence-requires-retirement"
+          },
+          {
+            "classification": "COMPOSE",
+            "eligible": true,
+            "priority": 4,
+            "reason": "validated-owner-composition-preserves-the-requested-contract"
+          },
+          {
+            "classification": "IMPROVE",
+            "eligible": false,
+            "priority": 5,
+            "reason": "same-job-needs-a-material-owner-contract-improvement"
+          },
+          {
+            "classification": "VARIANT",
+            "eligible": false,
+            "priority": 6,
+            "reason": "same-job-differs-only-by-audience-or-presentation"
+          },
+          {
+            "classification": "NEW",
+            "eligible": false,
+            "priority": 7,
+            "reason": "distinct-job-and-material-operating-contract-difference"
+          },
+          {
+            "classification": "PRODUCT_DECISION",
+            "eligible": false,
+            "priority": 8,
+            "reason": "evidence-does-not-authorize-an-executable-disposition"
+          }
+        ],
+        "evidence": {
+          "availableOwnerIds": [
+            "repository-operations-manager",
+            "repository-compliance-program-manager",
+            "work-chief-of-staff"
+          ],
+          "exactDuplicate": false,
+          "existingMatchId": null,
+          "productDecisionRefs": [],
+          "productDecisionRequired": false,
+          "proposalOperatingContractDigest": "sha256:02af4fc2ab0c8fbebc901e60179785cd00bcd9479334720cdcccf1efb3bb3ab6",
+          "requiredOwnerIds": [
+            "repository-operations-manager",
+            "repository-compliance-program-manager",
+            "work-chief-of-staff"
+          ],
+          "retirementEvidenceRefs": [],
+          "retirementRequested": false,
+          "supported": true,
+          "variantBasis": "none",
+          "variantRequired": false
+        },
+        "materialDifference": false,
+        "selected": "COMPOSE"
+      }
+    }
+  },
+  "reachableAuthority": [],
+  "recipe": [
+    {
+      "improvement": "Emit signed portfolio selection and continuation checkpoint fields.",
+      "outputPort": "portfolio-run-lineage",
+      "owner": "repository-operations-manager"
+    },
+    {
+      "improvement": "Emit complete provider issue snapshot receipts without invoking mutation.",
+      "outputPort": "provider-issue-snapshot",
+      "owner": "repository-compliance-program-manager"
+    },
+    {
+      "improvement": "Derive typed admission from a validated proposal and signed comparison.",
+      "outputPort": "typed-admission-decision",
+      "owner": "contribution-admission"
+    },
+    {
+      "improvement": "Publish a signed package-tree manifest over exact catalog and source bytes.",
+      "outputPort": "signed-package-tree",
+      "owner": "catalog-quality"
+    },
+    {
+      "improvement": "Plan against supplied capacity and external idempotency receipts without reserving.",
+      "outputPort": "stateless-budget-plan",
+      "owner": "work-chief-of-staff"
+    },
+    {
+      "improvement": "Pin public verification keys and reject unknown signer domains.",
+      "outputPort": "externally-pinned-trust",
+      "owner": "composition-adapter"
+    },
+    {
+      "improvement": "Emit tenant-scoped minimized advisory outcome evidence.",
+      "outputPort": "minimized-usage-evidence",
+      "owner": "runtime-evidence"
+    },
+    {
+      "improvement": "Render the combined evidence and proposal as an owner-controlled handoff.",
+      "outputPort": "proposal-owner-handoff",
+      "owner": "work-chief-of-staff"
+    }
+  ],
+  "schemaVersion": "awesomeClaws.clawPortfolioCompositionResult.v1",
+  "sourceBindingsRoot": "sha256:7cff6b0d77baaea6a3f222abc0de7760199d3429205f772b10c13583fe680330",
+  "standaloneCandidateAccepted": false,
+  "verdict": "IMPROVE_COMPOSE"
+}

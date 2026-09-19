@@ -1,0 +1,713 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/candidates/claw-portfolio-manager/composition-input.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sourceBindings",
+    "portfolio",
+    "providerIssue",
+    "continuation",
+    "admission",
+    "catalogMaintainerDecisions",
+    "packageManifest",
+    "idempotencyReceipts",
+    "runtimeBudget",
+    "usageEvidence"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "awesomeClaws.clawPortfolioCompositionInput.v1"},
+    "sourceBindings": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 128,
+      "items": {"$ref": "#/$defs/sourceBinding"}
+    },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "selectedClawIds",
+        "sourceBindingsRoot",
+        "capacityEnvelopeRef"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "revision": {"$ref": "#/$defs/digest"},
+        "selectedClawIds": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "sourceBindingsRoot": {"$ref": "#/$defs/digest"},
+        "capacityEnvelopeRef": {"$ref": "#/$defs/id"}
+      }
+    },
+    "providerIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "baseIssueRef",
+        "baseIssueRevision",
+        "providerIssueId",
+        "url",
+        "state",
+        "revision",
+        "title",
+        "body",
+        "ownerContentMapping",
+        "capturedAt",
+        "completenessRoot",
+        "signerRef",
+        "signature"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "baseIssueRef": {"$ref": "#/$defs/id"},
+        "baseIssueRevision": {"$ref": "#/$defs/digest"},
+        "providerIssueId": {"type": "string", "minLength": 3, "maxLength": 120},
+        "url": {"type": "string", "format": "uri", "maxLength": 512},
+        "state": {"enum": ["open", "closed"]},
+        "revision": {"$ref": "#/$defs/digest"},
+        "title": {"$ref": "#/$defs/bytes"},
+        "body": {"$ref": "#/$defs/bytes"},
+        "ownerContentMapping": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sourceDigest",
+            "replacementDigest",
+            "authority",
+            "reason"
+          ],
+          "properties": {
+            "sourceDigest": {"$ref": "#/$defs/digest"},
+            "replacementDigest": {"$ref": "#/$defs/digest"},
+            "authority": {"const": "provider-custodian-attestation"},
+            "reason": {
+              "const": "exact-provider-content-supersedes-owner-summary-digest"
+            }
+          }
+        },
+        "capturedAt": {"$ref": "#/$defs/timestamp"},
+        "completenessRoot": {"$ref": "#/$defs/digest"},
+        "signerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
+      }
+    },
+    "continuation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "mode",
+        "predecessorCheckpointRef",
+        "portfolioRevision",
+        "sourceBindingsRoot",
+        "priorReceiptIds",
+        "signedAt",
+        "validUntil",
+        "signerRef",
+        "signature"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "mode": {"enum": ["bootstrap", "adopt", "manage"]},
+        "predecessorCheckpointRef": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]
+        },
+        "portfolioRevision": {"$ref": "#/$defs/digest"},
+        "sourceBindingsRoot": {"$ref": "#/$defs/digest"},
+        "priorReceiptIds": {"$ref": "#/$defs/idList"},
+        "signedAt": {"$ref": "#/$defs/timestamp"},
+        "validUntil": {"$ref": "#/$defs/timestamp"},
+        "signerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
+      }
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "issueRevision",
+        "proposal",
+        "proposalDigest",
+        "comparison",
+        "dispositionEvidence",
+        "compositionContract",
+        "decidedAt",
+        "signerRef",
+        "signature"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "proposal": {"$ref": "#/$defs/proposal"},
+        "proposalDigest": {"$ref": "#/$defs/digest"},
+        "comparison": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/comparison"}
+          ]
+        },
+        "dispositionEvidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "requiredOwnerIds",
+            "availableOwnerIds",
+            "existingMatch",
+            "lifecycle",
+            "variantBasis",
+            "productDecisionRefs",
+            "proposedDemand"
+          ],
+          "properties": {
+            "requiredOwnerIds": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 16,
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/id"}
+            },
+            "availableOwnerIds": {"$ref": "#/$defs/idList"},
+            "existingMatch": {
+              "oneOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["id", "operatingContractDigest"],
+                  "properties": {
+                    "id": {"$ref": "#/$defs/id"},
+                    "operatingContractDigest": {"$ref": "#/$defs/digest"}
+                  }
+                }
+              ]
+            },
+            "lifecycle": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["action", "evidenceRefs"],
+              "properties": {
+                "action": {"enum": ["retain", "retire"]},
+                "evidenceRefs": {"$ref": "#/$defs/idList"}
+              }
+            },
+            "variantBasis": {
+              "enum": [
+                "none",
+                "audience",
+                "industry-vocabulary",
+                "personality",
+                "branding",
+                "presentation"
+              ]
+            },
+            "productDecisionRefs": {"$ref": "#/$defs/idList"},
+            "proposedDemand": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["capacityEnvelopeRef", "amount", "unit"],
+              "properties": {
+                "capacityEnvelopeRef": {"$ref": "#/$defs/id"},
+                "amount": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1000000
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              }
+            }
+          }
+        },
+        "compositionContract": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "schemaVersion",
+                "proposalDigest",
+                "requiredOutputPorts",
+                "ownerMappings"
+              ],
+              "properties": {
+                "schemaVersion": {
+                  "const": "awesomeClaws.clawPortfolioCompositionContract.v1"
+                },
+                "proposalDigest": {"$ref": "#/$defs/digest"},
+                "requiredOutputPorts": {
+                  "type": "array",
+                  "minItems": 8,
+                  "maxItems": 8,
+                  "uniqueItems": true,
+                  "items": {"$ref": "#/$defs/id"}
+                },
+                "ownerMappings": {
+                  "type": "array",
+                  "minItems": 8,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "owner",
+                      "outputPort",
+                      "extensionRef",
+                      "authority",
+                      "sourcePaths"
+                    ],
+                    "properties": {
+                      "owner": {"$ref": "#/$defs/id"},
+                      "outputPort": {"$ref": "#/$defs/id"},
+                      "extensionRef": {"$ref": "#/$defs/id"},
+                      "authority": {
+                        "type": "array",
+                        "maxItems": 0
+                      },
+                      "sourcePaths": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "uniqueItems": true,
+                        "items": {
+                          "type": "string",
+                          "minLength": 3,
+                          "maxLength": 240
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "decidedAt": {"$ref": "#/$defs/timestamp"},
+        "signerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
+      }
+    },
+    "catalogMaintainerDecisions": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/catalogMaintainerDecision"}
+    },
+    "packageManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "catalogRevision",
+        "files",
+        "root",
+        "signedAt",
+        "signerRef",
+        "signature"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "catalogRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 128,
+          "items": {"$ref": "#/$defs/fileBinding"}
+        },
+        "root": {"$ref": "#/$defs/digest"},
+        "signedAt": {"$ref": "#/$defs/timestamp"},
+        "signerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
+      }
+    },
+    "idempotencyReceipts": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "providerRef",
+          "issueRevision",
+          "idempotencyKey",
+          "state",
+          "issuedAt",
+          "validUntil",
+          "signerRef",
+          "signature"
+        ],
+        "properties": {
+          "id": {"$ref": "#/$defs/id"},
+          "providerRef": {"$ref": "#/$defs/id"},
+          "issueRevision": {"$ref": "#/$defs/digest"},
+          "idempotencyKey": {"$ref": "#/$defs/digest"},
+          "state": {"const": "available"},
+          "issuedAt": {"$ref": "#/$defs/timestamp"},
+          "validUntil": {"$ref": "#/$defs/timestamp"},
+          "signerRef": {"$ref": "#/$defs/id"},
+          "signature": {"$ref": "#/$defs/signature"}
+        }
+      }
+    },
+    "runtimeBudget": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "mode",
+            "concurrency",
+            "trialTimeoutMs",
+            "cleanupTimeoutMs",
+            "infrastructureRetries",
+            "maxInputTokensPerTrial",
+            "maxOutputTokensPerTrial",
+            "maxTotalTokens",
+            "maxUsd",
+            "inputUsdPerMillion",
+            "outputUsdPerMillion",
+            "issuedAt",
+            "validUntil",
+            "signerRef",
+            "signature"
+          ],
+          "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "mode": {"const": "mock"},
+            "concurrency": {"type": "integer", "minimum": 1, "maximum": 8},
+            "trialTimeoutMs": {"type": "integer", "minimum": 1000, "maximum": 600000},
+            "cleanupTimeoutMs": {"type": "integer", "minimum": 1000, "maximum": 120000},
+            "infrastructureRetries": {"type": "integer", "minimum": 0, "maximum": 3},
+            "maxInputTokensPerTrial": {"type": "integer", "minimum": 1, "maximum": 1000000},
+            "maxOutputTokensPerTrial": {"type": "integer", "minimum": 1, "maximum": 1000000},
+            "maxTotalTokens": {"type": "integer", "minimum": 1, "maximum": 100000000},
+            "maxUsd": {"type": "number", "minimum": 0, "maximum": 1000000},
+            "inputUsdPerMillion": {"type": "number", "minimum": 0, "maximum": 1000000},
+            "outputUsdPerMillion": {"type": "number", "minimum": 0, "maximum": 1000000},
+            "issuedAt": {"$ref": "#/$defs/timestamp"},
+            "validUntil": {"$ref": "#/$defs/timestamp"},
+            "signerRef": {"$ref": "#/$defs/id"},
+            "signature": {"$ref": "#/$defs/signature"}
+          }
+        }
+      ]
+    },
+    "usageEvidence": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "revision",
+            "tenantRef",
+            "sourceRef",
+            "issueRevision",
+            "eventCount",
+            "successCount",
+            "failureCount",
+            "minimizedFields",
+            "issuedAt",
+            "validUntil",
+            "signerRef",
+            "signature"
+          ],
+          "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "revision": {"$ref": "#/$defs/digest"},
+            "tenantRef": {"$ref": "#/$defs/id"},
+            "sourceRef": {
+              "type": "string",
+              "pattern": "^controlled://",
+              "maxLength": 512
+            },
+            "issueRevision": {"$ref": "#/$defs/digest"},
+            "eventCount": {"type": "integer", "minimum": 0, "maximum": 1000000},
+            "successCount": {"type": "integer", "minimum": 0, "maximum": 1000000},
+            "failureCount": {"type": "integer", "minimum": 0, "maximum": 1000000},
+            "minimizedFields": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "uniqueItems": true,
+              "items": {
+                "enum": ["event-count", "success-count", "failure-count"]
+              }
+            },
+            "issuedAt": {"$ref": "#/$defs/timestamp"},
+            "validUntil": {"$ref": "#/$defs/timestamp"},
+            "signerRef": {"$ref": "#/$defs/id"},
+            "signature": {"$ref": "#/$defs/signature"}
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "idList": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keyId", "algorithm", "value"],
+      "properties": {
+        "keyId": {"$ref": "#/$defs/id"},
+        "algorithm": {"const": "Ed25519"},
+        "value": {
+          "type": "string",
+          "minLength": 88,
+          "maxLength": 88,
+          "pattern": "^[A-Za-z0-9+/]{86}==$"
+        }
+      }
+    },
+    "bytes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mediaType", "byteLength", "digest", "contentBase64"],
+      "properties": {
+        "mediaType": {"enum": ["text/plain; charset=utf-8", "application/json"]},
+        "byteLength": {"type": "integer", "minimum": 1, "maximum": 65536},
+        "digest": {"$ref": "#/$defs/digest"},
+        "contentBase64": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 90000,
+          "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+        }
+      }
+    },
+    "sourceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ownerId", "role", "path", "digest"],
+      "properties": {
+        "ownerId": {"$ref": "#/$defs/id"},
+        "role": {
+          "enum": [
+            "validator",
+            "schema",
+            "artifact",
+            "registry",
+            "dependency-manifest",
+            "dependency-lock"
+          ]
+        },
+        "path": {"type": "string", "minLength": 3, "maxLength": 240},
+        "digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "fileBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mediaType", "byteLength", "digest"],
+      "properties": {
+        "path": {"type": "string", "minLength": 3, "maxLength": 240},
+        "mediaType": {
+          "enum": [
+            "application/json",
+            "application/yaml",
+            "image/png",
+            "text/javascript",
+            "text/markdown; charset=utf-8"
+          ]
+        },
+        "byteLength": {"type": "integer", "minimum": 1, "maximum": 50000000},
+        "digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["user", "job", "workflow", "outputs", "evidence", "authority"],
+      "properties": {
+        "user": {"enum": ["same", "different"]},
+        "job": {"enum": ["same", "different"]},
+        "workflow": {"enum": ["same", "different"]},
+        "outputs": {"enum": ["same", "different"]},
+        "evidence": {"enum": ["same", "different"]},
+        "authority": {"enum": ["same", "different"]}
+      }
+    },
+    "catalogMaintainerDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "subjectRef",
+        "issueRevision",
+        "proposalDigest",
+        "decisionType",
+        "lifecycle",
+        "decidedAt",
+        "signerRef",
+        "signature"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "subjectRef": {"$ref": "#/$defs/id"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "proposalDigest": {"$ref": "#/$defs/digest"},
+        "decisionType": {"enum": ["RETIRE", "PRODUCT_DECISION"]},
+        "lifecycle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "validFrom", "validUntil"],
+          "properties": {
+            "state": {"enum": ["active", "revoked"]},
+            "validFrom": {"$ref": "#/$defs/timestamp"},
+            "validUntil": {"$ref": "#/$defs/timestamp"}
+          }
+        },
+        "decidedAt": {"$ref": "#/$defs/timestamp"},
+        "signerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
+      }
+    },
+    "proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "entry", "contribution"],
+      "properties": {
+        "schemaVersion": {"const": 1},
+        "entry": {"$ref": "#/$defs/proposalEntry"},
+        "contribution": {"$ref": "#/$defs/contribution"}
+      }
+    },
+    "proposalEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "category",
+        "maintenance",
+        "description",
+        "audience",
+        "principles",
+        "boundaries",
+        "intake",
+        "workflow",
+        "deliverables",
+        "example",
+        "doneWhen",
+        "capabilityGuidance"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "name": {"type": "string", "minLength": 3, "maxLength": 120},
+        "category": {
+          "enum": ["analysis", "engineering", "governance", "operations", "product", "productivity"]
+        },
+        "maintenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "maintainers", "lastVerified"],
+          "properties": {
+            "status": {"const": "active"},
+            "maintainers": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 8,
+              "items": {"type": "string", "minLength": 2, "maxLength": 80}
+            },
+            "lastVerified": {"type": "string", "format": "date"}
+          }
+        },
+        "description": {"type": "string", "minLength": 20, "maxLength": 2000},
+        "audience": {"type": "string", "minLength": 10, "maxLength": 1000},
+        "principles": {"$ref": "#/$defs/textList"},
+        "boundaries": {"$ref": "#/$defs/textList"},
+        "intake": {"$ref": "#/$defs/textList"},
+        "workflow": {"$ref": "#/$defs/textList"},
+        "deliverables": {"$ref": "#/$defs/textList"},
+        "example": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["request", "outcome"],
+          "properties": {
+            "request": {"type": "string", "minLength": 20, "maxLength": 2000},
+            "outcome": {"type": "string", "minLength": 20, "maxLength": 2000}
+          }
+        },
+        "doneWhen": {"$ref": "#/$defs/textList"},
+        "capabilityGuidance": {"$ref": "#/$defs/textList"}
+      }
+    },
+    "contribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "problem",
+        "repeatableJob",
+        "proofPlan",
+        "existingAlternatives"
+      ],
+      "properties": {
+        "problem": {"type": "string", "minLength": 20, "maxLength": 2000},
+        "repeatableJob": {"type": "string", "minLength": 20, "maxLength": 2000},
+        "proofPlan": {"type": "string", "minLength": 20, "maxLength": 2000},
+        "existingAlternatives": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "overlap", "difference"],
+            "properties": {
+              "id": {"$ref": "#/$defs/id"},
+              "overlap": {"type": "string", "minLength": 20, "maxLength": 1000},
+              "difference": {"type": "string", "minLength": 20, "maxLength": 1000}
+            }
+          }
+        }
+      }
+    },
+    "textList": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 16,
+      "items": {"type": "string", "minLength": 8, "maxLength": 2000}
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/candidates/claw-portfolio-manager/composition-trust-pin.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "trustSchemaVersion",
+    "trustRevision",
+    "notBefore",
+    "expiresAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.clawPortfolioCompositionTrustPin.v1"
+    },
+    "trustSchemaVersion": {
+      "const": "awesomeClaws.clawPortfolioCompositionTrust.v1"
+    },
+    "trustRevision": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "notBefore": {"type": "string", "format": "date-time"},
+    "expiresAt": {"type": "string", "format": "date-time"}
+  }
+}
