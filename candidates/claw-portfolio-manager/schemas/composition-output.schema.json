@@ -1,0 +1,481 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/candidates/claw-portfolio-manager/composition-output.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "verdict",
+    "standaloneCandidateAccepted",
+    "confidence",
+    "sourceBindingsRoot",
+    "classification",
+    "admissionScorecard",
+    "optionalEvidence",
+    "ports",
+    "recipe",
+    "reachableAuthority",
+    "authority"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "awesomeClaws.clawPortfolioCompositionResult.v1"},
+    "verdict": {"const": "IMPROVE_COMPOSE"},
+    "standaloneCandidateAccepted": {"const": false},
+    "confidence": {"const": 0.92},
+    "sourceBindingsRoot": {"$ref": "#/$defs/digest"},
+    "classification": {"$ref": "#/$defs/classification"},
+    "admissionScorecard": {"$ref": "#/$defs/admissionScorecard"},
+    "optionalEvidence": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/optionalEvidence"}
+      ]
+    },
+    "ports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "portfolio-run-lineage",
+        "provider-issue-snapshot",
+        "typed-admission-decision",
+        "signed-package-tree",
+        "stateless-budget-plan",
+        "externally-pinned-trust",
+        "minimized-usage-evidence",
+        "proposal-owner-handoff"
+      ],
+      "properties": {
+        "portfolio-run-lineage": {"$ref": "#/$defs/runLineage"},
+        "provider-issue-snapshot": {"$ref": "#/$defs/issueSnapshot"},
+        "typed-admission-decision": {"$ref": "#/$defs/admission"},
+        "signed-package-tree": {"$ref": "#/$defs/packageTree"},
+        "stateless-budget-plan": {"$ref": "#/$defs/budgetPlan"},
+        "externally-pinned-trust": {"$ref": "#/$defs/trust"},
+        "minimized-usage-evidence": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/usage"}]
+        },
+        "proposal-owner-handoff": {"$ref": "#/$defs/handoff"}
+      }
+    },
+    "recipe": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["owner", "improvement", "outputPort"],
+        "properties": {
+          "owner": {"type": "string", "minLength": 3, "maxLength": 80},
+          "improvement": {"type": "string", "minLength": 10, "maxLength": 240},
+          "outputPort": {"type": "string", "minLength": 3, "maxLength": 80}
+        }
+      }
+    },
+    "reachableAuthority": {
+      "type": "array",
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {"type": "string", "maxLength": 80}
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "merge",
+        "publish",
+        "externalMutation",
+        "atomicMutation",
+        "budgetIncrease",
+        "riskAcceptance",
+        "hrInference",
+        "sensitivePersonalInference"
+      ],
+      "properties": {
+        "merge": {"const": false},
+        "publish": {"const": false},
+        "externalMutation": {"const": false},
+        "atomicMutation": {"const": false},
+        "budgetIncrease": {"const": false},
+        "riskAcceptance": {"const": false},
+        "hrInference": {"const": false},
+        "sensitivePersonalInference": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "id": {"type": "string", "minLength": 3, "maxLength": 120},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "classification": {
+      "enum": [
+        "NEW",
+        "IMPROVE",
+        "COMPOSE",
+        "VARIANT",
+        "PRODUCT_DECISION",
+        "RETIRE",
+        "DUPLICATE",
+        "UNSUPPORTED"
+      ]
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keyId", "algorithm", "value"],
+      "properties": {
+        "keyId": {"$ref": "#/$defs/id"},
+        "algorithm": {"const": "Ed25519"},
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]{86}==$"
+        }
+      }
+    },
+    "bytes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mediaType", "byteLength", "digest", "contentBase64"],
+      "properties": {
+        "mediaType": {
+          "enum": ["text/plain; charset=utf-8", "application/json"]
+        },
+        "byteLength": {"type": "integer", "minimum": 1, "maximum": 65536},
+        "digest": {"$ref": "#/$defs/digest"},
+        "contentBase64": {
+          "type": "string",
+          "maxLength": 90000,
+          "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+        }
+      }
+    },
+    "idList": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "runLineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "mode",
+        "runId",
+        "predecessorCheckpointRef",
+        "continuationCheckpointRef",
+        "portfolioRevision",
+        "sourceBindingsRoot",
+        "priorReceiptIds",
+        "signedAt",
+        "validUntil",
+        "signerRef",
+        "signature"
+      ],
+      "properties": {
+        "owner": {"const": "repository-operations-manager"},
+        "mode": {"enum": ["bootstrap", "adopt", "manage"]},
+        "runId": {"$ref": "#/$defs/id"},
+        "predecessorCheckpointRef": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]
+        },
+        "continuationCheckpointRef": {"$ref": "#/$defs/id"},
+        "portfolioRevision": {"$ref": "#/$defs/digest"},
+        "sourceBindingsRoot": {"$ref": "#/$defs/digest"},
+        "priorReceiptIds": {"$ref": "#/$defs/idList"},
+        "signedAt": {"$ref": "#/$defs/timestamp"},
+        "validUntil": {"$ref": "#/$defs/timestamp"},
+        "signerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
+      }
+    },
+    "issueSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "issueRef",
+        "providerIssueId",
+        "url",
+        "state",
+        "revision",
+        "completenessRoot",
+        "capturedAt",
+        "title",
+        "body"
+      ],
+      "properties": {
+        "owner": {"const": "repository-compliance-program-manager"},
+        "issueRef": {"$ref": "#/$defs/id"},
+        "providerIssueId": {"type": "string"},
+        "url": {"type": "string", "format": "uri"},
+        "state": {"enum": ["open", "closed"]},
+        "revision": {"$ref": "#/$defs/digest"},
+        "completenessRoot": {"$ref": "#/$defs/digest"},
+        "capturedAt": {"$ref": "#/$defs/timestamp"},
+        "title": {"$ref": "#/$defs/bytes"},
+        "body": {"$ref": "#/$defs/bytes"}
+      }
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "issueRevision",
+        "classification",
+        "proposalDigest",
+        "comparison",
+        "nearestMatches",
+        "scorecard"
+      ],
+      "properties": {
+        "owner": {"const": "contribution-admission"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "classification": {"$ref": "#/$defs/classification"},
+        "proposalDigest": {"$ref": "#/$defs/digest"},
+        "comparison": {"$ref": "#/$defs/comparison"},
+        "nearestMatches": {"$ref": "#/$defs/idList"},
+        "scorecard": {"$ref": "#/$defs/admissionScorecard"}
+      }
+    },
+    "packageTree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "manifestRef", "catalogRevision", "root", "fileCount"],
+      "properties": {
+        "owner": {"const": "catalog-quality"},
+        "manifestRef": {"$ref": "#/$defs/id"},
+        "catalogRevision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "root": {"$ref": "#/$defs/digest"},
+        "fileCount": {"type": "integer", "minimum": 1, "maximum": 128}
+      }
+    },
+    "budgetPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "mode",
+        "capacityEnvelopeRef",
+        "capacityAmount",
+        "capacityUnit",
+        "committedDemand",
+        "remainingAmount",
+        "overCapacity",
+        "conflictRefs",
+        "priorReceiptIds",
+        "proposedIdempotencyKey",
+        "externalReceiptRequired",
+        "reservationClaim",
+        "atomicMutationClaim"
+      ],
+      "properties": {
+        "owner": {"const": "work-chief-of-staff"},
+        "mode": {"const": "stateless-proposal"},
+        "capacityEnvelopeRef": {"$ref": "#/$defs/id"},
+        "capacityAmount": {"type": "number", "minimum": 0},
+        "capacityUnit": {"type": "string", "minLength": 1},
+        "committedDemand": {"type": "number", "minimum": 0},
+        "remainingAmount": {"type": "number"},
+        "overCapacity": {"type": "boolean"},
+        "conflictRefs": {"$ref": "#/$defs/idList"},
+        "priorReceiptIds": {"$ref": "#/$defs/idList"},
+        "proposedIdempotencyKey": {"$ref": "#/$defs/digest"},
+        "externalReceiptRequired": {"const": true},
+        "reservationClaim": {"const": false},
+        "atomicMutationClaim": {"const": false}
+      }
+    },
+    "trust": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "revision",
+        "trustSchemaVersion",
+        "pinNotBefore",
+        "pinExpiresAt",
+        "keyIds"
+      ],
+      "properties": {
+        "owner": {"const": "composition-adapter"},
+        "revision": {"$ref": "#/$defs/digest"},
+        "trustSchemaVersion": {
+          "const": "awesomeClaws.clawPortfolioCompositionTrust.v1"
+        },
+        "pinNotBefore": {"$ref": "#/$defs/timestamp"},
+        "pinExpiresAt": {"$ref": "#/$defs/timestamp"},
+        "keyIds": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "evidenceRef",
+        "tenantRef",
+        "sourceRef",
+        "eventCount",
+        "successCount",
+        "failureCount",
+        "allowedIssueEffects",
+        "advisoryOnly",
+        "externalMutation"
+      ],
+      "properties": {
+        "owner": {"const": "runtime-evidence"},
+        "evidenceRef": {"$ref": "#/$defs/id"},
+        "tenantRef": {"$ref": "#/$defs/id"},
+        "sourceRef": {"type": "string", "pattern": "^controlled://"},
+        "eventCount": {"type": "integer", "minimum": 0},
+        "successCount": {"type": "integer", "minimum": 0},
+        "failureCount": {"type": "integer", "minimum": 0},
+        "allowedIssueEffects": {
+          "const": ["create", "reprioritize"]
+        },
+        "advisoryOnly": {"const": true},
+        "externalMutation": {"const": false}
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "state",
+        "issueRevision",
+        "classification",
+        "composition",
+        "continuationCheckpointRef",
+        "externalActionRequired",
+        "externalMutation"
+      ],
+      "properties": {
+        "owner": {"const": "work-chief-of-staff"},
+        "state": {"type": "string"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "classification": {"const": "COMPOSE"},
+        "composition": {"$ref": "#/$defs/idList"},
+        "continuationCheckpointRef": {"$ref": "#/$defs/id"},
+        "externalActionRequired": {"const": true},
+        "externalMutation": {"const": false}
+      }
+    },
+    "admissionScorecard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selected", "materialDifference", "candidates"],
+      "properties": {
+        "selected": {"$ref": "#/$defs/classification"},
+        "materialDifference": {"type": "boolean"},
+        "candidates": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["classification", "eligible", "priority", "reason"],
+            "properties": {
+              "classification": {"$ref": "#/$defs/classification"},
+              "eligible": {"type": "boolean"},
+              "priority": {"type": "integer", "minimum": 1, "maximum": 8},
+              "reason": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 120
+              }
+            }
+          }
+        }
+      }
+    },
+    "optionalEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "advisoryOnly",
+        "requiredForClassification",
+        "catalogQuality",
+        "regression",
+        "runtime",
+        "mockPlus"
+      ],
+      "properties": {
+        "advisoryOnly": {"const": true},
+        "requiredForClassification": {"const": false},
+        "catalogQuality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["qualifiedOwnerIds", "totals"],
+          "properties": {
+            "qualifiedOwnerIds": {"$ref": "#/$defs/idList"},
+            "totals": {
+              "type": "object",
+              "minProperties": 3,
+              "maxProperties": 3,
+              "propertyNames": {"$ref": "#/$defs/id"},
+              "additionalProperties": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              }
+            }
+          }
+        },
+        "regression": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["passedOwnerIds"],
+          "properties": {
+            "passedOwnerIds": {"$ref": "#/$defs/idList"}
+          }
+        },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "profileSchemaVersion",
+            "scenarioCount",
+            "selectedEstimateTokens",
+            "selectedEstimateUsd"
+          ],
+          "properties": {
+            "profileSchemaVersion": {
+              "const": "awesomeClaws.runtimeEvidenceProfile.v1"
+            },
+            "scenarioCount": {"type": "integer", "minimum": 1},
+            "selectedEstimateTokens": {"type": "integer", "minimum": 1},
+            "selectedEstimateUsd": {"type": "number", "minimum": 0}
+          }
+        },
+        "mockPlus": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["registeredOwnerIds"],
+          "properties": {
+            "registeredOwnerIds": {"$ref": "#/$defs/idList"}
+          }
+        }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["user", "job", "workflow", "outputs", "evidence", "authority"],
+      "properties": {
+        "user": {"enum": ["same", "different"]},
+        "job": {"enum": ["same", "different"]},
+        "workflow": {"enum": ["same", "different"]},
+        "outputs": {"enum": ["same", "different"]},
+        "evidence": {"enum": ["same", "different"]},
+        "authority": {"enum": ["same", "different"]}
+      }
+    }
+  }
+}

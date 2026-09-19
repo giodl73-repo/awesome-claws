@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/materialize-catalog.mjs && node scripts/generate-catalog-chooser.mjs",
-    "check": "node --test candidates/claw-portfolio-manager/claw-portfolio-manager.test.mjs && node --test scripts/*.test.mjs && node candidates/claw-portfolio-manager/verify.mjs && node scripts/mock-plus-semantic-discover.mjs --check && node scripts/materialize-catalog.mjs --check && node scripts/generate-catalog-chooser.mjs --check && node scripts/catalog-quality-score.mjs --check && node scripts/runtime-evidence.mjs --check && node scripts/validate-catalog.mjs && node scripts/validate-contributions.mjs && node scripts/regression-cases.mjs",
+    "check": "npm run check:claw-portfolio-composition && node --test scripts/*.test.mjs && node scripts/mock-plus-semantic-discover.mjs --check && node scripts/materialize-catalog.mjs --check && node scripts/generate-catalog-chooser.mjs --check && node scripts/catalog-quality-score.mjs --check && node scripts/runtime-evidence.mjs --check && node scripts/validate-catalog.mjs && node scripts/validate-contributions.mjs && node scripts/regression-cases.mjs",
+    "check:claw-portfolio-composition": "node --test candidates/claw-portfolio-manager/composition.test.mjs && node candidates/claw-portfolio-manager/verify.mjs",
     "score:catalog": "node scripts/catalog-quality-score.mjs",
     "score:catalog:check": "node scripts/catalog-quality-score.mjs --check",
     "create:claw": "node scripts/create-claw.mjs",

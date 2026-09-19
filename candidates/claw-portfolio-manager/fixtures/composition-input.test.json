@@ -1,0 +1,1399 @@
+{
+  "schemaVersion": "awesomeClaws.clawPortfolioCompositionInput.v1",
+  "sourceBindings": [
+    {
+      "ownerId": "composition-adapter",
+      "role": "validator",
+      "path": "candidates/claw-portfolio-manager/candidate-utils.mjs",
+      "digest": "sha256:008ea5491d238a4042c495e418f8fa733f87d569be2e203fbe559506871e99cd"
+    },
+    {
+      "ownerId": "composition-adapter",
+      "role": "validator",
+      "path": "candidates/claw-portfolio-manager/composition.mjs",
+      "digest": "sha256:ab1190bc9c921322f50bd0f341fc3ebf0cb20ca504d13bc53dd9abb640fa06c3"
+    },
+    {
+      "ownerId": "composition-adapter",
+      "role": "schema",
+      "path": "candidates/claw-portfolio-manager/schemas/composition-input.schema.json",
+      "digest": "sha256:e51d4f1b0a6bfd6c1c47ab2ac518ec9b9aeedde6e7116e4f9aec8e392676ea48"
+    },
+    {
+      "ownerId": "composition-adapter",
+      "role": "schema",
+      "path": "candidates/claw-portfolio-manager/schemas/composition-output.schema.json",
+      "digest": "sha256:b9fb53a660e92918bcd4adeee906f817edfb789e462f01e4b34d61777012b92d"
+    },
+    {
+      "ownerId": "composition-adapter",
+      "role": "schema",
+      "path": "candidates/claw-portfolio-manager/schemas/composition-trust-pin.schema.json",
+      "digest": "sha256:c4024c6548eb4ede86df7c9edd68cbb9d701eb175d5c95cc593e5b5c46601d8f"
+    },
+    {
+      "ownerId": "composition-adapter",
+      "role": "schema",
+      "path": "candidates/claw-portfolio-manager/schemas/composition-trust.schema.json",
+      "digest": "sha256:5b148f50f393502bba27f0018179677adeb3a99043257ceddd8a371514667137"
+    },
+    {
+      "ownerId": "catalog-quality",
+      "role": "registry",
+      "path": "catalog.json",
+      "digest": "sha256:a86ba7a0b72d9b8434e8dae2d0e91d5dee228d734cc3fd548b86795660140621"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/CLAW.md",
+      "digest": "sha256:274234480cb9595ffd69390bac4fe7eed0f5a1a1012493b508b88ecc185fff6d"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/README.md",
+      "digest": "sha256:ed6b7b80ba99ab50a7a24ec6a51579316e36e35ca7020075ad0a1f8290b571c3"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/fixtures/repository-compliance-program.example.json",
+      "digest": "sha256:8aff6f0ba5f3c54b16dffcbb56c739af813d7ba6aa93e9fa1852fdc27b203a87"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/fixtures/session-demo.json",
+      "digest": "sha256:e2fcd26e683917e4a23c13afdc9cdf199766006e3c2a46ad34f52f8e02f4a7ee"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/package.json",
+      "digest": "sha256:ad1c4ae760a6c6f845860423ccab60dc9431ed6d4f614af0d6eb2a75b22419aa"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/profiles/openclaw.yml",
+      "digest": "sha256:f962a8d21c1c4deb1c01a27e763a656806f8a9494324cca2329fa6deccc987d8"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/references/issue-writer-capability-contract.md",
+      "digest": "sha256:0eddf9628bdd7632e4ebe748d1026fa3d3718eb157c76c214554c70b3d21f191"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json",
+      "digest": "sha256:11249af3ac39950f054aa8cb1d0c7d2c9da016ae1b9f814cbf0e72ea6d9dfb57"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/screenshot.png",
+      "digest": "sha256:12e5ea0cd9aac6d88179d91ba6b10e41163861f3ce9ea07d096cc5d0255b9ee2"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/templates/repository-compliance-program.md",
+      "digest": "sha256:87ec8231e1485b1f2b15c0f0be932cef6548dcc7b79c9018ed368c6ca1a924ae"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/templates/session-handoff.md",
+      "digest": "sha256:a5ae602552e47ba471d39ecd21b3c18ff26af748e7b681a6d9ae98c778529212"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/templates/session-report.template.json",
+      "digest": "sha256:a61e6dca1f0c4c34ee10243664be433bad7d086370f79e42b60213228ddaab47"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "claws/repository-compliance-program-manager/workspace/AGENTS.md",
+      "digest": "sha256:74aae1568320cf1069f7503b66600829746c026c415c3629fe2464d82280fec7"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/CLAW.md",
+      "digest": "sha256:166ba12b744266b19e490155bc49ff73f3a7468b0921e29b7083ad3cbd33ae1a"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/README.md",
+      "digest": "sha256:3dcf92fe2a3254e9ebf0941bdcc6dad56b7784b92332862f11cda7349594abfc"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/fixtures/repository-operations.example.json",
+      "digest": "sha256:e04a703ffcbd362afa57e3e616858d3f0d0182f5de2f59ac32612883f9ea03c6"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/fixtures/session-demo.json",
+      "digest": "sha256:9d03524da986b2658f365ae8315b37bd29609e3ae3c713b2d2cc18b9b6bd5968"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/package.json",
+      "digest": "sha256:b8d1ea7b77ed07e77346ff63610b7dfb8db8182002a6b7e157fb0b2db4c9412d"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/schemas/repository-operations.schema.json",
+      "digest": "sha256:ed96bbfc7068e11493a75461c8c02c1fa9a6f3298de69dd5df5f3cd71baac677"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/screenshot.png",
+      "digest": "sha256:d6738bff98c9d2e3f6b310e02e49155f88e0855c2909b8d59b06c64d1ade05e2"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/templates/repository-operations.md",
+      "digest": "sha256:86686631a053ee2248c58f0b173e20a812cf190feb7d2b87a6a0c8da0a61a726"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/templates/session-handoff.md",
+      "digest": "sha256:028efa9772d5c00fb8ad0d45fc40499f9a3d81b95e3cf994d0136e1e58ef155b"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/templates/session-report.template.json",
+      "digest": "sha256:17927a57fcf483fe67d405a48d27f0fc59b33ad339bd7f3682c4295b70df319d"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "claws/repository-operations-manager/workspace/AGENTS.md",
+      "digest": "sha256:52e96cb2aa83985fb2c4f8a4f9930e36726ca5a035e40fc20d951d646b2aa5e8"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/CLAW.md",
+      "digest": "sha256:14bb3e50588ef952e740a64bdca688c209ea508f5dc0821884180c6a1eb91ae5"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/README.md",
+      "digest": "sha256:df4b9087a0baf4f03291cbc14c9c9970c597b54737ec078c6ad57f7fc7bc6ea2"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/fixtures/operating-portfolio.example.json",
+      "digest": "sha256:8a8ad689b975f58b0be19ec52abfaa9f633dcffe631214689be3865951e78e67"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/fixtures/session-demo.json",
+      "digest": "sha256:ce1baa7a5fd6108d87d18038ff8291d6219b0f5a299e1a292e438b4e1d52ba18"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/package.json",
+      "digest": "sha256:1cbb319fbac19589f28bb728a4a306f82a40954b21db8ceaf0e7abbef6dd16db"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/profiles/openclaw.yml",
+      "digest": "sha256:914754c7fd45d69a7f7c6976cd899bfcf9524a3702da212d589b6f3dc0ba4b6f"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/schemas/operating-portfolio.schema.json",
+      "digest": "sha256:b5bb22d109dacd1a9377774e45b69ab06c7eb4b11471aa7cbf7152f8165c372a"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/screenshot.png",
+      "digest": "sha256:2810b4836f151d8aa1fabd515ce1b4364175d0dacfeb6ad47daa6ffc85fc8ba7"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/templates/operating-portfolio.md",
+      "digest": "sha256:7578caaf016620bcc3db0a461361a61e38bf12673830cdd430d38b94e744af39"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/templates/session-handoff.md",
+      "digest": "sha256:3f1b41f7e419581ad5fd162206348c3e4f56d355f58c1e1e71ef3716d233f0ae"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/templates/session-report.template.json",
+      "digest": "sha256:2d0ee5f5f64b00720d55067f2d1ea32882c86236208387ec8acefe870e803e6d"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "claws/work-chief-of-staff/workspace/AGENTS.md",
+      "digest": "sha256:5ec3adbc05a1700d47a33db1ecd0cb10be6fccc54261b43b51416632764beb47"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "contributions/repository-compliance-program-manager.json",
+      "digest": "sha256:c2e71fedf3dd8affb947f6550e4dda5d3405678367e04c81204a73b76a6d18ff"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "contributions/repository-operations-manager.json",
+      "digest": "sha256:9fbd4093521edff574ef9479da0e157165231d631c2b8819848f0590c289a29e"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "contributions/work-chief-of-staff.json",
+      "digest": "sha256:83045be11462ef0130590e29eedd40b88711afcdbea1e73800b9465175578a65"
+    },
+    {
+      "ownerId": "catalog-quality",
+      "role": "registry",
+      "path": "experience-cases.json",
+      "digest": "sha256:54c994b15688c4b32d077392b9fef8a11bf9e4bc71bee88a66e5d76b1194c164"
+    },
+    {
+      "ownerId": "composition-adapter",
+      "role": "dependency-lock",
+      "path": "package-lock.json",
+      "digest": "sha256:18cccf9ad51e90fdd7a37b9df8650d2fee16d64010994533b94a5281e836a9a7"
+    },
+    {
+      "ownerId": "composition-adapter",
+      "role": "dependency-manifest",
+      "path": "package.json",
+      "digest": "sha256:8ae6fa03a590f2a54b6ec7a866d92eecbe62575cb4112c4e6cff3ef8a158dc8d"
+    },
+    {
+      "ownerId": "catalog-quality",
+      "role": "registry",
+      "path": "regression-cases.json",
+      "digest": "sha256:fe693c0a31ec9562f6fb80bc6e93db644c3b5ed005ae4718d023bf701c75689e"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "registry",
+      "path": "required-lifecycle-recipes.json",
+      "digest": "sha256:de691b212e818109eaf1207ec93877de1d7ce2570bd42231261f192ff25ccf76"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "registry",
+      "path": "required-safety-recipes.json",
+      "digest": "sha256:489786e149cab34342eeb37f0e01b5bc6b35c587fb8be4af33b8215aa4b26018"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "registry",
+      "path": "required-semantic-recipes.json",
+      "digest": "sha256:089ed57c43b747f120f2f237b925c4a7796fc9feaa0ad7b612f5a1b9e4737ed0"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "registry",
+      "path": "runtime-evidence-profile.json",
+      "digest": "sha256:4b4426f870ffe04bcb2d1c5d8351fe73551fb65011231bf34ec0d722da6a5825"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "validator",
+      "path": "scripts/artifact-semantics.mjs",
+      "digest": "sha256:c64c0cabf7e5ee9ad4b0f585b2b38d950c417a013d96aa9889e93ed61fe61f25"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "validator",
+      "path": "scripts/artifact-validator-registry.mjs",
+      "digest": "sha256:b310fbe823734a82a25b2a047bd3562a63786154ef66e4a09006abf7b93036fe"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "validator",
+      "path": "scripts/capability-classes.mjs",
+      "digest": "sha256:5324a3f1109c39f350e6b1947a12a7a5735be68ffec373b3b25c6e873a121709"
+    },
+    {
+      "ownerId": "contribution-admission",
+      "role": "validator",
+      "path": "scripts/catalog-health.mjs",
+      "digest": "sha256:ac46240add15fb23972ab4cdac4bc12aa36597bc29a519f6bb44f398fcab9acc"
+    },
+    {
+      "ownerId": "catalog-quality",
+      "role": "validator",
+      "path": "scripts/catalog-quality-score.mjs",
+      "digest": "sha256:8b022814145f628b29c391831f39e181134adbb9eab43059a6264982c592c7db"
+    },
+    {
+      "ownerId": "catalog-quality",
+      "role": "validator",
+      "path": "scripts/catalog-source.mjs",
+      "digest": "sha256:2dd71a1b35eb182d8dd6eca5fa5396a67755358f44c01a57c1bd7d2a45a35021"
+    },
+    {
+      "ownerId": "contribution-admission",
+      "role": "validator",
+      "path": "scripts/contribution-lib.mjs",
+      "digest": "sha256:2022abee643543867a5615e31f738309e67351d52baa28a58dd1cc856009b6ce"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "validator",
+      "path": "scripts/experience-cases.mjs",
+      "digest": "sha256:fcdf8a31d63fee3baf7214bf6602f5d7ed85fcf42548ad061b8f5352e047bddb"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "validator",
+      "path": "scripts/mock-plus-lib.mjs",
+      "digest": "sha256:5aa6a14c9aa3bdca71864de2456296235d013e802fb95cc8595e0820418a8d19"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "validator",
+      "path": "scripts/portable-paths.mjs",
+      "digest": "sha256:ebad03f1873a221e28f32843d163e76480bb18af263a8e1993bac157d379b40a"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "validator",
+      "path": "scripts/regression-cases.mjs",
+      "digest": "sha256:72c10a0bd9f7b7df8d6d5aae61af4366b0c1e633cd26f0fc094ad358db98470e"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "validator",
+      "path": "scripts/repository-compliance-program-manager.mjs",
+      "digest": "sha256:0163b1580ead609f7722c417b78a063395045c9542fbc5aa7d78f888417dd202"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "validator",
+      "path": "scripts/repository-operations-manager.mjs",
+      "digest": "sha256:5dd45f766a680e8c4e974acc09e74bc1770f69713dc36dccd5b4ba344851a1ea"
+    },
+    {
+      "ownerId": "runtime-evidence",
+      "role": "validator",
+      "path": "scripts/runtime-evidence-lib.mjs",
+      "digest": "sha256:c89526bee2d916d28c1b47d6fc76e56de2d550cb90dc4bc869dd3bbbb23e6f91"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "sources/repository-compliance-program-manager/fixtures/repository-compliance-program.example.json",
+      "digest": "sha256:8aff6f0ba5f3c54b16dffcbb56c739af813d7ba6aa93e9fa1852fdc27b203a87"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "sources/repository-compliance-program-manager/fixtures/session-demo.json",
+      "digest": "sha256:e2fcd26e683917e4a23c13afdc9cdf199766006e3c2a46ad34f52f8e02f4a7ee"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "sources/repository-compliance-program-manager/references/issue-writer-capability-contract.md",
+      "digest": "sha256:0eddf9628bdd7632e4ebe748d1026fa3d3718eb157c76c214554c70b3d21f191"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "schema",
+      "path": "sources/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json",
+      "digest": "sha256:11249af3ac39950f054aa8cb1d0c7d2c9da016ae1b9f814cbf0e72ea6d9dfb57"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "sources/repository-compliance-program-manager/templates/repository-compliance-program.md",
+      "digest": "sha256:87ec8231e1485b1f2b15c0f0be932cef6548dcc7b79c9018ed368c6ca1a924ae"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "sources/repository-compliance-program-manager/templates/session-handoff.md",
+      "digest": "sha256:a5ae602552e47ba471d39ecd21b3c18ff26af748e7b681a6d9ae98c778529212"
+    },
+    {
+      "ownerId": "repository-compliance-program-manager",
+      "role": "artifact",
+      "path": "sources/repository-compliance-program-manager/templates/session-report.template.json",
+      "digest": "sha256:a61e6dca1f0c4c34ee10243664be433bad7d086370f79e42b60213228ddaab47"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "sources/repository-operations-manager/fixtures/repository-operations.example.json",
+      "digest": "sha256:e04a703ffcbd362afa57e3e616858d3f0d0182f5de2f59ac32612883f9ea03c6"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "sources/repository-operations-manager/fixtures/session-demo.json",
+      "digest": "sha256:9d03524da986b2658f365ae8315b37bd29609e3ae3c713b2d2cc18b9b6bd5968"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "schema",
+      "path": "sources/repository-operations-manager/schemas/repository-operations.schema.json",
+      "digest": "sha256:ed96bbfc7068e11493a75461c8c02c1fa9a6f3298de69dd5df5f3cd71baac677"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "sources/repository-operations-manager/templates/repository-operations.md",
+      "digest": "sha256:86686631a053ee2248c58f0b173e20a812cf190feb7d2b87a6a0c8da0a61a726"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "sources/repository-operations-manager/templates/session-handoff.md",
+      "digest": "sha256:028efa9772d5c00fb8ad0d45fc40499f9a3d81b95e3cf994d0136e1e58ef155b"
+    },
+    {
+      "ownerId": "repository-operations-manager",
+      "role": "artifact",
+      "path": "sources/repository-operations-manager/templates/session-report.template.json",
+      "digest": "sha256:17927a57fcf483fe67d405a48d27f0fc59b33ad339bd7f3682c4295b70df319d"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "sources/work-chief-of-staff/fixtures/operating-portfolio.example.json",
+      "digest": "sha256:8a8ad689b975f58b0be19ec52abfaa9f633dcffe631214689be3865951e78e67"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "sources/work-chief-of-staff/fixtures/session-demo.json",
+      "digest": "sha256:ce1baa7a5fd6108d87d18038ff8291d6219b0f5a299e1a292e438b4e1d52ba18"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "schema",
+      "path": "sources/work-chief-of-staff/schemas/operating-portfolio.schema.json",
+      "digest": "sha256:b5bb22d109dacd1a9377774e45b69ab06c7eb4b11471aa7cbf7152f8165c372a"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "sources/work-chief-of-staff/templates/operating-portfolio.md",
+      "digest": "sha256:7578caaf016620bcc3db0a461361a61e38bf12673830cdd430d38b94e744af39"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "sources/work-chief-of-staff/templates/session-handoff.md",
+      "digest": "sha256:3f1b41f7e419581ad5fd162206348c3e4f56d355f58c1e1e71ef3716d233f0ae"
+    },
+    {
+      "ownerId": "work-chief-of-staff",
+      "role": "artifact",
+      "path": "sources/work-chief-of-staff/templates/session-report.template.json",
+      "digest": "sha256:2d0ee5f5f64b00720d55067f2d1ea32882c86236208387ec8acefe870e803e6d"
+    }
+  ],
+  "portfolio": {
+    "id": "portfolio-owner-composition",
+    "revision": "sha256:db49054023676bd714e2464c875e67a55c9cad4683ee1b9a488b4355a5886211",
+    "selectedClawIds": [
+      "repository-operations-manager",
+      "repository-compliance-program-manager",
+      "work-chief-of-staff"
+    ],
+    "sourceBindingsRoot": "sha256:85ff6c30ae1f3e6cc091e768e278f4eccbf04172b0e427bef412808c14a987fb",
+    "capacityEnvelopeRef": "capacity-engineering"
+  },
+  "providerIssue": {
+    "id": "provider-snapshot-issue-api",
+    "baseIssueRef": "issue-api",
+    "baseIssueRevision": "sha256:3100000000000000000000000000000000000000000000000000000000000001",
+    "providerIssueId": "ENG-410",
+    "url": "https://issues.example.invalid/ENG-410",
+    "state": "open",
+    "revision": "sha256:a00e0e2c14faad40b2f4ed42896f44229a5dcfbcf427b53d29d8b4e8779c896c",
+    "title": {
+      "mediaType": "text/plain; charset=utf-8",
+      "byteLength": 46,
+      "digest": "sha256:c32c6330b048dd2426df7a418ba6d63c27041f645f3c0c2157e60eff5b20948f",
+      "contentBase64": "Q29tcG9zZSBwb3J0Zm9saW8gc3Rld2FyZHNoaXAgZnJvbSBvd25lciBDbGF3cw=="
+    },
+    "body": {
+      "mediaType": "application/json",
+      "byteLength": 241,
+      "digest": "sha256:41cefb52c1809e9416888d9ca0e8a8cee093aa1a9200f18143acf28c83afb89a",
+      "contentBase64": "eyJldmlkZW5jZVJlZnMiOlsiaXNzdWUtYXBpIiwiY2hlY2twb2ludC13ZWVrbHktMjAyNi0wOS0xMyJdLCJwcm9wb3NhbERpZ2VzdCI6InNoYTI1NjpjZGRmYzZlNjhjYWI0ZTdkYTk1ODg3YWU3NWM3ZTgwMTM2NmEwMmMzYmFkZDBiNDI4MWIzMmY3OGNiOGQ0OTY3IiwicmVxdWVzdCI6IkNvbXBvc2UgdGhlIG93bmVyIENsYXdzIGludG8gYW4gaXNzdWUtbmF0aXZlIHBvcnRmb2xpbyBzdGV3YXJkc2hpcCB3b3JrZmxvdy4ifQ=="
+    },
+    "capturedAt": "2026-09-17T17:00:00Z",
+    "completenessRoot": "sha256:7b89154b9e687c75d1865e5fc675104775b200590e0800d356d8545fba631067",
+    "signerRef": "provider-custodian",
+    "ownerContentMapping": {
+      "sourceDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000001",
+      "replacementDigest": "sha256:0fed5a49eb3adde95801c08d987a31776ad0729b0a4d74f008785bf8fd0fa904",
+      "authority": "provider-custodian-attestation",
+      "reason": "exact-provider-content-supersedes-owner-summary-digest"
+    },
+    "signature": {
+      "keyId": "provider-key",
+      "algorithm": "Ed25519",
+      "value": "9ykojUhLW2G3fo8TIOdWoyz3WDtm31PsHuIOiv7XlhFAJVMqMVH3d2ErHQQC+tkC5Z/M7/4CnAeyuzv7OivqBw=="
+    }
+  },
+  "continuation": {
+    "id": "continuation-portfolio-composition",
+    "mode": "manage",
+    "predecessorCheckpointRef": "checkpoint-weekly-2026-09-13",
+    "portfolioRevision": "sha256:db49054023676bd714e2464c875e67a55c9cad4683ee1b9a488b4355a5886211",
+    "sourceBindingsRoot": "sha256:85ff6c30ae1f3e6cc091e768e278f4eccbf04172b0e427bef412808c14a987fb",
+    "priorReceiptIds": [
+      "receipt-issue-api"
+    ],
+    "signedAt": "2026-09-17T17:15:00Z",
+    "validUntil": "2026-09-18T17:15:00Z",
+    "signerRef": "portfolio-owner",
+    "signature": {
+      "keyId": "continuation-key",
+      "algorithm": "Ed25519",
+      "value": "BcFPf50SvCr3pgzL7pAdDDQf/cdAtMkgc9glD38JdSj5JTN9/2Yo1W2Aiz7rG0b9JxSNl4ZcVpi1eTAHAqwkDg=="
+    }
+  },
+  "admission": {
+    "id": "admission-issue-api",
+    "issueRevision": "sha256:a00e0e2c14faad40b2f4ed42896f44229a5dcfbcf427b53d29d8b4e8779c896c",
+    "proposal": {
+      "schemaVersion": 1,
+      "entry": {
+        "id": "claw-portfolio-manager",
+        "name": "Claw Portfolio Manager",
+        "category": "operations",
+        "maintenance": {
+          "status": "active",
+          "maintainers": [
+            "@giodl73-repo"
+          ],
+          "lastVerified": "2026-09-17"
+        },
+        "description": "Stewards an owner-selected Claw portfolio by classifying exact repository issues, enforcing compose-first admission and cumulative budgets, and producing evidence-bound proposals without changing production Claws.",
+        "audience": "Owners and maintainers responsible for an evolving portfolio of repository-defined Claws.",
+        "principles": [
+          "Treat owner manifests, provider issue snapshots, package trees, and prior checkpoints as immutable evidence",
+          "Prefer improvement or composition whenever existing Claws preserve the requested operating job",
+          "Optimize for portfolio outcomes and consolidation rather than raw Claw count",
+          "Keep publication, mutation, budget increase, risk acceptance, and final decisions owner-controlled"
+        ],
+        "boundaries": [
+          "Do not merge, publish, mutate production Claws, increase budgets, accept risk, grant authority, or infer sensitive personal facts",
+          "Do not classify from caller booleans, unauthenticated issues, incomplete portfolios, optional usage alone, or stale predecessor state",
+          "Do not reserve a NEW candidate while a feasible IMPROVE or COMPOSE request would be displaced"
+        ],
+        "intake": [
+          "Owner-signed bootstrap, adoption, or management manifest selecting exact Claw package revisions",
+          "Provider-signed complete issue snapshot with exact minimized title and body bytes",
+          "Typed classifications or signed human decisions, bounded grants, cumulative budget lineage, and externally pinned public trust",
+          "Optional owner-approved minimized usage evidence that remains advisory"
+        ],
+        "workflow": [
+          "Validate the public trust revision, signer domains, owner manifest, selected package trees, provider snapshot completeness, and predecessor lineage",
+          "Decode each exact issue revision and derive a typed classification through deterministic rules or an authorized signed human decision",
+          "Execute the strongest current composition graph and stop NEW whenever existing validated Claws can preserve the requested contract",
+          "Allocate IMPROVE and COMPOSE before NEW under exact cumulative candidate, admission, work, cost, and duration caps",
+          "Produce a versioned evidence ledger, blocked states, proposal plans, and an owner decision or pull-request handoff without external mutation"
+        ],
+        "deliverables": [
+          "Exact issue classification ledger with rationale and evidence links",
+          "Affected Claw identities and package revisions",
+          "Candidate, improvement, composition, product-decision, deprecation, or retirement plan",
+          "Cumulative budget reservations and explicit blocked states",
+          "Owner-controlled decision and pull-request-ready handoff"
+        ],
+        "example": {
+          "request": "Adopt this signed Claw subset and reconcile its complete issue queue within the supplied cumulative budget, using optional scoped usage only as advisory evidence.",
+          "outcome": "A versioned ledger classifies every issue, proves composition feasibility first, reserves only permitted work, blocks overruns, and hands proposals to the owner without changing the catalog."
+        },
+        "doneWhen": [
+          "Every selected package file and provider issue is covered exactly by independently authenticated complete manifests",
+          "Every issue has one revision-bound typed classification, rationale, evidence set, affected Claw set, and proposal or blocked state",
+          "Composition-first ordering and cumulative replay-safe budgets prevent feasible reuse from being displaced by new candidates",
+          "No output grants merge, publish, mutation, budget-increase, risk-acceptance, resealing, or sensitive-inference authority"
+        ],
+        "capabilityGuidance": [
+          "Use read-only repository evidence and independently pinned public verification keys; never accept private key material or unsafe URLs.",
+          "Use optional minimized usage only to inform, create, or reprioritize an issue and never to override correctness or safety."
+        ]
+      },
+      "contribution": {
+        "problem": "Claw owners need a repeatable, evidence-bound way to bootstrap or adopt a portfolio and reconcile its complete issue queue without silently multiplying Claws or granting mutation authority.",
+        "repeatableJob": "Validate an exact owner-selected Claw portfolio and provider issue snapshot, classify every request, execute compose-first admission under cumulative budgets, and prepare owner-controlled proposals.",
+        "proofPlan": "Exercise bootstrap, adopt, and predecessor-bound management; exact issue and package coverage; typed classification; no-sidecar composition; cumulative replay-safe budgets; scoped minimized usage; and structural non-authority.",
+        "existingAlternatives": [
+          {
+            "id": "benefits-realization-manager",
+            "overlap": "The repository similarity scorer reports 14.0 percent weighted operating-contract overlap with Benefits realization manager.",
+            "difference": "Benefits realization manager does not expose the complete issue-native admission ledger with compose-first planning and owner-only handoff."
+          },
+          {
+            "id": "customer-success-program-manager",
+            "overlap": "The repository similarity scorer reports 12.7 percent weighted operating-contract overlap with Customer success program manager.",
+            "difference": "Customer success program manager does not expose the complete issue-native admission ledger with compose-first planning and owner-only handoff."
+          },
+          {
+            "id": "partner-business-manager",
+            "overlap": "The repository similarity scorer reports 12.3 percent weighted operating-contract overlap with Partner business manager.",
+            "difference": "Partner business manager does not expose the complete issue-native admission ledger with compose-first planning and owner-only handoff."
+          },
+          {
+            "id": "household-steward",
+            "overlap": "The repository similarity scorer reports 12.1 percent weighted operating-contract overlap with Household steward.",
+            "difference": "Household steward does not expose the complete issue-native admission ledger with compose-first planning and owner-only handoff."
+          },
+          {
+            "id": "workflow-operator",
+            "overlap": "The repository similarity scorer reports 11.2 percent weighted operating-contract overlap with Workflow operator.",
+            "difference": "Workflow operator does not expose the complete issue-native admission ledger with compose-first planning and owner-only handoff."
+          }
+        ]
+      }
+    },
+    "proposalDigest": "sha256:cddfc6e68cab4e7da95887ae75c7e801366a02c3badd0b4281b32f78cb8d4967",
+    "comparison": {
+      "user": "same",
+      "job": "same",
+      "workflow": "different",
+      "outputs": "different",
+      "evidence": "different",
+      "authority": "same"
+    },
+    "decidedAt": "2026-09-17T17:20:00Z",
+    "signerRef": "admission-owner",
+    "compositionContract": {
+      "schemaVersion": "awesomeClaws.clawPortfolioCompositionContract.v1",
+      "proposalDigest": "sha256:cddfc6e68cab4e7da95887ae75c7e801366a02c3badd0b4281b32f78cb8d4967",
+      "requiredOutputPorts": [
+        "portfolio-run-lineage",
+        "provider-issue-snapshot",
+        "typed-admission-decision",
+        "signed-package-tree",
+        "stateless-budget-plan",
+        "externally-pinned-trust",
+        "minimized-usage-evidence",
+        "proposal-owner-handoff"
+      ],
+      "ownerMappings": [
+        {
+          "owner": "repository-operations-manager",
+          "outputPort": "portfolio-run-lineage",
+          "extensionRef": "continuation-portfolio-composition",
+          "authority": [],
+          "sourcePaths": [
+            "scripts/repository-operations-manager.mjs",
+            "sources/repository-operations-manager/schemas/repository-operations.schema.json"
+          ]
+        },
+        {
+          "owner": "repository-compliance-program-manager",
+          "outputPort": "provider-issue-snapshot",
+          "extensionRef": "provider-snapshot-issue-api",
+          "authority": [],
+          "sourcePaths": [
+            "scripts/repository-compliance-program-manager.mjs",
+            "sources/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json"
+          ]
+        },
+        {
+          "owner": "contribution-admission",
+          "outputPort": "typed-admission-decision",
+          "extensionRef": "admission-issue-api",
+          "authority": [],
+          "sourcePaths": [
+            "scripts/contribution-lib.mjs",
+            "catalog.json"
+          ]
+        },
+        {
+          "owner": "catalog-quality",
+          "outputPort": "signed-package-tree",
+          "extensionRef": "composition-package-manifest",
+          "authority": [],
+          "sourcePaths": [
+            "scripts/catalog-quality-score.mjs",
+            "catalog.json"
+          ]
+        },
+        {
+          "owner": "work-chief-of-staff",
+          "outputPort": "stateless-budget-plan",
+          "extensionRef": "capacity-engineering",
+          "authority": [],
+          "sourcePaths": [
+            "sources/work-chief-of-staff/schemas/operating-portfolio.schema.json",
+            "sources/work-chief-of-staff/fixtures/operating-portfolio.example.json"
+          ]
+        },
+        {
+          "owner": "composition-adapter",
+          "outputPort": "externally-pinned-trust",
+          "extensionRef": "composition-trust",
+          "authority": [],
+          "sourcePaths": [
+            "candidates/claw-portfolio-manager/schemas/composition-trust.schema.json",
+            "candidates/claw-portfolio-manager/schemas/composition-trust-pin.schema.json"
+          ]
+        },
+        {
+          "owner": "runtime-evidence",
+          "outputPort": "minimized-usage-evidence",
+          "extensionRef": "runtime-evidence-optional",
+          "authority": [],
+          "sourcePaths": [
+            "scripts/runtime-evidence-lib.mjs",
+            "runtime-evidence-profile.json"
+          ]
+        },
+        {
+          "owner": "work-chief-of-staff",
+          "outputPort": "proposal-owner-handoff",
+          "extensionRef": "work-chief-handoff",
+          "authority": [],
+          "sourcePaths": [
+            "sources/work-chief-of-staff/schemas/operating-portfolio.schema.json",
+            "sources/work-chief-of-staff/fixtures/operating-portfolio.example.json"
+          ]
+        }
+      ]
+    },
+    "signature": {
+      "keyId": "admission-key",
+      "algorithm": "Ed25519",
+      "value": "e9IZPEXmXBH2bCYcUGR0ZOMUgo5npFRdbGhBmyu8v3yTaCdwuT/9D5gfmymyRRGxHMlmD34c6i0qQtn5Re0UDw=="
+    }
+  },
+  "packageManifest": {
+    "id": "composition-package-manifest",
+    "catalogRevision": "0c1bfb3c973a9940f301a5001e77435789993555",
+    "files": [
+      {
+        "path": "candidates/claw-portfolio-manager/candidate-utils.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 6083,
+        "digest": "sha256:008ea5491d238a4042c495e418f8fa733f87d569be2e203fbe559506871e99cd"
+      },
+      {
+        "path": "candidates/claw-portfolio-manager/composition.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 46916,
+        "digest": "sha256:ab1190bc9c921322f50bd0f341fc3ebf0cb20ca504d13bc53dd9abb640fa06c3"
+      },
+      {
+        "path": "candidates/claw-portfolio-manager/schemas/composition-input.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 19164,
+        "digest": "sha256:e51d4f1b0a6bfd6c1c47ab2ac518ec9b9aeedde6e7116e4f9aec8e392676ea48"
+      },
+      {
+        "path": "candidates/claw-portfolio-manager/schemas/composition-output.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 15704,
+        "digest": "sha256:b9fb53a660e92918bcd4adeee906f817edfb789e462f01e4b34d61777012b92d"
+      },
+      {
+        "path": "candidates/claw-portfolio-manager/schemas/composition-trust-pin.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 803,
+        "digest": "sha256:c4024c6548eb4ede86df7c9edd68cbb9d701eb175d5c95cc593e5b5c46601d8f"
+      },
+      {
+        "path": "candidates/claw-portfolio-manager/schemas/composition-trust.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 1644,
+        "digest": "sha256:5b148f50f393502bba27f0018179677adeb3a99043257ceddd8a371514667137"
+      },
+      {
+        "path": "catalog.json",
+        "mediaType": "application/json",
+        "byteLength": 866508,
+        "digest": "sha256:a86ba7a0b72d9b8434e8dae2d0e91d5dee228d734cc3fd548b86795660140621"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/CLAW.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 3958,
+        "digest": "sha256:274234480cb9595ffd69390bac4fe7eed0f5a1a1012493b508b88ecc185fff6d"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/README.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 3034,
+        "digest": "sha256:ed6b7b80ba99ab50a7a24ec6a51579316e36e35ca7020075ad0a1f8290b571c3"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/fixtures/repository-compliance-program.example.json",
+        "mediaType": "application/json",
+        "byteLength": 55557,
+        "digest": "sha256:8aff6f0ba5f3c54b16dffcbb56c739af813d7ba6aa93e9fa1852fdc27b203a87"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/fixtures/session-demo.json",
+        "mediaType": "application/json",
+        "byteLength": 4217,
+        "digest": "sha256:e2fcd26e683917e4a23c13afdc9cdf199766006e3c2a46ad34f52f8e02f4a7ee"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/package.json",
+        "mediaType": "application/json",
+        "byteLength": 193,
+        "digest": "sha256:ad1c4ae760a6c6f845860423ccab60dc9431ed6d4f614af0d6eb2a75b22419aa"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/profiles/openclaw.yml",
+        "mediaType": "application/yaml",
+        "byteLength": 208,
+        "digest": "sha256:f962a8d21c1c4deb1c01a27e763a656806f8a9494324cca2329fa6deccc987d8"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/references/issue-writer-capability-contract.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 2948,
+        "digest": "sha256:0eddf9628bdd7632e4ebe748d1026fa3d3718eb157c76c214554c70b3d21f191"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 31233,
+        "digest": "sha256:11249af3ac39950f054aa8cb1d0c7d2c9da016ae1b9f814cbf0e72ea6d9dfb57"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/screenshot.png",
+        "mediaType": "image/png",
+        "byteLength": 147521,
+        "digest": "sha256:12e5ea0cd9aac6d88179d91ba6b10e41163861f3ce9ea07d096cc5d0255b9ee2"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/templates/repository-compliance-program.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 3056,
+        "digest": "sha256:87ec8231e1485b1f2b15c0f0be932cef6548dcc7b79c9018ed368c6ca1a924ae"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/templates/session-handoff.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 3761,
+        "digest": "sha256:a5ae602552e47ba471d39ecd21b3c18ff26af748e7b681a6d9ae98c778529212"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/templates/session-report.template.json",
+        "mediaType": "application/json",
+        "byteLength": 785,
+        "digest": "sha256:a61e6dca1f0c4c34ee10243664be433bad7d086370f79e42b60213228ddaab47"
+      },
+      {
+        "path": "claws/repository-compliance-program-manager/workspace/AGENTS.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 6648,
+        "digest": "sha256:74aae1568320cf1069f7503b66600829746c026c415c3629fe2464d82280fec7"
+      },
+      {
+        "path": "claws/repository-operations-manager/CLAW.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 3231,
+        "digest": "sha256:166ba12b744266b19e490155bc49ff73f3a7468b0921e29b7083ad3cbd33ae1a"
+      },
+      {
+        "path": "claws/repository-operations-manager/README.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 2546,
+        "digest": "sha256:3dcf92fe2a3254e9ebf0941bdcc6dad56b7784b92332862f11cda7349594abfc"
+      },
+      {
+        "path": "claws/repository-operations-manager/fixtures/repository-operations.example.json",
+        "mediaType": "application/json",
+        "byteLength": 61853,
+        "digest": "sha256:e04a703ffcbd362afa57e3e616858d3f0d0182f5de2f59ac32612883f9ea03c6"
+      },
+      {
+        "path": "claws/repository-operations-manager/fixtures/session-demo.json",
+        "mediaType": "application/json",
+        "byteLength": 4488,
+        "digest": "sha256:9d03524da986b2658f365ae8315b37bd29609e3ae3c713b2d2cc18b9b6bd5968"
+      },
+      {
+        "path": "claws/repository-operations-manager/package.json",
+        "mediaType": "application/json",
+        "byteLength": 185,
+        "digest": "sha256:b8d1ea7b77ed07e77346ff63610b7dfb8db8182002a6b7e157fb0b2db4c9412d"
+      },
+      {
+        "path": "claws/repository-operations-manager/schemas/repository-operations.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 38052,
+        "digest": "sha256:ed96bbfc7068e11493a75461c8c02c1fa9a6f3298de69dd5df5f3cd71baac677"
+      },
+      {
+        "path": "claws/repository-operations-manager/screenshot.png",
+        "mediaType": "image/png",
+        "byteLength": 186546,
+        "digest": "sha256:d6738bff98c9d2e3f6b310e02e49155f88e0855c2909b8d59b06c64d1ade05e2"
+      },
+      {
+        "path": "claws/repository-operations-manager/templates/repository-operations.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 20232,
+        "digest": "sha256:86686631a053ee2248c58f0b173e20a812cf190feb7d2b87a6a0c8da0a61a726"
+      },
+      {
+        "path": "claws/repository-operations-manager/templates/session-handoff.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 4676,
+        "digest": "sha256:028efa9772d5c00fb8ad0d45fc40499f9a3d81b95e3cf994d0136e1e58ef155b"
+      },
+      {
+        "path": "claws/repository-operations-manager/templates/session-report.template.json",
+        "mediaType": "application/json",
+        "byteLength": 998,
+        "digest": "sha256:17927a57fcf483fe67d405a48d27f0fc59b33ad339bd7f3682c4295b70df319d"
+      },
+      {
+        "path": "claws/repository-operations-manager/workspace/AGENTS.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 10459,
+        "digest": "sha256:52e96cb2aa83985fb2c4f8a4f9930e36726ca5a035e40fc20d951d646b2aa5e8"
+      },
+      {
+        "path": "claws/work-chief-of-staff/CLAW.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 3390,
+        "digest": "sha256:14bb3e50588ef952e740a64bdca688c209ea508f5dc0821884180c6a1eb91ae5"
+      },
+      {
+        "path": "claws/work-chief-of-staff/README.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 2341,
+        "digest": "sha256:df4b9087a0baf4f03291cbc14c9c9970c597b54737ec078c6ad57f7fc7bc6ea2"
+      },
+      {
+        "path": "claws/work-chief-of-staff/fixtures/operating-portfolio.example.json",
+        "mediaType": "application/json",
+        "byteLength": 26660,
+        "digest": "sha256:8a8ad689b975f58b0be19ec52abfaa9f633dcffe631214689be3865951e78e67"
+      },
+      {
+        "path": "claws/work-chief-of-staff/fixtures/session-demo.json",
+        "mediaType": "application/json",
+        "byteLength": 3346,
+        "digest": "sha256:ce1baa7a5fd6108d87d18038ff8291d6219b0f5a299e1a292e438b4e1d52ba18"
+      },
+      {
+        "path": "claws/work-chief-of-staff/package.json",
+        "mediaType": "application/json",
+        "byteLength": 175,
+        "digest": "sha256:1cbb319fbac19589f28bb728a4a306f82a40954b21db8ceaf0e7abbef6dd16db"
+      },
+      {
+        "path": "claws/work-chief-of-staff/profiles/openclaw.yml",
+        "mediaType": "application/yaml",
+        "byteLength": 206,
+        "digest": "sha256:914754c7fd45d69a7f7c6976cd899bfcf9524a3702da212d589b6f3dc0ba4b6f"
+      },
+      {
+        "path": "claws/work-chief-of-staff/schemas/operating-portfolio.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 18345,
+        "digest": "sha256:b5bb22d109dacd1a9377774e45b69ab06c7eb4b11471aa7cbf7152f8165c372a"
+      },
+      {
+        "path": "claws/work-chief-of-staff/screenshot.png",
+        "mediaType": "image/png",
+        "byteLength": 102860,
+        "digest": "sha256:2810b4836f151d8aa1fabd515ce1b4364175d0dacfeb6ad47daa6ffc85fc8ba7"
+      },
+      {
+        "path": "claws/work-chief-of-staff/templates/operating-portfolio.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 1906,
+        "digest": "sha256:7578caaf016620bcc3db0a461361a61e38bf12673830cdd430d38b94e744af39"
+      },
+      {
+        "path": "claws/work-chief-of-staff/templates/session-handoff.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 761,
+        "digest": "sha256:3f1b41f7e419581ad5fd162206348c3e4f56d355f58c1e1e71ef3716d233f0ae"
+      },
+      {
+        "path": "claws/work-chief-of-staff/templates/session-report.template.json",
+        "mediaType": "application/json",
+        "byteLength": 525,
+        "digest": "sha256:2d0ee5f5f64b00720d55067f2d1ea32882c86236208387ec8acefe870e803e6d"
+      },
+      {
+        "path": "claws/work-chief-of-staff/workspace/AGENTS.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 5053,
+        "digest": "sha256:5ec3adbc05a1700d47a33db1ecd0cb10be6fccc54261b43b51416632764beb47"
+      },
+      {
+        "path": "contributions/repository-compliance-program-manager.json",
+        "mediaType": "application/json",
+        "byteLength": 14908,
+        "digest": "sha256:c2e71fedf3dd8affb947f6550e4dda5d3405678367e04c81204a73b76a6d18ff"
+      },
+      {
+        "path": "contributions/repository-operations-manager.json",
+        "mediaType": "application/json",
+        "byteLength": 17622,
+        "digest": "sha256:9fbd4093521edff574ef9479da0e157165231d631c2b8819848f0590c289a29e"
+      },
+      {
+        "path": "contributions/work-chief-of-staff.json",
+        "mediaType": "application/json",
+        "byteLength": 11937,
+        "digest": "sha256:83045be11462ef0130590e29eedd40b88711afcdbea1e73800b9465175578a65"
+      },
+      {
+        "path": "experience-cases.json",
+        "mediaType": "application/json",
+        "byteLength": 12712,
+        "digest": "sha256:54c994b15688c4b32d077392b9fef8a11bf9e4bc71bee88a66e5d76b1194c164"
+      },
+      {
+        "path": "package-lock.json",
+        "mediaType": "application/json",
+        "byteLength": 43760,
+        "digest": "sha256:18cccf9ad51e90fdd7a37b9df8650d2fee16d64010994533b94a5281e836a9a7"
+      },
+      {
+        "path": "package.json",
+        "mediaType": "application/json",
+        "byteLength": 2943,
+        "digest": "sha256:8ae6fa03a590f2a54b6ec7a866d92eecbe62575cb4112c4e6cff3ef8a158dc8d"
+      },
+      {
+        "path": "regression-cases.json",
+        "mediaType": "application/json",
+        "byteLength": 234368,
+        "digest": "sha256:fe693c0a31ec9562f6fb80bc6e93db644c3b5ed005ae4718d023bf701c75689e"
+      },
+      {
+        "path": "required-lifecycle-recipes.json",
+        "mediaType": "application/json",
+        "byteLength": 1792,
+        "digest": "sha256:de691b212e818109eaf1207ec93877de1d7ce2570bd42231261f192ff25ccf76"
+      },
+      {
+        "path": "required-safety-recipes.json",
+        "mediaType": "application/json",
+        "byteLength": 1103,
+        "digest": "sha256:489786e149cab34342eeb37f0e01b5bc6b35c587fb8be4af33b8215aa4b26018"
+      },
+      {
+        "path": "required-semantic-recipes.json",
+        "mediaType": "application/json",
+        "byteLength": 135718,
+        "digest": "sha256:089ed57c43b747f120f2f237b925c4a7796fc9feaa0ad7b612f5a1b9e4737ed0"
+      },
+      {
+        "path": "runtime-evidence-profile.json",
+        "mediaType": "application/json",
+        "byteLength": 1079,
+        "digest": "sha256:4b4426f870ffe04bcb2d1c5d8351fe73551fb65011231bf34ec0d722da6a5825"
+      },
+      {
+        "path": "scripts/artifact-semantics.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 2056522,
+        "digest": "sha256:c64c0cabf7e5ee9ad4b0f585b2b38d950c417a013d96aa9889e93ed61fe61f25"
+      },
+      {
+        "path": "scripts/artifact-validator-registry.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 13391,
+        "digest": "sha256:b310fbe823734a82a25b2a047bd3562a63786154ef66e4a09006abf7b93036fe"
+      },
+      {
+        "path": "scripts/capability-classes.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 5270,
+        "digest": "sha256:5324a3f1109c39f350e6b1947a12a7a5735be68ffec373b3b25c6e873a121709"
+      },
+      {
+        "path": "scripts/catalog-health.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 1953,
+        "digest": "sha256:ac46240add15fb23972ab4cdac4bc12aa36597bc29a519f6bb44f398fcab9acc"
+      },
+      {
+        "path": "scripts/catalog-quality-score.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 17108,
+        "digest": "sha256:8b022814145f628b29c391831f39e181134adbb9eab43059a6264982c592c7db"
+      },
+      {
+        "path": "scripts/catalog-source.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 1400,
+        "digest": "sha256:2dd71a1b35eb182d8dd6eca5fa5396a67755358f44c01a57c1bd7d2a45a35021"
+      },
+      {
+        "path": "scripts/contribution-lib.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 8738,
+        "digest": "sha256:2022abee643543867a5615e31f738309e67351d52baa28a58dd1cc856009b6ce"
+      },
+      {
+        "path": "scripts/experience-cases.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 2956,
+        "digest": "sha256:fcdf8a31d63fee3baf7214bf6602f5d7ed85fcf42548ad061b8f5352e047bddb"
+      },
+      {
+        "path": "scripts/mock-plus-lib.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 80344,
+        "digest": "sha256:5aa6a14c9aa3bdca71864de2456296235d013e802fb95cc8595e0820418a8d19"
+      },
+      {
+        "path": "scripts/portable-paths.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 804,
+        "digest": "sha256:ebad03f1873a221e28f32843d163e76480bb18af263a8e1993bac157d379b40a"
+      },
+      {
+        "path": "scripts/regression-cases.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 13039,
+        "digest": "sha256:72c10a0bd9f7b7df8d6d5aae61af4366b0c1e633cd26f0fc094ad358db98470e"
+      },
+      {
+        "path": "scripts/repository-compliance-program-manager.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 43403,
+        "digest": "sha256:0163b1580ead609f7722c417b78a063395045c9542fbc5aa7d78f888417dd202"
+      },
+      {
+        "path": "scripts/repository-operations-manager.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 118296,
+        "digest": "sha256:5dd45f766a680e8c4e974acc09e74bc1770f69713dc36dccd5b4ba344851a1ea"
+      },
+      {
+        "path": "scripts/runtime-evidence-lib.mjs",
+        "mediaType": "text/javascript",
+        "byteLength": 137921,
+        "digest": "sha256:c89526bee2d916d28c1b47d6fc76e56de2d550cb90dc4bc869dd3bbbb23e6f91"
+      },
+      {
+        "path": "sources/repository-compliance-program-manager/fixtures/repository-compliance-program.example.json",
+        "mediaType": "application/json",
+        "byteLength": 55557,
+        "digest": "sha256:8aff6f0ba5f3c54b16dffcbb56c739af813d7ba6aa93e9fa1852fdc27b203a87"
+      },
+      {
+        "path": "sources/repository-compliance-program-manager/fixtures/session-demo.json",
+        "mediaType": "application/json",
+        "byteLength": 4217,
+        "digest": "sha256:e2fcd26e683917e4a23c13afdc9cdf199766006e3c2a46ad34f52f8e02f4a7ee"
+      },
+      {
+        "path": "sources/repository-compliance-program-manager/references/issue-writer-capability-contract.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 2948,
+        "digest": "sha256:0eddf9628bdd7632e4ebe748d1026fa3d3718eb157c76c214554c70b3d21f191"
+      },
+      {
+        "path": "sources/repository-compliance-program-manager/schemas/repository-compliance-program.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 31233,
+        "digest": "sha256:11249af3ac39950f054aa8cb1d0c7d2c9da016ae1b9f814cbf0e72ea6d9dfb57"
+      },
+      {
+        "path": "sources/repository-compliance-program-manager/templates/repository-compliance-program.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 3056,
+        "digest": "sha256:87ec8231e1485b1f2b15c0f0be932cef6548dcc7b79c9018ed368c6ca1a924ae"
+      },
+      {
+        "path": "sources/repository-compliance-program-manager/templates/session-handoff.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 3761,
+        "digest": "sha256:a5ae602552e47ba471d39ecd21b3c18ff26af748e7b681a6d9ae98c778529212"
+      },
+      {
+        "path": "sources/repository-compliance-program-manager/templates/session-report.template.json",
+        "mediaType": "application/json",
+        "byteLength": 785,
+        "digest": "sha256:a61e6dca1f0c4c34ee10243664be433bad7d086370f79e42b60213228ddaab47"
+      },
+      {
+        "path": "sources/repository-operations-manager/fixtures/repository-operations.example.json",
+        "mediaType": "application/json",
+        "byteLength": 61853,
+        "digest": "sha256:e04a703ffcbd362afa57e3e616858d3f0d0182f5de2f59ac32612883f9ea03c6"
+      },
+      {
+        "path": "sources/repository-operations-manager/fixtures/session-demo.json",
+        "mediaType": "application/json",
+        "byteLength": 4488,
+        "digest": "sha256:9d03524da986b2658f365ae8315b37bd29609e3ae3c713b2d2cc18b9b6bd5968"
+      },
+      {
+        "path": "sources/repository-operations-manager/schemas/repository-operations.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 38052,
+        "digest": "sha256:ed96bbfc7068e11493a75461c8c02c1fa9a6f3298de69dd5df5f3cd71baac677"
+      },
+      {
+        "path": "sources/repository-operations-manager/templates/repository-operations.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 20232,
+        "digest": "sha256:86686631a053ee2248c58f0b173e20a812cf190feb7d2b87a6a0c8da0a61a726"
+      },
+      {
+        "path": "sources/repository-operations-manager/templates/session-handoff.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 4676,
+        "digest": "sha256:028efa9772d5c00fb8ad0d45fc40499f9a3d81b95e3cf994d0136e1e58ef155b"
+      },
+      {
+        "path": "sources/repository-operations-manager/templates/session-report.template.json",
+        "mediaType": "application/json",
+        "byteLength": 998,
+        "digest": "sha256:17927a57fcf483fe67d405a48d27f0fc59b33ad339bd7f3682c4295b70df319d"
+      },
+      {
+        "path": "sources/work-chief-of-staff/fixtures/operating-portfolio.example.json",
+        "mediaType": "application/json",
+        "byteLength": 26660,
+        "digest": "sha256:8a8ad689b975f58b0be19ec52abfaa9f633dcffe631214689be3865951e78e67"
+      },
+      {
+        "path": "sources/work-chief-of-staff/fixtures/session-demo.json",
+        "mediaType": "application/json",
+        "byteLength": 3346,
+        "digest": "sha256:ce1baa7a5fd6108d87d18038ff8291d6219b0f5a299e1a292e438b4e1d52ba18"
+      },
+      {
+        "path": "sources/work-chief-of-staff/schemas/operating-portfolio.schema.json",
+        "mediaType": "application/json",
+        "byteLength": 18345,
+        "digest": "sha256:b5bb22d109dacd1a9377774e45b69ab06c7eb4b11471aa7cbf7152f8165c372a"
+      },
+      {
+        "path": "sources/work-chief-of-staff/templates/operating-portfolio.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 1906,
+        "digest": "sha256:7578caaf016620bcc3db0a461361a61e38bf12673830cdd430d38b94e744af39"
+      },
+      {
+        "path": "sources/work-chief-of-staff/templates/session-handoff.md",
+        "mediaType": "text/markdown; charset=utf-8",
+        "byteLength": 761,
+        "digest": "sha256:3f1b41f7e419581ad5fd162206348c3e4f56d355f58c1e1e71ef3716d233f0ae"
+      },
+      {
+        "path": "sources/work-chief-of-staff/templates/session-report.template.json",
+        "mediaType": "application/json",
+        "byteLength": 525,
+        "digest": "sha256:2d0ee5f5f64b00720d55067f2d1ea32882c86236208387ec8acefe870e803e6d"
+      }
+    ],
+    "root": "sha256:280adeacacb2dfa9e0a915adb5fcd54932f89317da7a4f817b9831c0e5f829ea",
+    "signedAt": "2026-09-17T17:05:00Z",
+    "signerRef": "catalog-custodian",
+    "signature": {
+      "keyId": "catalog-key",
+      "algorithm": "Ed25519",
+      "value": "eS1EzeyqxmrpZFwWTz3PCd06Mh2a++E8KNIxpwZjV9bgcSlMpQhmfkjZky3mRBI7XC243UpnkK40/b9vJXm6Cg=="
+    }
+  },
+  "idempotencyReceipts": [
+    {
+      "id": "receipt-issue-api",
+      "providerRef": "provider-snapshot-issue-api",
+      "issueRevision": "sha256:a00e0e2c14faad40b2f4ed42896f44229a5dcfbcf427b53d29d8b4e8779c896c",
+      "idempotencyKey": "sha256:5f07fa5582a3879b24606e51751a1d6e355e5150e22c26b729b73f8939275b62",
+      "state": "available",
+      "issuedAt": "2026-09-17T17:10:00Z",
+      "validUntil": "2026-09-18T17:10:00Z",
+      "signerRef": "receipt-custodian",
+      "signature": {
+        "keyId": "receipt-key",
+        "algorithm": "Ed25519",
+        "value": "TzhKKd4AeBVEeoPpo/ZAY1rOblwmg8jNUO92kLsOg0hUeNPbM9y8spJ9bQAfS4Lgs7UICjphk/731tvZlEsPBQ=="
+      }
+    }
+  ],
+  "usageEvidence": {
+    "id": "usage-issue-api",
+    "revision": "sha256:e277c7bbc063c8c106f17b3ab8e4baaab2e59ec01545346ca738a8e17d841241",
+    "tenantRef": "tenant-alpha",
+    "sourceRef": "controlled://tenant-alpha/minimized-usage",
+    "issueRevision": "sha256:a00e0e2c14faad40b2f4ed42896f44229a5dcfbcf427b53d29d8b4e8779c896c",
+    "eventCount": 12,
+    "successCount": 9,
+    "failureCount": 3,
+    "minimizedFields": [
+      "event-count",
+      "success-count",
+      "failure-count"
+    ],
+    "issuedAt": "2026-09-17T17:18:00Z",
+    "validUntil": "2026-09-18T17:18:00Z",
+    "signerRef": "usage-custodian",
+    "signature": {
+      "keyId": "usage-key",
+      "algorithm": "Ed25519",
+      "value": "+IDkNoeKRbfef6FRiGFlR574YomEbtugVHh/P216N1lFsLKSuQRZ9J1slx9wlQazGySAcqoDqHKy2ejSG6nODQ=="
+    }
+  },
+  "runtimeBudget": {
+    "id": "runtime-budget-composition",
+    "mode": "mock",
+    "concurrency": 1,
+    "trialTimeoutMs": 120000,
+    "cleanupTimeoutMs": 30000,
+    "infrastructureRetries": 0,
+    "maxInputTokensPerTrial": 1200,
+    "maxOutputTokensPerTrial": 600,
+    "maxTotalTokens": 20000,
+    "maxUsd": 10,
+    "inputUsdPerMillion": 1,
+    "outputUsdPerMillion": 2,
+    "issuedAt": "2026-09-17T17:12:00Z",
+    "validUntil": "2026-09-18T17:12:00Z",
+    "signerRef": "runtime-budget-custodian",
+    "signature": {
+      "keyId": "runtime-budget-key",
+      "algorithm": "Ed25519",
+      "value": "KUV7HiIwrSckOkpWWu7S0bLd5Hmw1ibchxqJqGA2aN98J7o352duPgIhudErVq3DzOQqnfCmE39heBtxW32CCw=="
+    }
+  }
+}
