@@ -102,6 +102,16 @@ function mediaType(path) {
 }
 
 const keys = new Map();
+if (!trust.keys.some((record) => record.domain === "catalog-maintainer")) {
+  trust.keys.push({
+    keyId: "catalog-maintainer-key",
+    signerRef: "catalog-maintainer-council",
+    domain: "catalog-maintainer",
+    publicKeyPem: "",
+    notBefore: "2026-09-01T00:00:00Z",
+    expiresAt: "2026-10-01T00:00:00Z",
+  });
+}
 for (const record of trust.keys) {
   const privateKey = fixturePrivateKey(record.domain);
   record.publicKeyPem = createPublicKey(privateKey).export({
@@ -144,6 +154,8 @@ input.admission.dispositionEvidence = {
     unit: "person-weeks",
   },
 };
+input.admission.comparison = null;
+input.catalogMaintainerDecisions = [];
 input.admission.proposalDigest = sha256Digest(input.admission.proposal);
 input.admission.compositionContract.proposalDigest =
   input.admission.proposalDigest;
@@ -187,8 +199,34 @@ signRecord(input.providerIssue, keys.get("provider"));
 input.admission.issueRevision = input.providerIssue.revision;
 input.continuation.portfolioRevision = input.portfolio.revision;
 input.continuation.sourceBindingsRoot = bindingsRoot;
+const decisionFixtures = Object.fromEntries(
+  [
+    ["RETIRE", "retirement-decision"],
+    ["PRODUCT_DECISION", "product-decision-required"],
+  ].map(([decisionType, id]) => {
+    const decision = {
+      id,
+      subjectRef: input.admission.proposal.entry.id,
+      issueRevision: input.providerIssue.revision,
+      proposalDigest: input.admission.proposalDigest,
+      decisionType,
+      lifecycle: {
+        state: "active",
+        validFrom: "2026-09-17T17:00:00Z",
+        validUntil: "2026-09-18T17:00:00Z",
+      },
+      decidedAt: "2026-09-17T17:18:00Z",
+      signerRef: "catalog-maintainer-council",
+    };
+    signRecord(decision, keys.get("catalog-maintainer"));
+    return [decisionType, decision];
+  }),
+);
 signRecord(input.continuation, keys.get("continuation"));
 signRecord(input.admission, keys.get("admission"));
+for (const decision of input.catalogMaintainerDecisions) {
+  signRecord(decision, keys.get("catalog-maintainer"));
+}
 
 input.packageManifest.files = await Promise.all(
   input.sourceBindings.map(async (binding) => {
@@ -225,6 +263,14 @@ await Promise.all([
   writeFile(
     new URL("composition-trust-pin.test.json", fixtureRoot),
     `${JSON.stringify(trustPin, null, 2)}\n`,
+  ),
+  writeFile(
+    new URL("catalog-maintainer-retire.test.json", fixtureRoot),
+    `${JSON.stringify(decisionFixtures.RETIRE, null, 2)}\n`,
+  ),
+  writeFile(
+    new URL("catalog-maintainer-product-decision.test.json", fixtureRoot),
+    `${JSON.stringify(decisionFixtures.PRODUCT_DECISION, null, 2)}\n`,
   ),
 ]);
 

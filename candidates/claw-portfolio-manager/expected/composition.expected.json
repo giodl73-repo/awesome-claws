@@ -2,16 +2,16 @@
   "admissionScorecard": {
     "candidates": [
       {
-        "classification": "UNSUPPORTED",
-        "eligible": false,
-        "priority": 1,
-        "reason": "required-owner-contract-or-support-is-unavailable"
-      },
-      {
         "classification": "DUPLICATE",
         "eligible": false,
-        "priority": 2,
+        "priority": 1,
         "reason": "same-job-and-operating-contract-already-exists"
+      },
+      {
+        "classification": "UNSUPPORTED",
+        "eligible": false,
+        "priority": 2,
+        "reason": "required-owner-contract-or-support-is-unavailable"
       },
       {
         "classification": "RETIRE",
@@ -27,7 +27,7 @@
       },
       {
         "classification": "IMPROVE",
-        "eligible": true,
+        "eligible": false,
         "priority": 5,
         "reason": "same-job-needs-a-material-owner-contract-improvement"
       },
@@ -72,7 +72,7 @@
       "variantBasis": "none",
       "variantRequired": false
     },
-    "materialDifference": true,
+    "materialDifference": false,
     "selected": "COMPOSE"
   },
   "authority": {
@@ -128,6 +128,7 @@
       "keyIds": [
         "admission-key",
         "catalog-key",
+        "catalog-maintainer-key",
         "continuation-key",
         "provider-key",
         "receipt-key",
@@ -137,7 +138,7 @@
       "owner": "composition-adapter",
       "pinExpiresAt": "2026-10-01T00:00:00Z",
       "pinNotBefore": "2026-09-01T00:00:00Z",
-      "revision": "sha256:cbe95448c2754bf492ffe90734ba3077bc5bf2339dada7d9cf87fe36cc866e1c",
+      "revision": "sha256:b1309f5e465460501f39b412e99fc4e8024d9ce9d95da8836f8e0ef15075e242",
       "trustSchemaVersion": "awesomeClaws.clawPortfolioCompositionTrust.v1"
     },
     "minimized-usage-evidence": {
@@ -159,7 +160,7 @@
       "continuationCheckpointRef": "continuation-portfolio-composition",
       "mode": "manage",
       "owner": "repository-operations-manager",
-      "portfolioRevision": "sha256:4d2bfe94d9430fafc102bc17e243fee7214053ed9aa251b9713706120d5436ce",
+      "portfolioRevision": "sha256:b84f734ef86a5992bb07896ecaad2bfa963a9e4bd2fe758521941cae1623c9f1",
       "predecessorCheckpointRef": "checkpoint-weekly-2026-09-13",
       "priorReceiptIds": [
         "receipt-issue-api"
@@ -168,11 +169,11 @@
       "signature": {
         "algorithm": "Ed25519",
         "keyId": "continuation-key",
-        "value": "4E8NEDZPaWnntzIpWU1AmS+cANTDzAIzdb22V934lr6JSiDIsg72Usfl9w2c2oLkfrjP2kLLq7a9HhQk+hPYAg=="
+        "value": "7IFmnN4WpRFw1EcAfY+y1IKrkRqpj/8vQH9DHKZqDKQIHQPCO14DEbE9KgpwLMNNwuXriRNcq/+bmw3gocMrDQ=="
       },
       "signedAt": "2026-09-17T17:15:00Z",
       "signerRef": "portfolio-owner",
-      "sourceBindingsRoot": "sha256:d8b378b600804f505325302bf84c78f5eb80e87e351eb24701f1794e685317e3",
+      "sourceBindingsRoot": "sha256:640c8d3e2f555c1b427ede8613b753d68e63ad4ac3623eb9e5116afd7520e3b9",
       "validUntil": "2026-09-18T17:15:00Z"
     },
     "proposal-owner-handoff": {
@@ -234,7 +235,7 @@
       "fileCount": 106,
       "manifestRef": "composition-package-manifest",
       "owner": "catalog-quality",
-      "root": "sha256:460b9b103f699688b401c62b688ace791d73763fe53a90c3dc816740d1f774ce"
+      "root": "sha256:acb05b279c183314ecafd202cba7a7e329bfa3a0cc30166daebcb1587c5a0077"
     },
     "stateless-budget-plan": {
       "allocation": {
@@ -265,15 +266,9 @@
       "totalDemand": 28
     },
     "typed-admission-decision": {
+      "catalogMaintainerDecisions": [],
       "classification": "COMPOSE",
-      "comparison": {
-        "authority": "same",
-        "evidence": "different",
-        "job": "same",
-        "outputs": "different",
-        "user": "same",
-        "workflow": "different"
-      },
+      "comparison": null,
       "dispositionEvidence": {
         "availableOwnerIds": [
           "repository-operations-manager",
@@ -309,16 +304,16 @@
       "scorecard": {
         "candidates": [
           {
-            "classification": "UNSUPPORTED",
-            "eligible": false,
-            "priority": 1,
-            "reason": "required-owner-contract-or-support-is-unavailable"
-          },
-          {
             "classification": "DUPLICATE",
             "eligible": false,
-            "priority": 2,
+            "priority": 1,
             "reason": "same-job-and-operating-contract-already-exists"
+          },
+          {
+            "classification": "UNSUPPORTED",
+            "eligible": false,
+            "priority": 2,
+            "reason": "required-owner-contract-or-support-is-unavailable"
           },
           {
             "classification": "RETIRE",
@@ -334,7 +329,7 @@
           },
           {
             "classification": "IMPROVE",
-            "eligible": true,
+            "eligible": false,
             "priority": 5,
             "reason": "same-job-needs-a-material-owner-contract-improvement"
           },
@@ -379,7 +374,7 @@
           "variantBasis": "none",
           "variantRequired": false
         },
-        "materialDifference": true,
+        "materialDifference": false,
         "selected": "COMPOSE"
       }
     }
@@ -428,7 +423,7 @@
     }
   ],
   "schemaVersion": "awesomeClaws.clawPortfolioCompositionResult.v1",
-  "sourceBindingsRoot": "sha256:d8b378b600804f505325302bf84c78f5eb80e87e351eb24701f1794e685317e3",
+  "sourceBindingsRoot": "sha256:640c8d3e2f555c1b427ede8613b753d68e63ad4ac3623eb9e5116afd7520e3b9",
   "standaloneCandidateAccepted": false,
   "verdict": "IMPROVE_COMPOSE"
 }

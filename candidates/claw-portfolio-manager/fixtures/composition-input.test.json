@@ -11,19 +11,19 @@
       "ownerId": "composition-adapter",
       "role": "validator",
       "path": "candidates/claw-portfolio-manager/composition.mjs",
-      "digest": "sha256:f8098c124a505df0a32d47d0da00b5a186c22d98af3139c4f71ece53e1952a88"
+      "digest": "sha256:dd13ee0b37ea1a1c01877df0d37033f9a28c1dc3630632e9f132b8e71f20cf72"
     },
     {
       "ownerId": "composition-adapter",
       "role": "schema",
       "path": "candidates/claw-portfolio-manager/schemas/composition-input.schema.json",
-      "digest": "sha256:9a6583cfb72dd749aff2428dc9fa50d98766d68f5522e7fd1d3a186fb1348e06"
+      "digest": "sha256:6befbbf13c1b05e131869a5dcf44b29b3153ba3f708736c52ebe181d54997a1f"
     },
     {
       "ownerId": "composition-adapter",
       "role": "schema",
       "path": "candidates/claw-portfolio-manager/schemas/composition-output.schema.json",
-      "digest": "sha256:0ffd872a3e7eca317b60e13a2df2601025f831b0df9ca0eae608d4fc3b9d9549"
+      "digest": "sha256:e99dbe43ed5da2924e3997531881e6fb52c0c7d78189b3fbe257a9528fc57a2b"
     },
     {
       "ownerId": "composition-adapter",
@@ -35,13 +35,13 @@
       "ownerId": "composition-adapter",
       "role": "schema",
       "path": "candidates/claw-portfolio-manager/schemas/composition-trust.schema.json",
-      "digest": "sha256:5b148f50f393502bba27f0018179677adeb3a99043257ceddd8a371514667137"
+      "digest": "sha256:5be6759c8562aa8417e668a24884353a03d83f4a544ed0f88a8fba080501aee2"
     },
     {
       "ownerId": "composition-adapter",
       "role": "schema",
       "path": "candidates/claw-portfolio-manager/schemas/provider-issue-body.schema.json",
-      "digest": "sha256:1148fd155bcdc7898e8f5fb6901638290c6a260a94b7c2ee759210be14362129"
+      "digest": "sha256:084ef5a782620330c68f04e78f44cb80c9bd6cf4f6b9604973c7a3a111c48867"
     },
     {
       "ownerId": "catalog-quality",
@@ -640,13 +640,13 @@
   ],
   "portfolio": {
     "id": "portfolio-owner-composition",
-    "revision": "sha256:4d2bfe94d9430fafc102bc17e243fee7214053ed9aa251b9713706120d5436ce",
+    "revision": "sha256:b84f734ef86a5992bb07896ecaad2bfa963a9e4bd2fe758521941cae1623c9f1",
     "selectedClawIds": [
       "repository-operations-manager",
       "repository-compliance-program-manager",
       "work-chief-of-staff"
     ],
-    "sourceBindingsRoot": "sha256:d8b378b600804f505325302bf84c78f5eb80e87e351eb24701f1794e685317e3",
+    "sourceBindingsRoot": "sha256:640c8d3e2f555c1b427ede8613b753d68e63ad4ac3623eb9e5116afd7520e3b9",
     "capacityEnvelopeRef": "capacity-engineering"
   },
   "providerIssue": {
@@ -688,8 +688,8 @@
     "id": "continuation-portfolio-composition",
     "mode": "manage",
     "predecessorCheckpointRef": "checkpoint-weekly-2026-09-13",
-    "portfolioRevision": "sha256:4d2bfe94d9430fafc102bc17e243fee7214053ed9aa251b9713706120d5436ce",
-    "sourceBindingsRoot": "sha256:d8b378b600804f505325302bf84c78f5eb80e87e351eb24701f1794e685317e3",
+    "portfolioRevision": "sha256:b84f734ef86a5992bb07896ecaad2bfa963a9e4bd2fe758521941cae1623c9f1",
+    "sourceBindingsRoot": "sha256:640c8d3e2f555c1b427ede8613b753d68e63ad4ac3623eb9e5116afd7520e3b9",
     "priorReceiptIds": [
       "receipt-issue-api"
     ],
@@ -699,7 +699,7 @@
     "signature": {
       "keyId": "continuation-key",
       "algorithm": "Ed25519",
-      "value": "4E8NEDZPaWnntzIpWU1AmS+cANTDzAIzdb22V934lr6JSiDIsg72Usfl9w2c2oLkfrjP2kLLq7a9HhQk+hPYAg=="
+      "value": "7IFmnN4WpRFw1EcAfY+y1IKrkRqpj/8vQH9DHKZqDKQIHQPCO14DEbE9KgpwLMNNwuXriRNcq/+bmw3gocMrDQ=="
     }
   },
   "admission": {
@@ -800,14 +800,7 @@
       }
     },
     "proposalDigest": "sha256:cddfc6e68cab4e7da95887ae75c7e801366a02c3badd0b4281b32f78cb8d4967",
-    "comparison": {
-      "user": "same",
-      "job": "same",
-      "workflow": "different",
-      "outputs": "different",
-      "evidence": "different",
-      "authority": "same"
-    },
+    "comparison": null,
     "decidedAt": "2026-09-17T17:20:00Z",
     "signerRef": "admission-owner",
     "compositionContract": {
@@ -933,7 +926,7 @@
     "signature": {
       "keyId": "admission-key",
       "algorithm": "Ed25519",
-      "value": "lzrrEsjf8k4ce5KvKj6i4/UAhvPxPP6jS5AuM4CGQzN1eBKtBGsc8qfUHhh4y6FT3UqmxU8RCDjVt3JbNmyeAQ=="
+      "value": "5PW+lDiNRPYMo8GfOpAOqB7OEkbfN+m8O+8lYA2JYe7PmlJByykQ+Guj5oRGKlaHTXWOSy26Wx1EISbrUPWtAA=="
     }
   },
   "packageManifest": {
@@ -949,20 +942,20 @@
       {
         "path": "candidates/claw-portfolio-manager/composition.mjs",
         "mediaType": "text/javascript",
-        "byteLength": 58101,
-        "digest": "sha256:f8098c124a505df0a32d47d0da00b5a186c22d98af3139c4f71ece53e1952a88"
+        "byteLength": 65404,
+        "digest": "sha256:dd13ee0b37ea1a1c01877df0d37033f9a28c1dc3630632e9f132b8e71f20cf72"
       },
       {
         "path": "candidates/claw-portfolio-manager/schemas/composition-input.schema.json",
         "mediaType": "application/json",
-        "byteLength": 22035,
-        "digest": "sha256:9a6583cfb72dd749aff2428dc9fa50d98766d68f5522e7fd1d3a186fb1348e06"
+        "byteLength": 23479,
+        "digest": "sha256:6befbbf13c1b05e131869a5dcf44b29b3153ba3f708736c52ebe181d54997a1f"
       },
       {
         "path": "candidates/claw-portfolio-manager/schemas/composition-output.schema.json",
         "mediaType": "application/json",
-        "byteLength": 19583,
-        "digest": "sha256:0ffd872a3e7eca317b60e13a2df2601025f831b0df9ca0eae608d4fc3b9d9549"
+        "byteLength": 21029,
+        "digest": "sha256:e99dbe43ed5da2924e3997531881e6fb52c0c7d78189b3fbe257a9528fc57a2b"
       },
       {
         "path": "candidates/claw-portfolio-manager/schemas/composition-trust-pin.schema.json",
@@ -973,14 +966,14 @@
       {
         "path": "candidates/claw-portfolio-manager/schemas/composition-trust.schema.json",
         "mediaType": "application/json",
-        "byteLength": 1644,
-        "digest": "sha256:5b148f50f393502bba27f0018179677adeb3a99043257ceddd8a371514667137"
+        "byteLength": 1681,
+        "digest": "sha256:5be6759c8562aa8417e668a24884353a03d83f4a544ed0f88a8fba080501aee2"
       },
       {
         "path": "candidates/claw-portfolio-manager/schemas/provider-issue-body.schema.json",
         "mediaType": "application/json",
-        "byteLength": 2199,
-        "digest": "sha256:1148fd155bcdc7898e8f5fb6901638290c6a260a94b7c2ee759210be14362129"
+        "byteLength": 2209,
+        "digest": "sha256:084ef5a782620330c68f04e78f44cb80c9bd6cf4f6b9604973c7a3a111c48867"
       },
       {
         "path": "catalog.json",
@@ -1577,13 +1570,13 @@
         "digest": "sha256:2d0ee5f5f64b00720d55067f2d1ea32882c86236208387ec8acefe870e803e6d"
       }
     ],
-    "root": "sha256:460b9b103f699688b401c62b688ace791d73763fe53a90c3dc816740d1f774ce",
+    "root": "sha256:acb05b279c183314ecafd202cba7a7e329bfa3a0cc30166daebcb1587c5a0077",
     "signedAt": "2026-09-17T17:05:00Z",
     "signerRef": "catalog-custodian",
     "signature": {
       "keyId": "catalog-key",
       "algorithm": "Ed25519",
-      "value": "EL+D9yjFl8VC490PrX32YlIhj8pVA9fTKnfGm7Sq14itachA0WFPjanm/nVznRnUYiXFfFQZuiyIiVHWMulHAg=="
+      "value": "WLkgSFHK78ovyxrQZmTbwSzt6xRwBRaoOulsEMZr31/c/I2/zp8UxC8EQFhi5hjz7cYfizz912D4SlTHjT9FDA=="
     }
   },
   "idempotencyReceipts": [
@@ -1647,5 +1640,6 @@
       "algorithm": "Ed25519",
       "value": "s4epoOGyJry43KoRKUMetGfnRcgq+0rmN7vu1zeI2vijCC7wTnRr/R/6PV9Yk5XyGYOMKanluzdJiCfVxIMrBw=="
     }
-  }
+  },
+  "catalogMaintainerDecisions": []
 }

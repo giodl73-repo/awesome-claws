@@ -231,7 +231,6 @@
           "type": "array",
           "minItems": 1,
           "maxItems": 16,
-          "uniqueItems": true,
           "items": {"$ref": "#/$defs/providerEvidenceRef"}
         },
         "proposalDigest": {"$ref": "#/$defs/digest"},
@@ -257,7 +256,7 @@
           "enum": [
             "provider-custodian-attestation",
             "repository-operations-attestation",
-            "catalog-maintainer-decision"
+            "catalog-maintainer-decision-reference"
           ]
         }
       }
@@ -273,17 +272,28 @@
         "comparison",
         "nearestMatches",
         "scorecard",
-        "dispositionEvidence"
+        "dispositionEvidence",
+        "catalogMaintainerDecisions"
       ],
       "properties": {
         "owner": {"const": "contribution-admission"},
         "issueRevision": {"$ref": "#/$defs/digest"},
         "classification": {"$ref": "#/$defs/classification"},
         "proposalDigest": {"$ref": "#/$defs/digest"},
-        "comparison": {"$ref": "#/$defs/comparison"},
+        "comparison": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/comparison"}
+          ]
+        },
         "nearestMatches": {"$ref": "#/$defs/idList"},
         "scorecard": {"$ref": "#/$defs/admissionScorecard"},
-        "dispositionEvidence": {"$ref": "#/$defs/dispositionEvidence"}
+        "dispositionEvidence": {"$ref": "#/$defs/dispositionEvidence"},
+        "catalogMaintainerDecisions": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {"$ref": "#/$defs/catalogMaintainerDecision"}
+        }
       }
     },
     "packageTree": {
@@ -594,6 +604,41 @@
         "outputs": {"enum": ["same", "different"]},
         "evidence": {"enum": ["same", "different"]},
         "authority": {"enum": ["same", "different"]}
+      }
+    },
+    "catalogMaintainerDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "subjectRef",
+        "issueRevision",
+        "proposalDigest",
+        "decisionType",
+        "lifecycle",
+        "decidedAt",
+        "signerRef",
+        "signature"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "subjectRef": {"$ref": "#/$defs/id"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "proposalDigest": {"$ref": "#/$defs/digest"},
+        "decisionType": {"enum": ["RETIRE", "PRODUCT_DECISION"]},
+        "lifecycle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "validFrom", "validUntil"],
+          "properties": {
+            "state": {"enum": ["active", "revoked"]},
+            "validFrom": {"$ref": "#/$defs/timestamp"},
+            "validUntil": {"$ref": "#/$defs/timestamp"}
+          }
+        },
+        "decidedAt": {"$ref": "#/$defs/timestamp"},
+        "signerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
       }
     }
   }

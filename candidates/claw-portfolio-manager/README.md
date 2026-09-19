@@ -40,10 +40,18 @@ Regeneration discovers and hashes the complete transitive local import closure,
 the full selected owner source/package trees, registries, `package.json`, and
 `package-lock.json`; signs every dependent record; runs the owner-backed
 composition once; and rewrites:
-The command rewrites:
 
 - `fixtures/composition-input.test.json`
 - `fixtures/composition-trust.test.json`
 - `fixtures/composition-trust-pin.test.json`
+- `fixtures/catalog-maintainer-retire.test.json`
+- `fixtures/catalog-maintainer-product-decision.test.json`
 - `expected/composition.expected.json`
 - `proof/composition-plan.md`
+
+Provider and admission evidence references are non-authoritative pointers.
+`RETIRE` and `PRODUCT_DECISION` require a matching, active
+`catalogMaintainerDecisions` record signed by the separately pinned
+`catalog-maintainer` trust domain. Catalog comparisons are recomputed from the
+bound catalog bytes, so an exact operating-contract match with contradictory
+comparison evidence fails closed instead of yielding `NEW`.

@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import {
   createHash,
-  generateKeyPairSync,
+  createPrivateKey,
+  createPublicKey,
   sign as signBytes,
 } from "node:crypto";
 import { spawnSync } from "node:child_process";
@@ -22,8 +23,10 @@ import {
   localModuleClosure,
   localModuleSpecifiers,
   renderCompositionPlan,
+  runCompositionCli,
   trustRevision,
 } from "./composition.mjs";
+import * as compositionApi from "./composition.mjs";
 import {
   canonicalJson,
   sha256Digest,
@@ -32,6 +35,10 @@ import {
 const fixtureRoot = new URL("./fixtures/", import.meta.url);
 const candidateRoot = dirname(fileURLToPath(import.meta.url));
 const evaluationTime = "2026-09-17T19:00:00Z";
+const ED25519_PKCS8_SEED_PREFIX = Buffer.from(
+  "302e020100300506032b657004220420",
+  "hex",
+);
 const [
   input,
   trust,
@@ -41,6 +48,8 @@ const [
   packageManifest,
   catalog,
   readme,
+  retireDecisionFixture,
+  productDecisionFixture,
 ] =
   await Promise.all([
     readFile(new URL("composition-input.test.json", fixtureRoot), "utf8").then(
@@ -65,6 +74,14 @@ const [
       JSON.parse,
     ),
     readFile(new URL("./README.md", import.meta.url), "utf8"),
+    readFile(
+      new URL("catalog-maintainer-retire.test.json", fixtureRoot),
+      "utf8",
+    ).then(JSON.parse),
+    readFile(
+      new URL("catalog-maintainer-product-decision.test.json", fixtureRoot),
+      "utf8",
+    ).then(JSON.parse),
   ]);
 
 function clone(value = input) {
@@ -101,6 +118,81 @@ function operatingContractDigest(entry) {
   });
 }
 
+const comparisonDimensionFields = {
+  user: ["audience"],
+  job: ["principles", "doneWhen"],
+  workflow: ["workflow"],
+  outputs: ["deliverables"],
+  evidence: ["intake"],
+  authority: ["boundaries", "capabilityGuidance"],
+};
+
+function operatingContractComparison(proposalEntry, existingEntry) {
+  return Object.fromEntries(
+    Object.entries(comparisonDimensionFields).map(([dimension, fields]) => [
+      dimension,
+      canonicalJson(
+        Object.fromEntries(fields.map((field) => [field, proposalEntry[field]])),
+      ) ===
+      canonicalJson(
+        Object.fromEntries(fields.map((field) => [field, existingEntry[field]])),
+      )
+        ? "same"
+        : "different",
+    ]),
+  );
+}
+
+function bindExistingComparison(value, existing) {
+  value.admission.dispositionEvidence.existingMatch = {
+    id: existing.id,
+    operatingContractDigest: operatingContractDigest(existing),
+  };
+  value.admission.comparison = operatingContractComparison(
+    value.admission.proposal.entry,
+    existing,
+  );
+}
+
+function fixturePrivateKey(domain) {
+  const seed = createHash("sha256")
+    .update(`awesome-claws-composition-fixture:${domain}`, "utf8")
+    .digest();
+  return createPrivateKey({
+    key: Buffer.concat([ED25519_PKCS8_SEED_PREFIX, seed]),
+    format: "der",
+    type: "pkcs8",
+  });
+}
+
+function addCatalogDecision(value, providerBody, decisionType, id) {
+  const kind =
+    decisionType === "RETIRE"
+      ? "lifecycle-retirement"
+      : "product-decision-required";
+  providerBody.evidenceRefs.push({
+    id,
+    kind,
+    subjectRef: value.admission.proposal.entry.id,
+    authority: "catalog-maintainer-decision-reference",
+  });
+  const decision = structuredClone(
+    decisionType === "RETIRE"
+      ? retireDecisionFixture
+      : productDecisionFixture,
+  );
+  decision.id = id;
+  value.catalogMaintainerDecisions.push(decision);
+  if (decisionType === "RETIRE") {
+    value.admission.dispositionEvidence.lifecycle = {
+      action: "retire",
+      evidenceRefs: [id],
+    };
+  } else {
+    value.admission.dispositionEvidence.productDecisionRefs = [id];
+  }
+}
+
 function providerRevision(value) {
   const {
     revision: _revision,
@@ -120,7 +212,7 @@ function contentRevision(value) {
   return sha256Digest(content);
 }
 
-function authenticatedFixture(mutate = () => {}) {
+function authenticatedFixture(mutate = () => {}, finalize = () => {}) {
   const nextInput = clone();
   const nextTrust = structuredClone(trust);
   const nextPin = structuredClone(trustPin);
@@ -135,8 +227,11 @@ function authenticatedFixture(mutate = () => {}) {
 
   const keys = new Map();
   for (const record of nextTrust.keys) {
-    const { privateKey, publicKey } = generateKeyPairSync("ed25519");
-    record.publicKeyPem = publicKey.export({ type: "spki", format: "pem" });
+    const privateKey = fixturePrivateKey(record.domain);
+    record.publicKeyPem = createPublicKey(privateKey).export({
+      type: "spki",
+      format: "pem",
+    });
     keys.set(record.domain, { record, privateKey });
   }
   nextTrust.revision = trustRevision(nextTrust);
@@ -175,6 +270,11 @@ function authenticatedFixture(mutate = () => {}) {
     revision: nextInput.providerIssue.revision,
   });
   nextInput.admission.issueRevision = nextInput.providerIssue.revision;
+  for (const decision of nextInput.catalogMaintainerDecisions) {
+    decision.subjectRef = nextInput.admission.proposal.entry.id;
+    decision.issueRevision = nextInput.providerIssue.revision;
+    decision.proposalDigest = nextInput.admission.proposalDigest;
+  }
   for (const receipt of nextInput.idempotencyReceipts) {
     receipt.issueRevision = nextInput.providerIssue.revision;
   }
@@ -184,12 +284,14 @@ function authenticatedFixture(mutate = () => {}) {
       nextInput.usageEvidence,
     );
   }
+  finalize({ input: nextInput, providerBody });
 
   for (const [domain, values] of [
     ["provider", [nextInput.providerIssue]],
     ["continuation", [nextInput.continuation]],
     ["admission", [nextInput.admission]],
     ["catalog", [nextInput.packageManifest]],
+    ["catalog-maintainer", nextInput.catalogMaintainerDecisions],
     ["receipt", nextInput.idempotencyReceipts],
     ["usage", nextInput.usageEvidence ? [nextInput.usageEvidence] : []],
     [
@@ -209,9 +311,12 @@ function continuationFixture(mode) {
   const nextInput = clone();
   const nextTrust = structuredClone(trust);
   const nextPin = structuredClone(trustPin);
-  const { privateKey, publicKey } = generateKeyPairSync("ed25519");
+  const privateKey = fixturePrivateKey("continuation");
   const key = nextTrust.keys.find((item) => item.domain === "continuation");
-  key.publicKeyPem = publicKey.export({ type: "spki", format: "pem" });
+  key.publicKeyPem = createPublicKey(privateKey).export({
+    type: "spki",
+    format: "pem",
+  });
   nextTrust.revision = trustRevision(nextTrust);
   nextPin.trustRevision = nextTrust.revision;
   nextInput.continuation.mode = mode;
@@ -327,9 +432,9 @@ test("source bindings cover the complete transitive local import closure", async
      "./side-effect.mjs",
     ],
   );
-  assert.throws(
-    () => localModuleSpecifiers('import("./" + moduleName);'),
-    /not statically bindable/u,
+  assert.deepEqual(
+    localModuleSpecifiers('import("./" + moduleName);'),
+    [],
   );
   const [closure, bindings] = await Promise.all([
     localModuleClosure(),
@@ -383,14 +488,13 @@ test("source bindings cover the complete transitive local import closure", async
 });
 
 test("authenticated owner evidence derives every admission disposition", async () => {
-  const same = {
-    user: "same",
-    job: "same",
-    workflow: "same",
-    outputs: "same",
-    evidence: "same",
-    authority: "same",
-  };
+  const benefits = catalog.entries.find(
+    (entry) => entry.id === "benefits-realization-manager",
+  );
+  assert.equal(
+    operatingContractDigest(benefits),
+    "sha256:057fbfecaa32fd5e364c8b29d27c4fa5237c6e3f104534ba30e8cc425702771f",
+  );
   const cases = [
     [
       "UNSUPPORTED",
@@ -404,9 +508,6 @@ test("authenticated owner evidence derives every admission disposition", async (
     [
       "DUPLICATE",
       ({ input: value }) => {
-        const existing = catalog.entries.find(
-          (entry) => entry.id === "benefits-realization-manager",
-        );
         for (const field of [
           "audience",
           "principles",
@@ -418,63 +519,53 @@ test("authenticated owner evidence derives every admission disposition", async (
           "capabilityGuidance",
         ]) {
           value.admission.proposal.entry[field] = structuredClone(
-            existing[field],
+            benefits[field],
           );
         }
-        value.admission.comparison = { ...same };
-        value.admission.dispositionEvidence.existingMatch = {
-          id: existing.id,
-          operatingContractDigest: operatingContractDigest(existing),
-        };
+        bindExistingComparison(value, benefits);
       },
     ],
     ["COMPOSE", () => {}],
     [
       "RETIRE",
       ({ input: value, providerBody }) => {
-        providerBody.evidenceRefs.push({
-          id: "retirement-decision",
-          kind: "lifecycle-retirement",
-          subjectRef: value.admission.proposal.entry.id,
-          authority: "catalog-maintainer-decision",
-        });
-        value.admission.dispositionEvidence.lifecycle = {
-          action: "retire",
-          evidenceRefs: ["retirement-decision"],
-        };
+        addCatalogDecision(
+          value,
+          providerBody,
+          "RETIRE",
+          "retirement-decision",
+        );
       },
     ],
     [
       "IMPROVE",
       ({ input: value }) => {
         value.admission.compositionContract = null;
+        for (const field of comparisonDimensionFields.job) {
+          value.admission.proposal.entry[field] = structuredClone(
+            benefits[field],
+          );
+        }
+        bindExistingComparison(value, benefits);
       },
     ],
     [
       "NEW",
       ({ input: value }) => {
         value.admission.compositionContract = null;
-        value.admission.comparison = {
-          ...same,
-          job: "different",
-          workflow: "different",
-        };
+        bindExistingComparison(value, benefits);
       },
     ],
     [
       "PRODUCT_DECISION",
       ({ input: value, providerBody }) => {
         value.admission.compositionContract = null;
-        value.admission.comparison = { ...same };
-        providerBody.evidenceRefs.push({
-          id: "product-decision-required",
-          kind: "product-decision-required",
-          subjectRef: value.admission.proposal.entry.id,
-          authority: "catalog-maintainer-decision",
-        });
-        value.admission.dispositionEvidence.productDecisionRefs = [
+        addCatalogDecision(
+          value,
+          providerBody,
+          "PRODUCT_DECISION",
           "product-decision-required",
-        ];
+        );
       },
     ],
   ];
@@ -498,34 +589,31 @@ test("authenticated owner evidence derives every admission disposition", async (
     );
   }
 
-  for (const variantBasis of [
-    "audience",
-    "industry-vocabulary",
-    "personality",
-    "branding",
-    "presentation",
-  ]) {
-    const signed = authenticatedFixture(({ input: value }) => {
-      value.admission.compositionContract = null;
-      value.admission.comparison = {
-        ...same,
-        user: variantBasis === "audience" ? "different" : "same",
-      };
-      value.admission.dispositionEvidence.variantBasis = variantBasis;
-    });
-    const result = await composePortfolioPlan(
-      signed.input,
-      signed.trust,
-      signed.trustPin,
-      { asOf: evaluationTime },
-    );
-    assert.equal(result.verdict, "IMPROVE_COMPOSE", variantBasis);
-    assert.equal(result.classification, "VARIANT", variantBasis);
-  }
+  const variant = authenticatedFixture(({ input: value }) => {
+    value.admission.compositionContract = null;
+    for (const field of Object.values(comparisonDimensionFields).flat()) {
+      if (field !== "audience") {
+        value.admission.proposal.entry[field] = structuredClone(benefits[field]);
+      }
+    }
+    bindExistingComparison(value, benefits);
+    value.admission.dispositionEvidence.variantBasis = "audience";
+  });
+  const variantResult = await composePortfolioPlan(
+    variant.input,
+    variant.trust,
+    variant.trustPin,
+    { asOf: evaluationTime },
+  );
+  assert.equal(
+    variantResult.verdict,
+    "IMPROVE_COMPOSE",
+    JSON.stringify(variantResult),
+  );
+  assert.equal(variantResult.classification, "VARIANT");
 
   const composeFirst = authenticatedFixture(({ input: value }) => {
-    value.admission.comparison.job = "different";
-    value.admission.comparison.workflow = "different";
+    bindExistingComparison(value, benefits);
   });
   const composeFirstResult = await composePortfolioPlan(
     composeFirst.input,
@@ -543,15 +631,16 @@ test("authenticated owner evidence derives every admission disposition", async (
 
   const humanDecisionFirst = authenticatedFixture(
     ({ input: value, providerBody }) => {
-      providerBody.evidenceRefs.push({
-        id: "product-decision-required",
-        kind: "product-decision-required",
-        subjectRef: value.admission.proposal.entry.id,
-        authority: "catalog-maintainer-decision",
-      });
-      value.admission.dispositionEvidence.productDecisionRefs = [
+      for (const field of Object.values(comparisonDimensionFields).flat()) {
+        value.admission.proposal.entry[field] = structuredClone(benefits[field]);
+      }
+      bindExistingComparison(value, benefits);
+      addCatalogDecision(
+        value,
+        providerBody,
+        "PRODUCT_DECISION",
         "product-decision-required",
-      ];
+      );
     },
   );
   const humanDecisionFirstResult = await composePortfolioPlan(
@@ -615,12 +704,7 @@ test("authenticated owner evidence derives every admission disposition", async (
       for (let index = 1; index <= 14; index += 1) {
         const id = `retirement-decision-${index}`;
         lifecycleRefs.push(id);
-        providerBody.evidenceRefs.push({
-          id,
-          kind: "lifecycle-retirement",
-          subjectRef: value.admission.proposal.entry.id,
-          authority: "catalog-maintainer-decision",
-        });
+        addCatalogDecision(value, providerBody, "RETIRE", id);
       }
       value.admission.dispositionEvidence.lifecycle = {
         action: "retire",
@@ -640,6 +724,226 @@ test("authenticated owner evidence derives every admission disposition", async (
     JSON.stringify(maximumEvidenceResult),
   );
   assert.equal(maximumEvidenceResult.classification, "RETIRE");
+
+  for (const dimension of Object.keys(comparisonDimensionFields)) {
+    const contradictoryComparison = authenticatedFixture(({ input: value }) => {
+      value.admission.compositionContract = null;
+      bindExistingComparison(value, benefits);
+      value.admission.comparison[dimension] =
+        value.admission.comparison[dimension] === "same"
+          ? "different"
+          : "same";
+    });
+    const contradictoryResult = await composePortfolioPlan(
+      contradictoryComparison.input,
+      contradictoryComparison.trust,
+      contradictoryComparison.trustPin,
+      { asOf: evaluationTime },
+    );
+    assert.equal(contradictoryResult.verdict, "INVALID", dimension);
+    assert.ok(
+      contradictoryResult.findings.includes("invalid-disposition-evidence"),
+      dimension,
+    );
+  }
+
+  const contradictoryDuplicate = authenticatedFixture(({ input: value }) => {
+    for (const field of Object.values(comparisonDimensionFields).flat()) {
+      value.admission.proposal.entry[field] = structuredClone(benefits[field]);
+    }
+    bindExistingComparison(value, benefits);
+    value.admission.comparison.job = "different";
+  });
+  assert.equal(
+    operatingContractDigest(contradictoryDuplicate.input.admission.proposal.entry),
+    operatingContractDigest(benefits),
+  );
+  const contradictoryDuplicateResult = await composePortfolioPlan(
+    contradictoryDuplicate.input,
+    contradictoryDuplicate.trust,
+    contradictoryDuplicate.trustPin,
+    { asOf: evaluationTime },
+  );
+  assert.equal(contradictoryDuplicateResult.verdict, "INVALID");
+  assert.ok(
+    contradictoryDuplicateResult.findings.includes(
+      "invalid-disposition-evidence",
+    ),
+  );
+  assert.equal(contradictoryDuplicateResult.classification, undefined);
+});
+
+test("catalog-maintainer decisions are independently signed and bounded", async () => {
+  for (const [decisionType, id, kind] of [
+    ["RETIRE", "retirement-decision", "lifecycle-retirement"],
+    [
+      "PRODUCT_DECISION",
+      "product-decision-required",
+      "product-decision-required",
+    ],
+  ]) {
+    const providerAndAdmissionOnly = authenticatedFixture(
+      ({ input: value, providerBody }) => {
+        value.idempotencyReceipts = [];
+        value.continuation.priorReceiptIds = [];
+        value.usageEvidence = null;
+        providerBody.evidenceRefs.push({
+          id,
+          kind,
+          subjectRef: value.admission.proposal.entry.id,
+          authority: "catalog-maintainer-decision-reference",
+        });
+        if (decisionType === "RETIRE") {
+          value.admission.dispositionEvidence.lifecycle = {
+            action: "retire",
+            evidenceRefs: [id],
+          };
+        } else {
+          value.admission.dispositionEvidence.productDecisionRefs = [id];
+        }
+      },
+    );
+    assert.deepEqual(
+      providerAndAdmissionOnly.input.packageManifest,
+      input.packageManifest,
+    );
+    const providerAndAdmissionOnlyResult = await composePortfolioPlan(
+      providerAndAdmissionOnly.input,
+      providerAndAdmissionOnly.trust,
+      providerAndAdmissionOnly.trustPin,
+      { asOf: evaluationTime },
+    );
+    assert.equal(providerAndAdmissionOnlyResult.verdict, "INVALID", decisionType);
+    assert.ok(
+      providerAndAdmissionOnlyResult.findings.includes(
+        "invalid-disposition-evidence",
+      ),
+      decisionType,
+    );
+  }
+
+  const admissionSignedRetirement = authenticatedFixture(
+    ({ input: value, providerBody }) => {
+      addCatalogDecision(
+        value,
+        providerBody,
+        "RETIRE",
+        "retirement-decision",
+      );
+    },
+  );
+  const admissionKey = admissionSignedRetirement.trust.keys.find(
+    (item) => item.domain === "admission",
+  );
+  const admissionSignedDecision =
+    admissionSignedRetirement.input.catalogMaintainerDecisions[0];
+  admissionSignedDecision.signerRef = admissionKey.signerRef;
+  signRecord(
+    admissionSignedDecision,
+    admissionKey.keyId,
+    fixturePrivateKey("admission"),
+  );
+  const admissionSignedRetirementResult = await composePortfolioPlan(
+    admissionSignedRetirement.input,
+    admissionSignedRetirement.trust,
+    admissionSignedRetirement.trustPin,
+    { asOf: evaluationTime },
+  );
+  assert.equal(admissionSignedRetirementResult.verdict, "INVALID");
+  assert.ok(
+    admissionSignedRetirementResult.findings.includes(
+      "invalid-catalog-maintainer-signature",
+    ),
+  );
+
+  const invalidDecisions = [
+    [
+      "signer",
+      (decision) => {
+        decision.signerRef = "admission-owner";
+      },
+    ],
+    [
+      "subject",
+      (decision) => {
+        decision.subjectRef = "different-proposal";
+      },
+    ],
+    [
+      "issue revision",
+      (decision) => {
+        decision.issueRevision = `sha256:${"0".repeat(64)}`;
+      },
+    ],
+    [
+      "proposal revision",
+      (decision) => {
+        decision.proposalDigest = `sha256:${"0".repeat(64)}`;
+      },
+    ],
+    [
+      "decision type",
+      (decision) => {
+        decision.decisionType = "PRODUCT_DECISION";
+      },
+    ],
+    [
+      "revoked lifecycle",
+      (decision) => {
+        decision.lifecycle.state = "revoked";
+      },
+    ],
+    [
+      "expired lifecycle",
+      (decision) => {
+        decision.lifecycle.validUntil = "2026-09-17T18:00:00Z";
+      },
+    ],
+    [
+      "invalid chronology",
+      (decision) => {
+        decision.lifecycle.validFrom = "2026-09-17T17:19:00Z";
+      },
+    ],
+    [
+      "post-admission decision",
+      (decision) => {
+        decision.decidedAt = "2026-09-17T18:00:00Z";
+      },
+    ],
+  ];
+  for (const [label, mutateDecision] of invalidDecisions) {
+    const invalidDecision = authenticatedFixture(
+      ({ input: value, providerBody }) => {
+        addCatalogDecision(
+          value,
+          providerBody,
+          "RETIRE",
+          "retirement-decision",
+        );
+      },
+      ({ input: value }) => {
+        mutateDecision(value.catalogMaintainerDecisions[0]);
+      },
+    );
+    const result = await composePortfolioPlan(
+      invalidDecision.input,
+      invalidDecision.trust,
+      invalidDecision.trustPin,
+      { asOf: evaluationTime },
+    );
+    assert.equal(result.verdict, "INVALID", label);
+    assert.ok(
+      result.findings.some((finding) =>
+        [
+          "invalid-catalog-maintainer-decision",
+          "invalid-catalog-maintainer-signature",
+          "invalid-disposition-evidence",
+        ].includes(finding),
+      ),
+      label,
+    );
+  }
 });
 
 test("source, provider, proposal, and package substitutions fail closed", async () => {
@@ -823,6 +1127,11 @@ test("trust and optional usage remain independently scoped", async () => {
 
   for (const mutate of [
     (value) => {
+      value.keys = value.keys.filter(
+        (item) => item.domain !== "catalog-maintainer",
+      );
+    },
+    (value) => {
       value.keys.find((item) => item.domain === "usage").domain = "provider";
     },
     (value) => {
@@ -857,6 +1166,22 @@ test("trust and optional usage remain independently scoped", async () => {
 });
 
 test("composition API is total and bounded for hostile values in every argument", async () => {
+  assert.deepEqual(
+    Object.entries(compositionApi)
+      .filter(([, value]) => typeof value === "function")
+      .map(([name]) => name)
+      .sort(),
+    [
+      "composePortfolioPlan",
+      "continuationModeFindings",
+      "expectedSourceBindings",
+      "localModuleClosure",
+      "localModuleSpecifiers",
+      "renderCompositionPlan",
+      "runCompositionCli",
+      "trustRevision",
+    ],
+  );
   const cycle = {};
   cycle.self = cycle;
   const getter = {};
@@ -874,6 +1199,14 @@ test("composition API is total and bounded for hostile values in every argument"
   const symbolKey = {
     [Symbol("DO_NOT_ECHO")]: true,
   };
+  const hostileProxy = new Proxy(
+    {},
+    {
+      ownKeys: () => {
+        throw new Error("DO_NOT_ECHO");
+      },
+    },
+  );
   const hostileValues = [
     null,
     undefined,
@@ -885,8 +1218,13 @@ test("composition API is total and bounded for hostile values in every argument"
     symbolKey,
     new Date(),
     { oversized: "x".repeat(1024 * 1024 + 1) },
-    new Proxy({}, { ownKeys: () => { throw new Error("DO_NOT_ECHO"); } }),
+    hostileProxy,
   ];
+  for (const value of [null, getter, hostileProxy]) {
+    await assert.doesNotReject(async () => {
+      assert.deepEqual(await expectedSourceBindings(value), input.sourceBindings);
+    });
+  }
   for (const value of hostileValues) {
     const calls = [
       [value, trust, trustPin, { asOf: evaluationTime }],
@@ -902,6 +1240,39 @@ test("composition API is total and bounded for hostile values in every argument"
       assert.equal(result.verdict, "INVALID");
       assert.equal(JSON.stringify(result).includes("DO_NOT_ECHO"), false);
     }
+
+    assert.doesNotThrow(() => {
+      assert.equal(trustRevision(value), null);
+    });
+    assert.doesNotThrow(() => {
+      assert.deepEqual(localModuleSpecifiers(value), []);
+    });
+    await assert.doesNotReject(async () => {
+      const closure = await localModuleClosure(value);
+      assert.ok(Array.isArray(closure));
+    });
+    assert.doesNotThrow(() => {
+      assert.deepEqual(
+        continuationModeFindings(value, "checkpoint-weekly-2026-09-13"),
+        ["invalid-continuation"],
+      );
+      assert.deepEqual(
+        continuationModeFindings(input.continuation, value),
+        ["invalid-continuation"],
+      );
+    });
+    assert.doesNotThrow(() => {
+      assert.equal(
+        renderCompositionPlan(value),
+        "# Claw Portfolio Manager composition\n\n**Status:** INVALID\n",
+      );
+    });
+    let cliResult;
+    await assert.doesNotReject(async () => {
+      cliResult = await runCompositionCli(value);
+    });
+    assert.equal(cliResult.verdict, "INVALID");
+    assert.equal(JSON.stringify(cliResult).includes("DO_NOT_ECHO"), false);
   }
 });
 

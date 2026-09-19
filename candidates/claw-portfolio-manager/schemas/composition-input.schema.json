@@ -10,6 +10,7 @@
     "providerIssue",
     "continuation",
     "admission",
+    "catalogMaintainerDecisions",
     "packageManifest",
     "idempotencyReceipts",
     "runtimeBudget",
@@ -150,7 +151,12 @@
         "issueRevision": {"$ref": "#/$defs/digest"},
         "proposal": {"$ref": "#/$defs/proposal"},
         "proposalDigest": {"$ref": "#/$defs/digest"},
-        "comparison": {"$ref": "#/$defs/comparison"},
+        "comparison": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/comparison"}
+          ]
+        },
         "dispositionEvidence": {
           "type": "object",
           "additionalProperties": false,
@@ -294,6 +300,11 @@
         "signerRef": {"$ref": "#/$defs/id"},
         "signature": {"$ref": "#/$defs/signature"}
       }
+    },
+    "catalogMaintainerDecisions": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/catalogMaintainerDecision"}
     },
     "packageManifest": {
       "type": "object",
@@ -555,6 +566,41 @@
         "outputs": {"enum": ["same", "different"]},
         "evidence": {"enum": ["same", "different"]},
         "authority": {"enum": ["same", "different"]}
+      }
+    },
+    "catalogMaintainerDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "subjectRef",
+        "issueRevision",
+        "proposalDigest",
+        "decisionType",
+        "lifecycle",
+        "decidedAt",
+        "signerRef",
+        "signature"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "subjectRef": {"$ref": "#/$defs/id"},
+        "issueRevision": {"$ref": "#/$defs/digest"},
+        "proposalDigest": {"$ref": "#/$defs/digest"},
+        "decisionType": {"enum": ["RETIRE", "PRODUCT_DECISION"]},
+        "lifecycle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "validFrom", "validUntil"],
+          "properties": {
+            "state": {"enum": ["active", "revoked"]},
+            "validFrom": {"$ref": "#/$defs/timestamp"},
+            "validUntil": {"$ref": "#/$defs/timestamp"}
+          }
+        },
+        "decidedAt": {"$ref": "#/$defs/timestamp"},
+        "signerRef": {"$ref": "#/$defs/id"},
+        "signature": {"$ref": "#/$defs/signature"}
       }
     },
     "proposal": {

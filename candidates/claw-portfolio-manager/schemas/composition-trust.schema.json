@@ -37,6 +37,7 @@
               "continuation",
               "admission",
               "catalog",
+              "catalog-maintainer",
               "receipt",
               "runtime-budget",
               "usage"

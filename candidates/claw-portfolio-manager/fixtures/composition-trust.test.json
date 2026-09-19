@@ -1,6 +1,6 @@
 {
   "schemaVersion": "awesomeClaws.clawPortfolioCompositionTrust.v1",
-  "revision": "sha256:cbe95448c2754bf492ffe90734ba3077bc5bf2339dada7d9cf87fe36cc866e1c",
+  "revision": "sha256:b1309f5e465460501f39b412e99fc4e8024d9ce9d95da8836f8e0ef15075e242",
   "keys": [
     {
       "keyId": "provider-key",
@@ -55,6 +55,14 @@
       "signerRef": "runtime-budget-custodian",
       "domain": "runtime-budget",
       "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAX6OGGaXaUBZqt0+z7I5jr3LXPiZ5/lvax1P68uFdcWY=\n-----END PUBLIC KEY-----\n",
+      "notBefore": "2026-09-01T00:00:00Z",
+      "expiresAt": "2026-10-01T00:00:00Z"
+    },
+    {
+      "keyId": "catalog-maintainer-key",
+      "signerRef": "catalog-maintainer-council",
+      "domain": "catalog-maintainer",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAS2CTAWJ1IoYcA/JGGXKFKDD8qkxAGSOHa4dx9TSmg08=\n-----END PUBLIC KEY-----\n",
       "notBefore": "2026-09-01T00:00:00Z",
       "expiresAt": "2026-10-01T00:00:00Z"
     }

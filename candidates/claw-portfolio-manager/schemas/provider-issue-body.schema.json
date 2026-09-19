@@ -62,7 +62,7 @@
               "enum": ["lifecycle-retirement", "product-decision-required"]
             },
             "subjectRef": {"$ref": "#/$defs/id"},
-            "authority": {"const": "catalog-maintainer-decision"}
+            "authority": {"const": "catalog-maintainer-decision-reference"}
           }
         }
       ]
