@@ -11,7 +11,7 @@
       "ownerId": "composition-adapter",
       "role": "validator",
       "path": "candidates/claw-portfolio-manager/composition.mjs",
-      "digest": "sha256:dd13ee0b37ea1a1c01877df0d37033f9a28c1dc3630632e9f132b8e71f20cf72"
+      "digest": "sha256:65db710f5ec0321d5988d4c0de9c14d64a1c14c2311f789a3f47ba445e4ee6f8"
     },
     {
       "ownerId": "composition-adapter",
@@ -640,13 +640,13 @@
   ],
   "portfolio": {
     "id": "portfolio-owner-composition",
-    "revision": "sha256:b84f734ef86a5992bb07896ecaad2bfa963a9e4bd2fe758521941cae1623c9f1",
+    "revision": "sha256:9f99b970d48a42188d97a220cdf374cfce77d6dd248133d2c9e421f716eaf704",
     "selectedClawIds": [
       "repository-operations-manager",
       "repository-compliance-program-manager",
       "work-chief-of-staff"
     ],
-    "sourceBindingsRoot": "sha256:640c8d3e2f555c1b427ede8613b753d68e63ad4ac3623eb9e5116afd7520e3b9",
+    "sourceBindingsRoot": "sha256:7cff6b0d77baaea6a3f222abc0de7760199d3429205f772b10c13583fe680330",
     "capacityEnvelopeRef": "capacity-engineering"
   },
   "providerIssue": {
@@ -688,8 +688,8 @@
     "id": "continuation-portfolio-composition",
     "mode": "manage",
     "predecessorCheckpointRef": "checkpoint-weekly-2026-09-13",
-    "portfolioRevision": "sha256:b84f734ef86a5992bb07896ecaad2bfa963a9e4bd2fe758521941cae1623c9f1",
-    "sourceBindingsRoot": "sha256:640c8d3e2f555c1b427ede8613b753d68e63ad4ac3623eb9e5116afd7520e3b9",
+    "portfolioRevision": "sha256:9f99b970d48a42188d97a220cdf374cfce77d6dd248133d2c9e421f716eaf704",
+    "sourceBindingsRoot": "sha256:7cff6b0d77baaea6a3f222abc0de7760199d3429205f772b10c13583fe680330",
     "priorReceiptIds": [
       "receipt-issue-api"
     ],
@@ -699,7 +699,7 @@
     "signature": {
       "keyId": "continuation-key",
       "algorithm": "Ed25519",
-      "value": "7IFmnN4WpRFw1EcAfY+y1IKrkRqpj/8vQH9DHKZqDKQIHQPCO14DEbE9KgpwLMNNwuXriRNcq/+bmw3gocMrDQ=="
+      "value": "oQKSkmy5E8djVUONaklnZPK3W46fxBZKFdrRrtSC+hQ6orCCqvvUkQ4qWg8Ru8EuCc1PiBLVSEGR164QF3CIDQ=="
     }
   },
   "admission": {
@@ -860,7 +860,7 @@
         {
           "owner": "work-chief-of-staff",
           "outputPort": "stateless-budget-plan",
-          "extensionRef": "capacity-engineering",
+          "extensionRef": "stateless-capacity-plan",
           "authority": [],
           "sourcePaths": [
             "sources/work-chief-of-staff/schemas/operating-portfolio.schema.json",
@@ -926,7 +926,7 @@
     "signature": {
       "keyId": "admission-key",
       "algorithm": "Ed25519",
-      "value": "5PW+lDiNRPYMo8GfOpAOqB7OEkbfN+m8O+8lYA2JYe7PmlJByykQ+Guj5oRGKlaHTXWOSy26Wx1EISbrUPWtAA=="
+      "value": "hxaY3rk/4q83PfJFEuAFa9R2gudzrLkqNF4ZkqkNul+SSN7WbL3yKpnEp7t/gvV9eG+j5BSxuHk6BqY7cTWFBA=="
     }
   },
   "packageManifest": {
@@ -942,8 +942,8 @@
       {
         "path": "candidates/claw-portfolio-manager/composition.mjs",
         "mediaType": "text/javascript",
-        "byteLength": 65404,
-        "digest": "sha256:dd13ee0b37ea1a1c01877df0d37033f9a28c1dc3630632e9f132b8e71f20cf72"
+        "byteLength": 67165,
+        "digest": "sha256:65db710f5ec0321d5988d4c0de9c14d64a1c14c2311f789a3f47ba445e4ee6f8"
       },
       {
         "path": "candidates/claw-portfolio-manager/schemas/composition-input.schema.json",
@@ -1570,13 +1570,13 @@
         "digest": "sha256:2d0ee5f5f64b00720d55067f2d1ea32882c86236208387ec8acefe870e803e6d"
       }
     ],
-    "root": "sha256:acb05b279c183314ecafd202cba7a7e329bfa3a0cc30166daebcb1587c5a0077",
+    "root": "sha256:b2bbe3c60b095ed6cc9ee77ae55d64137c578a1641a0c7b952be626bab27304b",
     "signedAt": "2026-09-17T17:05:00Z",
     "signerRef": "catalog-custodian",
     "signature": {
       "keyId": "catalog-key",
       "algorithm": "Ed25519",
-      "value": "WLkgSFHK78ovyxrQZmTbwSzt6xRwBRaoOulsEMZr31/c/I2/zp8UxC8EQFhi5hjz7cYfizz912D4SlTHjT9FDA=="
+      "value": "+Rgf7/ACy5UpjrghB3rsIaiTdV5Co+fgOl+CJrIId5AoE5/QkUf71ZT/iBRk+6Vuq7mYyEyixrfOvNZF38UtCQ=="
     }
   },
   "idempotencyReceipts": [

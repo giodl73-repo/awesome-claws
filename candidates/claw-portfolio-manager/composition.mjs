@@ -166,7 +166,7 @@ export const COMPOSITION_MAPPINGS = Object.freeze([
   {
     owner: "work-chief-of-staff",
     outputPort: "stateless-budget-plan",
-    extensionRef: "capacity-engineering",
+    extensionRef: "stateless-capacity-plan",
     authority: [],
     sourcePaths: [
       "sources/work-chief-of-staff/schemas/operating-portfolio.schema.json",
@@ -449,19 +449,20 @@ function verifySigned(value, domain, asOf, keys, findings) {
       value?.decidedAt ??
       value?.capturedAt,
   );
-  if (
-    !record ||
-    record.domain !== domain ||
-    record.signerRef !== value.signerRef ||
-    !signature ||
-    signedAt === null ||
-    signedAt > timestamp(asOf) ||
-    timestamp(record.notBefore) > signedAt ||
-    timestamp(record.expiresAt) < signedAt ||
-    !verifySignature(null, signaturePayload(value), record.key, signature)
-  ) {
+  const valid =
+    record &&
+    record.domain === domain &&
+    record.signerRef === value.signerRef &&
+    signature &&
+    signedAt !== null &&
+    signedAt <= timestamp(asOf) &&
+    timestamp(record.notBefore) <= signedAt &&
+    timestamp(record.expiresAt) >= signedAt &&
+    verifySignature(null, signaturePayload(value), record.key, signature);
+  if (!valid) {
     findings.push(`invalid-${domain}-signature`);
   }
+  return Boolean(valid);
 }
 
 async function fileBinding(ownerId, role, path) {
@@ -713,6 +714,7 @@ function deriveAdmissionScorecard(
     compositionFeasible,
     boundOwnerIds,
     exactDuplicate,
+    productDecisionAuthorized,
     proposalOperatingContractDigest,
   },
 ) {
@@ -799,25 +801,21 @@ function deriveAdmissionScorecard(
       priority: 7,
       reason: "distinct-job-and-material-operating-contract-difference",
     },
+    {
+      classification: "PRODUCT_DECISION",
+      eligible: productDecisionAuthorized,
+      priority: 8,
+      reason: productDecisionAuthorized
+        ? "authenticated-product-decision-is-required"
+        : "evidence-does-not-authorize-an-executable-disposition",
+    },
   ];
   const selected =
-    evaluations.find((item) => item.eligible)?.classification ??
-    "PRODUCT_DECISION";
+    evaluations.find((item) => item.eligible)?.classification ?? null;
   return {
     selected,
     materialDifference,
-    candidates: [
-      ...evaluations,
-      {
-        classification: "PRODUCT_DECISION",
-        eligible: selected === "PRODUCT_DECISION",
-        priority: 8,
-        reason:
-          productDecisionRequired
-            ? "authenticated-product-decision-is-required"
-            : "evidence-does-not-authorize-an-executable-disposition",
-        },
-    ],
+    candidates: evaluations,
     evidence: {
       supported,
       requiredOwnerIds: evidence.requiredOwnerIds,
@@ -1085,11 +1083,11 @@ export async function composePortfolioPlan(
   }
   let issueRequest;
   try {
-    const parsedIssueRequest = JSON.parse(
-      Buffer.from(input.providerIssue.body.contentBase64, "base64").toString(
-        "utf8",
-      ),
+    const issueRequestBytes = strictBase64(
+      input.providerIssue.body.contentBase64,
     );
+    if (!issueRequestBytes) throw new Error("Invalid provider request bytes.");
+    const parsedIssueRequest = JSON.parse(issueRequestBytes.toString("utf8"));
     const normalizedIssueRequest = normalizeJsonValue(parsedIssueRequest, {
       maxBytes: 16 * 1024,
       maxDepth: 4,
@@ -1104,7 +1102,7 @@ export async function composePortfolioPlan(
     ) {
       findings.push("invalid-provider-request");
     } else {
-      issueRequest = {
+      const minimizedIssueRequest = {
         evidenceRefs: normalizedIssueRequest.value.evidenceRefs.map(
           ({ authority, id, kind, subjectRef }) => ({
             authority,
@@ -1116,6 +1114,15 @@ export async function composePortfolioPlan(
         proposalDigest: normalizedIssueRequest.value.proposalDigest,
         request: normalizedIssueRequest.value.request,
       };
+      const canonicalIssueRequestBytes = Buffer.from(
+        canonicalJson(minimizedIssueRequest),
+        "utf8",
+      );
+      if (!issueRequestBytes.equals(canonicalIssueRequestBytes)) {
+        findings.push("invalid-provider-request");
+      } else {
+        issueRequest = minimizedIssueRequest;
+      }
     }
   } catch {
     findings.push("invalid-provider-request");
@@ -1236,6 +1243,14 @@ export async function composePortfolioPlan(
   const catalogMaintainerDecisions = new Map();
   const providerCapturedAt = timestamp(input.providerIssue.capturedAt);
   const admissionDecidedAt = timestamp(input.admission.decidedAt);
+  if (
+    providerCapturedAt === null ||
+    admissionDecidedAt === null ||
+    providerCapturedAt > admissionDecidedAt
+  ) {
+    findings.push("invalid-admission-chronology");
+  }
+  let catalogMaintainerDecisionInvalid = false;
   for (const decision of input.catalogMaintainerDecisions) {
     const validFrom = timestamp(decision.lifecycle.validFrom);
     const validUntil = timestamp(decision.lifecycle.validUntil);
@@ -1255,16 +1270,21 @@ export async function composePortfolioPlan(
       decidedAt > asOfMs ||
       asOfMs > validUntil
     ) {
+      catalogMaintainerDecisionInvalid = true;
       findings.push("invalid-catalog-maintainer-decision");
     }
     catalogMaintainerDecisions.set(decision.id, decision);
-    verifySigned(
-      decision,
-      "catalog-maintainer",
-      asOf,
-      keys,
-      findings,
-    );
+    if (
+      !verifySigned(
+        decision,
+        "catalog-maintainer",
+        asOf,
+        keys,
+        findings,
+      )
+    ) {
+      catalogMaintainerDecisionInvalid = true;
+    }
   }
   const retirementDecisionIds = [...catalogMaintainerDecisions.values()]
     .filter((decision) => decision.decisionType === "RETIRE")
@@ -1274,7 +1294,7 @@ export async function composePortfolioPlan(
     .filter((decision) => decision.decisionType === "PRODUCT_DECISION")
     .map((decision) => decision.id)
     .sort();
-  if (
+  const dispositionEvidenceInvalid =
     !requiredOwnerSetComplete ||
     dispositionEvidence.availableOwnerIds.some(
       (ownerId) => !boundOwnerIds.has(ownerId),
@@ -1329,10 +1349,14 @@ export async function composePortfolioPlan(
         dispositionEvidence.existingMatch.operatingContractDigest !==
           operatingContractDigest(existingMatchEntry))) ||
     (dispositionEvidence.lifecycle.action === "retire") !==
-      (dispositionEvidence.lifecycle.evidenceRefs.length > 0)
-  ) {
+      (dispositionEvidence.lifecycle.evidenceRefs.length > 0);
+  if (dispositionEvidenceInvalid) {
     findings.push("invalid-disposition-evidence");
   }
+  const productDecisionAuthorized =
+    productDecisionIds.length > 0 &&
+    !catalogMaintainerDecisionInvalid &&
+    !dispositionEvidenceInvalid;
   verifySigned(input.admission, "admission", asOf, keys, findings);
 
   let expectedFiles;
@@ -1566,12 +1590,30 @@ export async function composePortfolioPlan(
     proposedDemand <= Math.max(0, availableBeforeProposal) &&
     conflictRefs.length === 0;
   const totalDemand = committedDemand + proposedDemand;
+  const remainingAmount = capacity.amount - totalDemand;
+  const overCapacity = totalDemand > capacity.amount;
+  const allocation = demandCanBeAllocated
+    ? {
+        state: "allocated",
+        allocatedAmount: proposedDemand,
+        blockedAmount: 0,
+        reason: null,
+      }
+    : {
+        state: "blocked",
+        allocatedAmount: 0,
+        blockedAmount: proposedDemand,
+        reason:
+          conflictRefs.length > 0
+            ? "capacity-conflict"
+            : "capacity-exceeded",
+      };
   const emittedPortRefs = {
     "portfolio-run-lineage": input.continuation.id,
     "provider-issue-snapshot": input.providerIssue.id,
     "typed-admission-decision": input.admission.id,
     "signed-package-tree": input.packageManifest.id,
-    "stateless-budget-plan": capacity.id,
+    "stateless-budget-plan": "stateless-capacity-plan",
     "externally-pinned-trust": "composition-trust",
     "minimized-usage-evidence": "runtime-evidence-optional",
     "proposal-owner-handoff": "work-chief-handoff",
@@ -1596,11 +1638,40 @@ export async function composePortfolioPlan(
         findings.length === 0,
       boundOwnerIds,
       exactDuplicate,
+      productDecisionAuthorized,
       proposalOperatingContractDigest,
     },
   );
   const classification = admissionScorecard.selected;
+  if (classification === null) {
+    findings.push("no-authoritative-admission-disposition");
+  }
   if (findings.length) return invalid(findings);
+  const proposedIdempotencyKey = sha256Digest({
+    purpose: "awesomeClaws.clawPortfolioProposedOperation.v1",
+    providerIssueRevision: input.providerIssue.revision,
+    portfolioRevision: input.portfolio.revision,
+    admissionDigest: sha256Digest(input.admission),
+    continuationDigest: sha256Digest(input.continuation),
+    classification,
+    capacityEnvelope: {
+      ref: capacity.id,
+      amount: capacity.amount,
+      unit: capacity.unit,
+    },
+    requestedDemand: {
+      amount: proposedDemand,
+      unit: dispositionEvidence.proposedDemand.unit,
+    },
+    allocationResult: {
+      committedDemand,
+      totalDemand,
+      remainingAmount,
+      overCapacity,
+      conflictRefs,
+      allocation,
+    },
+  });
   const result = {
     schemaVersion: COMPOSITION_RESULT_VERSION,
     verdict: "IMPROVE_COMPOSE",
@@ -1666,31 +1737,12 @@ export async function composePortfolioPlan(
         committedDemand,
         proposedDemand,
         totalDemand,
-        remainingAmount: capacity.amount - totalDemand,
-        overCapacity: totalDemand > capacity.amount,
+        remainingAmount,
+        overCapacity,
         conflictRefs,
-        allocation: demandCanBeAllocated
-          ? {
-              state: "allocated",
-              allocatedAmount: proposedDemand,
-              blockedAmount: 0,
-              reason: null,
-            }
-          : {
-              state: "blocked",
-              allocatedAmount: 0,
-              blockedAmount: proposedDemand,
-              reason:
-                conflictRefs.length > 0
-                  ? "capacity-conflict"
-                  : "capacity-exceeded",
-            },
+        allocation,
         priorReceiptIds: input.continuation.priorReceiptIds,
-        proposedIdempotencyKey: sha256Digest({
-          issueRevision: input.providerIssue.revision,
-          classification,
-          continuation: input.continuation.id,
-        }),
+        proposedIdempotencyKey,
         externalReceiptRequired: true,
         reservationClaim: false,
         atomicMutationClaim: false,

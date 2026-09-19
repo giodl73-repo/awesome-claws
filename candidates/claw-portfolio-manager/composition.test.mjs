@@ -657,6 +657,23 @@ test("authenticated owner evidence derives every admission disposition", async (
     false,
   );
 
+  const unresolved = authenticatedFixture(({ input: value }) => {
+    value.admission.compositionContract = null;
+  });
+  const unresolvedResult = await composePortfolioPlan(
+    unresolved.input,
+    unresolved.trust,
+    unresolved.trustPin,
+    { asOf: evaluationTime },
+  );
+  assert.equal(unresolvedResult.verdict, "INVALID");
+  assert.ok(
+    unresolvedResult.findings.includes(
+      "no-authoritative-admission-disposition",
+    ),
+  );
+  assert.equal(unresolvedResult.classification, undefined);
+
   const incompleteOwnerSet = authenticatedFixture(({ input: value }) => {
     value.admission.dispositionEvidence.requiredOwnerIds =
       value.admission.dispositionEvidence.requiredOwnerIds.slice(1);
@@ -962,6 +979,22 @@ test("source, provider, proposal, and package substitutions fail closed", async 
   const packageChanged = clone();
   packageChanged.packageManifest.files[0].digest = `sha256:${"0".repeat(64)}`;
   assert.equal((await compose(packageChanged)).verdict, "INVALID");
+
+  const preCaptureAdmission = authenticatedFixture(({ input: value }) => {
+    value.admission.decidedAt = "2026-09-17T16:59:59Z";
+  });
+  const preCaptureAdmissionResult = await composePortfolioPlan(
+    preCaptureAdmission.input,
+    preCaptureAdmission.trust,
+    preCaptureAdmission.trustPin,
+    { asOf: evaluationTime },
+  );
+  assert.equal(preCaptureAdmissionResult.verdict, "INVALID");
+  assert.ok(
+    preCaptureAdmissionResult.findings.includes(
+      "invalid-admission-chronology",
+    ),
+  );
 });
 
 test("provider body reconstruction rejects unknown sensitive fields without echo", async () => {
@@ -979,6 +1012,56 @@ test("provider body reconstruction rejects unknown sensitive fields without echo
   assert.equal(JSON.stringify(result).includes("DO_NOT_ECHO"), false);
   assert.equal(
     JSON.stringify(result).includes("sensitiveEmployeeRecord"),
+    false,
+  );
+
+  const duplicateRequest = authenticatedFixture(
+    ({ input: value }) => {
+      value.idempotencyReceipts = [];
+      value.continuation.priorReceiptIds = [];
+      value.usageEvidence = null;
+    },
+    ({ input: value, providerBody }) => {
+      const duplicateBody = Buffer.from(
+        `{"evidenceRefs":${canonicalJson(providerBody.evidenceRefs)},"proposalDigest":${canonicalJson(providerBody.proposalDigest)},"request":"DO_NOT_ECHO","request":${canonicalJson(providerBody.request)}}`,
+        "utf8",
+      );
+      Object.assign(value.providerIssue.body, {
+        byteLength: duplicateBody.length,
+        digest: digestBytes(duplicateBody),
+        contentBase64: duplicateBody.toString("base64"),
+      });
+      value.providerIssue.ownerContentMapping.replacementDigest = sha256Digest({
+        titleDigest: value.providerIssue.title.digest,
+        bodyDigest: value.providerIssue.body.digest,
+      });
+      value.providerIssue.revision = providerRevision(value.providerIssue);
+      value.providerIssue.completenessRoot = sha256Digest({
+        id: value.providerIssue.id,
+        revision: value.providerIssue.revision,
+      });
+      value.admission.issueRevision = value.providerIssue.revision;
+    },
+  );
+  assert.match(
+    Buffer.from(
+      duplicateRequest.input.providerIssue.body.contentBase64,
+      "base64",
+    ).toString("utf8"),
+    /DO_NOT_ECHO/u,
+  );
+  const duplicateRequestResult = await composePortfolioPlan(
+    duplicateRequest.input,
+    duplicateRequest.trust,
+    duplicateRequest.trustPin,
+    { asOf: evaluationTime },
+  );
+  assert.equal(duplicateRequestResult.verdict, "INVALID");
+  assert.ok(
+    duplicateRequestResult.findings.includes("invalid-provider-request"),
+  );
+  assert.equal(
+    JSON.stringify(duplicateRequestResult).includes("DO_NOT_ECHO"),
     false,
   );
 });
@@ -1006,37 +1089,61 @@ test("continuation and external receipts are exact without atomic mutation claim
     "conflict-engineering-capacity",
   ]);
 
-  const resolvedConflict = authenticatedFixture(({ input: value }) => {
-    value.portfolio.capacityEnvelopeRef = "capacity-product";
-    value.admission.dispositionEvidence.proposedDemand = {
-      capacityEnvelopeRef: "capacity-product",
-      amount: 4,
-      unit: "person-weeks",
-    };
-  });
-  const resolvedConflictResult = await composePortfolioPlan(
-    resolvedConflict.input,
-    resolvedConflict.trust,
-    resolvedConflict.trustPin,
-    { asOf: evaluationTime },
-  );
-  assert.equal(
-    resolvedConflictResult.verdict,
-    "IMPROVE_COMPOSE",
-    JSON.stringify(resolvedConflictResult),
-  );
+  const productCapacityResults = [];
+  for (const amount of [4, 5]) {
+    const productCapacity = authenticatedFixture(({ input: value }) => {
+      value.portfolio.capacityEnvelopeRef = "capacity-product";
+      value.admission.dispositionEvidence.proposedDemand = {
+        capacityEnvelopeRef: "capacity-product",
+        amount,
+        unit: "person-weeks",
+      };
+    });
+    const productCapacityResult = await composePortfolioPlan(
+      productCapacity.input,
+      productCapacity.trust,
+      productCapacity.trustPin,
+      { asOf: evaluationTime },
+    );
+    assert.equal(
+      productCapacityResult.verdict,
+      "IMPROVE_COMPOSE",
+      JSON.stringify(productCapacityResult),
+    );
+    assert.equal(productCapacityResult.classification, "COMPOSE");
+    assert.equal(
+      productCapacityResult.ports["stateless-budget-plan"].capacityEnvelopeRef,
+      "capacity-product",
+    );
+    assert.deepEqual(
+      productCapacityResult.ports["stateless-budget-plan"].conflictRefs,
+      [],
+    );
+    productCapacityResults.push(productCapacityResult);
+  }
   assert.deepEqual(
-    resolvedConflictResult.ports["stateless-budget-plan"].conflictRefs,
-    [],
-  );
-  assert.deepEqual(
-    resolvedConflictResult.ports["stateless-budget-plan"].allocation,
+    productCapacityResults[0].ports["stateless-budget-plan"].allocation,
     {
       state: "allocated",
       allocatedAmount: 4,
       blockedAmount: 0,
       reason: null,
     },
+  );
+  assert.deepEqual(
+    productCapacityResults[1].ports["stateless-budget-plan"].allocation,
+    {
+      state: "blocked",
+      allocatedAmount: 0,
+      blockedAmount: 5,
+      reason: "capacity-exceeded",
+    },
+  );
+  assert.notEqual(
+    productCapacityResults[0].ports["stateless-budget-plan"]
+      .proposedIdempotencyKey,
+    productCapacityResults[1].ports["stateless-budget-plan"]
+      .proposedIdempotencyKey,
   );
 
   const missingReceipt = clone();

@@ -55,3 +55,10 @@ Provider and admission evidence references are non-authoritative pointers.
 `catalog-maintainer` trust domain. Catalog comparisons are recomputed from the
 bound catalog bytes, so an exact operating-contract match with contradictory
 comparison evidence fails closed instead of yielding `NEW`.
+
+Provider request bytes must be the canonical serialization of the validated
+minimized body; alternate encodings and duplicate JSON keys fail closed. The
+stateless budget port has a stable composition extension identity independent
+of the selected capacity envelope, while its idempotency key binds the complete
+signed admission, continuation, portfolio, requested demand, envelope, and
+allocation result.

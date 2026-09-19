@@ -160,7 +160,7 @@
       "continuationCheckpointRef": "continuation-portfolio-composition",
       "mode": "manage",
       "owner": "repository-operations-manager",
-      "portfolioRevision": "sha256:b84f734ef86a5992bb07896ecaad2bfa963a9e4bd2fe758521941cae1623c9f1",
+      "portfolioRevision": "sha256:9f99b970d48a42188d97a220cdf374cfce77d6dd248133d2c9e421f716eaf704",
       "predecessorCheckpointRef": "checkpoint-weekly-2026-09-13",
       "priorReceiptIds": [
         "receipt-issue-api"
@@ -169,11 +169,11 @@
       "signature": {
         "algorithm": "Ed25519",
         "keyId": "continuation-key",
-        "value": "7IFmnN4WpRFw1EcAfY+y1IKrkRqpj/8vQH9DHKZqDKQIHQPCO14DEbE9KgpwLMNNwuXriRNcq/+bmw3gocMrDQ=="
+        "value": "oQKSkmy5E8djVUONaklnZPK3W46fxBZKFdrRrtSC+hQ6orCCqvvUkQ4qWg8Ru8EuCc1PiBLVSEGR164QF3CIDQ=="
       },
       "signedAt": "2026-09-17T17:15:00Z",
       "signerRef": "portfolio-owner",
-      "sourceBindingsRoot": "sha256:640c8d3e2f555c1b427ede8613b753d68e63ad4ac3623eb9e5116afd7520e3b9",
+      "sourceBindingsRoot": "sha256:7cff6b0d77baaea6a3f222abc0de7760199d3429205f772b10c13583fe680330",
       "validUntil": "2026-09-18T17:15:00Z"
     },
     "proposal-owner-handoff": {
@@ -235,7 +235,7 @@
       "fileCount": 106,
       "manifestRef": "composition-package-manifest",
       "owner": "catalog-quality",
-      "root": "sha256:acb05b279c183314ecafd202cba7a7e329bfa3a0cc30166daebcb1587c5a0077"
+      "root": "sha256:b2bbe3c60b095ed6cc9ee77ae55d64137c578a1641a0c7b952be626bab27304b"
     },
     "stateless-budget-plan": {
       "allocation": {
@@ -260,7 +260,7 @@
         "receipt-issue-api"
       ],
       "proposedDemand": 4,
-      "proposedIdempotencyKey": "sha256:137775685a2bacad89178c5d22a30676c412cd90cdeaf131aeac9bca80b60aa7",
+      "proposedIdempotencyKey": "sha256:5cf4db8d61f5472b5a5b46adcde3ba260850bfa8e47ca8e2b1411f93f1f11653",
       "remainingAmount": -8,
       "reservationClaim": false,
       "totalDemand": 28
@@ -423,7 +423,7 @@
     }
   ],
   "schemaVersion": "awesomeClaws.clawPortfolioCompositionResult.v1",
-  "sourceBindingsRoot": "sha256:640c8d3e2f555c1b427ede8613b753d68e63ad4ac3623eb9e5116afd7520e3b9",
+  "sourceBindingsRoot": "sha256:7cff6b0d77baaea6a3f222abc0de7760199d3429205f772b10c13583fe680330",
   "standaloneCandidateAccepted": false,
   "verdict": "IMPROVE_COMPOSE"
 }
