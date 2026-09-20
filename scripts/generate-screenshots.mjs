@@ -2,6 +2,7 @@ import { access, copyFile, mkdir, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { tsImport } from "tsx/esm/api";
 import { readExperienceCases } from "./experience-cases.mjs";
 import { readCatalog, root } from "./openclaw-proof-lib.mjs";
 
@@ -41,7 +42,45 @@ async function findInstalledBrowser(chromium) {
 
 async function loadControlUiHelpers(openClawRoot) {
   const helperPath = join(openClawRoot, "ui", "src", "test-helpers", "control-ui-e2e.ts");
-  return import(pathToFileURL(helperPath).href);
+  const sandboxHostPath = join(openClawRoot, "src", "agents", "sandbox-host.ts");
+  const sandboxServerPath = join(
+    openClawRoot,
+    "src",
+    "gateway",
+    "mcp-app-sandbox-http.ts",
+  );
+  const importOptions = {
+    parentURL: import.meta.url,
+    tsconfig: join(openClawRoot, "tsconfig.json"),
+  };
+  const [helpers, sandboxHost, sandboxServer] = await Promise.all([
+    tsImport(pathToFileURL(helperPath).href, importOptions),
+    tsImport(pathToFileURL(sandboxHostPath).href, importOptions),
+    tsImport(pathToFileURL(sandboxServerPath).href, importOptions),
+  ]);
+  return { ...helpers, ...sandboxHost, ...sandboxServer };
+}
+
+async function listenOnLoopback(server) {
+  await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      server.off("error", reject);
+      resolve();
+    });
+  });
+  const address = server.address();
+  if (!address || typeof address === "string") {
+    throw new Error("Canvas sandbox host did not bind a TCP port.");
+  }
+  return address.port;
+}
+
+async function closeServer(server) {
+  server.closeAllConnections();
+  await new Promise((resolve, reject) => {
+    server.close((error) => (error ? reject(error) : resolve()));
+  });
 }
 
 function reportMarkdown(entry, demo) {
@@ -113,11 +152,26 @@ async function buildSession(entry, experience) {
 async function waitForVisualResult(page, entry, session) {
   await page.getByText(entry.example.request, { exact: false }).first().waitFor({ timeout: 60_000 });
   if (session.assetUrl) {
-    await page.locator('.chat-tool-card__preview[data-kind="canvas"]').waitFor({
+    const preview = page.locator('.chat-tool-card__preview[data-kind="canvas"]');
+    await preview.waitFor({
       state: "visible",
       timeout: 60_000,
     });
-    await page.waitForTimeout(500);
+    const previewFrame = preview.locator(".chat-tool-card__preview-frame").first();
+    await previewFrame.waitFor({
+      state: "attached",
+      timeout: 60_000,
+    });
+    const content = previewFrame.contentFrame();
+    await content.locator("body").waitFor({ state: "visible", timeout: 60_000 });
+    await content.locator("body").evaluate(async () => {
+      if (document.readyState !== "complete") {
+        await new Promise((resolve) =>
+          window.addEventListener("load", resolve, { once: true }),
+        );
+      }
+      await document.fonts.ready;
+    });
   } else {
     await page.getByText("Next artifact:", { exact: false }).waitFor({ timeout: 60_000 });
   }
@@ -146,12 +200,17 @@ const openClawRoot = resolveOpenClawRoot();
 const { chromium } = loadPlaywright();
 const {
   controlUiSessionUrl,
+  buildSandboxHostPath,
+  createSandboxHostHttpServer,
   installMockGateway,
   startControlUiE2eServer,
 } = await loadControlUiHelpers(openClawRoot);
 const executablePath = await findInstalledBrowser(chromium);
 const screenshotRoot = join(root, "screenshots");
 await mkdir(screenshotRoot, { recursive: true });
+const sandboxServer = createSandboxHostHttpServer();
+const sandboxPort = await listenOnLoopback(sandboxServer);
+const sandboxUrl = buildSandboxHostPath({ blockDescendantFrames: true });
 const server = await startControlUiE2eServer({
   version: "2026.7.31",
   commit: "awesome-claws-control-ui-proof",
@@ -175,6 +234,8 @@ try {
     const context = await browser.newContext({
       colorScheme: "light",
       deviceScaleFactor: 1,
+      permissions: ["local-network-access"],
+      serviceWorkers: "block",
       viewport: VIEWPORT,
     });
     try {
@@ -193,6 +254,15 @@ try {
         assistantName: entry.name,
         defaultAgentId: entry.id,
         historyMessages: session.historyMessages,
+        methodResponses: session.asset
+          ? {
+              "canvas.document.view": {
+                html: session.asset,
+                sandboxPort,
+                sandboxUrl,
+              },
+            }
+          : {},
         sessionKey,
         workspace: `/home/openclaw/.openclaw/workspace-${entry.id}`,
       });
@@ -213,6 +283,7 @@ try {
   }
 } finally {
   await browser.close();
+  await closeServer(sandboxServer);
   await server.close();
 }
 
