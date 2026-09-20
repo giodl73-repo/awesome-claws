@@ -164,6 +164,11 @@
         "difference": "Enterprise License Entitlement Reconciler determines organization, agreement, SKU, assignment, and seat-position states under license rights and does not preserve native security-alert identity. Security Alert Review Reconciler instead requires one authorized disposition or exact non-decision per source/native-alert/revision key and forbids license, SIEM, correlation, incident, ticket, containment, and risk authority."
       },
       {
+        "id": "problem-known-error-coordinator",
+        "overlap": "Both preserve exact owner-authenticated source identity, immutable revisions, typed human decisions, chronology, unresolved states, and a bounded handoff without incident or remediation authority.",
+        "difference": "Problem and Known-Error Coordinator follows an owner-declared cross-incident problem through hypotheses, tests, workaround, known-error state, change, and recurrence. This Claw closes one complete native-alert snapshot with one revision-exact disposition or non-decision per alert."
+      },
+      {
         "id": "business-continuity-program-manager",
         "overlap": "Both are X4 governance workflows with complete owner-controlled universes, revision-bound policy or requirements, named-human authority, controlled evidence, exact blockers, non-claims, workspace-local validation, and owner-visible handoffs.",
         "difference": "Business Continuity Program Manager maintains recurring process, BIA, RTO/RPO, dependency, continuity-plan, exercise, finding, corrective-action, exception, and recertification state. Security Alert Review Reconciler closes one authenticated native-alert snapshot with revision-exact dispositions and non-decisions and cannot declare incidents, invoke plans, mutate alerts, create tickets, or accept risk."

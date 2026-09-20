@@ -2821,6 +2821,8 @@ test("only monitor convergence failures receive a cleanup recovery pass", () => 
     isRetryableMonitorCleanupFailure(new Error("artifact validation failed")),
     false,
   );
+});
+
 test("runtime evidence binds the procure-to-pay cutoff and owner trust policy", async () => {
   const id = "procure-to-pay-three-way-match-exception-reconciler";
   const { manifest } = await oneClawManifest(id);

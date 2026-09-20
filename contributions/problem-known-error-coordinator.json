@@ -184,6 +184,11 @@
         "difference": "Quality Assurance Lead owns release test coverage. This proposal binds selected QA runs to problem-level hypothesis proposal and disposition revisions without acquiring QA authority."
       },
       {
+        "id": "security-alert-review-reconciler",
+        "overlap": "Both reconcile an exact owner-declared evidence universe, bind revisions and named-human authority, preserve unresolved states, and prohibit incident declaration or remediation claims.",
+        "difference": "Security Alert Review Reconciler closes one native-alert snapshot against supplied security policy and disposition evidence. This Claw correlates multiple owner-declared incidents through hypotheses, tests, workaround and known-error state, an executed change, and later recurrence."
+      },
+      {
         "id": "change-control-operator",
         "overlap": "Both bind plans and execution to exact digests, owners, chronology, verification, and rollback evidence.",
         "difference": "Change Control owns an approved plan and execution. This proposal only indexes its complete artifact and admits recurrence after finalized execution and a later incident-membership declaration."

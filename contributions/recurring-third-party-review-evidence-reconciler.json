@@ -204,6 +204,11 @@
         "difference": "Business Continuity Program Manager owns processes, BIAs, plans, exercises, and recertifications; it cannot represent vendor-service applicability cells without replacing its authoritative universe."
       },
       {
+        "id": "security-alert-review-reconciler",
+        "overlap": "Both authenticate a complete owner-declared review universe, bind source bytes and policy revisions, preserve typed human decisions and non-decisions, and prohibit risk acceptance or remediation claims.",
+        "difference": "Security Alert Review Reconciler closes one native-alert snapshot against security policy and disposition evidence. This Claw governs recurring vendor-service requirement cells, evidence freshness, predecessor decisions, expiry-driven reopening, remediation receipts, and exceptions."
+      },
+      {
         "id": "customer-success-program-manager",
         "overlap": "Both preserve evidence lineage, caller-time lifecycle state, owned follow-up work, explicit human handoffs, and renewal non-claims.",
         "difference": "Customer Success Program Manager coordinates account health, outcomes, action plans, and renewal readiness; this Claw instead validates signed vendor-service review graphs and forbids health scoring, recommendations, supplier contact, and renewal action."

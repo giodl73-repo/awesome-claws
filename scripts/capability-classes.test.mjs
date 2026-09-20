@@ -31,7 +31,7 @@ test("every declared capability class has a valid installed-proof representative
     Object.fromEntries(matrix.classes.map((item) => [item.id, item.representative])),
     capabilityRepresentatives,
   );
-  assert.equal(matrix.classes.find((item) => item.id === "visual")?.memberCount, 36);
+  assert.equal(matrix.classes.find((item) => item.id === "visual")?.memberCount, 39);
   assert.deepEqual(
     matrix.representatives.find((item) => item.id === "software-maintainer")?.classes,
     ["profile-extension", "oauth-mcp"],
