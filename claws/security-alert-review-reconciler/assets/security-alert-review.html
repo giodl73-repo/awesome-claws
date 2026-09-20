@@ -1,0 +1,49 @@
+<style>
+.sar{--ink:#182033;--muted:#687086;--line:#d9deea;--navy:#24355b;--cyan:#137c8b;--cyan-bg:#e7f7f8;--green:#18794e;--green-bg:#e9f8f0;--amber:#8a5b00;--amber-bg:#fff5d8;--violet:#6554c0;--violet-bg:#f0edff;font:15px/1.45 "Segoe UI",system-ui,sans-serif;color:var(--ink);background:#f7f8fc;border:1px solid var(--line);border-radius:12px;overflow:hidden}.sar *{box-sizing:border-box}.sar header{padding:22px 24px;background:linear-gradient(125deg,#24355b,#137c8b);color:#fff}.sar h1{font-size:25px;line-height:1.2;margin:0}.sar header p{margin:7px 0 0;color:#e8f8fa}.sar .scope{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.sar .scope span{padding:5px 9px;border:1px solid rgba(255,255,255,.34);border-radius:999px;background:rgba(255,255,255,.11);font:12px ui-monospace,monospace}.sar main{padding:20px}.sar .state{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:14px 16px;border-left:5px solid var(--green);background:var(--green-bg);border-radius:7px;margin-bottom:16px}.sar .state strong{display:block;font-size:17px}.sar .state span{color:var(--green);font-weight:700}.sar .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.sar .card,.sar .panel{background:#fff;border:1px solid var(--line);border-radius:8px}.sar .card{padding:15px}.sar .label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}.sar .value{display:block;font-size:24px;font-weight:750;margin:5px 0 2px}.sar .good{color:var(--green)}.sar .warn{color:var(--amber)}.sar .sub{color:var(--muted);font-size:13px}.sar .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px;margin-top:14px}.sar .panel{padding:17px}.sar h2{font-size:17px;margin:0 0 12px}.sar .row{display:grid;grid-template-columns:1fr .72fr .8fr;gap:10px;padding:10px 0;border-top:1px solid var(--line);align-items:center}.sar .row:first-of-type{border-top:0;padding-top:0}.sar .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 7px;border-radius:999px}.sar .badge.ok{color:var(--green);background:var(--green-bg)}.sar .badge.wait{color:var(--amber);background:var(--amber-bg)}.sar .badge.info{color:var(--violet);background:var(--violet-bg)}.sar .owner{padding:10px 0;border-top:1px solid var(--line)}.sar .owner:first-of-type{border-top:0}.sar .owner span{display:block;color:var(--muted);font-size:13px;overflow-wrap:anywhere}.sar .authority{margin-top:14px;padding:14px 16px;background:var(--cyan-bg);border:1px solid #bfe3e7;border-radius:8px}.sar .authority strong{color:var(--navy)}.sar .authority p{margin:5px 0 0;color:var(--muted)}@media(max-width:760px){.sar header,.sar main{padding:16px}.sar .metrics{grid-template-columns:1fr 1fr}.sar .grid{grid-template-columns:1fr}.sar .state{align-items:flex-start;flex-direction:column}}@media(max-width:430px){.sar .metrics{grid-template-columns:1fr}.sar .row{grid-template-columns:1fr}.sar .scope span{max-width:100%;overflow-wrap:anywhere}}
+</style>
+<section class="sar" aria-labelledby="sar-title">
+  <header>
+    <h1 id="sar-title">Owner alert review</h1>
+    <p>Complete 16 Sep snapshot · native identities preserved · owner review only</p>
+    <div class="scope" aria-label="Exact review scope">
+      <span>export-42</span><span>8 native alert revisions</span><span>signed source manifest</span><span>current + historical policy</span>
+    </div>
+  </header>
+  <main>
+    <section class="state" aria-label="Review state">
+      <div><strong>Complete and covered</strong><span>8 / 8 alert keys reviewed</span></div>
+      <div class="label">No source mutation</div>
+    </section>
+    <section class="metrics" aria-label="Review counts">
+      <article class="card"><span class="label">Human dispositions</span><strong class="value good">3</strong><span class="sub">False positive · duplicate · owner review</span></article>
+      <article class="card"><span class="label">Exact non-decisions</span><strong class="value">5</strong><span class="sub">Muted · suppressed · unknown · self-attempt · revised</span></article>
+      <article class="card"><span class="label">Source trust</span><strong class="value good">3 / 3</strong><span class="sub">Exact bytes and signed manifest</span></article>
+      <article class="card"><span class="label">Prior revisions</span><strong class="value warn">1</strong><span class="sub">Invalidated, never replayed</span></article>
+    </section>
+    <section class="grid">
+      <article class="panel">
+        <h2>Native alert coverage</h2>
+        <div class="row"><div><strong>Code 101</strong><br><span class="sub">analysis-3 · open</span></div><span>Riley Chen</span><span class="badge ok">false positive</span></div>
+        <div class="row"><div><strong>Code 102</strong><br><span class="sub">analysis-5 · open</span></div><span>owner group</span><span class="badge ok">duplicate</span></div>
+        <div class="row"><div><strong>Secret 77</strong><br><span class="sub">occurrence-1 · muted</span></div><span>source state</span><span class="badge info">non-decision</span></div>
+        <div class="row"><div><strong>Dependabot 55</strong><br><span class="sub">advisory-4 · suppressed</span></div><span>source state</span><span class="badge info">non-decision</span></div>
+        <div class="row"><div><strong>Code 104</strong><br><span class="sub">analysis-1 · open</span></div><span>unknown asset</span><span class="badge info">non-decision</span></div>
+        <div class="row"><div><strong>Code 105</strong><br><span class="sub">analysis-1 · open</span></div><span>self-suppression attempt</span><span class="badge info">non-decision</span></div>
+        <div class="row"><div><strong>Code 106</strong><br><span class="sub">analysis-2 · open</span></div><span>prior revision invalidated</span><span class="badge info">non-decision</span></div>
+        <div class="row"><div><strong>Code 107</strong><br><span class="sub">analysis-1 · open</span></div><span>Alex Morgan</span><span class="badge wait">owner review</span></div>
+      </article>
+      <aside class="panel">
+        <h2>Trust and policy</h2>
+        <div class="owner"><strong>Owner source manifest</strong><span>Ed25519 SPKI verified · 3 source byte sets</span></div>
+        <div class="owner"><strong>Signing key</strong><span>security-alert-owner-key-1</span></div>
+        <div class="owner"><strong>Source versions</strong><span>github/code-scanning, github/dependabot, github/secret-scanning · export-42</span></div>
+        <div class="owner"><strong>Completeness root</strong><span>sha256:652a61009ac87b2a2b2bb82bc246e0d8bc9ca15829a00a30d63e734724eeaeb1</span></div>
+        <div class="owner"><strong>Current policy</strong><span>policy-2026-09-16-2</span></div>
+        <div class="owner"><strong>Historical policy</strong><span>policy-2026-09-15-1 retained for prior decision</span></div>
+        <div class="owner"><strong>Public context</strong><span>Query-free docs.github.com records · no authority</span></div>
+        <div class="owner"><strong>Incident handoff</strong><span>Requested owner review · no incident declared</span></div>
+      </aside>
+    </section>
+    <section class="authority"><strong>Authority remains with owners</strong><p>No SIEM query, correlation or severity inference, source suppression or closure, containment, incident declaration, ticket mutation, risk acceptance, compliance claim, remediation claim, or security claim occurred.</p></section>
+  </main>
+</section>

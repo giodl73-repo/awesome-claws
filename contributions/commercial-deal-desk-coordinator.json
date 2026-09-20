@@ -154,6 +154,11 @@
         "difference": "Partner Business Manager reconciles a multi-domain joint business plan across partner capabilities, co-sell references, bilateral commitments, incentives, actions, risks, and QBR decisions. Commercial Deal Desk Coordinator instead proves one seller quote revision across line configuration, price arithmetic, discount and margin thresholds, licensing, legal deviations, and exact exception approvals immediately before order review."
       },
       {
+        "id": "procure-to-pay-three-way-match-exception-reconciler",
+        "overlap": "Both bind one immutable commercial revision, preserve exact line-level arithmetic and source evidence, require current named-human authority, and block downstream action when exceptions or approvals are incomplete.",
+        "difference": "Procure-to-Pay Three-Way Match Exception Reconciler is buyer-side post-order reconciliation across purchase orders, receipts, invoices, returns, and credits. This Claw is seller-side pre-order review of quote configuration, pricing, margin, licensing, legal deviations, and exception approvals."
+      },
+      {
         "id": "sales-operations",
         "overlap": "Both serve seller-side operations, consume opportunity evidence, surface dependencies and owner follow-up, and prohibit silent CRM or customer-commitment changes.",
         "difference": "Sales Operations reviews pipeline cohorts, stages, forecast movement, coverage, and stale records. This Claw handles one immutable quote revision, exact line arithmetic and policy bindings, exception totality, independent approvals, and order-readiness rather than pipeline or forecast analysis."

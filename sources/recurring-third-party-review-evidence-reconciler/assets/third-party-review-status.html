@@ -1,0 +1,105 @@
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+.tpr{background:var(--cp-bg);color:var(--cp-text);font:15px/1.45 "Segoe UI",Aptos,Calibri,-apple-system,BlinkMacSystemFont,sans-serif;padding:24px}.tpr *{box-sizing:border-box}.tpr header{align-items:flex-start;display:flex;gap:20px;justify-content:space-between}.tpr h1{font-size:28px;line-height:1.15;margin:0}.tpr h2{font-size:18px;margin:0 0 12px}.tpr .sub{color:var(--cp-text-muted);margin:6px 0 0}.tpr .state{background:var(--cp-accent-soft);border:1px solid var(--cp-accent);border-radius:.625rem;color:var(--cp-accent);font-weight:800;padding:10px 14px}.tpr .metrics{display:grid;gap:12px;grid-template-columns:repeat(4,1fr);margin:20px 0}.tpr article,.tpr section{background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:16px;box-shadow:0 0 2px var(--cp-border),0 1px 2px var(--cp-border)}.tpr article{padding:16px}.tpr small{color:var(--cp-text-muted);display:block;font-weight:800;letter-spacing:.04em}.tpr strong{display:block;font-size:26px;margin-top:4px}.tpr .grid{display:grid;gap:16px;grid-template-columns:1.4fr .6fr}.tpr section{padding:18px}.tpr table{border-collapse:collapse;width:100%}.tpr th,.tpr td{border-bottom:1px solid var(--cp-border);padding:9px 7px;text-align:left}.tpr th{color:var(--cp-text-muted);font-size:11px;text-transform:uppercase}.tpr .expired{color:var(--cp-danger);font-weight:800}.tpr .current{color:var(--cp-success);font-weight:800}.tpr .exception{color:var(--cp-warning);font-weight:800}.tpr .chip{background:var(--cp-surface-soft);border:1px solid var(--cp-border);border-radius:999px;display:inline-block;font-size:12px;font-weight:700;padding:3px 9px}.tpr ul{margin:0;padding-left:20px}.tpr li+li{margin-top:9px}.tpr footer{background:var(--cp-bg-elevated);border:1px solid var(--cp-border-strong);border-radius:.625rem;margin-top:16px;padding:16px}.tpr footer b{color:var(--cp-accent)}.tpr code{font-family:Consolas,"Courier New",Courier,monospace}@media(max-width:760px){.tpr{padding:14px}.tpr header,.tpr .grid{display:block}.tpr .state,.tpr section+section{margin-top:12px}.tpr .metrics{grid-template-columns:1fr 1fr}.tpr table,.tpr tbody,.tpr tr,.tpr td{display:block;width:100%}.tpr thead{display:none}.tpr tr{border-bottom:1px solid var(--cp-border);padding:8px 0}.tpr td{border:0;padding:4px 0}}
+</style>
+<main class="tpr" aria-labelledby="tpr-title">
+  <header>
+    <div>
+      <h1 id="tpr-title">Recurring third-party review</h1>
+      <p class="sub">Q3 2026 · Alpine Support and BrightPay Payroll · evaluated 16 Sep 2026 20:00 UTC</p>
+    </div>
+    <div class="state">Blocked · owner action required</div>
+  </header>
+  <div class="metrics" aria-label="Review totals">
+    <article><small>DECLARED CELLS</small><strong>6 / 6</strong><span>exact coverage</span></article>
+    <article><small>CURRENT EVIDENCE</small><strong>13</strong><span>signed receipts</span></article>
+    <article><small>EXPIRED</small><strong>1</strong><span>assurance report</span></article>
+    <article><small>REOPENED</small><strong>1</strong><span>owned remediation</span></article>
+  </div>
+  <div class="grid">
+    <section aria-labelledby="cells-title">
+      <h2 id="cells-title">Owner-declared review cells</h2>
+      <table>
+        <thead><tr><th>Service</th><th>Requirement</th><th>Decision</th><th>Evidence</th></tr></thead>
+        <tbody>
+          <tr><td>Alpine Support</td><td>Assurance report</td><td>Reopened</td><td class="expired">Expired · remediation open</td></tr>
+          <tr><td>Alpine Support</td><td>Security questionnaire</td><td>Confirmed</td><td class="current">Current</td></tr>
+          <tr><td>Alpine Support</td><td>Subprocessor disclosure</td><td>Confirmed</td><td class="current">Current</td></tr>
+          <tr><td>BrightPay Payroll</td><td>Security questionnaire</td><td class="exception">Exception recorded</td><td class="current">Current external approval</td></tr>
+          <tr><td>BrightPay Payroll</td><td>Subprocessor disclosure</td><td>Confirmed</td><td class="current">Current</td></tr>
+          <tr><td>BrightPay Payroll</td><td>Continuity test</td><td>Confirmed</td><td class="current">Current</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section aria-labelledby="blockers-title">
+      <h2 id="blockers-title">Exact blockers and trust</h2>
+      <ul>
+        <li><span class="chip">evidence-expired</span> Alpine assurance</li>
+        <li><span class="chip">remediation-open</span> named human owner</li>
+        <li><span class="chip">unauthorized-attempt</span> preserved, not accepted</li>
+        <li><span class="chip">6 keys</span> disjoint owner trust</li>
+        <li><span class="chip">14 receipts</span> source bytes verified</li>
+      </ul>
+    </section>
+  </div>
+  <footer><b>Authority boundary:</b> no contract or requirement interpretation, source-evidence production, scoring, supplier selection or contact, certification, risk acceptance, exception approval, remediation execution, onboarding, renewal, termination, purchase, or source-system mutation. Review the same evidence in <code>outputs/third-party-review-handoff.md</code>.</footer>
+</main>

@@ -14,9 +14,23 @@ import { financialAccountReconciliationFindings } from "./financial-account-reco
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 import { learningProgramFindings } from "./learning-program-manager.mjs";
 import { partnerBusinessPlanFindings } from "./partner-business-manager.mjs";
+import { ownerTrustPolicy as procureToPayOwnerTrustPolicy } from "./procure-to-pay-three-way-match-exception-reconciler-fixtures.mjs";
+import { procureToPayThreeWayMatchFindings } from "./procure-to-pay-three-way-match-exception-reconciler.mjs";
+import {
+  problemKnownErrorFindings,
+  PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS,
+} from "./problem-known-error-coordinator.mjs";
 import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
 import { repositoryComplianceProgramFindings } from "./repository-compliance-program-manager.mjs";
+import {
+  recurringThirdPartyReviewFindings,
+  RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS,
+} from "./recurring-third-party-review-evidence-reconciler.mjs";
 import { solutionArchitectureDecisionFindings } from "./solution-architecture-decision-advisor.mjs";
+import {
+  securityAlertReviewArtifactFindings,
+  SECURITY_ALERT_REVIEW_EXAMPLE_PROFILE_OPTIONS,
+} from "./security-alert-review-reconciler.mjs";
 import { supplierCapacityAssuranceFindings } from "./supplier-capacity-assurance-manager.mjs";
 import { tlsCertificateRotationVerificationFindings } from "./tls-certificate-rotation-verification-coordinator.mjs";
 import { workforcePlanningFindings } from "./workforce-planning-partner.mjs";
@@ -78,7 +92,7 @@ function hasUnsafePublicHost(hostname) {
   return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
 }
 
-function isCredentialFreePublicHttpsReference(reference) {
+export function isCredentialFreePublicHttpsReference(reference) {
   const unsafeQueryKeys =
     /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
   const unsafeQuery =
@@ -4411,7 +4425,7 @@ function civicDataFindings(value) {
   return findings;
 }
 
-function changeControlFindings(value) {
+export function changeControlFindings(value) {
   const stepIds = value.plan.steps.map((item) => item.id);
   const steps = new Set(stepIds);
   const findings = [
@@ -40267,7 +40281,7 @@ function researchSynthesisFindings(value) {
   return findings;
 }
 
-function qualityAssuranceReleaseFindings(value) {
+export function qualityAssuranceReleaseFindings(value) {
   const findings = [];
   function toEpochMillis(text) {
     if (typeof text !== "string") return NaN;
@@ -45567,7 +45581,7 @@ function dataGovernanceAssessmentFindings(input) {
   return findings;
 }
 
-function incidentResponseFindings(input) {
+export function incidentResponseFindings(input) {
   const value = isRecord(input) ? input : {};
   const findings = [];
   const version2 = value.schemaVersion === "awesomeClaws.incidentResponse.v2";
@@ -53300,7 +53314,10 @@ const validators = {
   "product-manager": productFindings,
   "presentation-producer": presentationEvidenceManifestFindings,
   "privacy-request-coordinator": privacyRequestFindings,
+  "problem-known-error-coordinator": problemKnownErrorFindings,
   "procurement-evaluator": procurementEvaluationFindings,
+  "procure-to-pay-three-way-match-exception-reconciler":
+    procureToPayThreeWayMatchFindings,
   "purchase-researcher": purchaseResearchFindings,
   "public-safety-monitor": publicSafetyFindings,
   "quality-assurance-lead": qualityAssuranceReleaseFindings,
@@ -53308,6 +53325,8 @@ const validators = {
   "release-coordinator": releaseReadinessFindings,
   "repository-operations-manager": repositoryOperationsFindings,
   "repository-compliance-program-manager": repositoryComplianceProgramFindings,
+  "recurring-third-party-review-evidence-reconciler":
+    recurringThirdPartyReviewFindings,
   "records-retention-disposition-coordinator": retentionDispositionFindings,
   "infrastructure-drift-reconciliation-coordinator": infrastructureDriftFindings,
   "restaurant-venue-scout": restaurantVenueFindings,
@@ -53339,6 +53358,7 @@ const validators = {
   "work-chief-of-staff": workChiefOfStaffFindings,
   "workflow-operator": workflowExecutionReconciliationFindings,
   "workforce-planning-partner": workforcePlanningFindings,
+  "security-alert-review-reconciler": securityAlertReviewArtifactFindings,
 };
 
 const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
@@ -53359,6 +53379,8 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   "contract-obligation-tracker": Object.freeze({
     asOf: "2026-09-05T17:00:00Z",
   }),
+  "recurring-third-party-review-evidence-reconciler":
+    RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS,
   "enterprise-license-entitlement-reconciler": Object.freeze({
     asOf: "2026-09-03T18:00:00Z",
     licenseTrustRoot: Object.freeze({
@@ -53396,6 +53418,11 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   "partner-business-manager": Object.freeze({
     asOf: "2026-09-14T19:00:00Z",
   }),
+  "procure-to-pay-three-way-match-exception-reconciler": Object.freeze({
+    asOf: "2026-09-16T12:00:00Z",
+    cutoffAt: "2026-09-15T23:59:59Z",
+    ownerTrustPolicy: procureToPayOwnerTrustPolicy,
+  }),
   "supplier-capacity-assurance-manager": Object.freeze({
     asOf: "2026-09-14T18:00:00Z",
   }),
@@ -53408,12 +53435,17 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
   "repository-compliance-program-manager": Object.freeze({
     asOf: "2026-09-14T19:00:00Z",
   }),
+  "security-alert-review-reconciler":
+    SECURITY_ALERT_REVIEW_EXAMPLE_PROFILE_OPTIONS,
   "workforce-planning-partner": Object.freeze({
     asOf: "2026-09-14T17:00:00Z",
   }),
 });
 
 export function artifactSemanticValidationOptions(id) {
+  if (id === "problem-known-error-coordinator") {
+    return structuredClone(PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS);
+  }
   return structuredClone(DEFAULT_VALIDATION_OPTIONS[id] ?? {});
 }
 

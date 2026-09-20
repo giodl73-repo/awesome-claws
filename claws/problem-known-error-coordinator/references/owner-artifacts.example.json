@@ -1,0 +1,2621 @@
+{
+  "schemaVersion": "awesomeClaws.problemKnownErrorOwnerArtifacts.v1",
+  "incidentResponseArtifacts": [
+    {
+      "artifactRef": "controlled://incident-response/incident-inc-001",
+      "artifact": {
+        "schemaVersion": "awesomeClaws.incidentResponse.v2",
+        "incident": {
+          "id": "incident-inc-001",
+          "service": "checkout-platform",
+          "environment": "production",
+          "deploymentOrBuild": "checkout-api@2026.08.16.4",
+          "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+          "severity": "SEV-1",
+          "status": "recovering",
+          "startedAt": "2026-09-05T10:00:00Z",
+          "requestedAt": "2026-09-05T10:02:00Z"
+        },
+        "principals": [
+          {
+            "id": "principal-technical-dri-alex",
+            "name": "Alex Rivera",
+            "scopes": [
+              "technical-investigation",
+              "hypothesis-management",
+              "mitigation-proposals",
+              "technical-owner-coordination",
+              "execution-evidence-reconciliation",
+              "service-recovery-criteria"
+            ]
+          },
+          {
+            "id": "principal-incident-manager-riley",
+            "name": "Riley Chen",
+            "scopes": [
+              "incident-severity-state",
+              "incident-update-cadence",
+              "incident-decision-chronology",
+              "incident-action-loop",
+              "incident-escalation",
+              "incident-communication-approval",
+              "incident-shift-handoff",
+              "incident-closure-recommendation",
+              "incident-recovery-review",
+              "incident-command-review",
+              "communication-draft"
+            ]
+          },
+          {
+            "id": "principal-checkout-owner-priya",
+            "name": "Priya Desai",
+            "scopes": [
+              "owner-execution",
+              "compliance-obligation-owner"
+            ]
+          },
+          {
+            "id": "principal-recovery-verifier-jordan",
+            "name": "Jordan Blake",
+            "scopes": [
+              "recovery-verification"
+            ]
+          },
+          {
+            "id": "principal-communications-morgan",
+            "name": "Morgan Lee",
+            "scopes": [
+              "communication-draft"
+            ]
+          },
+          {
+            "id": "principal-incident-authority-casey",
+            "name": "Casey Nguyen",
+            "scopes": [
+              "incident-declaration-closure",
+              "independent-action-approval",
+              "independent-communication-approval",
+              "incident-command-review"
+            ]
+          }
+        ],
+        "roleAssignments": {
+          "technicalDri": {
+            "principalId": "principal-technical-dri-alex",
+            "responsibilities": [
+              "technical-investigation",
+              "hypothesis-management",
+              "mitigation-proposals",
+              "technical-owner-coordination",
+              "execution-evidence-reconciliation",
+              "service-recovery-criteria"
+            ]
+          },
+          "incidentManager": {
+            "principalId": "principal-incident-manager-riley",
+            "responsibilities": [
+              "incident-severity-state",
+              "incident-update-cadence",
+              "incident-decision-chronology",
+              "incident-action-loop",
+              "incident-escalation",
+              "incident-communication-approval",
+              "incident-shift-handoff",
+              "incident-closure-recommendation",
+              "incident-recovery-review"
+            ]
+          }
+        },
+        "services": [
+          {
+            "id": "service-checkout-api",
+            "name": "checkout-api",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "ownerId": "principal-checkout-owner-priya"
+          },
+          {
+            "id": "service-payment-orchestrator",
+            "name": "payment-orchestrator",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "ownerId": "principal-checkout-owner-priya"
+          }
+        ],
+        "signals": [
+          {
+            "id": "signal-checkout-errors",
+            "serviceRef": "service-checkout-api",
+            "severity": "high",
+            "state": "resolved",
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-checkout-recovery"
+            ],
+            "observedAt": "2026-09-05T10:03:00Z",
+            "resolvedAt": "2026-09-05T10:50:00Z"
+          },
+          {
+            "id": "signal-payment-latency",
+            "serviceRef": "service-payment-orchestrator",
+            "severity": "medium",
+            "state": "monitoring",
+            "evidenceRefs": [
+              "evidence-payment-signal"
+            ],
+            "observedAt": "2026-09-05T10:05:00Z"
+          }
+        ],
+        "evidence": [
+          {
+            "id": "evidence-checkout-alert",
+            "kind": "signal",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-checkout-api",
+            "signalRef": "signal-checkout-errors",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "outcome": "observed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-001/checkout-alert",
+            "assertedAt": "2026-09-05T10:04:00Z"
+          },
+          {
+            "id": "evidence-payment-signal",
+            "kind": "signal",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-payment-orchestrator",
+            "signalRef": "signal-payment-latency",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "outcome": "observed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-001/payment-latency",
+            "assertedAt": "2026-09-05T10:06:00Z"
+          },
+          {
+            "id": "evidence-deployment-correlation",
+            "kind": "hypothesis",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-checkout-api",
+            "hypothesisRef": "hypothesis-timeout-regression",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "outcome": "confirmed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-001/deployment-correlation",
+            "assertedAt": "2026-09-05T10:15:00Z"
+          },
+          {
+            "id": "evidence-rollback-approval",
+            "kind": "action-approval",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-checkout-api",
+            "actionRef": "action-checkout-rollback",
+            "approvedById": "principal-incident-authority-casey",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "outcome": "approved",
+            "sourceRef": "controlled://incident-evidence/incident-inc-001/rollback-approval",
+            "assertedAt": "2026-09-05T10:20:00Z"
+          },
+          {
+            "id": "evidence-rollback-execution",
+            "kind": "owner-execution",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-checkout-api",
+            "actionRef": "action-checkout-rollback",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "outcome": "completed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-001/rollback-execution",
+            "assertedAt": "2026-09-05T10:30:00Z"
+          },
+          {
+            "id": "evidence-checkout-recovery",
+            "kind": "recovery-check",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-checkout-api",
+            "signalRef": "signal-checkout-errors",
+            "recoveryCheckRef": "recovery-checkout-errors",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "outcome": "passed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-001/checkout-recovery",
+            "assertedAt": "2026-09-05T10:45:00Z"
+          },
+          {
+            "id": "evidence-payment-recovery",
+            "kind": "recovery-check",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-payment-orchestrator",
+            "recoveryCheckRef": "recovery-payment-authorization",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "outcome": "passed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-001/payment-recovery",
+            "assertedAt": "2026-09-05T10:47:00Z"
+          },
+          {
+            "id": "evidence-communication-draft",
+            "kind": "communication-draft",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-checkout-api",
+            "communicationRef": "communication-status-draft",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "outcome": "drafted",
+            "sourceRef": "controlled://incident-drafts/incident-inc-001/status-update-1/revision-3",
+            "assertedAt": "2026-09-05T10:54:00Z"
+          }
+        ],
+        "hypotheses": [
+          {
+            "id": "hypothesis-timeout-regression",
+            "serviceRef": "service-checkout-api",
+            "state": "confirmed",
+            "ownerId": "principal-technical-dri-alex",
+            "evidenceRefs": [
+              "evidence-deployment-correlation"
+            ],
+            "updatedAt": "2026-09-05T10:16:00Z"
+          }
+        ],
+        "updateCadence": {
+          "id": "cadence-incident-inc-001",
+          "revision": "sha256:ec0539debb75716d654e80f01fe992f4c4f3381118283605ed7699acee7c0e74",
+          "incidentRef": "incident-inc-001",
+          "managedById": "principal-incident-manager-riley",
+          "intervalMinutes": 15,
+          "anchorAt": "2026-09-05T10:15:00Z",
+          "asOf": "2026-09-05T11:05:00Z",
+          "updateIdPrefix": "update-incident-inc-001",
+          "requiredSections": [
+            "severity-and-state",
+            "impact-and-evidence",
+            "technical-dri-loop",
+            "incident-manager-loop",
+            "decisions-and-actions",
+            "communications",
+            "recovery-and-next-update"
+          ],
+          "nextUpdateId": "update-incident-inc-001-0005"
+        },
+        "updates": [
+          {
+            "id": "update-incident-inc-001-0001",
+            "sequence": 1,
+            "revision": "incident-inc-001-update-r1",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "state": "issued",
+            "dueAt": "2026-09-05T10:15:00Z",
+            "issuedAt": "2026-09-05T10:17:00Z",
+            "observedThrough": "2026-09-05T10:16:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal",
+              "evidence-deployment-correlation"
+            ],
+            "nextUpdateId": "update-incident-inc-001-0002"
+          },
+          {
+            "id": "update-incident-inc-001-0002",
+            "sequence": 2,
+            "revision": "incident-inc-001-update-r2",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "state": "missed",
+            "dueAt": "2026-09-05T10:30:00Z",
+            "issuedAt": null,
+            "observedThrough": "2026-09-05T10:17:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [],
+            "nextUpdateId": "update-incident-inc-001-0003"
+          },
+          {
+            "id": "update-incident-inc-001-0003",
+            "sequence": 3,
+            "revision": "incident-inc-001-update-r3",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "state": "issued",
+            "dueAt": "2026-09-05T10:45:00Z",
+            "issuedAt": "2026-09-05T10:58:00Z",
+            "observedThrough": "2026-09-05T10:55:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal",
+              "evidence-deployment-correlation",
+              "evidence-rollback-approval",
+              "evidence-rollback-execution",
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery",
+              "evidence-communication-draft"
+            ],
+            "nextUpdateId": "update-incident-inc-001-0004"
+          },
+          {
+            "id": "update-incident-inc-001-0004",
+            "sequence": 4,
+            "revision": "incident-inc-001-update-r4",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "state": "issued",
+            "dueAt": "2026-09-05T11:00:00Z",
+            "issuedAt": "2026-09-05T11:03:00Z",
+            "observedThrough": "2026-09-05T11:01:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal",
+              "evidence-deployment-correlation",
+              "evidence-rollback-approval",
+              "evidence-rollback-execution",
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery",
+              "evidence-communication-draft"
+            ],
+            "nextUpdateId": "update-incident-inc-001-0005"
+          },
+          {
+            "id": "update-incident-inc-001-0005",
+            "sequence": 5,
+            "revision": "incident-inc-001-update-r5",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "state": "scheduled",
+            "dueAt": "2026-09-05T11:15:00Z",
+            "issuedAt": null,
+            "observedThrough": "2026-09-05T11:03:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [],
+            "nextUpdateId": null
+          }
+        ],
+        "decisions": [
+          {
+            "id": "decision-severity-state",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-manager-riley",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "incident-severity-state",
+            "decisionType": "severity-state",
+            "subjectRef": "incident-inc-001",
+            "subjectRevision": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "inputEvidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal"
+            ],
+            "decidedAt": "2026-09-05T10:06:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-cadence",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-manager-riley",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "incident-update-cadence",
+            "decisionType": "cadence",
+            "subjectRef": "cadence-incident-inc-001",
+            "subjectRevision": "sha256:ec0539debb75716d654e80f01fe992f4c4f3381118283605ed7699acee7c0e74",
+            "inputEvidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal"
+            ],
+            "decidedAt": "2026-09-05T10:07:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-rollback-approval",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-authority-casey",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "independent-action-approval",
+            "decisionType": "action-approval",
+            "subjectRef": "action-checkout-rollback",
+            "subjectRevision": "sha256:8d43b57c20564c8a6839574919418156dfe1f168f53f36ccc86f022e668880ba",
+            "inputEvidenceRefs": [
+              "evidence-rollback-approval"
+            ],
+            "decidedAt": "2026-09-05T10:20:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-communication-approval",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-authority-casey",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "independent-communication-approval",
+            "decisionType": "communication-approval",
+            "subjectRef": "communication-status-draft",
+            "subjectRevision": "sha256:5078fff8e507137757aa306ed4dd91bab936baf9db3a3b0eb27aaba3345ffc10",
+            "inputEvidenceRefs": [
+              "evidence-communication-draft"
+            ],
+            "decidedAt": "2026-09-05T10:56:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-incident-recovery",
+            "incidentRef": "incident-inc-001",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-manager-riley",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "incident-recovery-review",
+            "decisionType": "incident-recovery-recommendation",
+            "subjectRef": "incident-recovery-recommendation",
+            "subjectRevision": "sha256:1a7a8fe5d61c99975f9a333ea9bd85892d6171d58b1551d079718301e3c6e8dc",
+            "inputEvidenceRefs": [
+              "evidence-rollback-execution",
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery"
+            ],
+            "decidedAt": "2026-09-05T11:00:00Z",
+            "supersedesDecisionId": null
+          }
+        ],
+        "timelineEvents": [
+          {
+            "id": "event-alert",
+            "incidentRef": "incident-inc-001",
+            "kind": "signal",
+            "summary": "Checkout error rate crossed the declared incident threshold.",
+            "evidenceRefs": [
+              "evidence-checkout-alert"
+            ],
+            "ownerId": "principal-incident-manager-riley",
+            "occurredAt": "2026-09-05T10:04:00Z"
+          },
+          {
+            "id": "event-hypothesis",
+            "incidentRef": "incident-inc-001",
+            "kind": "hypothesis",
+            "summary": "The current checkout deployment correlates with timeout failures.",
+            "evidenceRefs": [
+              "evidence-deployment-correlation"
+            ],
+            "ownerId": "principal-technical-dri-alex",
+            "occurredAt": "2026-09-05T10:16:00Z"
+          },
+          {
+            "id": "event-action",
+            "incidentRef": "incident-inc-001",
+            "kind": "owner-action",
+            "summary": "The checkout owner completed the independently approved rollback.",
+            "evidenceRefs": [
+              "evidence-rollback-approval",
+              "evidence-rollback-execution"
+            ],
+            "ownerId": "principal-checkout-owner-priya",
+            "occurredAt": "2026-09-05T10:30:00Z"
+          },
+          {
+            "id": "event-recovery",
+            "incidentRef": "incident-inc-001",
+            "kind": "service-recovery-verification",
+            "summary": "Current service checks passed across both declared services.",
+            "evidenceRefs": [
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery"
+            ],
+            "ownerId": "principal-recovery-verifier-jordan",
+            "occurredAt": "2026-09-05T10:48:00Z"
+          }
+        ],
+        "actions": [
+          {
+            "id": "action-checkout-rollback",
+            "revision": "sha256:8d43b57c20564c8a6839574919418156dfe1f168f53f36ccc86f022e668880ba",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-checkout-api",
+            "kind": "rollback",
+            "summary": "Roll back checkout-api to the previous owner-approved build.",
+            "target": "checkout-api production deployment",
+            "timing": "Execute once decision-rollback-approval is recorded.",
+            "verificationCriteria": "Checkout errors remain below 2% for the declared recovery window.",
+            "rollbackCondition": "Stop and restore the prior state if payment failures increase.",
+            "executionState": "owner-executed",
+            "proposedById": "principal-technical-dri-alex",
+            "ownerId": "principal-checkout-owner-priya",
+            "approvalDecisionRef": "decision-rollback-approval",
+            "approvalEvidenceRef": "evidence-rollback-approval",
+            "executionEvidenceRef": "evidence-rollback-execution",
+            "reconciledById": "principal-technical-dri-alex",
+            "executedAt": "2026-09-05T10:30:00Z"
+          }
+        ],
+        "recoveryChecks": [
+          {
+            "id": "recovery-checkout-errors",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-checkout-api",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "state": "passed",
+            "evidenceRef": "evidence-checkout-recovery",
+            "verifiedById": "principal-recovery-verifier-jordan",
+            "checkedAt": "2026-09-05T10:46:00Z"
+          },
+          {
+            "id": "recovery-payment-authorization",
+            "incidentRef": "incident-inc-001",
+            "serviceRef": "service-payment-orchestrator",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+            "state": "passed",
+            "evidenceRef": "evidence-payment-recovery",
+            "verifiedById": "principal-recovery-verifier-jordan",
+            "checkedAt": "2026-09-05T10:48:00Z"
+          }
+        ],
+        "serviceRecovery": {
+          "id": "service-recovery",
+          "revision": "sha256:230808a42f7396525da707dd1d0577ec4b9a722bbf9619c6645af8c926ad84bf",
+          "state": "criteria-met",
+          "technicalDriId": "principal-technical-dri-alex",
+          "timelineSnapshotRef": "incident-snapshot-incident-inc-001-2026-09-05T1115Z",
+          "recoveryCheckRefs": [
+            "recovery-checkout-errors",
+            "recovery-payment-authorization"
+          ],
+          "evaluatedAt": "2026-09-05T10:49:00Z"
+        },
+        "incidentRecoveryRecommendation": {
+          "id": "incident-recovery-recommendation",
+          "revision": "sha256:1a7a8fe5d61c99975f9a333ea9bd85892d6171d58b1551d079718301e3c6e8dc",
+          "state": "recommended-for-owner-review",
+          "serviceRecoveryRef": "service-recovery",
+          "technicalDriId": "principal-technical-dri-alex",
+          "incidentManagerId": "principal-incident-manager-riley",
+          "decisionRef": "decision-incident-recovery",
+          "recommendedAt": "2026-09-05T10:50:00Z",
+          "reviewedAt": "2026-09-05T11:00:00Z",
+          "rationale": "Service recovery criteria are met for the exact snapshot; incident recovery remains a recommendation and does not close the incident."
+        },
+        "closure": {
+          "id": "incident-closure",
+          "revision": "sha256:f0aacf41471f9ed5c94fa8294e98ab2467d51a9b899f44046284e02089cbfca1",
+          "incidentRef": "incident-inc-001",
+          "incidentRecoveryRecommendationRef": "incident-recovery-recommendation",
+          "state": "open",
+          "incidentManagerId": "principal-incident-manager-riley",
+          "authorityOwnerId": "principal-incident-authority-casey",
+          "recommendationDecisionRef": null,
+          "closureDecisionRef": null,
+          "evidenceRef": null,
+          "closedAt": null
+        },
+        "communications": [
+          {
+            "id": "communication-status-draft",
+            "revision": "sha256:5078fff8e507137757aa306ed4dd91bab936baf9db3a3b0eb27aaba3345ffc10",
+            "incidentRef": "incident-inc-001",
+            "audience": "Customer support and status-page owner",
+            "channel": "controlled status-page draft",
+            "timing": "After independent approval and owner send decision",
+            "state": "approved-draft",
+            "authorId": "principal-communications-morgan",
+            "ownerId": "principal-incident-manager-riley",
+            "approvedById": "principal-incident-authority-casey",
+            "approvalDecisionRef": "decision-communication-approval",
+            "messageRef": "controlled://incident-drafts/incident-inc-001/status-update-1/revision-3",
+            "updatedAt": "2026-09-05T10:57:00Z"
+          }
+        ],
+        "followUps": [
+          {
+            "id": "follow-up-inc-001-timeout",
+            "identityKey": "sha256:4b7c9bd464af25197ca45f3bc4ccc8c48f9e31d5dd0e2a4eaa826e8d5774d2e8",
+            "incidentRef": "incident-inc-001",
+            "originatingEvidenceRefs": [
+              "evidence-deployment-correlation",
+              "evidence-rollback-execution"
+            ],
+            "originatingDecisionRefs": [
+              "decision-incident-recovery",
+              "decision-rollback-approval"
+            ],
+            "originatingActionRefs": [
+              "action-checkout-rollback"
+            ],
+            "assetRefs": [
+              "repository-checkout-platform"
+            ],
+            "serviceRefs": [
+              "service-checkout-api"
+            ],
+            "controlRefs": [
+              "control-timeout-regression"
+            ],
+            "ownerId": "principal-checkout-owner-priya",
+            "openedAt": "2026-09-05T11:01:00Z",
+            "dueAt": "2026-09-12T17:00:00Z",
+            "slaPolicyRef": "incident-follow-up-sla-r4",
+            "slaDurationHours": 168,
+            "state": "planned",
+            "summary": "Add and independently verify a timeout-regression control before the next owner-controlled deployment.",
+            "complianceRequired": true,
+            "complianceHandoffRef": "compliance-handoff-timeout-control"
+          }
+        ],
+        "complianceHandoffs": [
+          {
+            "id": "compliance-handoff-timeout-control",
+            "type": "repository-compliance-program-manager.incident-obligation-handoff.v1",
+            "targetClaw": "repository-compliance-program-manager",
+            "state": "ready",
+            "deduplicationKey": "sha256:4b7c9bd464af25197ca45f3bc4ccc8c48f9e31d5dd0e2a4eaa826e8d5774d2e8",
+            "incidentRef": "incident-inc-001",
+            "followUpRef": "follow-up-inc-001-timeout",
+            "originatingEvidenceRefs": [
+              "evidence-deployment-correlation",
+              "evidence-rollback-execution"
+            ],
+            "originatingDecisionRefs": [
+              "decision-incident-recovery",
+              "decision-rollback-approval"
+            ],
+            "originatingActionRefs": [
+              "action-checkout-rollback"
+            ],
+            "assetRefs": [
+              "repository-checkout-platform"
+            ],
+            "serviceRefs": [
+              "service-checkout-api"
+            ],
+            "controlRefs": [
+              "control-timeout-regression"
+            ],
+            "ownerId": "principal-checkout-owner-priya",
+            "dueAt": "2026-09-12T17:00:00Z",
+            "slaPolicyRef": "incident-follow-up-sla-r4",
+            "slaDurationHours": 168,
+            "issueMutationState": "not-requested",
+            "remediationState": "not-claimed",
+            "verificationState": "not-claimed",
+            "closureState": "not-claimed"
+          }
+        ],
+        "limitations": [
+          "Service recovery is based on the declared timeline snapshot and does not declare incident recovery or owner-controlled closure.",
+          "The compliance handoff proposes one durable obligation identity; it does not create or update an issue, perform remediation, verify a control, or close compliance work."
+        ],
+        "authority": {
+          "productionMutation": "not-permitted",
+          "trafficShift": "not-permitted",
+          "credentialRevocation": "not-permitted",
+          "communicationSend": "not-permitted",
+          "incidentDeclaration": "not-permitted",
+          "incidentClosure": "not-permitted",
+          "riskAcceptance": "not-permitted",
+          "complianceIssueMutation": "not-permitted",
+          "complianceRemediation": "not-claimed",
+          "complianceVerification": "not-claimed",
+          "complianceClosure": "not-claimed"
+        },
+        "recommendation": {
+          "state": "ready-for-incident-manager-review",
+          "reviewerId": "principal-incident-manager-riley",
+          "reviewedAt": "2026-09-05T11:03:00Z",
+          "rationale": "The Technical DRI reconciled owner-execution and service-recovery evidence; the Incident Manager recorded the recovery recommendation while closure remains with the incident authority."
+        },
+        "owner": "Casey Nguyen",
+        "ownerId": "principal-incident-authority-casey",
+        "handoff": {
+          "state": "ready",
+          "owner": "Casey Nguyen",
+          "summary": "The service recovery record is ready for owner review; incident closure, communication send, risk acceptance, and compliance lifecycle actions remain owner-controlled.",
+          "prohibitedActions": [
+            "mutate-production",
+            "revoke-credentials-or-sessions",
+            "shift-traffic",
+            "declare-incident",
+            "close-incident",
+            "send-communication",
+            "accept-risk",
+            "create-or-update-compliance-issue",
+            "claim-compliance-remediation-verification-or-closure"
+          ]
+        }
+      }
+    },
+    {
+      "artifactRef": "controlled://incident-response/incident-inc-002",
+      "artifact": {
+        "schemaVersion": "awesomeClaws.incidentResponse.v2",
+        "incident": {
+          "id": "incident-inc-002",
+          "service": "checkout-platform",
+          "environment": "production",
+          "deploymentOrBuild": "checkout-api@2026.08.16.4",
+          "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+          "severity": "SEV-1",
+          "status": "recovering",
+          "startedAt": "2026-09-05T10:00:00Z",
+          "requestedAt": "2026-09-05T10:02:00Z"
+        },
+        "principals": [
+          {
+            "id": "principal-technical-dri-alex",
+            "name": "Alex Rivera",
+            "scopes": [
+              "technical-investigation",
+              "hypothesis-management",
+              "mitigation-proposals",
+              "technical-owner-coordination",
+              "execution-evidence-reconciliation",
+              "service-recovery-criteria"
+            ]
+          },
+          {
+            "id": "principal-incident-manager-riley",
+            "name": "Riley Chen",
+            "scopes": [
+              "incident-severity-state",
+              "incident-update-cadence",
+              "incident-decision-chronology",
+              "incident-action-loop",
+              "incident-escalation",
+              "incident-communication-approval",
+              "incident-shift-handoff",
+              "incident-closure-recommendation",
+              "incident-recovery-review",
+              "incident-command-review",
+              "communication-draft"
+            ]
+          },
+          {
+            "id": "principal-checkout-owner-priya",
+            "name": "Priya Desai",
+            "scopes": [
+              "owner-execution",
+              "compliance-obligation-owner"
+            ]
+          },
+          {
+            "id": "principal-recovery-verifier-jordan",
+            "name": "Jordan Blake",
+            "scopes": [
+              "recovery-verification"
+            ]
+          },
+          {
+            "id": "principal-communications-morgan",
+            "name": "Morgan Lee",
+            "scopes": [
+              "communication-draft"
+            ]
+          },
+          {
+            "id": "principal-incident-authority-casey",
+            "name": "Casey Nguyen",
+            "scopes": [
+              "incident-declaration-closure",
+              "independent-action-approval",
+              "independent-communication-approval",
+              "incident-command-review"
+            ]
+          }
+        ],
+        "roleAssignments": {
+          "technicalDri": {
+            "principalId": "principal-technical-dri-alex",
+            "responsibilities": [
+              "technical-investigation",
+              "hypothesis-management",
+              "mitigation-proposals",
+              "technical-owner-coordination",
+              "execution-evidence-reconciliation",
+              "service-recovery-criteria"
+            ]
+          },
+          "incidentManager": {
+            "principalId": "principal-incident-manager-riley",
+            "responsibilities": [
+              "incident-severity-state",
+              "incident-update-cadence",
+              "incident-decision-chronology",
+              "incident-action-loop",
+              "incident-escalation",
+              "incident-communication-approval",
+              "incident-shift-handoff",
+              "incident-closure-recommendation",
+              "incident-recovery-review"
+            ]
+          }
+        },
+        "services": [
+          {
+            "id": "service-checkout-api",
+            "name": "checkout-api",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "ownerId": "principal-checkout-owner-priya"
+          },
+          {
+            "id": "service-payment-orchestrator",
+            "name": "payment-orchestrator",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "ownerId": "principal-checkout-owner-priya"
+          }
+        ],
+        "signals": [
+          {
+            "id": "signal-checkout-errors",
+            "serviceRef": "service-checkout-api",
+            "severity": "high",
+            "state": "resolved",
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-checkout-recovery"
+            ],
+            "observedAt": "2026-09-05T10:03:00Z",
+            "resolvedAt": "2026-09-05T10:50:00Z"
+          },
+          {
+            "id": "signal-payment-latency",
+            "serviceRef": "service-payment-orchestrator",
+            "severity": "medium",
+            "state": "monitoring",
+            "evidenceRefs": [
+              "evidence-payment-signal"
+            ],
+            "observedAt": "2026-09-05T10:05:00Z"
+          }
+        ],
+        "evidence": [
+          {
+            "id": "evidence-checkout-alert",
+            "kind": "signal",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-checkout-api",
+            "signalRef": "signal-checkout-errors",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "outcome": "observed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-002/checkout-alert",
+            "assertedAt": "2026-09-05T10:04:00Z"
+          },
+          {
+            "id": "evidence-payment-signal",
+            "kind": "signal",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-payment-orchestrator",
+            "signalRef": "signal-payment-latency",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "outcome": "observed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-002/payment-latency",
+            "assertedAt": "2026-09-05T10:06:00Z"
+          },
+          {
+            "id": "evidence-deployment-correlation",
+            "kind": "hypothesis",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-checkout-api",
+            "hypothesisRef": "hypothesis-timeout-regression",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "outcome": "confirmed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-002/deployment-correlation",
+            "assertedAt": "2026-09-05T10:15:00Z"
+          },
+          {
+            "id": "evidence-rollback-approval",
+            "kind": "action-approval",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-checkout-api",
+            "actionRef": "action-checkout-rollback",
+            "approvedById": "principal-incident-authority-casey",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "outcome": "approved",
+            "sourceRef": "controlled://incident-evidence/incident-inc-002/rollback-approval",
+            "assertedAt": "2026-09-05T10:20:00Z"
+          },
+          {
+            "id": "evidence-rollback-execution",
+            "kind": "owner-execution",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-checkout-api",
+            "actionRef": "action-checkout-rollback",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "outcome": "completed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-002/rollback-execution",
+            "assertedAt": "2026-09-05T10:30:00Z"
+          },
+          {
+            "id": "evidence-checkout-recovery",
+            "kind": "recovery-check",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-checkout-api",
+            "signalRef": "signal-checkout-errors",
+            "recoveryCheckRef": "recovery-checkout-errors",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "outcome": "passed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-002/checkout-recovery",
+            "assertedAt": "2026-09-05T10:45:00Z"
+          },
+          {
+            "id": "evidence-payment-recovery",
+            "kind": "recovery-check",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-payment-orchestrator",
+            "recoveryCheckRef": "recovery-payment-authorization",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "outcome": "passed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-002/payment-recovery",
+            "assertedAt": "2026-09-05T10:47:00Z"
+          },
+          {
+            "id": "evidence-communication-draft",
+            "kind": "communication-draft",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-checkout-api",
+            "communicationRef": "communication-status-draft",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "outcome": "drafted",
+            "sourceRef": "controlled://incident-drafts/incident-inc-002/status-update-1/revision-3",
+            "assertedAt": "2026-09-05T10:54:00Z"
+          }
+        ],
+        "hypotheses": [
+          {
+            "id": "hypothesis-timeout-regression",
+            "serviceRef": "service-checkout-api",
+            "state": "confirmed",
+            "ownerId": "principal-technical-dri-alex",
+            "evidenceRefs": [
+              "evidence-deployment-correlation"
+            ],
+            "updatedAt": "2026-09-05T10:16:00Z"
+          }
+        ],
+        "updateCadence": {
+          "id": "cadence-incident-inc-002",
+          "revision": "sha256:7a50044864a41e5c3a083497f2c93e8dcc1fb789fa23e1859ec7950b4bf2d469",
+          "incidentRef": "incident-inc-002",
+          "managedById": "principal-incident-manager-riley",
+          "intervalMinutes": 15,
+          "anchorAt": "2026-09-05T10:15:00Z",
+          "asOf": "2026-09-05T11:05:00Z",
+          "updateIdPrefix": "update-incident-inc-002",
+          "requiredSections": [
+            "severity-and-state",
+            "impact-and-evidence",
+            "technical-dri-loop",
+            "incident-manager-loop",
+            "decisions-and-actions",
+            "communications",
+            "recovery-and-next-update"
+          ],
+          "nextUpdateId": "update-incident-inc-002-0005"
+        },
+        "updates": [
+          {
+            "id": "update-incident-inc-002-0001",
+            "sequence": 1,
+            "revision": "incident-inc-002-update-r1",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "state": "issued",
+            "dueAt": "2026-09-05T10:15:00Z",
+            "issuedAt": "2026-09-05T10:17:00Z",
+            "observedThrough": "2026-09-05T10:16:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal",
+              "evidence-deployment-correlation"
+            ],
+            "nextUpdateId": "update-incident-inc-002-0002"
+          },
+          {
+            "id": "update-incident-inc-002-0002",
+            "sequence": 2,
+            "revision": "incident-inc-002-update-r2",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "state": "missed",
+            "dueAt": "2026-09-05T10:30:00Z",
+            "issuedAt": null,
+            "observedThrough": "2026-09-05T10:17:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [],
+            "nextUpdateId": "update-incident-inc-002-0003"
+          },
+          {
+            "id": "update-incident-inc-002-0003",
+            "sequence": 3,
+            "revision": "incident-inc-002-update-r3",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "state": "issued",
+            "dueAt": "2026-09-05T10:45:00Z",
+            "issuedAt": "2026-09-05T10:58:00Z",
+            "observedThrough": "2026-09-05T10:55:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal",
+              "evidence-deployment-correlation",
+              "evidence-rollback-approval",
+              "evidence-rollback-execution",
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery",
+              "evidence-communication-draft"
+            ],
+            "nextUpdateId": "update-incident-inc-002-0004"
+          },
+          {
+            "id": "update-incident-inc-002-0004",
+            "sequence": 4,
+            "revision": "incident-inc-002-update-r4",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "state": "issued",
+            "dueAt": "2026-09-05T11:00:00Z",
+            "issuedAt": "2026-09-05T11:03:00Z",
+            "observedThrough": "2026-09-05T11:01:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal",
+              "evidence-deployment-correlation",
+              "evidence-rollback-approval",
+              "evidence-rollback-execution",
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery",
+              "evidence-communication-draft"
+            ],
+            "nextUpdateId": "update-incident-inc-002-0005"
+          },
+          {
+            "id": "update-incident-inc-002-0005",
+            "sequence": 5,
+            "revision": "incident-inc-002-update-r5",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "state": "scheduled",
+            "dueAt": "2026-09-05T11:15:00Z",
+            "issuedAt": null,
+            "observedThrough": "2026-09-05T11:03:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [],
+            "nextUpdateId": null
+          }
+        ],
+        "decisions": [
+          {
+            "id": "decision-severity-state",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-manager-riley",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "incident-severity-state",
+            "decisionType": "severity-state",
+            "subjectRef": "incident-inc-002",
+            "subjectRevision": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "inputEvidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal"
+            ],
+            "decidedAt": "2026-09-05T10:06:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-cadence",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-manager-riley",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "incident-update-cadence",
+            "decisionType": "cadence",
+            "subjectRef": "cadence-incident-inc-002",
+            "subjectRevision": "sha256:7a50044864a41e5c3a083497f2c93e8dcc1fb789fa23e1859ec7950b4bf2d469",
+            "inputEvidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal"
+            ],
+            "decidedAt": "2026-09-05T10:07:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-rollback-approval",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-authority-casey",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "independent-action-approval",
+            "decisionType": "action-approval",
+            "subjectRef": "action-checkout-rollback",
+            "subjectRevision": "sha256:38aa579e9f12252faca0bd6df6a25c6c3ec70d29cd69a7776dce2a16d23e2d66",
+            "inputEvidenceRefs": [
+              "evidence-rollback-approval"
+            ],
+            "decidedAt": "2026-09-05T10:20:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-communication-approval",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-authority-casey",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "independent-communication-approval",
+            "decisionType": "communication-approval",
+            "subjectRef": "communication-status-draft",
+            "subjectRevision": "sha256:273f3f8bc9e17094480f3afd56298608eac95866b9c081c94b6c8a81bc3ae126",
+            "inputEvidenceRefs": [
+              "evidence-communication-draft"
+            ],
+            "decidedAt": "2026-09-05T10:56:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-incident-recovery",
+            "incidentRef": "incident-inc-002",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-manager-riley",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "incident-recovery-review",
+            "decisionType": "incident-recovery-recommendation",
+            "subjectRef": "incident-recovery-recommendation",
+            "subjectRevision": "sha256:1a7a8fe5d61c99975f9a333ea9bd85892d6171d58b1551d079718301e3c6e8dc",
+            "inputEvidenceRefs": [
+              "evidence-rollback-execution",
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery"
+            ],
+            "decidedAt": "2026-09-05T11:00:00Z",
+            "supersedesDecisionId": null
+          }
+        ],
+        "timelineEvents": [
+          {
+            "id": "event-alert",
+            "incidentRef": "incident-inc-002",
+            "kind": "signal",
+            "summary": "Checkout error rate crossed the declared incident threshold.",
+            "evidenceRefs": [
+              "evidence-checkout-alert"
+            ],
+            "ownerId": "principal-incident-manager-riley",
+            "occurredAt": "2026-09-05T10:04:00Z"
+          },
+          {
+            "id": "event-hypothesis",
+            "incidentRef": "incident-inc-002",
+            "kind": "hypothesis",
+            "summary": "The current checkout deployment correlates with timeout failures.",
+            "evidenceRefs": [
+              "evidence-deployment-correlation"
+            ],
+            "ownerId": "principal-technical-dri-alex",
+            "occurredAt": "2026-09-05T10:16:00Z"
+          },
+          {
+            "id": "event-action",
+            "incidentRef": "incident-inc-002",
+            "kind": "owner-action",
+            "summary": "The checkout owner completed the independently approved rollback.",
+            "evidenceRefs": [
+              "evidence-rollback-approval",
+              "evidence-rollback-execution"
+            ],
+            "ownerId": "principal-checkout-owner-priya",
+            "occurredAt": "2026-09-05T10:30:00Z"
+          },
+          {
+            "id": "event-recovery",
+            "incidentRef": "incident-inc-002",
+            "kind": "service-recovery-verification",
+            "summary": "Current service checks passed across both declared services.",
+            "evidenceRefs": [
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery"
+            ],
+            "ownerId": "principal-recovery-verifier-jordan",
+            "occurredAt": "2026-09-05T10:48:00Z"
+          }
+        ],
+        "actions": [
+          {
+            "id": "action-checkout-rollback",
+            "revision": "sha256:38aa579e9f12252faca0bd6df6a25c6c3ec70d29cd69a7776dce2a16d23e2d66",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-checkout-api",
+            "kind": "rollback",
+            "summary": "Roll back checkout-api to the previous owner-approved build.",
+            "target": "checkout-api production deployment",
+            "timing": "Execute once decision-rollback-approval is recorded.",
+            "verificationCriteria": "Checkout errors remain below 2% for the declared recovery window.",
+            "rollbackCondition": "Stop and restore the prior state if payment failures increase.",
+            "executionState": "owner-executed",
+            "proposedById": "principal-technical-dri-alex",
+            "ownerId": "principal-checkout-owner-priya",
+            "approvalDecisionRef": "decision-rollback-approval",
+            "approvalEvidenceRef": "evidence-rollback-approval",
+            "executionEvidenceRef": "evidence-rollback-execution",
+            "reconciledById": "principal-technical-dri-alex",
+            "executedAt": "2026-09-05T10:30:00Z"
+          }
+        ],
+        "recoveryChecks": [
+          {
+            "id": "recovery-checkout-errors",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-checkout-api",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "state": "passed",
+            "evidenceRef": "evidence-checkout-recovery",
+            "verifiedById": "principal-recovery-verifier-jordan",
+            "checkedAt": "2026-09-05T10:46:00Z"
+          },
+          {
+            "id": "recovery-payment-authorization",
+            "incidentRef": "incident-inc-002",
+            "serviceRef": "service-payment-orchestrator",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+            "state": "passed",
+            "evidenceRef": "evidence-payment-recovery",
+            "verifiedById": "principal-recovery-verifier-jordan",
+            "checkedAt": "2026-09-05T10:48:00Z"
+          }
+        ],
+        "serviceRecovery": {
+          "id": "service-recovery",
+          "revision": "sha256:9f5517cc2f39c9f6f586a5dac926593347286c326066eec48349adbfcf0ba29f",
+          "state": "criteria-met",
+          "technicalDriId": "principal-technical-dri-alex",
+          "timelineSnapshotRef": "incident-snapshot-incident-inc-002-2026-09-05T1115Z",
+          "recoveryCheckRefs": [
+            "recovery-checkout-errors",
+            "recovery-payment-authorization"
+          ],
+          "evaluatedAt": "2026-09-05T10:49:00Z"
+        },
+        "incidentRecoveryRecommendation": {
+          "id": "incident-recovery-recommendation",
+          "revision": "sha256:1a7a8fe5d61c99975f9a333ea9bd85892d6171d58b1551d079718301e3c6e8dc",
+          "state": "recommended-for-owner-review",
+          "serviceRecoveryRef": "service-recovery",
+          "technicalDriId": "principal-technical-dri-alex",
+          "incidentManagerId": "principal-incident-manager-riley",
+          "decisionRef": "decision-incident-recovery",
+          "recommendedAt": "2026-09-05T10:50:00Z",
+          "reviewedAt": "2026-09-05T11:00:00Z",
+          "rationale": "Service recovery criteria are met for the exact snapshot; incident recovery remains a recommendation and does not close the incident."
+        },
+        "closure": {
+          "id": "incident-closure",
+          "revision": "sha256:183e161c289b65cde516952e6ac09524b9b1ab5d34ffafc119257ee642e15be4",
+          "incidentRef": "incident-inc-002",
+          "incidentRecoveryRecommendationRef": "incident-recovery-recommendation",
+          "state": "open",
+          "incidentManagerId": "principal-incident-manager-riley",
+          "authorityOwnerId": "principal-incident-authority-casey",
+          "recommendationDecisionRef": null,
+          "closureDecisionRef": null,
+          "evidenceRef": null,
+          "closedAt": null
+        },
+        "communications": [
+          {
+            "id": "communication-status-draft",
+            "revision": "sha256:273f3f8bc9e17094480f3afd56298608eac95866b9c081c94b6c8a81bc3ae126",
+            "incidentRef": "incident-inc-002",
+            "audience": "Customer support and status-page owner",
+            "channel": "controlled status-page draft",
+            "timing": "After independent approval and owner send decision",
+            "state": "approved-draft",
+            "authorId": "principal-communications-morgan",
+            "ownerId": "principal-incident-manager-riley",
+            "approvedById": "principal-incident-authority-casey",
+            "approvalDecisionRef": "decision-communication-approval",
+            "messageRef": "controlled://incident-drafts/incident-inc-002/status-update-1/revision-3",
+            "updatedAt": "2026-09-05T10:57:00Z"
+          }
+        ],
+        "followUps": [
+          {
+            "id": "follow-up-inc-002-timeout",
+            "identityKey": "sha256:c2f45e91b9ef77629b94dede7ac7132465e6d28d7505133d92aaf61ce2a58574",
+            "incidentRef": "incident-inc-002",
+            "originatingEvidenceRefs": [
+              "evidence-deployment-correlation",
+              "evidence-rollback-execution"
+            ],
+            "originatingDecisionRefs": [
+              "decision-incident-recovery",
+              "decision-rollback-approval"
+            ],
+            "originatingActionRefs": [
+              "action-checkout-rollback"
+            ],
+            "assetRefs": [
+              "repository-checkout-platform"
+            ],
+            "serviceRefs": [
+              "service-checkout-api"
+            ],
+            "controlRefs": [
+              "control-timeout-regression"
+            ],
+            "ownerId": "principal-checkout-owner-priya",
+            "openedAt": "2026-09-05T11:01:00Z",
+            "dueAt": "2026-09-12T17:00:00Z",
+            "slaPolicyRef": "incident-follow-up-sla-r4",
+            "slaDurationHours": 168,
+            "state": "planned",
+            "summary": "Add and independently verify a timeout-regression control before the next owner-controlled deployment.",
+            "complianceRequired": true,
+            "complianceHandoffRef": "compliance-handoff-timeout-control"
+          }
+        ],
+        "complianceHandoffs": [
+          {
+            "id": "compliance-handoff-timeout-control",
+            "type": "repository-compliance-program-manager.incident-obligation-handoff.v1",
+            "targetClaw": "repository-compliance-program-manager",
+            "state": "ready",
+            "deduplicationKey": "sha256:c2f45e91b9ef77629b94dede7ac7132465e6d28d7505133d92aaf61ce2a58574",
+            "incidentRef": "incident-inc-002",
+            "followUpRef": "follow-up-inc-002-timeout",
+            "originatingEvidenceRefs": [
+              "evidence-deployment-correlation",
+              "evidence-rollback-execution"
+            ],
+            "originatingDecisionRefs": [
+              "decision-incident-recovery",
+              "decision-rollback-approval"
+            ],
+            "originatingActionRefs": [
+              "action-checkout-rollback"
+            ],
+            "assetRefs": [
+              "repository-checkout-platform"
+            ],
+            "serviceRefs": [
+              "service-checkout-api"
+            ],
+            "controlRefs": [
+              "control-timeout-regression"
+            ],
+            "ownerId": "principal-checkout-owner-priya",
+            "dueAt": "2026-09-12T17:00:00Z",
+            "slaPolicyRef": "incident-follow-up-sla-r4",
+            "slaDurationHours": 168,
+            "issueMutationState": "not-requested",
+            "remediationState": "not-claimed",
+            "verificationState": "not-claimed",
+            "closureState": "not-claimed"
+          }
+        ],
+        "limitations": [
+          "Service recovery is based on the declared timeline snapshot and does not declare incident recovery or owner-controlled closure.",
+          "The compliance handoff proposes one durable obligation identity; it does not create or update an issue, perform remediation, verify a control, or close compliance work."
+        ],
+        "authority": {
+          "productionMutation": "not-permitted",
+          "trafficShift": "not-permitted",
+          "credentialRevocation": "not-permitted",
+          "communicationSend": "not-permitted",
+          "incidentDeclaration": "not-permitted",
+          "incidentClosure": "not-permitted",
+          "riskAcceptance": "not-permitted",
+          "complianceIssueMutation": "not-permitted",
+          "complianceRemediation": "not-claimed",
+          "complianceVerification": "not-claimed",
+          "complianceClosure": "not-claimed"
+        },
+        "recommendation": {
+          "state": "ready-for-incident-manager-review",
+          "reviewerId": "principal-incident-manager-riley",
+          "reviewedAt": "2026-09-05T11:03:00Z",
+          "rationale": "The Technical DRI reconciled owner-execution and service-recovery evidence; the Incident Manager recorded the recovery recommendation while closure remains with the incident authority."
+        },
+        "owner": "Casey Nguyen",
+        "ownerId": "principal-incident-authority-casey",
+        "handoff": {
+          "state": "ready",
+          "owner": "Casey Nguyen",
+          "summary": "The service recovery record is ready for owner review; incident closure, communication send, risk acceptance, and compliance lifecycle actions remain owner-controlled.",
+          "prohibitedActions": [
+            "mutate-production",
+            "revoke-credentials-or-sessions",
+            "shift-traffic",
+            "declare-incident",
+            "close-incident",
+            "send-communication",
+            "accept-risk",
+            "create-or-update-compliance-issue",
+            "claim-compliance-remediation-verification-or-closure"
+          ]
+        }
+      }
+    },
+    {
+      "artifactRef": "controlled://incident-response/incident-inc-003",
+      "artifact": {
+        "schemaVersion": "awesomeClaws.incidentResponse.v2",
+        "incident": {
+          "id": "incident-inc-003",
+          "service": "checkout-platform",
+          "environment": "production",
+          "deploymentOrBuild": "checkout-api@2026.08.16.4",
+          "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+          "severity": "SEV-1",
+          "status": "recovering",
+          "startedAt": "2026-09-05T10:00:00Z",
+          "requestedAt": "2026-09-05T10:02:00Z"
+        },
+        "principals": [
+          {
+            "id": "principal-technical-dri-alex",
+            "name": "Alex Rivera",
+            "scopes": [
+              "technical-investigation",
+              "hypothesis-management",
+              "mitigation-proposals",
+              "technical-owner-coordination",
+              "execution-evidence-reconciliation",
+              "service-recovery-criteria"
+            ]
+          },
+          {
+            "id": "principal-incident-manager-riley",
+            "name": "Riley Chen",
+            "scopes": [
+              "incident-severity-state",
+              "incident-update-cadence",
+              "incident-decision-chronology",
+              "incident-action-loop",
+              "incident-escalation",
+              "incident-communication-approval",
+              "incident-shift-handoff",
+              "incident-closure-recommendation",
+              "incident-recovery-review",
+              "incident-command-review",
+              "communication-draft"
+            ]
+          },
+          {
+            "id": "principal-checkout-owner-priya",
+            "name": "Priya Desai",
+            "scopes": [
+              "owner-execution",
+              "compliance-obligation-owner"
+            ]
+          },
+          {
+            "id": "principal-recovery-verifier-jordan",
+            "name": "Jordan Blake",
+            "scopes": [
+              "recovery-verification"
+            ]
+          },
+          {
+            "id": "principal-communications-morgan",
+            "name": "Morgan Lee",
+            "scopes": [
+              "communication-draft"
+            ]
+          },
+          {
+            "id": "principal-incident-authority-casey",
+            "name": "Casey Nguyen",
+            "scopes": [
+              "incident-declaration-closure",
+              "independent-action-approval",
+              "independent-communication-approval",
+              "incident-command-review"
+            ]
+          }
+        ],
+        "roleAssignments": {
+          "technicalDri": {
+            "principalId": "principal-technical-dri-alex",
+            "responsibilities": [
+              "technical-investigation",
+              "hypothesis-management",
+              "mitigation-proposals",
+              "technical-owner-coordination",
+              "execution-evidence-reconciliation",
+              "service-recovery-criteria"
+            ]
+          },
+          "incidentManager": {
+            "principalId": "principal-incident-manager-riley",
+            "responsibilities": [
+              "incident-severity-state",
+              "incident-update-cadence",
+              "incident-decision-chronology",
+              "incident-action-loop",
+              "incident-escalation",
+              "incident-communication-approval",
+              "incident-shift-handoff",
+              "incident-closure-recommendation",
+              "incident-recovery-review"
+            ]
+          }
+        },
+        "services": [
+          {
+            "id": "service-checkout-api",
+            "name": "checkout-api",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "ownerId": "principal-checkout-owner-priya"
+          },
+          {
+            "id": "service-payment-orchestrator",
+            "name": "payment-orchestrator",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "ownerId": "principal-checkout-owner-priya"
+          }
+        ],
+        "signals": [
+          {
+            "id": "signal-checkout-errors",
+            "serviceRef": "service-checkout-api",
+            "severity": "high",
+            "state": "resolved",
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-checkout-recovery"
+            ],
+            "observedAt": "2026-09-05T10:03:00Z",
+            "resolvedAt": "2026-09-05T10:50:00Z"
+          },
+          {
+            "id": "signal-payment-latency",
+            "serviceRef": "service-payment-orchestrator",
+            "severity": "medium",
+            "state": "monitoring",
+            "evidenceRefs": [
+              "evidence-payment-signal"
+            ],
+            "observedAt": "2026-09-05T10:05:00Z"
+          }
+        ],
+        "evidence": [
+          {
+            "id": "evidence-checkout-alert",
+            "kind": "signal",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-checkout-api",
+            "signalRef": "signal-checkout-errors",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "outcome": "observed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-003/checkout-alert",
+            "assertedAt": "2026-09-05T10:04:00Z"
+          },
+          {
+            "id": "evidence-payment-signal",
+            "kind": "signal",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-payment-orchestrator",
+            "signalRef": "signal-payment-latency",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "outcome": "observed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-003/payment-latency",
+            "assertedAt": "2026-09-05T10:06:00Z"
+          },
+          {
+            "id": "evidence-deployment-correlation",
+            "kind": "hypothesis",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-checkout-api",
+            "hypothesisRef": "hypothesis-timeout-regression",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "outcome": "confirmed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-003/deployment-correlation",
+            "assertedAt": "2026-09-05T10:15:00Z"
+          },
+          {
+            "id": "evidence-rollback-approval",
+            "kind": "action-approval",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-checkout-api",
+            "actionRef": "action-checkout-rollback",
+            "approvedById": "principal-incident-authority-casey",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "outcome": "approved",
+            "sourceRef": "controlled://incident-evidence/incident-inc-003/rollback-approval",
+            "assertedAt": "2026-09-05T10:20:00Z"
+          },
+          {
+            "id": "evidence-rollback-execution",
+            "kind": "owner-execution",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-checkout-api",
+            "actionRef": "action-checkout-rollback",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "outcome": "completed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-003/rollback-execution",
+            "assertedAt": "2026-09-05T10:30:00Z"
+          },
+          {
+            "id": "evidence-checkout-recovery",
+            "kind": "recovery-check",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-checkout-api",
+            "signalRef": "signal-checkout-errors",
+            "recoveryCheckRef": "recovery-checkout-errors",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "outcome": "passed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-003/checkout-recovery",
+            "assertedAt": "2026-09-05T10:45:00Z"
+          },
+          {
+            "id": "evidence-payment-recovery",
+            "kind": "recovery-check",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-payment-orchestrator",
+            "recoveryCheckRef": "recovery-payment-authorization",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "outcome": "passed",
+            "sourceRef": "controlled://incident-evidence/incident-inc-003/payment-recovery",
+            "assertedAt": "2026-09-05T10:47:00Z"
+          },
+          {
+            "id": "evidence-communication-draft",
+            "kind": "communication-draft",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-checkout-api",
+            "communicationRef": "communication-status-draft",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "outcome": "drafted",
+            "sourceRef": "controlled://incident-drafts/incident-inc-003/status-update-1/revision-3",
+            "assertedAt": "2026-09-05T10:54:00Z"
+          }
+        ],
+        "hypotheses": [
+          {
+            "id": "hypothesis-timeout-regression",
+            "serviceRef": "service-checkout-api",
+            "state": "confirmed",
+            "ownerId": "principal-technical-dri-alex",
+            "evidenceRefs": [
+              "evidence-deployment-correlation"
+            ],
+            "updatedAt": "2026-09-05T10:16:00Z"
+          }
+        ],
+        "updateCadence": {
+          "id": "cadence-incident-inc-003",
+          "revision": "sha256:f2d696fa1578222483e2833565d25f3d0384110ed224171e80591537d9db2676",
+          "incidentRef": "incident-inc-003",
+          "managedById": "principal-incident-manager-riley",
+          "intervalMinutes": 15,
+          "anchorAt": "2026-09-05T10:15:00Z",
+          "asOf": "2026-09-05T11:05:00Z",
+          "updateIdPrefix": "update-incident-inc-003",
+          "requiredSections": [
+            "severity-and-state",
+            "impact-and-evidence",
+            "technical-dri-loop",
+            "incident-manager-loop",
+            "decisions-and-actions",
+            "communications",
+            "recovery-and-next-update"
+          ],
+          "nextUpdateId": "update-incident-inc-003-0005"
+        },
+        "updates": [
+          {
+            "id": "update-incident-inc-003-0001",
+            "sequence": 1,
+            "revision": "incident-inc-003-update-r1",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "state": "issued",
+            "dueAt": "2026-09-05T10:15:00Z",
+            "issuedAt": "2026-09-05T10:17:00Z",
+            "observedThrough": "2026-09-05T10:16:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal",
+              "evidence-deployment-correlation"
+            ],
+            "nextUpdateId": "update-incident-inc-003-0002"
+          },
+          {
+            "id": "update-incident-inc-003-0002",
+            "sequence": 2,
+            "revision": "incident-inc-003-update-r2",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "state": "missed",
+            "dueAt": "2026-09-05T10:30:00Z",
+            "issuedAt": null,
+            "observedThrough": "2026-09-05T10:17:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [],
+            "nextUpdateId": "update-incident-inc-003-0003"
+          },
+          {
+            "id": "update-incident-inc-003-0003",
+            "sequence": 3,
+            "revision": "incident-inc-003-update-r3",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "state": "issued",
+            "dueAt": "2026-09-05T10:45:00Z",
+            "issuedAt": "2026-09-05T10:58:00Z",
+            "observedThrough": "2026-09-05T10:55:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal",
+              "evidence-deployment-correlation",
+              "evidence-rollback-approval",
+              "evidence-rollback-execution",
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery",
+              "evidence-communication-draft"
+            ],
+            "nextUpdateId": "update-incident-inc-003-0004"
+          },
+          {
+            "id": "update-incident-inc-003-0004",
+            "sequence": 4,
+            "revision": "incident-inc-003-update-r4",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "state": "issued",
+            "dueAt": "2026-09-05T11:00:00Z",
+            "issuedAt": "2026-09-05T11:03:00Z",
+            "observedThrough": "2026-09-05T11:01:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal",
+              "evidence-deployment-correlation",
+              "evidence-rollback-approval",
+              "evidence-rollback-execution",
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery",
+              "evidence-communication-draft"
+            ],
+            "nextUpdateId": "update-incident-inc-003-0005"
+          },
+          {
+            "id": "update-incident-inc-003-0005",
+            "sequence": 5,
+            "revision": "incident-inc-003-update-r5",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "state": "scheduled",
+            "dueAt": "2026-09-05T11:15:00Z",
+            "issuedAt": null,
+            "observedThrough": "2026-09-05T11:03:00Z",
+            "authorId": "principal-incident-manager-riley",
+            "requiredSections": [
+              "severity-and-state",
+              "impact-and-evidence",
+              "technical-dri-loop",
+              "incident-manager-loop",
+              "decisions-and-actions",
+              "communications",
+              "recovery-and-next-update"
+            ],
+            "evidenceRefs": [],
+            "nextUpdateId": null
+          }
+        ],
+        "decisions": [
+          {
+            "id": "decision-severity-state",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-manager-riley",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "incident-severity-state",
+            "decisionType": "severity-state",
+            "subjectRef": "incident-inc-003",
+            "subjectRevision": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "inputEvidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal"
+            ],
+            "decidedAt": "2026-09-05T10:06:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-cadence",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-manager-riley",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "incident-update-cadence",
+            "decisionType": "cadence",
+            "subjectRef": "cadence-incident-inc-003",
+            "subjectRevision": "sha256:f2d696fa1578222483e2833565d25f3d0384110ed224171e80591537d9db2676",
+            "inputEvidenceRefs": [
+              "evidence-checkout-alert",
+              "evidence-payment-signal"
+            ],
+            "decidedAt": "2026-09-05T10:07:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-rollback-approval",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-authority-casey",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "independent-action-approval",
+            "decisionType": "action-approval",
+            "subjectRef": "action-checkout-rollback",
+            "subjectRevision": "sha256:4d63876e48809e0a69cabf9a2b74c4f1f795930f883c9806dbc6e9349e646882",
+            "inputEvidenceRefs": [
+              "evidence-rollback-approval"
+            ],
+            "decidedAt": "2026-09-05T10:20:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-communication-approval",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-authority-casey",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "independent-communication-approval",
+            "decisionType": "communication-approval",
+            "subjectRef": "communication-status-draft",
+            "subjectRevision": "sha256:0f9cc59a8169e107e16b6790e8a71a17f1e4719c04fea1d1c71e453a8f934c78",
+            "inputEvidenceRefs": [
+              "evidence-communication-draft"
+            ],
+            "decidedAt": "2026-09-05T10:56:00Z",
+            "supersedesDecisionId": null
+          },
+          {
+            "id": "decision-incident-recovery",
+            "incidentRef": "incident-inc-003",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "decisionMakerId": "principal-incident-manager-riley",
+            "recordedById": "principal-incident-manager-riley",
+            "authorityScope": "incident-recovery-review",
+            "decisionType": "incident-recovery-recommendation",
+            "subjectRef": "incident-recovery-recommendation",
+            "subjectRevision": "sha256:1a7a8fe5d61c99975f9a333ea9bd85892d6171d58b1551d079718301e3c6e8dc",
+            "inputEvidenceRefs": [
+              "evidence-rollback-execution",
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery"
+            ],
+            "decidedAt": "2026-09-05T11:00:00Z",
+            "supersedesDecisionId": null
+          }
+        ],
+        "timelineEvents": [
+          {
+            "id": "event-alert",
+            "incidentRef": "incident-inc-003",
+            "kind": "signal",
+            "summary": "Checkout error rate crossed the declared incident threshold.",
+            "evidenceRefs": [
+              "evidence-checkout-alert"
+            ],
+            "ownerId": "principal-incident-manager-riley",
+            "occurredAt": "2026-09-05T10:04:00Z"
+          },
+          {
+            "id": "event-hypothesis",
+            "incidentRef": "incident-inc-003",
+            "kind": "hypothesis",
+            "summary": "The current checkout deployment correlates with timeout failures.",
+            "evidenceRefs": [
+              "evidence-deployment-correlation"
+            ],
+            "ownerId": "principal-technical-dri-alex",
+            "occurredAt": "2026-09-05T10:16:00Z"
+          },
+          {
+            "id": "event-action",
+            "incidentRef": "incident-inc-003",
+            "kind": "owner-action",
+            "summary": "The checkout owner completed the independently approved rollback.",
+            "evidenceRefs": [
+              "evidence-rollback-approval",
+              "evidence-rollback-execution"
+            ],
+            "ownerId": "principal-checkout-owner-priya",
+            "occurredAt": "2026-09-05T10:30:00Z"
+          },
+          {
+            "id": "event-recovery",
+            "incidentRef": "incident-inc-003",
+            "kind": "service-recovery-verification",
+            "summary": "Current service checks passed across both declared services.",
+            "evidenceRefs": [
+              "evidence-checkout-recovery",
+              "evidence-payment-recovery"
+            ],
+            "ownerId": "principal-recovery-verifier-jordan",
+            "occurredAt": "2026-09-05T10:48:00Z"
+          }
+        ],
+        "actions": [
+          {
+            "id": "action-checkout-rollback",
+            "revision": "sha256:4d63876e48809e0a69cabf9a2b74c4f1f795930f883c9806dbc6e9349e646882",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-checkout-api",
+            "kind": "rollback",
+            "summary": "Roll back checkout-api to the previous owner-approved build.",
+            "target": "checkout-api production deployment",
+            "timing": "Execute once decision-rollback-approval is recorded.",
+            "verificationCriteria": "Checkout errors remain below 2% for the declared recovery window.",
+            "rollbackCondition": "Stop and restore the prior state if payment failures increase.",
+            "executionState": "owner-executed",
+            "proposedById": "principal-technical-dri-alex",
+            "ownerId": "principal-checkout-owner-priya",
+            "approvalDecisionRef": "decision-rollback-approval",
+            "approvalEvidenceRef": "evidence-rollback-approval",
+            "executionEvidenceRef": "evidence-rollback-execution",
+            "reconciledById": "principal-technical-dri-alex",
+            "executedAt": "2026-09-05T10:30:00Z"
+          }
+        ],
+        "recoveryChecks": [
+          {
+            "id": "recovery-checkout-errors",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-checkout-api",
+            "environment": "production",
+            "deploymentOrBuild": "checkout-api@2026.08.16.4",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "state": "passed",
+            "evidenceRef": "evidence-checkout-recovery",
+            "verifiedById": "principal-recovery-verifier-jordan",
+            "checkedAt": "2026-09-05T10:46:00Z"
+          },
+          {
+            "id": "recovery-payment-authorization",
+            "incidentRef": "incident-inc-003",
+            "serviceRef": "service-payment-orchestrator",
+            "environment": "production",
+            "deploymentOrBuild": "payment-orchestrator@2026.08.16.2",
+            "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+            "state": "passed",
+            "evidenceRef": "evidence-payment-recovery",
+            "verifiedById": "principal-recovery-verifier-jordan",
+            "checkedAt": "2026-09-05T10:48:00Z"
+          }
+        ],
+        "serviceRecovery": {
+          "id": "service-recovery",
+          "revision": "sha256:9d6e6f70a2faa8e186b74737d7b622c4bbab9bc87640479dafd43da4099c3aa0",
+          "state": "criteria-met",
+          "technicalDriId": "principal-technical-dri-alex",
+          "timelineSnapshotRef": "incident-snapshot-incident-inc-003-2026-09-05T1115Z",
+          "recoveryCheckRefs": [
+            "recovery-checkout-errors",
+            "recovery-payment-authorization"
+          ],
+          "evaluatedAt": "2026-09-05T10:49:00Z"
+        },
+        "incidentRecoveryRecommendation": {
+          "id": "incident-recovery-recommendation",
+          "revision": "sha256:1a7a8fe5d61c99975f9a333ea9bd85892d6171d58b1551d079718301e3c6e8dc",
+          "state": "recommended-for-owner-review",
+          "serviceRecoveryRef": "service-recovery",
+          "technicalDriId": "principal-technical-dri-alex",
+          "incidentManagerId": "principal-incident-manager-riley",
+          "decisionRef": "decision-incident-recovery",
+          "recommendedAt": "2026-09-05T10:50:00Z",
+          "reviewedAt": "2026-09-05T11:00:00Z",
+          "rationale": "Service recovery criteria are met for the exact snapshot; incident recovery remains a recommendation and does not close the incident."
+        },
+        "closure": {
+          "id": "incident-closure",
+          "revision": "sha256:add21affcbca89c896df56a7f5064fc3fdfa76afa12b01ffcf5efa78b9a79417",
+          "incidentRef": "incident-inc-003",
+          "incidentRecoveryRecommendationRef": "incident-recovery-recommendation",
+          "state": "open",
+          "incidentManagerId": "principal-incident-manager-riley",
+          "authorityOwnerId": "principal-incident-authority-casey",
+          "recommendationDecisionRef": null,
+          "closureDecisionRef": null,
+          "evidenceRef": null,
+          "closedAt": null
+        },
+        "communications": [
+          {
+            "id": "communication-status-draft",
+            "revision": "sha256:0f9cc59a8169e107e16b6790e8a71a17f1e4719c04fea1d1c71e453a8f934c78",
+            "incidentRef": "incident-inc-003",
+            "audience": "Customer support and status-page owner",
+            "channel": "controlled status-page draft",
+            "timing": "After independent approval and owner send decision",
+            "state": "approved-draft",
+            "authorId": "principal-communications-morgan",
+            "ownerId": "principal-incident-manager-riley",
+            "approvedById": "principal-incident-authority-casey",
+            "approvalDecisionRef": "decision-communication-approval",
+            "messageRef": "controlled://incident-drafts/incident-inc-003/status-update-1/revision-3",
+            "updatedAt": "2026-09-05T10:57:00Z"
+          }
+        ],
+        "followUps": [
+          {
+            "id": "follow-up-inc-003-timeout",
+            "identityKey": "sha256:df48ce2d1f659e0ae57aa0c8fa2906bec49163cdd507b1295748d38c2f779de1",
+            "incidentRef": "incident-inc-003",
+            "originatingEvidenceRefs": [
+              "evidence-deployment-correlation",
+              "evidence-rollback-execution"
+            ],
+            "originatingDecisionRefs": [
+              "decision-incident-recovery",
+              "decision-rollback-approval"
+            ],
+            "originatingActionRefs": [
+              "action-checkout-rollback"
+            ],
+            "assetRefs": [
+              "repository-checkout-platform"
+            ],
+            "serviceRefs": [
+              "service-checkout-api"
+            ],
+            "controlRefs": [
+              "control-timeout-regression"
+            ],
+            "ownerId": "principal-checkout-owner-priya",
+            "openedAt": "2026-09-05T11:01:00Z",
+            "dueAt": "2026-09-12T17:00:00Z",
+            "slaPolicyRef": "incident-follow-up-sla-r4",
+            "slaDurationHours": 168,
+            "state": "planned",
+            "summary": "Add and independently verify a timeout-regression control before the next owner-controlled deployment.",
+            "complianceRequired": true,
+            "complianceHandoffRef": "compliance-handoff-timeout-control"
+          }
+        ],
+        "complianceHandoffs": [
+          {
+            "id": "compliance-handoff-timeout-control",
+            "type": "repository-compliance-program-manager.incident-obligation-handoff.v1",
+            "targetClaw": "repository-compliance-program-manager",
+            "state": "ready",
+            "deduplicationKey": "sha256:df48ce2d1f659e0ae57aa0c8fa2906bec49163cdd507b1295748d38c2f779de1",
+            "incidentRef": "incident-inc-003",
+            "followUpRef": "follow-up-inc-003-timeout",
+            "originatingEvidenceRefs": [
+              "evidence-deployment-correlation",
+              "evidence-rollback-execution"
+            ],
+            "originatingDecisionRefs": [
+              "decision-incident-recovery",
+              "decision-rollback-approval"
+            ],
+            "originatingActionRefs": [
+              "action-checkout-rollback"
+            ],
+            "assetRefs": [
+              "repository-checkout-platform"
+            ],
+            "serviceRefs": [
+              "service-checkout-api"
+            ],
+            "controlRefs": [
+              "control-timeout-regression"
+            ],
+            "ownerId": "principal-checkout-owner-priya",
+            "dueAt": "2026-09-12T17:00:00Z",
+            "slaPolicyRef": "incident-follow-up-sla-r4",
+            "slaDurationHours": 168,
+            "issueMutationState": "not-requested",
+            "remediationState": "not-claimed",
+            "verificationState": "not-claimed",
+            "closureState": "not-claimed"
+          }
+        ],
+        "limitations": [
+          "Service recovery is based on the declared timeline snapshot and does not declare incident recovery or owner-controlled closure.",
+          "The compliance handoff proposes one durable obligation identity; it does not create or update an issue, perform remediation, verify a control, or close compliance work."
+        ],
+        "authority": {
+          "productionMutation": "not-permitted",
+          "trafficShift": "not-permitted",
+          "credentialRevocation": "not-permitted",
+          "communicationSend": "not-permitted",
+          "incidentDeclaration": "not-permitted",
+          "incidentClosure": "not-permitted",
+          "riskAcceptance": "not-permitted",
+          "complianceIssueMutation": "not-permitted",
+          "complianceRemediation": "not-claimed",
+          "complianceVerification": "not-claimed",
+          "complianceClosure": "not-claimed"
+        },
+        "recommendation": {
+          "state": "ready-for-incident-manager-review",
+          "reviewerId": "principal-incident-manager-riley",
+          "reviewedAt": "2026-09-05T11:03:00Z",
+          "rationale": "The Technical DRI reconciled owner-execution and service-recovery evidence; the Incident Manager recorded the recovery recommendation while closure remains with the incident authority."
+        },
+        "owner": "Casey Nguyen",
+        "ownerId": "principal-incident-authority-casey",
+        "handoff": {
+          "state": "ready",
+          "owner": "Casey Nguyen",
+          "summary": "The service recovery record is ready for owner review; incident closure, communication send, risk acceptance, and compliance lifecycle actions remain owner-controlled.",
+          "prohibitedActions": [
+            "mutate-production",
+            "revoke-credentials-or-sessions",
+            "shift-traffic",
+            "declare-incident",
+            "close-incident",
+            "send-communication",
+            "accept-risk",
+            "create-or-update-compliance-issue",
+            "claim-compliance-remediation-verification-or-closure"
+          ]
+        }
+      }
+    }
+  ],
+  "qualityAssuranceArtifact": {
+    "artifactRef": "sources/quality-assurance-lead/fixtures/test-evidence.example.json",
+    "artifact": {
+      "schemaVersion": "awesomeClaws.testEvidence.v1",
+      "release": {
+        "id": "release-2026.9.0-mobile-checkout",
+        "buildId": "release-2026.9.0-mobile",
+        "environment": "staging-mobile-qa",
+        "scope": "Checkout and payments flow, mobile app v9.0",
+        "requestedAt": "2026-08-28T00:00:00Z"
+      },
+      "owner": "Jordan Blake, Engineering Release Owner",
+      "ownerId": "principal-jordan-blake",
+      "principals": [
+        {
+          "id": "principal-jordan-blake",
+          "name": "Jordan Blake",
+          "roles": [
+            "engineering-lead"
+          ],
+          "scopes": [
+            "release-owner"
+          ]
+        },
+        {
+          "id": "principal-qa-engineer-alex",
+          "name": "Alex Rivera",
+          "roles": [
+            "qa-engineer"
+          ],
+          "scopes": [
+            "test-execution"
+          ]
+        },
+        {
+          "id": "principal-qa-engineer-priya",
+          "name": "Priya Desai",
+          "roles": [
+            "qa-engineer"
+          ],
+          "scopes": [
+            "test-execution",
+            "defect-verification"
+          ]
+        },
+        {
+          "id": "principal-qa-lead-morgan",
+          "name": "Morgan Ellis",
+          "roles": [
+            "qa-lead"
+          ],
+          "scopes": [
+            "qa-release-authority"
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "id": "req-checkout-completion",
+          "description": "Checkout completes in three taps or fewer on the mobile app.",
+          "priority": "critical"
+        },
+        {
+          "id": "req-payment-retry",
+          "description": "A transient payment decline can be retried without losing the cart.",
+          "priority": "critical"
+        },
+        {
+          "id": "req-offline-cart-sync",
+          "description": "Cart contents resynchronize correctly after a brief offline period.",
+          "priority": "high"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "tc-checkout-completion-happy",
+          "requirementRef": "req-checkout-completion",
+          "description": "Complete checkout end to end with a saved payment method."
+        },
+        {
+          "id": "tc-payment-retry-decline",
+          "requirementRef": "req-payment-retry",
+          "description": "Force a transient decline, then retry payment and confirm cart integrity."
+        },
+        {
+          "id": "tc-offline-cart-sync-reconnect",
+          "requirementRef": "req-offline-cart-sync",
+          "description": "Add items while offline, reconnect, and confirm the cart reconciles with the server."
+        }
+      ],
+      "testRuns": [
+        {
+          "id": "run-checkout-completion-1",
+          "testCaseRef": "tc-checkout-completion-happy",
+          "buildId": "release-2026.9.0-mobile",
+          "environment": "staging-mobile-qa",
+          "executedAt": "2026-09-01T10:00:00Z",
+          "executedById": "principal-qa-engineer-alex",
+          "result": "passed",
+          "evidenceRef": "evidence-run-checkout-completion-1"
+        },
+        {
+          "id": "run-payment-retry-1",
+          "testCaseRef": "tc-payment-retry-decline",
+          "buildId": "release-2026.9.0-mobile",
+          "environment": "staging-mobile-qa",
+          "executedAt": "2026-09-01T11:00:00Z",
+          "executedById": "principal-qa-engineer-alex",
+          "result": "failed",
+          "evidenceRef": "evidence-run-payment-retry-1"
+        },
+        {
+          "id": "run-payment-retry-2",
+          "testCaseRef": "tc-payment-retry-decline",
+          "buildId": "release-2026.9.0-mobile",
+          "environment": "staging-mobile-qa",
+          "executedAt": "2026-09-02T09:00:00Z",
+          "executedById": "principal-qa-engineer-alex",
+          "result": "passed",
+          "evidenceRef": "evidence-run-payment-retry-2"
+        },
+        {
+          "id": "run-offline-cart-sync-1",
+          "testCaseRef": "tc-offline-cart-sync-reconnect",
+          "buildId": "release-2026.9.0-mobile",
+          "environment": "staging-mobile-qa",
+          "executedAt": "2026-09-01T12:00:00Z",
+          "executedById": "principal-qa-engineer-priya",
+          "result": "passed",
+          "evidenceRef": "evidence-run-offline-cart-sync-1"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "evidence-run-checkout-completion-1",
+          "kind": "execution-result",
+          "testRunRef": "run-checkout-completion-1",
+          "buildId": "release-2026.9.0-mobile",
+          "outcome": "passed",
+          "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/checkout-completion-1",
+          "assertedAt": "2026-09-01T10:05:00Z"
+        },
+        {
+          "id": "evidence-run-payment-retry-1",
+          "kind": "execution-result",
+          "testRunRef": "run-payment-retry-1",
+          "buildId": "release-2026.9.0-mobile",
+          "outcome": "failed",
+          "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/payment-retry-1",
+          "assertedAt": "2026-09-01T11:05:00Z"
+        },
+        {
+          "id": "evidence-run-payment-retry-2",
+          "kind": "execution-result",
+          "testRunRef": "run-payment-retry-2",
+          "buildId": "release-2026.9.0-mobile",
+          "outcome": "passed",
+          "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/payment-retry-2",
+          "assertedAt": "2026-09-02T09:05:00Z"
+        },
+        {
+          "id": "evidence-run-offline-cart-sync-1",
+          "kind": "execution-result",
+          "testRunRef": "run-offline-cart-sync-1",
+          "buildId": "release-2026.9.0-mobile",
+          "outcome": "passed",
+          "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/offline-cart-sync-1",
+          "assertedAt": "2026-09-01T12:05:00Z"
+        },
+        {
+          "id": "evidence-defect-verification-payment-retry",
+          "kind": "defect-verification",
+          "defectRef": "defect-payment-retry-decline",
+          "testRunRef": "run-payment-retry-2",
+          "buildId": "release-2026.9.0-mobile",
+          "sourceRef": "controlled://qa-evidence/release-2026.9.0-mobile/defect-payment-retry-verification",
+          "assertedAt": "2026-09-02T09:30:00Z"
+        }
+      ],
+      "defects": [
+        {
+          "id": "defect-payment-retry-decline",
+          "testRunRef": "run-payment-retry-1",
+          "severity": "major",
+          "status": "verified",
+          "foundAt": "2026-09-01T11:05:00Z",
+          "verifiedById": "principal-qa-engineer-priya",
+          "verifiedAt": "2026-09-02T09:30:00Z",
+          "verificationEvidenceRef": "evidence-defect-verification-payment-retry"
+        }
+      ],
+      "limitations": [
+        "Load and security testing were out of scope for this cycle and require separate authorization.",
+        "Offline cart sync was validated only on the primary reconnect path; secondary carrier failover is untested."
+      ],
+      "recommendation": {
+        "state": "recommend-release",
+        "rationale": "All three release-blocking requirements have current-build passing coverage, the one major payment-retry defect was independently verified after a fix, and no blocker/critical defects remain open.",
+        "reviewerId": "principal-qa-lead-morgan",
+        "reviewedAt": "2026-09-02T10:00:00Z"
+      },
+      "handoff": {
+        "owner": "Jordan Blake, Engineering Release Owner",
+        "prohibitedActions": [
+          "deploy-release",
+          "merge-release",
+          "publish-release",
+          "alter-environment",
+          "close-defect",
+          "waive-failure",
+          "approve-release"
+        ],
+        "state": "ready",
+        "summary": "QA recommends release; no deployment, merge, publication, environment change, defect closure, waiver, or release approval occurred."
+      }
+    }
+  },
+  "changeControlArtifact": {
+    "artifactRef": "controlled://change-control/staging-retry-limit",
+    "artifact": {
+      "schemaVersion": "awesomeClaws.changePlan.v1",
+      "plan": {
+        "id": "staging-retry-limit",
+        "digest": "5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+        "generatedAt": "2026-08-18T15:00:00Z",
+        "workspace": "staging-service",
+        "baseState": "commit:4ea9b35",
+        "targets": [
+          "config/staging.yml"
+        ],
+        "steps": [
+          {
+            "id": "edit-retry-limit",
+            "kind": "edit",
+            "target": "config/staging.yml",
+            "summary": "Change retry limit from 3 to 5."
+          },
+          {
+            "id": "run-config-test",
+            "kind": "command",
+            "target": "tests/config.test.mjs",
+            "summary": "Run the focused staging configuration test."
+          }
+        ],
+        "verification": [
+          "Focused configuration test passes",
+          "Only config/staging.yml changed"
+        ],
+        "rollback": [
+          "Restore retry limit to 3",
+          "Rerun the focused configuration test"
+        ]
+      },
+      "decision": {
+        "state": "approved-by-owner",
+        "owner": "staging change owner",
+        "decidedAt": "2026-08-18T15:05:00Z",
+        "planDigest": "5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c"
+      },
+      "execution": {
+        "state": "verified",
+        "planDigest": "5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+        "stepResults": [
+          {
+            "stepRef": "edit-retry-limit",
+            "state": "passed",
+            "evidence": "config/staging.yml contains retryLimit: 5"
+          },
+          {
+            "stepRef": "run-config-test",
+            "state": "passed",
+            "evidence": "Focused test exited 0."
+          }
+        ],
+        "verificationResults": [
+          "Focused configuration test passed",
+          "Diff contains one intended file"
+        ],
+        "rollbackState": "available"
+      }
+    }
+  }
+}

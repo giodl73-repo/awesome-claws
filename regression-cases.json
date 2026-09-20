@@ -167,6 +167,30 @@
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     },
     {
+      "id": "benefits-realization-manager",
+      "acceptedRequest": "Reconcile benefits plan support-modernization revision 2 for Q3 from the supplied owner-approved benefit profiles, KPI records, allocation approvals, disbenefit observations, predecessor ledger, source bytes, and public trust store. Show realized and blocked value without claiming causality or changing any source or owner decision.",
+      "requiredEvidence": [
+        "Exact benefits plan id and revision, predecessor revision or first-plan declaration, caller-controlled period and cutoff, currency, minor-unit scale, and complete benefit/disbenefit universe",
+        "Named benefit, metric, finance, and trust owners with stable identities, authority evidence, KPI baseline/target/observation records, allocation approvals, lifecycle decisions, and finance-close evidence",
+        "Injected owner-and-key-scoped public trust, signed semantic envelope, exact source bytes or controlled receipts, source versions and digests, prior-period realized state, and supersession or retirement evidence"
+      ],
+      "authorityBoundaries": [
+        "Do not claim that an initiative caused a KPI movement; allocation is a bounded no-double-count accounting convention, not causal proof",
+        "Do not approve benefits, redefine metrics, alter allocation, certify finance, mutate source systems, sign trust envelopes, retire benefits, or publish results for an owner"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/benefits-realization-review.html",
+        "fallback": "outputs/benefits-realization-ledger.md",
+        "asset": "assets/benefits-realization-review.html"
+      },
+      "capabilityClasses": [
+        "visual"
+      ],
+      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
+    },
+    {
       "id": "business-continuity-program-manager",
       "acceptedRequest": "Run the quarterly continuity-program reconciliation over this exact critical-process register, approved BIA exports, dependency attestations, plan revisions, and exercise evidence. Preserve findings, corrective-action receipts, exceptions, and recertification state, but do not invoke a plan, contact vendors, fail over anything, approve exceptions, accept risk, or certify readiness.",
       "requiredEvidence": [
@@ -681,6 +705,35 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "enterprise-license-entitlement-reconciler",
+      "acceptedRequest": "Reconcile organization Northwind's owner-supplied Enterprise Agreement EA-204 license-program LP-2026 rights manifest v4 and SKU mapping v7 against the complete assignment and measured-consumption exports for 2026-08, using cutoff 2026-09-01T00:00:00Z, validation asOf 2026-09-03T18:00:00Z, reconciliation round round-2026-08-r2, and predecessor round-2026-07-r1. Preserve every right, pool, assignment, consumption record, exception, and fresh human decision exactly once. Do not interpret agreement text, infer access or usage, purchase, assign, revoke, renew, mutate accounts, submit a true-up, recommend action, or declare compliance.",
+      "requiredEvidence": [
+        "One organization, agreement, license program, exact caller-trusted predecessor-round reference and digest, reconciliation-round id, fixed period start and end, caller-supplied cutoff and validation asOf, approved private destination, and versioned owner authority roster",
+        "One owner-supplied canonical rights manifest and SKU mapping version with immutable digest, agreement and program binding, metric and conversion definitions, complete right and pool indexes, named source owner, and reciprocal evidence",
+        "Complete entitlement-pool and assignment exports plus complete measured-consumption exports, each fixed to the same organization, agreement, program, period, cutoff, source owner, source revision, source digest, and reciprocal evidence",
+        "Typed named-human source owners, reviewers, approvers, and handoff owner with exact current-round grants, active intervals, separation rules, and reciprocal authority evidence",
+        "Exact exceptions and fresh human decisions bound to one affected right, pool, assignment, or consumption record, with deterministic coverage and destination handoff records"
+      ],
+      "authorityBoundaries": [
+        "Do not interpret contract prose, infer license terms, invent SKU mappings, infer effective access or usage, or declare legal, contractual, audit, or license compliance",
+        "Do not purchase, assign, revoke, reallocate, renew, terminate, or modify licenses, subscriptions, entitlements, accounts, groups, roles, agreements, purchase orders, or source systems",
+        "Do not submit a true-up, order, renewal, claim, attestation, report, or vendor communication, and do not recommend a purchase, removal, or account action",
+        "Do not use wall-clock time, implicit current time, stale predecessor decisions, source-system recommendations, or defaults to settle a reconciliation state",
+        "Do not hide duplicate, omitted, unmapped, out-of-period, conflicting, or unsupported rows; fail closed into typed exceptions and named-human decisions"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/license-position-review.html",
+        "fallback": "outputs/license-position-review.md",
+        "asset": "assets/license-position-review.html"
+      },
+      "capabilityClasses": [
+        "visual"
+      ],
+      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
     },
     {
       "id": "event-operations-director",
@@ -1867,6 +1920,63 @@
       "capabilityDigest": "sha256:3a263720c362329eaafe1c80874a7d2f709ca2c0775b6c2c2a52e225d512011c"
     },
     {
+      "id": "problem-known-error-coordinator",
+      "acceptedRequest": "Reconcile these three owner-declared checkout incidents into the current problem revision, preserve the competing hypothesis tests, approved workaround, known-error declaration, completed change receipt, and later recurrence, and prepare the next owner decision without publishing, changing, or closing anything.",
+      "requiredEvidence": [
+        "Exact open problem revision, predecessor artifact and revision, service scope, accountable problem owner, and caller-controlled cutoff",
+        "Owner-signed incident-membership manifest with complete Incident Response artifact, schema, source-byte, follow-up, and identity digests",
+        "Competing owner hypothesis proposal and disposition revisions with exact QA run, build, environment, evidence, and execution time",
+        "Expiring workaround approval, known-error declaration, Change Control artifact and plan digests, external execution and verification receipts, and later recurrence",
+        "Caller-supplied allowlisted keyring, verified-human credentials, scoped grants, evidence claims, source attestations, owner receipts, and exact closed coverage"
+      ],
+      "authorityBoundaries": [
+        "Do not infer or declare incident correlation or root cause; preserve only owner-signed membership and hypothesis evidence",
+        "Do not approve, execute, or publish a workaround or known error",
+        "Do not authorize or execute production change, mutate incident or problem records, close an incident or problem, or accept risk",
+        "Do not accept stale, equal-time, self-attested, unsigned, unresolved, or incomplete lineage as current evidence"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/problem-known-error-review.html",
+        "fallback": "outputs/problem-known-error-coordinator-handoff.md",
+        "asset": "assets/problem-known-error-review.html"
+      },
+      "capabilityClasses": [
+        "visual",
+        "workspace-execution"
+      ],
+      "capabilityDigest": "sha256:56872736c26fdbc5eff84d5a02de0273b0009d5ad725e38ae55855932fa1f3a1"
+    },
+    {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "acceptedRequest": "Reconcile PO-450 revision 2 and its approved amendment against these complete receipt and invoice exports at the supplied cutoff. Preserve split receipts, the return, partial invoices, the credit, and every unmatched line. Accept only exact owner-approved three-way groups; do not post, pay, create receipts, contact the supplier, interpret tax or accounting treatment, or change any source.",
+      "requiredEvidence": [
+        "One purchase order, exact current revision, prior-revision reference, owner-approved amendment, currency, and complete PO line export",
+        "Complete receipt and return line export plus complete invoice and credit line export at a caller-controlled cutoff",
+        "Immutable owner source identity triples for every PO, receipt, return, invoice, and credit line",
+        "Owner-approved exact matching policy and typed grants scoped to the purchase order, currency, revision, role, and active interval",
+        "Caller-supplied trusted zone-bearing RFC 3339 cutoff and validation asOf plus the named exception owner and private review destination"
+      ],
+      "authorityBoundaries": [
+        "Do not perform fuzzy matching, invent or apply tolerances, normalize currencies, split source rows, infer correspondence, or interpret tax or accounting treatment",
+        "Do not post or reverse accounting entries, initiate or approve payment, create receipts, contact suppliers, alter purchase orders or invoices, or mutate any owner system",
+        "Do not treat a match as approval to pay, a residual as a write-off or materiality judgment, or a complete partition as accounting, audit, control, or compliance assurance"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/three-way-match-review.html",
+        "fallback": "outputs/procure-to-pay-three-way-match.md",
+        "asset": "assets/three-way-match-review.html"
+      },
+      "capabilityClasses": [
+        "visual",
+        "workspace-execution"
+      ],
+      "capabilityDigest": "sha256:56872736c26fdbc5eff84d5a02de0273b0009d5ad725e38ae55855932fa1f3a1"
+    },
+    {
       "id": "procurement-evaluator",
       "acceptedRequest": "Compare these three approved support-platform proposals against our requirements and evidence pack; do not contact vendors or choose one for us.",
       "requiredEvidence": [
@@ -2109,6 +2219,39 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "recurring-third-party-review-evidence-reconciler",
+      "acceptedRequest": "Reconcile our approved Q3 review for Alpine Support and BrightPay Payroll against the six owner-declared requirement cells and signed source receipts as of 2026-09-16T20:00:00Z. Reopen any predecessor decision whose evidence expired, preserve the approved exception and unauthorized risk-acceptance attempt, and do not interpret contracts, contact suppliers, accept risk, execute remediation, renew, or purchase.",
+      "requiredEvidence": [
+        "One approved current review cycle and one independently signed predecessor cycle with caller-controlled asOf",
+        "Owner-approved requirement catalog, exact vendor-service applicability cells, and content-bound revision digests",
+        "One independently signed catalog manifest plus one signed applicability manifest for every declared vendor service",
+        "Evidence-kind freshness rules plus signed source receipts binding exact source bytes, references, versions, and digests",
+        "Current and predecessor typed-human decisions with exact cell, revision, evidence, remediation, and exception bindings",
+        "Typed principals and any applicable remediation, external-exception, or preserved unauthorized risk-acceptance-attempt records"
+      ],
+      "authorityBoundaries": [
+        "Do not interpret requirement, contract, policy, assurance-report, questionnaire, subprocessor, or continuity-test content",
+        "Do not score risk, rank or select suppliers, certify compliance, accept risk, approve an exception, or determine remediation adequacy",
+        "Do not contact a vendor, create a ticket, schedule a review, onboard, renew, terminate, purchase, or mutate any owner system",
+        "Do not produce source evidence, invent applicability, infer missing vendor-service cells, or replace an owner declaration with a Cartesian product",
+        "Do not carry a predecessor decision forward when its relied evidence expired without a current replacement",
+        "Do not use wall-clock time, hidden defaults, unsigned manifests, unauthenticated source bytes, or untrusted keys",
+        "Do not expose private keys, credentials, source contents, or unapproved destinations in the durable handoff"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/third-party-review-status.html",
+        "fallback": "outputs/third-party-review-handoff.md",
+        "asset": "assets/third-party-review-status.html"
+      },
+      "capabilityClasses": [
+        "visual",
+        "workspace-execution"
+      ],
+      "capabilityDigest": "sha256:56872736c26fdbc5eff84d5a02de0273b0009d5ad725e38ae55855932fa1f3a1"
     },
     {
       "id": "release-coordinator",
@@ -2358,6 +2501,35 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "security-alert-review-reconciler",
+      "acceptedRequest": "Reconcile the complete owner-authenticated alert export for 2026-09-16 across code scanning, secret scanning, and dependency alerts. Preserve muted, suppressed, unknown-asset, self-suppression, and revised-alert states; record only authorized human outcomes; and do not query the SIEM, infer correlation or severity, mutate alerts, declare an incident, create tickets, or accept risk.",
+      "requiredEvidence": [
+        "Complete owner snapshot id, revision, capture time, native alert rows, source versions, normalized alert universe, and exact source bytes",
+        "Owner-signed source manifest, independently supplied canonical Ed25519 SPKI trust, named-human principal roster, and caller-pinned roster and evidence roots",
+        "Current and immutable historical detector-policy revisions, safe query-free public detector documentation records, and typed time-bounded grants",
+        "Controlled evidence for snapshots, policy revisions, grants, duplicate declarations, human dispositions, prior decisions, suppression attempts, and incident-owner review requests"
+      ],
+      "authorityBoundaries": [
+        "Do not query a SIEM, detector service, repository host, public URL, scanner, or other source system",
+        "Do not infer cross-source correlation, duplicate membership, source severity, exploitability, reachability, containment need, compliance, assurance, or security posture",
+        "Do not suppress, mute, close, resolve, dismiss, or otherwise mutate a source alert",
+        "Do not perform containment, declare or close an incident, create or update a ticket, accept risk, waive policy, or claim remediation",
+        "Treat muted, suppressed, unknown-asset, self-suppression, and revision-invalidated states as explicit non-decisions rather than approvals"
+      ],
+      "experience": {
+        "target": 4,
+        "primary": "inline-widget",
+        "output": "outputs/security-alert-review.html",
+        "fallback": "outputs/security-alert-review.md",
+        "asset": "assets/security-alert-review.html"
+      },
+      "capabilityClasses": [
+        "visual",
+        "workspace-execution"
+      ],
+      "capabilityDigest": "sha256:56872736c26fdbc5eff84d5a02de0273b0009d5ad725e38ae55855932fa1f3a1"
     },
     {
       "id": "security-analyst",
@@ -2956,59 +3128,6 @@
         "output": "outputs/workforce-plan-review.html",
         "fallback": "outputs/workforce-plan-handoff.md",
         "asset": "assets/workforce-plan-review.html"
-      },
-      "capabilityClasses": [
-        "visual"
-      ],
-      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
-    },
-    {
-      "id": "enterprise-license-entitlement-reconciler",
-      "acceptedRequest": "Reconcile organization Northwind's owner-supplied Enterprise Agreement EA-204 license-program LP-2026 rights manifest v4 and SKU mapping v7 against the complete assignment and measured-consumption exports for 2026-08, using cutoff 2026-09-01T00:00:00Z, validation asOf 2026-09-03T18:00:00Z, reconciliation round round-2026-08-r2, and predecessor round-2026-07-r1. Preserve every right, pool, assignment, consumption record, exception, and fresh human decision exactly once. Do not interpret agreement text, infer access or usage, purchase, assign, revoke, renew, mutate accounts, submit a true-up, recommend action, or declare compliance.",
-      "requiredEvidence": [
-        "One organization, agreement, license program, exact caller-trusted predecessor-round reference and digest, reconciliation-round id, fixed period start and end, caller-supplied cutoff and validation asOf, approved private destination, and versioned owner authority roster",
-        "One owner-supplied canonical rights manifest and SKU mapping version with immutable digest, agreement and program binding, metric and conversion definitions, complete right and pool indexes, named source owner, and reciprocal evidence",
-        "Complete entitlement-pool and assignment exports plus complete measured-consumption exports, each fixed to the same organization, agreement, program, period, cutoff, source owner, source revision, source digest, and reciprocal evidence",
-        "Typed named-human source owners, reviewers, approvers, and handoff owner with exact current-round grants, active intervals, separation rules, and reciprocal authority evidence",
-        "Exact exceptions and fresh human decisions bound to one affected right, pool, assignment, or consumption record, with deterministic coverage and destination handoff records"
-      ],
-      "authorityBoundaries": [
-        "Do not interpret contract prose, infer license terms, invent SKU mappings, infer effective access or usage, or declare legal, contractual, audit, or license compliance",
-        "Do not purchase, assign, revoke, reallocate, renew, terminate, or modify licenses, subscriptions, entitlements, accounts, groups, roles, agreements, purchase orders, or source systems",
-        "Do not submit a true-up, order, renewal, claim, attestation, report, or vendor communication, and do not recommend a purchase, removal, or account action",
-        "Do not use wall-clock time, implicit current time, stale predecessor decisions, source-system recommendations, or defaults to settle a reconciliation state",
-        "Do not hide duplicate, omitted, unmapped, out-of-period, conflicting, or unsupported rows; fail closed into typed exceptions and named-human decisions"
-      ],
-      "experience": {
-        "target": 4,
-        "primary": "inline-widget",
-        "output": "outputs/license-position-review.html",
-        "fallback": "outputs/license-position-review.md",
-        "asset": "assets/license-position-review.html"
-      },
-      "capabilityClasses": [
-        "visual"
-      ],
-      "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
-    },
-    {
-      "id": "benefits-realization-manager",
-      "acceptedRequest": "Reconcile benefits plan support-modernization revision 2 for Q3 from the supplied owner-approved benefit profiles, KPI records, allocation approvals, disbenefit observations, predecessor ledger, source bytes, and public trust store. Show realized and blocked value without claiming causality or changing any source or owner decision.",
-      "requiredEvidence": [
-        "Exact benefits plan id and revision, predecessor revision or first-plan declaration, caller-controlled period and cutoff, currency, minor-unit scale, and complete benefit/disbenefit universe",
-        "Named benefit, metric, finance, and trust owners with stable identities, authority evidence, KPI baseline/target/observation records, allocation approvals, lifecycle decisions, and finance-close evidence",
-        "Injected owner-and-key-scoped public trust, signed semantic envelope, exact source bytes or controlled receipts, source versions and digests, prior-period realized state, and supersession or retirement evidence"
-      ],
-      "authorityBoundaries": [
-        "Do not claim that an initiative caused a KPI movement; allocation is a bounded no-double-count accounting convention, not causal proof",
-        "Do not approve benefits, redefine metrics, alter allocation, certify finance, mutate source systems, sign trust envelopes, retire benefits, or publish results for an owner"
-      ],
-      "experience": {
-        "target": 4,
-        "primary": "inline-widget",
-        "output": "outputs/benefits-realization-review.html",
-        "fallback": "outputs/benefits-realization-ledger.md",
-        "asset": "assets/benefits-realization-review.html"
       },
       "capabilityClasses": [
         "visual"

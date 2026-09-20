@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "awesomeClaws.procureToPayOwnerTrustPolicy.v1",
+  "scope": {
+    "purchaseOrderId": "po-450",
+    "currency": "USD",
+    "currentRevisionRef": "po-450-r2"
+  },
+  "sourceTrustRoots": [
+    {
+      "side": "purchase-order",
+      "sourceSystemRef": "ERP://Procurement/Tenant-7",
+      "exportRef": "PO-450@R2#2026-09-16",
+      "owner": "procurement-system-owner",
+      "lineManifestDigest": "sha256:466e4c140d683cfa89dc59c327b287e5b276217281af1c374d0a5eb52c6d58de"
+    },
+    {
+      "side": "receipt",
+      "sourceSystemRef": "WMS://Receiving/DC-04",
+      "exportRef": "RCV-PO450@2026-09-15T235959Z",
+      "owner": "receiving-system-owner",
+      "lineManifestDigest": "sha256:4959630f3723ab831a4335e1269974bfe41cec5db5cfc1a3965011df9d91c3fe"
+    },
+    {
+      "side": "invoice",
+      "sourceSystemRef": "AP://Invoices/Tenant-7",
+      "exportRef": "AP-PO450@2026-09-15T235959Z",
+      "owner": "accounts-payable-system-owner",
+      "lineManifestDigest": "sha256:4fb2ecdc99032404a372ab97d5f26f50b9bb6a80f601c741fef1ccfcae50a621"
+    }
+  ],
+  "matchingPolicy": {
+    "id": "policy-po-450-exact-three-way",
+    "version": "v1",
+    "approvedPayloadDigest": "sha256:8809547b82278e3c74354b30d620c1329db344e74121353faa2d9126d604a5a8",
+    "groupShape": "one-po-line-to-one-or-more-receipt-and-invoice-lines",
+    "quantityRule": "exact-signed-integer-equality",
+    "amountRule": "exact-signed-minor-unit-equality",
+    "unitPriceRule": "exact-current-po-unit-price",
+    "correspondenceRule": "exact-source-line-reference-only",
+    "taxRule": "out-of-scope",
+    "tolerancesPermitted": false
+  },
+  "authority": {
+    "requiredGrantScopes": [
+      "matching-policy-approval",
+      "purchase-order-amendment-approval",
+      "match-decision",
+      "owner-handoff"
+    ],
+    "grantTarget": [
+      "purchaseOrderId",
+      "currency",
+      "revisionRef"
+    ],
+    "namedHumanRequired": true,
+    "independentIssuerRequired": true,
+    "authorityLedgerDigest": "sha256:dd22a37ed423bd8f68c814381ee8de3fc5f35ed8488d9b7232ce20f7c69c9473",
+    "approvalLedgerDigest": "sha256:d9f08d0cbfdcd5c4bc1bdc97584342d825cdaf78dd82c72a0a30f921c8febc86"
+  },
+  "validation": {
+    "callerSuppliesCutoffAt": true,
+    "callerSuppliesAsOf": true,
+    "zoneBearingRfc3339Required": true,
+    "wallClockFallbackPermitted": false
+  },
+  "reservedAuthority": [
+    "accounting-interpretation",
+    "tax-interpretation",
+    "posting",
+    "payment",
+    "receipt-creation",
+    "supplier-contact",
+    "source-mutation"
+  ]
+}

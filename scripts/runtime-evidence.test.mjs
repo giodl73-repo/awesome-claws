@@ -2823,6 +2823,33 @@ test("only monitor convergence failures receive a cleanup recovery pass", () => 
   );
 });
 
+test("runtime evidence binds the procure-to-pay cutoff and owner trust policy", async () => {
+  const id = "procure-to-pay-three-way-match-exception-reconciler";
+  const { manifest } = await oneClawManifest(id);
+  const ownerTrustPolicy = JSON.parse(
+    await readFile(
+      join(
+        root,
+        "claws",
+        id,
+        "fixtures",
+        "owner-trust-policy.example.json",
+      ),
+      "utf8",
+    ),
+  );
+  const expected = {
+    asOf: "2026-09-16T12:00:00Z",
+    cutoffAt: "2026-09-15T23:59:59Z",
+    ownerTrustPolicy,
+  };
+
+  assert.equal(manifest.trials.length, 3);
+  for (const trial of manifest.trials) {
+    assert.deepEqual(trial.artifacts.semanticOptions, expected);
+  }
+});
+
 test("CLI surface preflight rejects a build without the public Claws lifecycle", async () => {
   await mkdir(join(root, ".tmp"), { recursive: true });
   const proofRoot = await mkdtemp(join(root, ".tmp", "cli-surface-test-"));

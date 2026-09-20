@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "recurring-third-party-review-evidence-reconciler",
+  "scenario": "Reconcile our approved Q3 review for Alpine Support and BrightPay Payroll against the six owner-declared requirement cells and signed source receipts as of 2026-09-16T20:00:00Z. Reopen any predecessor decision whose evidence expired, preserve the approved exception and unauthorized risk-acceptance attempt, and do not interpret contracts, contact suppliers, accept risk, execute remediation, renew, or purchase.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile our approved Q3 review for Alpine Support and BrightPay Payroll against the six owner-declared requirement cells and signed source receipts as of 2026-09-16T20:00:00Z. Reopen any predecessor decision whose evidence expired, preserve the approved exception and unauthorized risk-acceptance attempt, and do not interpret contracts, contact suppliers, accept risk, execute remediation, renew, or purchase."
+    },
+    {
+      "role": "agent",
+      "text": "I bound the review to the approved Q3 cycle, predecessor, six owner-declared cells, signed manifests and source receipts, and caller-supplied asOf. Requirement meaning, source production, remediation, exception, risk, and supplier action remain with their named owners."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/third-party-review-handoff.md and an inline status view from the same validated artifact. All six cells are covered exactly once; one expired assurance report reopened its predecessor decision, the owned remediation and external exception remain explicit, the unauthorized risk-acceptance attempt remains a blocker, and no supplier or lifecycle action occurred."
+    }
+  ],
+  "report": {
+    "title": "Recurring Third-Party Review Evidence Reconciler session handoff",
+    "summary": "A signed six-cell recurring-review artifact and accessible status view showing one expired assurance report, the exact reopened predecessor cell, its owned remediation, the external exception, the unauthorized risk-attempt blocker, complete evidence lineage, and a blocked owner handoff with every consequential authority claim false.",
+    "output": "outputs/third-party-review-handoff.md",
+    "items": [
+      {
+        "title": "Signed review-cycle, owner-manifest, source-receipt, principal, evidence, and decision ledgers",
+        "summary": "Every catalog, cell-index, freshness-rule, predecessor, owner-manifest, source-receipt, and cell digest or signature validates exactly",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact six-cell vendor-service requirement coverage index with immutable cell and revision bindings",
+        "summary": "Every declared cell appears exactly once in both predecessor and current decision coverage with one typed named-human reviewer",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Caller-time evidence-freshness ledger with effective expiry and predecessor reopening",
+        "summary": "Every evidence record has one exact authenticated source receipt and a deterministic current or expired state at caller asOf",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Typed remediation, external exception, and unauthorized risk-attempt blocker register",
+        "summary": "Every expired predecessor decision without replacement is reopened with the exact expired evidence and one owned remediation",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Accessible recurring-review status view with a complete Markdown fallback and blocked or owner-review handoff",
+        "summary": "The handoff exposes every blocker and keeps contract interpretation, source production, certification, risk acceptance, remediation execution, supplier contact, renewal, and purchase authority false",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "procure-to-pay-three-way-match-exception-reconciler",
+    "name": "Procure-to-Pay Three-Way Match Exception Reconciler",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73"
+      ],
+      "lastVerified": "2026-09-16"
+    },
+    "description": "Reconciles one exact owner-approved purchase-order revision against complete receipt and invoice line exports, partitioning every line into an authorized exact three-sided group or a typed side-specific residual.",
+    "audience": "Authorized procurement operations, receiving operations, accounts-payable operations, and accountable finance owners reviewing purchase-order matching exceptions from approved exports.",
+    "principles": [
+      "Keep procurement, receiving, invoice, accounting, and payment systems authoritative while preserving their exact source-line identities",
+      "Prove totality before readiness by consuming every PO, receipt, and invoice line exactly once in one allowed three-sided group or side-specific residual",
+      "Require exact owner-approved policy, current-revision, integer quantity, integer minor-unit, reversal-lineage, human-authority, cutoff, and handoff bindings"
+    ],
+    "boundaries": [
+      "Do not perform fuzzy matching, invent or apply tolerances, normalize currencies, split source rows, infer correspondence, or interpret tax or accounting treatment",
+      "Do not post or reverse accounting entries, initiate or approve payment, create receipts, contact suppliers, alter purchase orders or invoices, or mutate any owner system",
+      "Do not treat a match as approval to pay, a residual as a write-off or materiality judgment, or a complete partition as accounting, audit, control, or compliance assurance"
+    ],
+    "intake": [
+      "One purchase order, exact current revision, prior-revision reference, owner-approved amendment, currency, and complete PO line export",
+      "Complete receipt and return line export plus complete invoice and credit line export at a caller-controlled cutoff",
+      "Immutable owner source identity triples for every PO, receipt, return, invoice, and credit line",
+      "Owner-approved exact matching policy and typed grants scoped to the purchase order, currency, revision, role, and active interval",
+      "Caller-supplied trusted zone-bearing RFC 3339 cutoff and validation asOf plus the named exception owner and private review destination"
+    ],
+    "workflow": [
+      "Verify the caller-controlled cutoff, current PO revision, prior revision, amendment, matching policy, named principals, and target-bound grants",
+      "Recompute all three exact line manifests while preserving opaque source-system, export, and source-native line identifiers",
+      "Validate return and credit lineage against the exact earlier source line with matching PO line, revision, currency, unit, and chronology",
+      "Evaluate only one-PO-line groups with exact referenced receipt and invoice lines using signed integer quantities and integer minor units",
+      "Consume every line exactly once in an allowed three-sided group or evidence-derived side residual, rejecting omission, reuse, row splitting, stale revision, and false residualization",
+      "Bind policy, amendment, revision, decisions, manifests, coverage, residuals, and authority non-claims into one partition root and produce a blocked, pending-owner-review, or accepted-for-owner-review handoff"
+    ],
+    "deliverables": [
+      "Exact PO, receipt, and invoice line manifests with immutable owner source identities",
+      "Owner-approved policy, amendment, revision, and typed grant ledger",
+      "Authorized exact three-sided match-group register with reversal lineage and deterministic arithmetic",
+      "Complete side-specific residual and structured blocker register",
+      "Partition-root-bound X3 handoff and matching accessible X4 exception-review visual"
+    ],
+    "example": {
+      "request": "Reconcile PO-450 revision 2 and its approved amendment against these complete receipt and invoice exports at the supplied cutoff. Preserve split receipts, the return, partial invoices, the credit, and every unmatched line. Accept only exact owner-approved three-way groups; do not post, pay, create receipts, contact the supplier, interpret tax or accounting treatment, or change any source.",
+      "outcome": "A partition-root-bound review with two exact authorized three-sided groups, one PO-side residual, complete source-line identity and reversal evidence, zero hidden or reused lines, and no posting, payment, supplier-contact, interpretation, or mutation claim."
+    },
+    "doneWhen": [
+      "The current PO revision and amendment payloads, owner matching policy, scoped grants, and caller-controlled time all validate exactly",
+      "All three line manifests recompute and every source identity triple is unique within its owner export",
+      "Every return and credit is either bound to its exact earlier source line or preserved as a side-specific residual",
+      "Every PO, receipt, and invoice line is consumed exactly once by an allowed one-PO-line three-sided group or one side-specific residual",
+      "Every accepted group has equal net integer quantities, exact current PO unit price, equal invoice and PO minor-unit amounts, and a current named-human decision bound to policy and manifests",
+      "The blocked, pending-owner-review, or accepted-for-owner-review handoff recomputes from the complete partition root and structurally claims no accounting, tax, posting, payment, receipt-creation, supplier-contact, or mutation authority"
+    ],
+    "openclawProfile": {
+      "schemaVersion": 1,
+      "agent": {
+        "tools": {
+          "profile": "minimal",
+          "alsoAllow": [
+            "read",
+            "write",
+            "edit",
+            "exec",
+            "show_widget"
+          ],
+          "fs": {
+            "workspaceOnly": true
+          }
+        }
+      }
+    },
+    "capabilityGuidance": [
+      "The profile grants workspace read, write, edit, inline presentation, and workspace-local execution solely for the packaged deterministic validator; it grants no ERP, procurement, receiving, invoice, accounting, tax, payment, messaging, browser, network, MCP, plugin, cron, or source-mutation capability.",
+      "Run node scripts/procure-to-pay-three-way-match-validator.mjs against the bounded artifact with explicit --workspace-root, --as-of, --cutoff, and --owner-trust-policy arguments before accepting any match or residual state.",
+      "Owner systems and named humans retain source completeness and authenticity, policy and amendment approval, exception disposition, accounting and tax interpretation, posting, payment, receipt creation, supplier communication, and every mutation.",
+      "The X4 visual is a projection of the schema-valid X3 record; the Markdown handoff remains the complete accessible fallback.",
+      "Malformed, omitted, duplicated, split, reused, stale, future, cross-revision, cross-currency, reversal-invalid, arithmetically inconsistent, incompletely covered, or root-drifted evidence fails closed."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/procure-to-pay-three-way-match.schema.json",
+        "path": "schemas/procure-to-pay-three-way-match.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "scripts/procure-to-pay-three-way-match-validator.mjs",
+        "path": "scripts/procure-to-pay-three-way-match-validator.mjs",
+        "role": "reference"
+      },
+      {
+        "source": "fixtures/procure-to-pay-three-way-match.example.json",
+        "path": "fixtures/procure-to-pay-three-way-match.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/procure-to-pay-three-way-match.failures.json",
+        "path": "fixtures/procure-to-pay-three-way-match.failures.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/procure-to-pay-three-way-match.irreducibility.json",
+        "path": "fixtures/procure-to-pay-three-way-match.irreducibility.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/owner-trust-policy.example.json",
+        "path": "fixtures/owner-trust-policy.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "references/owner-trust-and-policy.md",
+        "path": "references/owner-trust-and-policy.md",
+        "role": "reference"
+      },
+      {
+        "source": "templates/procure-to-pay-three-way-match.md",
+        "path": "templates/procure-to-pay-three-way-match.md",
+        "role": "template"
+      },
+      {
+        "source": "assets/three-way-match-review.html",
+        "path": "assets/three-way-match-review.html",
+        "role": "asset"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Procure-to-pay exceptions are commonly reconciled through separate PO-to-receipt and PO-to-invoice worksheets. Those pairwise views can mix revisions, hide return or credit lineage, reuse one invoice line, omit unmatched lines, or imply payment readiness without one atomic three-source partition.",
+    "repeatableJob": "For authorized procurement, receiving, and accounts-payable owners, reconcile one exact current purchase-order revision, complete receipt and return lines, and complete invoice and credit lines into an atomic exact three-source partition with typed residuals and a bounded owner handoff.",
+    "proofPlan": "Prove an X3 artifact and matching X4 visual with a strict JSON Schema, total deterministic semantic validator, exact owner source identities, owner-approved policy and amendment payload digests, PO/currency/revision-scoped grants, exact line manifests, reversal lineage, caller-controlled cutoff and asOf, integer quantity and minor-unit arithmetic, no-reuse partition totality, decision bindings to policy and all manifests, complete partition root, blocked and accepted states, malformed-input totality, adversarial replay, row-splitting, reversal chronology, public artifact validation, regression, runtime evidence, semantic recipes, canonical Mock+, generated package checks, current Control UI proof, and no action authority.",
+    "categoryRationale": "Filed under governance because the repeatable job is a bounded evidence and authority record across three owner systems. It neither evaluates suppliers nor executes procurement or accounts-payable work.",
+    "existingAlternatives": [
+      {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both use exact source manifests, deterministic integer arithmetic, typed human authority, total line consumption, explicit residuals, caller-controlled time, and a read-only owner handoff.",
+        "difference": "Financial Account Reconciliation Coordinator partitions two co-equal signed monetary exports using 1:1, 1:n, or n:1 balance groups. This proposal atomically binds three asymmetric source types, a current PO revision and amendment, quantity-only receipts and returns, invoice and credit amounts, one-PO-line policy, reversal lineage, and three-manifest decisions."
+      },
+      {
+        "id": "invoice-payment-followup",
+        "overlap": "Both preserve invoices, credits, evidence gaps, owner authority, and a no-payment or no-accounting-action boundary.",
+        "difference": "Invoice and Payment Follow-up tracks aggregate receivable status and owner-reviewed client communication. This proposal performs no follow-up and instead proves exact payable-side PO, receipt, and invoice line consumption and exception evidence."
+      },
+      {
+        "id": "procurement-evaluator",
+        "overlap": "Both serve procurement and finance owners, use approved policy and evidence, surface exceptions, and prohibit vendor contact, selection, or purchase authority.",
+        "difference": "Procurement Evaluator compares and scores a vendor shortlist before selection. This proposal scores and recommends nothing; it reconciles post-order transaction lines under one exact approved matching policy."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both bind an owner-confirmed current revision, exact source universe, evidence chronology, named-human authority, residual blockers, and a bounded handoff.",
+        "difference": "Contract Obligation Tracker observes performance against an executed-agreement obligation register without amount matching. This proposal validates PO amendment, receipt and return, invoice and credit line identity plus exact quantity and minor-unit equality."
+      },
+      {
+        "id": "commercial-deal-desk-coordinator",
+        "overlap": "Both bind one immutable commercial revision, exact line arithmetic, owner policy, independent approvals, complete coverage, and an internal readiness handoff.",
+        "difference": "Commercial Deal Desk Coordinator reconciles seller-side quote configuration, pricing, margin, licensing, legal deviations, and order readiness. This proposal is buyer-side post-order evidence reconciliation across PO, receiving, and invoice sources with no negotiation or commercial approval workflow."
+      }
+    ]
+  }
+}

@@ -1,0 +1,631 @@
+{
+  "schemaVersion": "awesomeClaws.problemKnownErrorCandidate.v1",
+  "problem": {
+    "id": "problem-checkout-timeout",
+    "revision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+    "predecessorArtifactDigest": "sha256:0909090909090909090909090909090909090909090909090909090909090909",
+    "predecessorRevisionRef": "sha256:0808080808080808080808080808080808080808080808080808080808080808",
+    "declarationEvidenceRef": "evidence-problem-revision",
+    "title": "Recurring checkout timeout after route-cache updates",
+    "serviceRefs": [
+      "service-checkout-api",
+      "service-route-cache"
+    ],
+    "declaredByRef": "principal-problem-owner",
+    "declaredAt": "2026-08-13T09:00:00Z",
+    "state": "open"
+  },
+  "principals": [
+    {
+      "id": "principal-problem-owner",
+      "kind": "named-human",
+      "displayName": "Avery Problem Owner",
+      "identityCredentialRef": "credential-problem-owner",
+      "scopes": [
+        "problem-owner",
+        "incident-membership-declarer",
+        "problem-closure-authority"
+      ]
+    },
+    {
+      "id": "principal-investigator",
+      "kind": "named-human",
+      "displayName": "Riley Reliability Investigator",
+      "identityCredentialRef": "credential-investigator",
+      "scopes": [
+        "hypothesis-owner"
+      ]
+    },
+    {
+      "id": "principal-qa-engineer-alex",
+      "kind": "named-human",
+      "displayName": "Alex Rivera",
+      "identityCredentialRef": "credential-qa-engineer-alex",
+      "scopes": [
+        "test-executor"
+      ]
+    },
+    {
+      "id": "principal-workaround-owner",
+      "kind": "named-human",
+      "displayName": "Jordan Service Owner",
+      "identityCredentialRef": "credential-workaround-owner",
+      "scopes": [
+        "workaround-approver"
+      ]
+    },
+    {
+      "id": "principal-known-error-owner",
+      "kind": "named-human",
+      "displayName": "Casey Known Error Owner",
+      "identityCredentialRef": "credential-known-error-owner",
+      "scopes": [
+        "known-error-authority",
+        "root-cause-declarer"
+      ]
+    },
+    {
+      "id": "principal-change-owner",
+      "kind": "named-human",
+      "displayName": "Taylor Change Owner",
+      "identityCredentialRef": "credential-change-owner",
+      "scopes": [
+        "change-executor"
+      ]
+    },
+    {
+      "id": "principal-incident-system",
+      "kind": "external-system",
+      "displayName": "Incident record system",
+      "identityCredentialRef": null,
+      "scopes": [
+        "incident-record-authority"
+      ]
+    },
+    {
+      "id": "principal-public-status",
+      "kind": "external-system",
+      "displayName": "Public service status publisher",
+      "identityCredentialRef": null,
+      "scopes": [
+        "incident-record-authority",
+        "public-source"
+      ]
+    },
+    {
+      "id": "principal-problem-coordinator-claw",
+      "kind": "claw",
+      "displayName": "IT Problem Evidence and Known-Error Coordinator",
+      "identityCredentialRef": null,
+      "scopes": [
+        "evidence-coordinator"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-problem-revision",
+      "kind": "problem-revision-declaration",
+      "trust": "controlled-owner",
+      "subjectRef": "problem-checkout-timeout",
+      "subjectRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "producedByRef": "principal-problem-owner",
+      "sourceRef": "controlled://problem/checkout-timeout/revisions/current",
+      "recordDigest": "sha256:0500000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-08-13T09:00:01Z"
+    },
+    {
+      "id": "evidence-membership-inc-001",
+      "kind": "incident-membership-declaration",
+      "trust": "controlled-owner",
+      "subjectRef": "membership-inc-001",
+      "subjectRevision": "sha256:a6a31a6a56c5221e94158dece407bf49bb4c3b08aecc0d208b999836820a24f9",
+      "producedByRef": "principal-problem-owner",
+      "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-001",
+      "recordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-08-13T09:01:01Z"
+    },
+    {
+      "id": "evidence-membership-inc-002",
+      "kind": "incident-membership-declaration",
+      "trust": "controlled-owner",
+      "subjectRef": "membership-inc-002",
+      "subjectRevision": "sha256:fc77e3a7487699c4b9c36df63d92200a04f91edde856945e602c66f1e3997f08",
+      "producedByRef": "principal-problem-owner",
+      "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-002",
+      "recordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000002",
+      "observedAt": "2026-08-13T09:02:01Z"
+    },
+    {
+      "id": "evidence-membership-inc-003",
+      "kind": "incident-membership-declaration",
+      "trust": "controlled-owner",
+      "subjectRef": "membership-inc-003",
+      "subjectRevision": "sha256:bc8af6a05d4609fff91b2b79290e4800a54aa75dff8c5ef3d0bce3e891b09fc0",
+      "producedByRef": "principal-problem-owner",
+      "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-003",
+      "recordDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000003",
+      "observedAt": "2026-09-05T14:32:01Z"
+    },
+    {
+      "id": "evidence-incident-inc-001",
+      "kind": "incident-record",
+      "trust": "controlled-owner",
+      "subjectRef": "incident-inc-001",
+      "subjectRevision": "sha256:896fa08da426b0d94f3b7192a242bfc5696d0ec1e5ce6a0bfec0495395185e8e",
+      "producedByRef": "principal-incident-system",
+      "sourceRef": "controlled://incidents/inc-001/revision/4",
+      "recordDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-06-10T12:20:00Z"
+    },
+    {
+      "id": "evidence-incident-inc-002",
+      "kind": "incident-record",
+      "trust": "controlled-owner",
+      "subjectRef": "incident-inc-002",
+      "subjectRevision": "sha256:23c869947c9f8c93bf7ccd6a99de1bd3eab41002f23e840c757f37f27657faf5",
+      "producedByRef": "principal-incident-system",
+      "sourceRef": "controlled://incidents/inc-002/revision/3",
+      "recordDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000002",
+      "observedAt": "2026-07-15T16:40:00Z"
+    },
+    {
+      "id": "evidence-public-status-inc-003",
+      "kind": "public-observation",
+      "trust": "public",
+      "subjectRef": "incident-inc-003",
+      "subjectRevision": "sha256:8e5d7ae13925cfc44e8023c7186b341f2e535d21cb25936272f4bd616857d7e1",
+      "producedByRef": "principal-public-status",
+      "sourceRef": "https://status.contoso.example/incidents/inc-003",
+      "recordDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000003",
+      "observedAt": "2026-09-05T14:30:00Z"
+    },
+    {
+      "id": "evidence-incident-manifest-signature",
+      "kind": "incident-membership-manifest-signature",
+      "trust": "controlled-owner",
+      "subjectRef": "incident-manifest-checkout-timeout-r1",
+      "subjectRevision": "sha256:1614e97bd87cdbbf4872ba6fc88ac4440ea8884dedcf51ee985c0c9a5382ad1e",
+      "producedByRef": "principal-problem-owner",
+      "sourceRef": "controlled://problem/checkout-timeout/incident-manifest/r1",
+      "recordDigest": "sha256:1500000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-05T14:33:01Z"
+    },
+    {
+      "id": "evidence-hypothesis-route-cache",
+      "kind": "hypothesis-observation",
+      "trust": "controlled-owner",
+      "subjectRef": "hypothesis-route-cache-r2",
+      "subjectRevision": "sha256:ebdb831744188d811a9ab06496bda0edb0b04add1ebef2c57b21644de9cbf7b9",
+      "producedByRef": "principal-investigator",
+      "sourceRef": "controlled://problem/checkout-timeout/hypotheses/route-cache-r2",
+      "recordDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-01T10:10:01Z"
+    },
+    {
+      "id": "evidence-hypothesis-database",
+      "kind": "hypothesis-observation",
+      "trust": "controlled-owner",
+      "subjectRef": "hypothesis-database-r1",
+      "subjectRevision": "sha256:0afd58ffaff0ac1fd58668eee489a46d2263636e8a8bd586f84a87eb67d5e356",
+      "producedByRef": "principal-investigator",
+      "sourceRef": "controlled://problem/checkout-timeout/hypotheses/database-r1",
+      "recordDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000002",
+      "observedAt": "2026-09-01T11:10:01Z"
+    },
+    {
+      "id": "evidence-test-route-cache",
+      "kind": "test-result",
+      "trust": "controlled-owner",
+      "subjectRef": "test-route-cache-reproduction",
+      "subjectRevision": "sha256:d3e8b2e220d8c1d4f607722d911a9e5bdebd7c615341d45577c46e8ce68626b2",
+      "producedByRef": "principal-qa-engineer-alex",
+      "sourceRef": "controlled://qa/problem-checkout-timeout/runs/route-cache-reproduction",
+      "recordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-01T10:05:00Z"
+    },
+    {
+      "id": "evidence-test-database",
+      "kind": "test-result",
+      "trust": "controlled-owner",
+      "subjectRef": "test-database-load-replay",
+      "subjectRevision": "sha256:55fe4cd21b3c7e3136850aba91bc68412ed43136fd0276123b00ca4ac81badb7",
+      "producedByRef": "principal-qa-engineer-alex",
+      "sourceRef": "controlled://qa/problem-checkout-timeout/runs/database-load-replay",
+      "recordDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000002",
+      "observedAt": "2026-09-01T11:05:00Z"
+    },
+    {
+      "id": "evidence-workaround-approval",
+      "kind": "workaround-approval",
+      "trust": "controlled-owner",
+      "subjectRef": "workaround-route-cache-refresh-r1",
+      "subjectRevision": "sha256:aa6367e6c2bd09368c7b5bb9b8cd606eac6802fc974d91da09a779c6395fd890",
+      "producedByRef": "principal-workaround-owner",
+      "sourceRef": "controlled://service-owner/approvals/workaround-route-cache-refresh-r1",
+      "recordDigest": "sha256:5000000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-02T09:00:01Z"
+    },
+    {
+      "id": "evidence-known-error-declaration",
+      "kind": "known-error-declaration",
+      "trust": "controlled-owner",
+      "subjectRef": "known-error-checkout-timeout-r1",
+      "subjectRevision": "sha256:1f426d577f73dbad45a28091fee0a6e93014280a4a30365315173a1731f4e8fa",
+      "producedByRef": "principal-known-error-owner",
+      "sourceRef": "controlled://problem-owner/known-errors/checkout-timeout-r1",
+      "recordDigest": "sha256:6000000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-03T15:00:01Z"
+    },
+    {
+      "id": "evidence-change-execution",
+      "kind": "change-execution-receipt",
+      "trust": "controlled-owner",
+      "subjectRef": "change-receipt-chg-4821",
+      "subjectRevision": "sha256:5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+      "producedByRef": "principal-change-owner",
+      "sourceRef": "controlled://changes/chg-4821/execution/receipt",
+      "recordDigest": "sha256:7100000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-04T10:00:01Z"
+    },
+    {
+      "id": "evidence-change-verification",
+      "kind": "change-verification",
+      "trust": "controlled-owner",
+      "subjectRef": "change-receipt-chg-4821",
+      "subjectRevision": "sha256:5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+      "producedByRef": "principal-qa-engineer-alex",
+      "sourceRef": "controlled://qa/changes/chg-4821/verification",
+      "recordDigest": "sha256:7100000000000000000000000000000000000000000000000000000000000002",
+      "observedAt": "2026-09-04T10:05:00Z"
+    },
+    {
+      "id": "evidence-problem-change-link",
+      "kind": "problem-change-link",
+      "trust": "controlled-owner",
+      "subjectRef": "change-receipt-chg-4821",
+      "subjectRevision": "sha256:08fc6a89aa402bbe5fa026e9b88c3aab99b5eacfa001152b62b9e58bd8ab039a",
+      "producedByRef": "principal-problem-owner",
+      "sourceRef": "controlled://problem/checkout-timeout/change-links/chg-4821",
+      "recordDigest": "sha256:7200000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-04T10:10:01Z"
+    },
+    {
+      "id": "evidence-recurrence-inc-003",
+      "kind": "recurrence-observation",
+      "trust": "controlled-owner",
+      "subjectRef": "recurrence-after-chg-4821",
+      "subjectRevision": "sha256:eeea59b16226fd3dc7d752a403d2ccb24128a208e8161fcb0e6492401b00a912",
+      "producedByRef": "principal-incident-system",
+      "sourceRef": "controlled://incidents/inc-003/recurrence-observation",
+      "recordDigest": "sha256:8000000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-05T14:35:01Z"
+    },
+    {
+      "id": "evidence-owner-prose",
+      "kind": "owner-prose-receipt",
+      "trust": "controlled-owner",
+      "subjectRef": "prose-attestation-checkout-timeout-r1",
+      "subjectRevision": "sha256:517430c6f288dfcad1983898fa856c4570edc0567d7322b043516709e6d9e8e3",
+      "producedByRef": "principal-problem-owner",
+      "sourceRef": "controlled://problem/checkout-timeout/prose/r1",
+      "recordDigest": "sha256:8500000000000000000000000000000000000000000000000000000000000001",
+      "observedAt": "2026-09-05T15:00:01Z"
+    }
+  ],
+  "incidentMemberships": [
+    {
+      "id": "membership-inc-001",
+      "revision": "sha256:a6a31a6a56c5221e94158dece407bf49bb4c3b08aecc0d208b999836820a24f9",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "incidentRef": "incident-inc-001",
+      "incidentRevision": "sha256:896fa08da426b0d94f3b7192a242bfc5696d0ec1e5ce6a0bfec0495395185e8e",
+      "followUpRef": "follow-up-inc-001-timeout",
+      "followUpIdentityKey": "sha256:4b7c9bd464af25197ca45f3bc4ccc8c48f9e31d5dd0e2a4eaa826e8d5774d2e8",
+      "ownerArtifactDigest": "sha256:896fa08da426b0d94f3b7192a242bfc5696d0ec1e5ce6a0bfec0495395185e8e",
+      "ownerSchemaDigest": "sha256:9b2e757855bde911fceaf4f294a8c1ecdbda82c37c7632992e4a309fbd72f3da",
+      "declaredByRef": "principal-problem-owner",
+      "declarationEvidenceRef": "evidence-membership-inc-001",
+      "incidentRecordEvidenceRef": "evidence-incident-inc-001",
+      "declaredAt": "2026-08-13T09:01:00Z",
+      "state": "declared-by-owner"
+    },
+    {
+      "id": "membership-inc-002",
+      "revision": "sha256:fc77e3a7487699c4b9c36df63d92200a04f91edde856945e602c66f1e3997f08",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "incidentRef": "incident-inc-002",
+      "incidentRevision": "sha256:23c869947c9f8c93bf7ccd6a99de1bd3eab41002f23e840c757f37f27657faf5",
+      "followUpRef": "follow-up-inc-002-timeout",
+      "followUpIdentityKey": "sha256:c2f45e91b9ef77629b94dede7ac7132465e6d28d7505133d92aaf61ce2a58574",
+      "ownerArtifactDigest": "sha256:23c869947c9f8c93bf7ccd6a99de1bd3eab41002f23e840c757f37f27657faf5",
+      "ownerSchemaDigest": "sha256:9b2e757855bde911fceaf4f294a8c1ecdbda82c37c7632992e4a309fbd72f3da",
+      "declaredByRef": "principal-problem-owner",
+      "declarationEvidenceRef": "evidence-membership-inc-002",
+      "incidentRecordEvidenceRef": "evidence-incident-inc-002",
+      "declaredAt": "2026-08-13T09:02:00Z",
+      "state": "declared-by-owner"
+    },
+    {
+      "id": "membership-inc-003",
+      "revision": "sha256:bc8af6a05d4609fff91b2b79290e4800a54aa75dff8c5ef3d0bce3e891b09fc0",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "incidentRef": "incident-inc-003",
+      "incidentRevision": "sha256:8e5d7ae13925cfc44e8023c7186b341f2e535d21cb25936272f4bd616857d7e1",
+      "followUpRef": "follow-up-inc-003-timeout",
+      "followUpIdentityKey": "sha256:df48ce2d1f659e0ae57aa0c8fa2906bec49163cdd507b1295748d38c2f779de1",
+      "ownerArtifactDigest": "sha256:8e5d7ae13925cfc44e8023c7186b341f2e535d21cb25936272f4bd616857d7e1",
+      "ownerSchemaDigest": "sha256:9b2e757855bde911fceaf4f294a8c1ecdbda82c37c7632992e4a309fbd72f3da",
+      "declaredByRef": "principal-problem-owner",
+      "declarationEvidenceRef": "evidence-membership-inc-003",
+      "incidentRecordEvidenceRef": "evidence-public-status-inc-003",
+      "declaredAt": "2026-09-05T14:32:00Z",
+      "state": "declared-by-owner"
+    }
+  ],
+  "incidentManifest": {
+    "id": "incident-manifest-checkout-timeout-r1",
+    "revision": "sha256:1614e97bd87cdbbf4872ba6fc88ac4440ea8884dedcf51ee985c0c9a5382ad1e",
+    "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+    "membershipRevisionRefs": [
+      "sha256:a6a31a6a56c5221e94158dece407bf49bb4c3b08aecc0d208b999836820a24f9",
+      "sha256:bc8af6a05d4609fff91b2b79290e4800a54aa75dff8c5ef3d0bce3e891b09fc0",
+      "sha256:fc77e3a7487699c4b9c36df63d92200a04f91edde856945e602c66f1e3997f08"
+    ],
+    "signedByRef": "principal-problem-owner",
+    "signatureEvidenceRef": "evidence-incident-manifest-signature",
+    "signedAt": "2026-09-05T14:33:00Z",
+    "state": "owner-signed"
+  },
+  "hypotheses": [
+    {
+      "id": "hypothesis-route-cache-r2",
+      "revision": "sha256:e72bf365f8dd305acf8ef5e15906ab9a619704a6fcdddb72116b01e615c1ff05",
+      "dispositionRevision": "sha256:ebdb831744188d811a9ab06496bda0edb0b04add1ebef2c57b21644de9cbf7b9",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "statement": "A stale upstream route cache preserves retired 20-second timeout values after rollout.",
+      "ownerRef": "principal-investigator",
+      "state": "supported",
+      "competesWithRef": "hypothesis-database-r1",
+      "testRefs": [
+        "test-route-cache-reproduction"
+      ],
+      "testRevisionRefs": [
+        "sha256:d3e8b2e220d8c1d4f607722d911a9e5bdebd7c615341d45577c46e8ce68626b2"
+      ],
+      "observationEvidenceRefs": [
+        "evidence-hypothesis-route-cache"
+      ],
+      "proposedAt": "2026-08-13T10:00:00Z",
+      "revisedAt": "2026-09-01T10:10:00Z"
+    },
+    {
+      "id": "hypothesis-database-r1",
+      "revision": "sha256:24a03333d298e0f86d872accf465a7e257e73710f939ffaa69e8ca38c5d9aa7b",
+      "dispositionRevision": "sha256:0afd58ffaff0ac1fd58668eee489a46d2263636e8a8bd586f84a87eb67d5e356",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "statement": "Primary database saturation causes the recurring checkout timeout.",
+      "ownerRef": "principal-investigator",
+      "state": "refuted",
+      "competesWithRef": "hypothesis-route-cache-r2",
+      "testRefs": [
+        "test-database-load-replay"
+      ],
+      "testRevisionRefs": [
+        "sha256:55fe4cd21b3c7e3136850aba91bc68412ed43136fd0276123b00ca4ac81badb7"
+      ],
+      "observationEvidenceRefs": [
+        "evidence-hypothesis-database"
+      ],
+      "proposedAt": "2026-08-13T10:05:00Z",
+      "revisedAt": "2026-09-01T11:10:00Z"
+    }
+  ],
+  "tests": [
+    {
+      "id": "test-route-cache-reproduction",
+      "revision": "sha256:d3e8b2e220d8c1d4f607722d911a9e5bdebd7c615341d45577c46e8ce68626b2",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "hypothesisRef": "hypothesis-route-cache-r2",
+      "hypothesisRevisionRef": "sha256:e72bf365f8dd305acf8ef5e15906ab9a619704a6fcdddb72116b01e615c1ff05",
+      "ownerArtifactDigest": "sha256:b9ef69917e16d3ff13c241ca4cedb6212239cf175805c5885d379dfa2bca71a1",
+      "ownerSchemaDigest": "sha256:f5eea136d8ec5a9e071d6afb4a206c1166021a20cbb9bb506d4a6ab68256afd5",
+      "qaArtifactRef": "sources/quality-assurance-lead/fixtures/test-evidence.example.json",
+      "testRunRef": "run-checkout-completion-1",
+      "buildId": "release-2026.9.0-mobile",
+      "environment": "staging-mobile-qa",
+      "outcome": "supports",
+      "executedByRef": "principal-qa-engineer-alex",
+      "evidenceRef": "evidence-test-route-cache",
+      "executedAt": "2026-09-01T10:00:00Z"
+    },
+    {
+      "id": "test-database-load-replay",
+      "revision": "sha256:55fe4cd21b3c7e3136850aba91bc68412ed43136fd0276123b00ca4ac81badb7",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "hypothesisRef": "hypothesis-database-r1",
+      "hypothesisRevisionRef": "sha256:24a03333d298e0f86d872accf465a7e257e73710f939ffaa69e8ca38c5d9aa7b",
+      "ownerArtifactDigest": "sha256:b9ef69917e16d3ff13c241ca4cedb6212239cf175805c5885d379dfa2bca71a1",
+      "ownerSchemaDigest": "sha256:f5eea136d8ec5a9e071d6afb4a206c1166021a20cbb9bb506d4a6ab68256afd5",
+      "qaArtifactRef": "sources/quality-assurance-lead/fixtures/test-evidence.example.json",
+      "testRunRef": "run-payment-retry-1",
+      "buildId": "release-2026.9.0-mobile",
+      "environment": "staging-mobile-qa",
+      "outcome": "refutes",
+      "executedByRef": "principal-qa-engineer-alex",
+      "evidenceRef": "evidence-test-database",
+      "executedAt": "2026-09-01T11:00:00Z"
+    }
+  ],
+  "workarounds": [
+    {
+      "id": "workaround-route-cache-refresh-r1",
+      "revision": "sha256:aa6367e6c2bd09368c7b5bb9b8cd606eac6802fc974d91da09a779c6395fd890",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "hypothesisRef": "hypothesis-route-cache-r2",
+      "hypothesisDispositionRevisionRef": "sha256:ebdb831744188d811a9ab06496bda0edb0b04add1ebef2c57b21644de9cbf7b9",
+      "instructions": "The service owner may refresh the route-cache generation under the approved operations runbook.",
+      "state": "owner-approved-active",
+      "approvedByRef": "principal-workaround-owner",
+      "approvalEvidenceRef": "evidence-workaround-approval",
+      "approvedAt": "2026-09-02T09:00:00Z",
+      "expiresAt": "2026-09-30T23:59:59Z",
+      "publicationState": "not-published",
+      "executionState": "not-executed-by-claw"
+    }
+  ],
+  "knownErrors": [
+    {
+      "id": "known-error-checkout-timeout-r1",
+      "revision": "sha256:1f426d577f73dbad45a28091fee0a6e93014280a4a30365315173a1731f4e8fa",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "causeHypothesisRef": "hypothesis-route-cache-r2",
+      "causeHypothesisDispositionRevisionRef": "sha256:ebdb831744188d811a9ab06496bda0edb0b04add1ebef2c57b21644de9cbf7b9",
+      "workaroundRef": "workaround-route-cache-refresh-r1",
+      "workaroundRevisionRef": "sha256:aa6367e6c2bd09368c7b5bb9b8cd606eac6802fc974d91da09a779c6395fd890",
+      "causeState": "declared-by-owner",
+      "declaredByRef": "principal-known-error-owner",
+      "declarationEvidenceRef": "evidence-known-error-declaration",
+      "declaredAt": "2026-09-03T15:00:00Z",
+      "publicationState": "not-published"
+    }
+  ],
+  "changeReceipts": [
+    {
+      "id": "change-receipt-chg-4821",
+      "revision": "sha256:08fc6a89aa402bbe5fa026e9b88c3aab99b5eacfa001152b62b9e58bd8ab039a",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "changePlanRef": "staging-retry-limit",
+      "planDigest": "sha256:5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+      "ownerArtifactDigest": "sha256:99d5ce538300782ddd0b134e0c8dd9f2a4200c685476180b40cb33f9cb4b23f5",
+      "ownerSchemaDigest": "sha256:de7279299a2545b37dc321c17d4afe8aed10d733e0643eb07e6390656cf14164",
+      "ownerPlanDigest": "5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+      "executionReceiptRef": "evidence-change-execution",
+      "linkEvidenceRef": "evidence-problem-change-link",
+      "executedByRef": "principal-change-owner",
+      "executedAt": "2026-09-04T10:00:00Z",
+      "linkedAt": "2026-09-04T10:10:00Z",
+      "state": "owner-executed",
+      "targetRefs": [
+        "service-route-cache"
+      ],
+      "verificationEvidenceRefs": [
+        "evidence-change-verification"
+      ]
+    }
+  ],
+  "recurrences": [
+    {
+      "id": "recurrence-after-chg-4821",
+      "revision": "sha256:eeea59b16226fd3dc7d752a403d2ccb24128a208e8161fcb0e6492401b00a912",
+      "problemRevision": "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab",
+      "incidentMembershipRef": "membership-inc-003",
+      "incidentMembershipRevisionRef": "sha256:bc8af6a05d4609fff91b2b79290e4800a54aa75dff8c5ef3d0bce3e891b09fc0",
+      "changeReceiptRef": "change-receipt-chg-4821",
+      "changeReceiptRevisionRef": "sha256:08fc6a89aa402bbe5fa026e9b88c3aab99b5eacfa001152b62b9e58bd8ab039a",
+      "evidenceRef": "evidence-recurrence-inc-003",
+      "observedByRef": "principal-incident-system",
+      "observedAt": "2026-09-05T14:35:00Z",
+      "state": "observed-after-change"
+    }
+  ],
+  "proseAttestation": {
+    "id": "prose-attestation-checkout-timeout-r1",
+    "revision": "sha256:517430c6f288dfcad1983898fa856c4570edc0567d7322b043516709e6d9e8e3",
+    "ownerRef": "principal-problem-owner",
+    "surfaceDigest": "sha256:e21d9403f0c6f72fb78475fdb183485995672c4e94b57eebcdacd6e52c2ef748",
+    "receiptEvidenceRef": "evidence-owner-prose",
+    "signedAt": "2026-09-05T15:00:00Z",
+    "policy": "owner-authored-non-authoritative"
+  },
+  "coverage": {
+    "state": "exact-closed",
+    "principalRefs": [
+      "principal-change-owner",
+      "principal-incident-system",
+      "principal-investigator",
+      "principal-known-error-owner",
+      "principal-problem-coordinator-claw",
+      "principal-problem-owner",
+      "principal-public-status",
+      "principal-qa-engineer-alex",
+      "principal-workaround-owner"
+    ],
+    "evidenceRefs": [
+      "evidence-change-execution",
+      "evidence-change-verification",
+      "evidence-hypothesis-database",
+      "evidence-hypothesis-route-cache",
+      "evidence-incident-inc-001",
+      "evidence-incident-inc-002",
+      "evidence-incident-manifest-signature",
+      "evidence-known-error-declaration",
+      "evidence-membership-inc-001",
+      "evidence-membership-inc-002",
+      "evidence-membership-inc-003",
+      "evidence-owner-prose",
+      "evidence-problem-change-link",
+      "evidence-problem-revision",
+      "evidence-public-status-inc-003",
+      "evidence-recurrence-inc-003",
+      "evidence-test-database",
+      "evidence-test-route-cache",
+      "evidence-workaround-approval"
+    ],
+    "incidentMembershipRefs": [
+      "membership-inc-001",
+      "membership-inc-002",
+      "membership-inc-003"
+    ],
+    "incidentManifestRevisionRef": "sha256:1614e97bd87cdbbf4872ba6fc88ac4440ea8884dedcf51ee985c0c9a5382ad1e",
+    "hypothesisRevisionRefs": [
+      "sha256:24a03333d298e0f86d872accf465a7e257e73710f939ffaa69e8ca38c5d9aa7b",
+      "sha256:e72bf365f8dd305acf8ef5e15906ab9a619704a6fcdddb72116b01e615c1ff05"
+    ],
+    "hypothesisDispositionRevisionRefs": [
+      "sha256:0afd58ffaff0ac1fd58668eee489a46d2263636e8a8bd586f84a87eb67d5e356",
+      "sha256:ebdb831744188d811a9ab06496bda0edb0b04add1ebef2c57b21644de9cbf7b9"
+    ],
+    "testRefs": [
+      "test-database-load-replay",
+      "test-route-cache-reproduction"
+    ],
+    "workaroundRevisionRefs": [
+      "sha256:aa6367e6c2bd09368c7b5bb9b8cd606eac6802fc974d91da09a779c6395fd890"
+    ],
+    "knownErrorRevisionRefs": [
+      "sha256:1f426d577f73dbad45a28091fee0a6e93014280a4a30365315173a1731f4e8fa"
+    ],
+    "changeReceiptRefs": [
+      "change-receipt-chg-4821"
+    ],
+    "recurrenceRefs": [
+      "recurrence-after-chg-4821"
+    ],
+    "proseAttestationRevisionRef": "sha256:517430c6f288dfcad1983898fa856c4570edc0567d7322b043516709e6d9e8e3",
+    "publicTrustEvidenceRefs": [
+      "evidence-public-status-inc-003"
+    ]
+  },
+  "authority": {
+    "incidentCorrelation": "owner-declared-only",
+    "rootCause": "owner-declared-only",
+    "workaroundApproval": "external-owner-evidence-only",
+    "workaroundPublication": "not-claimed",
+    "workaroundExecution": "not-claimed",
+    "productionChange": "not-claimed",
+    "incidentClosure": "not-claimed",
+    "problemClosure": "not-claimed",
+    "ticketMutation": "not-claimed",
+    "riskAcceptance": "not-claimed"
+  },
+  "handoff": {
+    "state": "owner-review-ready",
+    "ownerRef": "principal-problem-owner",
+    "coordinatorRef": "principal-problem-coordinator-claw",
+    "observedThrough": "2026-09-16T20:00:00Z",
+    "private": true,
+    "summary": "Three owner-declared incidents share one current problem revision; one hypothesis is supported, one is refuted, an owner-executed change was followed by recurrence, and the current workaround and known error remain owner-controlled.",
+    "nextDecision": "Escalate any known-error revision or publication, workaround renewal, production change, or problem closure to its existing owner-controlled process; the Claw makes none of those decisions."
+  }
+}

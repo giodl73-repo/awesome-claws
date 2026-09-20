@@ -96,6 +96,22 @@
   },
   "visualCases": [
     {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/three-way-match-review.html",
+      "fallback": "outputs/procure-to-pay-three-way-match.md",
+      "output": "outputs/three-way-match-review.html"
+    },
+    {
+      "id": "problem-known-error-coordinator",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/problem-known-error-review.html",
+      "fallback": "outputs/problem-known-error-coordinator-handoff.md",
+      "output": "outputs/problem-known-error-review.html"
+    },
+    {
       "id": "enterprise-license-entitlement-reconciler",
       "target": 4,
       "primary": "inline-widget",
@@ -398,6 +414,22 @@
       "asset": "assets/benefits-realization-review.html",
       "fallback": "outputs/benefits-realization-ledger.md",
       "output": "outputs/benefits-realization-review.html"
+    },
+    {
+      "id": "security-alert-review-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/security-alert-review.html",
+      "fallback": "outputs/security-alert-review.md",
+      "output": "outputs/security-alert-review.html"
+    },
+    {
+      "id": "recurring-third-party-review-evidence-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/third-party-review-status.html",
+      "fallback": "outputs/third-party-review-handoff.md",
+      "output": "outputs/third-party-review-status.html"
     }
   ]
 }

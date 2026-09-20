@@ -98,6 +98,11 @@
     "proofPlan": "Prove an X3 artifact with a strict versioned schema, total semantic validator, global unique IDs, exact snapshot binding, controlled references and digests, complete forward/reverse/orphan checks, timezone-safe eligibility, broad hold precedence, independent scoped exception and approval chronology, digest-bound batches, append-only custody, separated requests/attempts/outcomes, authoritative independent certificates, exact residual closure, blocker equality, prohibited narrative detection with genuine negation, base-only capability proof, public CLI validation, focused adversarial tests, and catalog-wide generated recipe and workflow checks.",
     "existingAlternatives": [
       {
+        "id": "recurring-third-party-review-evidence-reconciler",
+        "overlap": "Both reconcile an exact owner-declared universe across recurring cycles, authenticate source evidence, preserve predecessor lineage, derive time-sensitive state, and fail closed into typed owner handoffs without executing the governed action.",
+        "difference": "Recurring Third-Party Review Evidence Reconciler operates on vendor-service requirement cells and evidence expiry, while Records Retention Disposition Coordinator owns record-series and copy inventories, event-trigger eligibility, legal-hold precedence, approved disposition batches, execution certificates, custody, and residual-copy closure."
+      },
+      {
         "id": "data-governance-steward",
         "overlap": "Both reconcile retention and access requirements, exceptions, remediation evidence, accountable review, and governance handoffs.",
         "difference": "Data Governance Steward lacks an exact record-series and every-copy inventory, event-trigger calculations, broader legal-hold precedence, digest-bound disposition batches, custody and independently observed outcome certificates, and residual-copy closure."

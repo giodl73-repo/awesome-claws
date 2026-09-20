@@ -1,0 +1,9 @@
+{
+  "valid": false,
+  "result": null,
+  "finding": {
+    "code": "schema-invalid",
+    "path": "$",
+    "messageIncludes": "additional properties"
+  }
+}

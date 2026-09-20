@@ -354,7 +354,7 @@ OpenClaw adapter in disposable state.
   evidence.
 - `npm run proof:experience` and `npm run screenshots` prove rendering and host
   presentation paths, not provider correctness or model quality.
-- `npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--trust-keys <keys.json>]`
+- `npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--cutoff <RFC3339>] [--source-bundle <sources.json>] [--trust-keys <keys.json>] [--public-trust-input <trust.json>] [--trust-keyring <keyring.json>]`
   runs JSON Schema validation and the registered semantic reference checks for
   structured artifact Claws. Supply the trusted, zone-bearing `--as-of` value
   when the Claw contract requires caller-controlled validation time. For signed

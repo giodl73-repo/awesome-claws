@@ -1,0 +1,526 @@
+{
+  "schemaVersion": "awesomeClaws.procureToPayThreeWayMatch.v1",
+  "clawId": "procure-to-pay-three-way-match-exception-reconciler",
+  "review": {
+    "id": "review-po-450-september",
+    "purchaseOrderId": "po-450",
+    "currency": "USD",
+    "cutoffAt": "2026-09-15T23:59:59Z",
+    "currentRevisionRef": "po-450-r2",
+    "amendmentRef": "amendment-po-450-a1",
+    "matchingPolicyRef": "policy-po-450-exact-three-way",
+    "destination": "accounts-payable-exception-review",
+    "nextOwnerRef": "principal-anika-shah"
+  },
+  "principals": [
+    {
+      "id": "principal-aria-evans",
+      "name": "Aria Evans",
+      "kind": "named-human",
+      "roles": [
+        "authority-issuer"
+      ]
+    },
+    {
+      "id": "principal-jordan-lee",
+      "name": "Jordan Lee",
+      "kind": "named-human",
+      "roles": [
+        "matching-policy-owner",
+        "purchase-order-amendment-approver"
+      ]
+    },
+    {
+      "id": "principal-maya-chen",
+      "name": "Maya Chen",
+      "kind": "named-human",
+      "roles": [
+        "match-reviewer"
+      ]
+    },
+    {
+      "id": "principal-anika-shah",
+      "name": "Anika Shah",
+      "kind": "named-human",
+      "roles": [
+        "exception-owner"
+      ]
+    }
+  ],
+  "authorityGrants": [
+    {
+      "id": "grant-jordan-policy",
+      "purchaseOrderId": "po-450",
+      "currency": "USD",
+      "revisionRef": "po-450-r2",
+      "scope": "matching-policy-approval",
+      "granteeRef": "principal-jordan-lee",
+      "issuedByRef": "principal-aria-evans",
+      "issuedAt": "2026-08-31T16:00:00Z",
+      "activeFrom": "2026-09-01T00:00:00Z",
+      "activeUntil": "2026-09-30T23:59:59Z"
+    },
+    {
+      "id": "grant-jordan-amendment",
+      "purchaseOrderId": "po-450",
+      "currency": "USD",
+      "revisionRef": "po-450-r2",
+      "scope": "purchase-order-amendment-approval",
+      "granteeRef": "principal-jordan-lee",
+      "issuedByRef": "principal-aria-evans",
+      "issuedAt": "2026-08-31T16:01:00Z",
+      "activeFrom": "2026-09-01T00:00:00Z",
+      "activeUntil": "2026-09-30T23:59:59Z"
+    },
+    {
+      "id": "grant-maya-match",
+      "purchaseOrderId": "po-450",
+      "currency": "USD",
+      "revisionRef": "po-450-r2",
+      "scope": "match-decision",
+      "granteeRef": "principal-maya-chen",
+      "issuedByRef": "principal-aria-evans",
+      "issuedAt": "2026-08-31T16:02:00Z",
+      "activeFrom": "2026-09-01T00:00:00Z",
+      "activeUntil": "2026-09-30T23:59:59Z"
+    },
+    {
+      "id": "grant-anika-handoff",
+      "purchaseOrderId": "po-450",
+      "currency": "USD",
+      "revisionRef": "po-450-r2",
+      "scope": "owner-handoff",
+      "granteeRef": "principal-anika-shah",
+      "issuedByRef": "principal-aria-evans",
+      "issuedAt": "2026-08-31T16:03:00Z",
+      "activeFrom": "2026-09-01T00:00:00Z",
+      "activeUntil": "2026-09-30T23:59:59Z"
+    }
+  ],
+  "matchingPolicy": {
+    "id": "policy-po-450-exact-three-way",
+    "version": "v1",
+    "purchaseOrderId": "po-450",
+    "currency": "USD",
+    "revisionRef": "po-450-r2",
+    "approvedPayloadDigest": "sha256:8809547b82278e3c74354b30d620c1329db344e74121353faa2d9126d604a5a8",
+    "approvedByRef": "principal-jordan-lee",
+    "authorityGrantRef": "grant-jordan-policy",
+    "approvedAt": "2026-09-01T09:00:00Z",
+    "groupShape": "one-po-line-to-one-or-more-receipt-and-invoice-lines",
+    "quantityRule": "exact-signed-integer-equality",
+    "amountRule": "exact-signed-minor-unit-equality",
+    "unitPriceRule": "exact-current-po-unit-price",
+    "correspondenceRule": "exact-source-line-reference-only",
+    "taxRule": "out-of-scope"
+  },
+  "purchaseOrderRevision": {
+    "id": "po-450-r2",
+    "purchaseOrderId": "po-450",
+    "revisionNumber": 2,
+    "supersedesRevisionRef": "po-450-r1",
+    "amendmentRef": "amendment-po-450-a1",
+    "amendmentPayloadDigest": "sha256:b3d6db74e4eb2dd799782b5bea07294f4a8ebb66613455f2af11028cf506e389",
+    "lineManifestDigest": "sha256:466e4c140d683cfa89dc59c327b287e5b276217281af1c374d0a5eb52c6d58de",
+    "approvedPayloadDigest": "sha256:77a8b01423088407d8b74079ea43be96c538c23cc8fd1f2edc49148ee0c09128",
+    "approvedByRef": "principal-jordan-lee",
+    "authorityGrantRef": "grant-jordan-amendment",
+    "approvedAt": "2026-09-05T10:05:00Z",
+    "currency": "USD",
+    "manifestRef": "manifest-po-450-r2"
+  },
+  "amendment": {
+    "id": "amendment-po-450-a1",
+    "purchaseOrderId": "po-450",
+    "fromRevisionRef": "po-450-r1",
+    "toRevisionRef": "po-450-r2",
+    "approvedPayloadDigest": "sha256:b3d6db74e4eb2dd799782b5bea07294f4a8ebb66613455f2af11028cf506e389",
+    "approvedByRef": "principal-jordan-lee",
+    "authorityGrantRef": "grant-jordan-amendment",
+    "approvedAt": "2026-09-05T10:00:00Z",
+    "reasonCode": "owner-approved-quantity-change",
+    "changes": [
+      {
+        "lineRef": "po-line-cable",
+        "field": "quantity",
+        "from": "5",
+        "to": "4"
+      }
+    ]
+  },
+  "manifests": [
+    {
+      "id": "manifest-po-450-r2",
+      "side": "purchase-order",
+      "purchaseOrderId": "po-450",
+      "currentRevisionRef": "po-450-r2",
+      "sourceSystemRef": "ERP://Procurement/Tenant-7",
+      "exportRef": "PO-450@R2#2026-09-16",
+      "generatedAt": "2026-09-16T00:05:00Z",
+      "lineRefs": [
+        "po-line-cable",
+        "po-line-server-kit",
+        "po-line-support"
+      ],
+      "lineManifestDigest": "sha256:466e4c140d683cfa89dc59c327b287e5b276217281af1c374d0a5eb52c6d58de"
+    },
+    {
+      "id": "manifest-receipts-po-450",
+      "side": "receipt",
+      "purchaseOrderId": "po-450",
+      "currentRevisionRef": "po-450-r2",
+      "sourceSystemRef": "WMS://Receiving/DC-04",
+      "exportRef": "RCV-PO450@2026-09-15T235959Z",
+      "generatedAt": "2026-09-16T00:06:00Z",
+      "lineRefs": [
+        "receipt-line-cable-received",
+        "receipt-line-cable-return",
+        "receipt-line-kit-partial-1",
+        "receipt-line-kit-partial-2"
+      ],
+      "lineManifestDigest": "sha256:4959630f3723ab831a4335e1269974bfe41cec5db5cfc1a3965011df9d91c3fe"
+    },
+    {
+      "id": "manifest-invoices-po-450",
+      "side": "invoice",
+      "purchaseOrderId": "po-450",
+      "currentRevisionRef": "po-450-r2",
+      "sourceSystemRef": "AP://Invoices/Tenant-7",
+      "exportRef": "AP-PO450@2026-09-15T235959Z",
+      "generatedAt": "2026-09-16T00:07:00Z",
+      "lineRefs": [
+        "invoice-line-cable-credit",
+        "invoice-line-cable-original",
+        "invoice-line-kit-partial-1",
+        "invoice-line-kit-partial-2"
+      ],
+      "lineManifestDigest": "sha256:4fb2ecdc99032404a372ab97d5f26f50b9bb6a80f601c741fef1ccfcae50a621"
+    }
+  ],
+  "purchaseOrderLines": [
+    {
+      "id": "po-line-server-kit",
+      "manifestRef": "manifest-po-450-r2",
+      "sourceSystemRef": "ERP://Procurement/Tenant-7",
+      "exportRef": "PO-450@R2#2026-09-16",
+      "sourceNativeLineId": "PO450/10",
+      "revisionRef": "po-450-r2",
+      "purchaseOrderId": "po-450",
+      "lineNumber": 1,
+      "itemRef": "item-server-kit",
+      "unitOfMeasure": "EA",
+      "quantity": "10",
+      "unitMinorUnits": "2500",
+      "extendedMinorUnits": "25000",
+      "currency": "USD"
+    },
+    {
+      "id": "po-line-cable",
+      "manifestRef": "manifest-po-450-r2",
+      "sourceSystemRef": "ERP://Procurement/Tenant-7",
+      "exportRef": "PO-450@R2#2026-09-16",
+      "sourceNativeLineId": "PO450/20",
+      "revisionRef": "po-450-r2",
+      "purchaseOrderId": "po-450",
+      "lineNumber": 2,
+      "itemRef": "item-cable",
+      "unitOfMeasure": "EA",
+      "quantity": "4",
+      "unitMinorUnits": "500",
+      "extendedMinorUnits": "2000",
+      "currency": "USD"
+    },
+    {
+      "id": "po-line-support",
+      "manifestRef": "manifest-po-450-r2",
+      "sourceSystemRef": "ERP://Procurement/Tenant-7",
+      "exportRef": "PO-450@R2#2026-09-16",
+      "sourceNativeLineId": "PO450/30",
+      "revisionRef": "po-450-r2",
+      "purchaseOrderId": "po-450",
+      "lineNumber": 3,
+      "itemRef": "item-support",
+      "unitOfMeasure": "EA",
+      "quantity": "2",
+      "unitMinorUnits": "1500",
+      "extendedMinorUnits": "3000",
+      "currency": "USD"
+    }
+  ],
+  "receiptLines": [
+    {
+      "id": "receipt-line-kit-partial-1",
+      "manifestRef": "manifest-receipts-po-450",
+      "sourceSystemRef": "WMS://Receiving/DC-04",
+      "exportRef": "RCV-PO450@2026-09-15T235959Z",
+      "sourceNativeLineId": "RCV7001/10",
+      "poLineRef": "po-line-server-kit",
+      "purchaseOrderRevisionRef": "po-450-r2",
+      "receiptId": "receipt-7001",
+      "kind": "receipt",
+      "reversesLineRef": null,
+      "unitOfMeasure": "EA",
+      "quantity": "6",
+      "recordedAt": "2026-09-08T14:00:00Z",
+      "currency": "USD"
+    },
+    {
+      "id": "receipt-line-kit-partial-2",
+      "manifestRef": "manifest-receipts-po-450",
+      "sourceSystemRef": "WMS://Receiving/DC-04",
+      "exportRef": "RCV-PO450@2026-09-15T235959Z",
+      "sourceNativeLineId": "RCV7002/10",
+      "poLineRef": "po-line-server-kit",
+      "purchaseOrderRevisionRef": "po-450-r2",
+      "receiptId": "receipt-7002",
+      "kind": "receipt",
+      "reversesLineRef": null,
+      "unitOfMeasure": "EA",
+      "quantity": "4",
+      "recordedAt": "2026-09-10T14:00:00Z",
+      "currency": "USD"
+    },
+    {
+      "id": "receipt-line-cable-received",
+      "manifestRef": "manifest-receipts-po-450",
+      "sourceSystemRef": "WMS://Receiving/DC-04",
+      "exportRef": "RCV-PO450@2026-09-15T235959Z",
+      "sourceNativeLineId": "RCV7003/20",
+      "poLineRef": "po-line-cable",
+      "purchaseOrderRevisionRef": "po-450-r2",
+      "receiptId": "receipt-7003",
+      "kind": "receipt",
+      "reversesLineRef": null,
+      "unitOfMeasure": "EA",
+      "quantity": "5",
+      "recordedAt": "2026-09-11T14:00:00Z",
+      "currency": "USD"
+    },
+    {
+      "id": "receipt-line-cable-return",
+      "manifestRef": "manifest-receipts-po-450",
+      "sourceSystemRef": "WMS://Receiving/DC-04",
+      "exportRef": "RCV-PO450@2026-09-15T235959Z",
+      "sourceNativeLineId": "RTN7003/20/1",
+      "poLineRef": "po-line-cable",
+      "purchaseOrderRevisionRef": "po-450-r2",
+      "receiptId": "return-7003-1",
+      "kind": "return",
+      "reversesLineRef": "receipt-line-cable-received",
+      "unitOfMeasure": "EA",
+      "quantity": "-1",
+      "recordedAt": "2026-09-12T14:00:00Z",
+      "currency": "USD"
+    }
+  ],
+  "invoiceLines": [
+    {
+      "id": "invoice-line-kit-partial-1",
+      "manifestRef": "manifest-invoices-po-450",
+      "sourceSystemRef": "AP://Invoices/Tenant-7",
+      "exportRef": "AP-PO450@2026-09-15T235959Z",
+      "sourceNativeLineId": "INV9001/1",
+      "poLineRef": "po-line-server-kit",
+      "purchaseOrderRevisionRef": "po-450-r2",
+      "invoiceId": "invoice-9001",
+      "kind": "invoice",
+      "reversesLineRef": null,
+      "unitOfMeasure": "EA",
+      "quantity": "4",
+      "unitMinorUnits": "2500",
+      "lineMinorUnits": "10000",
+      "recordedAt": "2026-09-12T16:00:00Z",
+      "currency": "USD"
+    },
+    {
+      "id": "invoice-line-kit-partial-2",
+      "manifestRef": "manifest-invoices-po-450",
+      "sourceSystemRef": "AP://Invoices/Tenant-7",
+      "exportRef": "AP-PO450@2026-09-15T235959Z",
+      "sourceNativeLineId": "INV9002/1",
+      "poLineRef": "po-line-server-kit",
+      "purchaseOrderRevisionRef": "po-450-r2",
+      "invoiceId": "invoice-9002",
+      "kind": "invoice",
+      "reversesLineRef": null,
+      "unitOfMeasure": "EA",
+      "quantity": "6",
+      "unitMinorUnits": "2500",
+      "lineMinorUnits": "15000",
+      "recordedAt": "2026-09-14T16:00:00Z",
+      "currency": "USD"
+    },
+    {
+      "id": "invoice-line-cable-original",
+      "manifestRef": "manifest-invoices-po-450",
+      "sourceSystemRef": "AP://Invoices/Tenant-7",
+      "exportRef": "AP-PO450@2026-09-15T235959Z",
+      "sourceNativeLineId": "INV9003/1",
+      "poLineRef": "po-line-cable",
+      "purchaseOrderRevisionRef": "po-450-r2",
+      "invoiceId": "invoice-9003",
+      "kind": "invoice",
+      "reversesLineRef": null,
+      "unitOfMeasure": "EA",
+      "quantity": "5",
+      "unitMinorUnits": "500",
+      "lineMinorUnits": "2500",
+      "recordedAt": "2026-09-13T16:00:00Z",
+      "currency": "USD"
+    },
+    {
+      "id": "invoice-line-cable-credit",
+      "manifestRef": "manifest-invoices-po-450",
+      "sourceSystemRef": "AP://Invoices/Tenant-7",
+      "exportRef": "AP-PO450@2026-09-15T235959Z",
+      "sourceNativeLineId": "CR9003/1",
+      "poLineRef": "po-line-cable",
+      "purchaseOrderRevisionRef": "po-450-r2",
+      "invoiceId": "credit-9003-1",
+      "kind": "credit",
+      "reversesLineRef": "invoice-line-cable-original",
+      "unitOfMeasure": "EA",
+      "quantity": "-1",
+      "unitMinorUnits": "500",
+      "lineMinorUnits": "-500",
+      "recordedAt": "2026-09-15T16:00:00Z",
+      "currency": "USD"
+    }
+  ],
+  "matchGroups": [
+    {
+      "id": "group-server-kit",
+      "policyRef": "policy-po-450-exact-three-way",
+      "poLineRefs": [
+        "po-line-server-kit"
+      ],
+      "receiptLineRefs": [
+        "receipt-line-kit-partial-1",
+        "receipt-line-kit-partial-2"
+      ],
+      "invoiceLineRefs": [
+        "invoice-line-kit-partial-1",
+        "invoice-line-kit-partial-2"
+      ],
+      "totals": {
+        "purchaseOrderQuantity": "10",
+        "receiptQuantity": "10",
+        "invoiceQuantity": "10",
+        "purchaseOrderMinorUnits": "25000",
+        "invoiceMinorUnits": "25000"
+      },
+      "decision": {
+        "id": "decision-server-kit",
+        "approvedByRef": "principal-maya-chen",
+        "authorityGrantRef": "grant-maya-match",
+        "approvedAt": "2026-09-16T01:00:00Z",
+        "policyRef": "policy-po-450-exact-three-way",
+        "policyVersion": "v1",
+        "policyPayloadDigest": "sha256:8809547b82278e3c74354b30d620c1329db344e74121353faa2d9126d604a5a8",
+        "groupPayloadDigest": "sha256:58ceaf7452db3c943b8e2b760cc78e60beda68e74255e2315a5851759866f1fe",
+        "purchaseOrderManifestDigest": "sha256:466e4c140d683cfa89dc59c327b287e5b276217281af1c374d0a5eb52c6d58de",
+        "receiptManifestDigest": "sha256:4959630f3723ab831a4335e1269974bfe41cec5db5cfc1a3965011df9d91c3fe",
+        "invoiceManifestDigest": "sha256:4fb2ecdc99032404a372ab97d5f26f50b9bb6a80f601c741fef1ccfcae50a621"
+      }
+    },
+    {
+      "id": "group-cable",
+      "policyRef": "policy-po-450-exact-three-way",
+      "poLineRefs": [
+        "po-line-cable"
+      ],
+      "receiptLineRefs": [
+        "receipt-line-cable-received",
+        "receipt-line-cable-return"
+      ],
+      "invoiceLineRefs": [
+        "invoice-line-cable-original",
+        "invoice-line-cable-credit"
+      ],
+      "totals": {
+        "purchaseOrderQuantity": "4",
+        "receiptQuantity": "4",
+        "invoiceQuantity": "4",
+        "purchaseOrderMinorUnits": "2000",
+        "invoiceMinorUnits": "2000"
+      },
+      "decision": {
+        "id": "decision-cable",
+        "approvedByRef": "principal-maya-chen",
+        "authorityGrantRef": "grant-maya-match",
+        "approvedAt": "2026-09-16T01:05:00Z",
+        "policyRef": "policy-po-450-exact-three-way",
+        "policyVersion": "v1",
+        "policyPayloadDigest": "sha256:8809547b82278e3c74354b30d620c1329db344e74121353faa2d9126d604a5a8",
+        "groupPayloadDigest": "sha256:de3e86d7f7291d44a073d95ec3bb02933506fd50a6db08facb74a3789806cbc5",
+        "purchaseOrderManifestDigest": "sha256:466e4c140d683cfa89dc59c327b287e5b276217281af1c374d0a5eb52c6d58de",
+        "receiptManifestDigest": "sha256:4959630f3723ab831a4335e1269974bfe41cec5db5cfc1a3965011df9d91c3fe",
+        "invoiceManifestDigest": "sha256:4fb2ecdc99032404a372ab97d5f26f50b9bb6a80f601c741fef1ccfcae50a621"
+      }
+    }
+  ],
+  "residuals": [
+    {
+      "id": "residual-po-support",
+      "side": "purchase-order",
+      "lineRef": "po-line-support",
+      "poLineRef": "po-line-support",
+      "reasonCode": "no-receipt-or-invoice-by-cutoff",
+      "ownerRef": "principal-anika-shah",
+      "recordedAt": "2026-09-16T01:10:00Z"
+    }
+  ],
+  "coverage": {
+    "id": "coverage-po-450",
+    "purchaseOrderLineRefs": [
+      "po-line-cable",
+      "po-line-server-kit",
+      "po-line-support"
+    ],
+    "receiptLineRefs": [
+      "receipt-line-cable-received",
+      "receipt-line-cable-return",
+      "receipt-line-kit-partial-1",
+      "receipt-line-kit-partial-2"
+    ],
+    "invoiceLineRefs": [
+      "invoice-line-cable-credit",
+      "invoice-line-cable-original",
+      "invoice-line-kit-partial-1",
+      "invoice-line-kit-partial-2"
+    ],
+    "groupRefs": [
+      "group-cable",
+      "group-server-kit"
+    ],
+    "residualRefs": [
+      "residual-po-support"
+    ]
+  },
+  "result": {
+    "id": "result-po-450",
+    "state": "pending-owner-review",
+    "preparedByRef": "principal-anika-shah",
+    "authorityGrantRef": "grant-anika-handoff",
+    "nextOwnerRef": "principal-anika-shah",
+    "partitionRootDigest": "sha256:6987e049f7296b123defee712d0ec03d2f4b8159c03166166045fc0bd934186f",
+    "generatedAt": "2026-09-16T02:00:00Z",
+    "groupRefs": [
+      "group-cable",
+      "group-server-kit"
+    ],
+    "residualRefs": [
+      "residual-po-support"
+    ],
+    "findingCodes": []
+  },
+  "authorityClaims": {
+    "posting": "not-claimed",
+    "payment": "not-claimed",
+    "receiptCreation": "not-claimed",
+    "supplierContact": "not-claimed",
+    "accountingInterpretation": "not-claimed",
+    "taxInterpretation": "not-claimed",
+    "sourceMutation": "not-claimed"
+  }
+}
