@@ -2871,7 +2871,8 @@
         "visual"
       ],
       "capabilityClasses": [
-        "visual"
+        "visual",
+        "workspace-execution"
       ],
       "boundaryAttention": {
         "level": "guarded",
@@ -2908,7 +2909,8 @@
         "visual"
       ],
       "capabilityClasses": [
-        "visual"
+        "visual",
+        "workspace-execution"
       ],
       "boundaryAttention": {
         "level": "guarded",

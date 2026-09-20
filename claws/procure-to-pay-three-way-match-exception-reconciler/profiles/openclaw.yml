@@ -6,6 +6,7 @@ agent:
       - read
       - write
       - edit
+      - exec
       - show_widget
     fs:
       workspaceOnly: true

@@ -8,8 +8,10 @@ import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { digest as computeOwnerArtifactDigest } from "./problem-known-error-owner-contracts.mjs";
 import {
+  changeControlFindings,
+  incidentResponseFindings,
   isCredentialFreePublicHttpsReference,
-  validateArtifactSemantics,
+  qualityAssuranceReleaseFindings,
 } from "./artifact-semantics.mjs";
 
 export const PROBLEM_KNOWN_ERROR_SCHEMA_VERSION =
@@ -19,78 +21,56 @@ export const PUBLIC_TRUST_SCHEMA_VERSION =
 export const TRUST_KEYRING_SCHEMA_VERSION =
   "awesomeClaws.problemKnownErrorTrustKeyring.v1";
 
+function readSupportJson(repositoryPath, packagePath) {
+  for (const relativePath of [repositoryPath, packagePath]) {
+    try {
+      return JSON.parse(
+        readFileSync(new URL(relativePath, import.meta.url), "utf8"),
+      );
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+    }
+  }
+  throw new Error(`Required validator support file is unavailable: ${packagePath}`);
+}
+
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 const validateCandidateSchema = ajv.compile(
-  JSON.parse(
-    readFileSync(
-      new URL(
-        "../sources/problem-known-error-coordinator/schemas/problem-known-error.schema.json",
-        import.meta.url,
-      ),
-      "utf8",
-    ),
+  readSupportJson(
+    "../sources/problem-known-error-coordinator/schemas/problem-known-error.schema.json",
+    "../schemas/problem-known-error.schema.json",
   ),
 );
 const validatePublicTrustSchema = ajv.compile(
-  JSON.parse(
-    readFileSync(
-      new URL(
-        "../sources/problem-known-error-coordinator/schemas/problem-known-error-public-trust.schema.json",
-        import.meta.url,
-      ),
-      "utf8",
-    ),
+  readSupportJson(
+    "../sources/problem-known-error-coordinator/schemas/problem-known-error-public-trust.schema.json",
+    "../schemas/problem-known-error-public-trust.schema.json",
   ),
 );
 const validateTrustKeyringSchema = ajv.compile(
-  JSON.parse(
-    readFileSync(
-      new URL(
-        "../sources/problem-known-error-coordinator/schemas/problem-known-error-trust-keyring.schema.json",
-        import.meta.url,
-      ),
-      "utf8",
-    ),
+  readSupportJson(
+    "../sources/problem-known-error-coordinator/schemas/problem-known-error-trust-keyring.schema.json",
+    "../schemas/problem-known-error-trust-keyring.schema.json",
   ),
 );
 const validateOwnerArtifactsSchema = ajv.compile(
-  JSON.parse(
-    readFileSync(
-      new URL(
-        "../sources/problem-known-error-coordinator/schemas/problem-known-error-owner-artifacts.schema.json",
-        import.meta.url,
-      ),
-      "utf8",
-    ),
+  readSupportJson(
+    "../sources/problem-known-error-coordinator/schemas/problem-known-error-owner-artifacts.schema.json",
+    "../schemas/problem-known-error-owner-artifacts.schema.json",
   ),
 );
-const incidentOwnerSchema = JSON.parse(
-  readFileSync(
-    new URL(
-      "../sources/incident-response/schemas/incident-state.schema.json",
-      import.meta.url,
-    ),
-    "utf8",
-  ),
+const incidentOwnerSchema = readSupportJson(
+  "../sources/incident-response/schemas/incident-state.schema.json",
+  "../schemas/incident-state.schema.json",
 );
-const qaOwnerSchema = JSON.parse(
-  readFileSync(
-    new URL(
-      "../sources/quality-assurance-lead/schemas/test-evidence.schema.json",
-      import.meta.url,
-    ),
-    "utf8",
-  ),
+const qaOwnerSchema = readSupportJson(
+  "../sources/quality-assurance-lead/schemas/test-evidence.schema.json",
+  "../schemas/test-evidence.schema.json",
 );
-const changeOwnerSchema = JSON.parse(
-  readFileSync(
-    new URL(
-      "../sources/change-control-operator/schemas/change-plan.schema.json",
-      import.meta.url,
-    ),
-    "utf8",
-  ),
+const changeOwnerSchema = readSupportJson(
+  "../sources/change-control-operator/schemas/change-plan.schema.json",
+  "../schemas/change-plan.schema.json",
 );
 const validateIncidentOwnerSchema = ajv.compile(incidentOwnerSchema);
 const validateQaOwnerSchema = ajv.compile(qaOwnerSchema);
@@ -102,32 +82,17 @@ const CHANGE_OWNER_SCHEMA_DIGEST =
   computeOwnerArtifactDigest(changeOwnerSchema);
 const PROBLEM_KNOWN_ERROR_EXAMPLE_VALIDATION_OPTIONS = Object.freeze({
   cutoff: "2026-09-16T20:00:00Z",
-  publicTrustInput: JSON.parse(
-    readFileSync(
-      new URL(
-        "../sources/problem-known-error-coordinator/references/public-trust.example.json",
-        import.meta.url,
-      ),
-      "utf8",
-    ),
+  publicTrustInput: readSupportJson(
+    "../sources/problem-known-error-coordinator/references/public-trust.example.json",
+    "../references/public-trust.example.json",
   ),
-  trustKeyring: JSON.parse(
-    readFileSync(
-      new URL(
-        "../sources/problem-known-error-coordinator/references/trust-keyring.example.json",
-        import.meta.url,
-      ),
-      "utf8",
-    ),
+  trustKeyring: readSupportJson(
+    "../sources/problem-known-error-coordinator/references/trust-keyring.example.json",
+    "../references/trust-keyring.example.json",
   ),
-  sourceBundle: JSON.parse(
-    readFileSync(
-      new URL(
-        "../sources/problem-known-error-coordinator/references/owner-artifacts.example.json",
-        import.meta.url,
-      ),
-      "utf8",
-    ),
+  sourceBundle: readSupportJson(
+    "../sources/problem-known-error-coordinator/references/owner-artifacts.example.json",
+    "../references/owner-artifacts.example.json",
   ),
 });
 export const PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS = Object.freeze({
@@ -969,8 +934,7 @@ export function problemKnownErrorFindings(value, options = {}) {
       (row) =>
         typeof row.artifactRef === "string" &&
         validateIncidentOwnerSchema(row.artifact) &&
-        validateArtifactSemantics("incident-response", row.artifact).length ===
-          0,
+        incidentResponseFindings(row.artifact).length === 0,
     ) &&
     exactSet(
       incidentOwnerArtifactRows.map((row) => row.artifact.incident?.id),
@@ -981,15 +945,13 @@ export function problemKnownErrorFindings(value, options = {}) {
   const qaOwnerContractValid =
     typeof qaOwnerArtifactRow.artifactRef === "string" &&
     validateQaOwnerSchema(qaOwnerArtifact) &&
-    validateArtifactSemantics("quality-assurance-lead", qaOwnerArtifact)
-      .length === 0;
+    qualityAssuranceReleaseFindings(qaOwnerArtifact).length === 0;
   const changeOwnerArtifactRow = object(ownerArtifacts.changeControlArtifact);
   const changeOwnerArtifact = object(changeOwnerArtifactRow.artifact);
   const changeOwnerContractValid =
     typeof changeOwnerArtifactRow.artifactRef === "string" &&
     validateChangeOwnerSchema(changeOwnerArtifact) &&
-    validateArtifactSemantics("change-control-operator", changeOwnerArtifact)
-      .length === 0;
+    changeControlFindings(changeOwnerArtifact).length === 0;
 
   if (value.schemaVersion !== PROBLEM_KNOWN_ERROR_SCHEMA_VERSION) {
     add("invalid_schema_version", "schemaVersion", "The candidate schema version is not supported.");
@@ -1588,8 +1550,7 @@ export function problemKnownErrorFindings(value, options = {}) {
       incidentOwnerArtifactsValid &&
       ownerArtifact !== undefined &&
       validateIncidentOwnerSchema(ownerArtifact) &&
-      validateArtifactSemantics("incident-response", ownerArtifact)
-        .length === 0 &&
+      incidentResponseFindings(ownerArtifact).length === 0 &&
       ownerArtifact.incident.id === membership.incidentRef &&
       ownerArtifact.followUps[0].id === membership.followUpRef &&
       ownerArtifact.followUps[0].identityKey ===

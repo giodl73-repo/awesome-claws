@@ -7856,7 +7856,8 @@
         "No output claims inferred correlation or root cause, workaround approval or execution, known-error publication, production change, closure, mutation, or risk acceptance"
       ],
       "capabilityGuidance": [
-        "The base package uses supplied workspace evidence and caller-provided trust only; it has no incident, change, deployment, publication, messaging, or ticket mutation capability.",
+        "The base package uses supplied workspace evidence and caller-provided trust only and grants workspace-local execution solely for the packaged deterministic validator; it has no incident, change, deployment, publication, messaging, or ticket mutation capability.",
+        "Run node scripts/problem-known-error-validator.mjs against the bounded artifact with explicit --workspace-root, --cutoff, --public-trust, --trust-keyring, and --source-bundle arguments before rendering any lifecycle result.",
         "Inline visualization is presentation-only and must preserve the complete Markdown fallback and structural authority non-claims."
       ],
       "openclawProfile": {
@@ -7868,6 +7869,7 @@
               "read",
               "write",
               "edit",
+              "exec",
               "show_widget"
             ],
             "fs": {
@@ -7910,6 +7912,21 @@
         {
           "source": "schemas/problem-known-error-owner-artifacts.schema.json",
           "path": "schemas/problem-known-error-owner-artifacts.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "schemas/incident-state.schema.json",
+          "path": "schemas/incident-state.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "schemas/test-evidence.schema.json",
+          "path": "schemas/test-evidence.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "schemas/change-plan.schema.json",
+          "path": "schemas/change-plan.schema.json",
           "role": "schema"
         },
         {
@@ -7956,6 +7973,11 @@
           "source": "assets/problem-known-error-review.html",
           "path": "assets/problem-known-error-review.html",
           "role": "asset"
+        },
+        {
+          "source": "scripts/problem-known-error-validator.mjs",
+          "path": "scripts/problem-known-error-validator.mjs",
+          "role": "reference"
         }
       ]
     },
@@ -8025,6 +8047,7 @@
               "read",
               "write",
               "edit",
+              "exec",
               "show_widget"
             ],
             "fs": {
@@ -8034,7 +8057,8 @@
         }
       },
       "capabilityGuidance": [
-        "The profile grants only workspace read, write, edit, and inline presentation; it grants no ERP, procurement, receiving, invoice, accounting, tax, payment, messaging, browser, shell, network, MCP, plugin, cron, or source-mutation capability.",
+        "The profile grants workspace read, write, edit, inline presentation, and workspace-local execution solely for the packaged deterministic validator; it grants no ERP, procurement, receiving, invoice, accounting, tax, payment, messaging, browser, network, MCP, plugin, cron, or source-mutation capability.",
+        "Run node scripts/procure-to-pay-three-way-match-validator.mjs against the bounded artifact with explicit --workspace-root, --as-of, --cutoff, and --owner-trust-policy arguments before accepting any match or residual state.",
         "Owner systems and named humans retain source completeness and authenticity, policy and amendment approval, exception disposition, accounting and tax interpretation, posting, payment, receipt creation, supplier communication, and every mutation.",
         "The X4 visual is a projection of the schema-valid X3 record; the Markdown handoff remains the complete accessible fallback.",
         "Malformed, omitted, duplicated, split, reused, stale, future, cross-revision, cross-currency, reversal-invalid, arithmetically inconsistent, incompletely covered, or root-drifted evidence fails closed."
@@ -8059,6 +8083,11 @@
           "source": "schemas/procure-to-pay-three-way-match.schema.json",
           "path": "schemas/procure-to-pay-three-way-match.schema.json",
           "role": "schema"
+        },
+        {
+          "source": "scripts/procure-to-pay-three-way-match-validator.mjs",
+          "path": "scripts/procure-to-pay-three-way-match-validator.mjs",
+          "role": "reference"
         },
         {
           "source": "fixtures/procure-to-pay-three-way-match.example.json",

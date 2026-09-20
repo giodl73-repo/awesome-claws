@@ -12,7 +12,8 @@ Ask for or confirm:
 
 ## Included capability boundaries
 
-- The base package uses supplied workspace evidence and caller-provided trust only; it has no incident, change, deployment, publication, messaging, or ticket mutation capability.
+- The base package uses supplied workspace evidence and caller-provided trust only and grants workspace-local execution solely for the packaged deterministic validator; it has no incident, change, deployment, publication, messaging, or ticket mutation capability.
+- Run node scripts/problem-known-error-validator.mjs against the bounded artifact with explicit --workspace-root, --cutoff, --public-trust, --trust-keyring, and --source-bundle arguments before rendering any lifecycle result.
 - Inline visualization is presentation-only and must preserve the complete Markdown fallback and structural authority non-claims.
 
 ## Visual application contract

@@ -12,7 +12,8 @@ Ask for or confirm:
 
 ## Included capability boundaries
 
-- The profile grants only workspace read, write, edit, and inline presentation; it grants no ERP, procurement, receiving, invoice, accounting, tax, payment, messaging, browser, shell, network, MCP, plugin, cron, or source-mutation capability.
+- The profile grants workspace read, write, edit, inline presentation, and workspace-local execution solely for the packaged deterministic validator; it grants no ERP, procurement, receiving, invoice, accounting, tax, payment, messaging, browser, network, MCP, plugin, cron, or source-mutation capability.
+- Run node scripts/procure-to-pay-three-way-match-validator.mjs against the bounded artifact with explicit --workspace-root, --as-of, --cutoff, and --owner-trust-policy arguments before accepting any match or residual state.
 - Owner systems and named humans retain source completeness and authenticity, policy and amendment approval, exception disposition, accounting and tax interpretation, posting, payment, receipt creation, supplier communication, and every mutation.
 - The X4 visual is a projection of the schema-valid X3 record; the Markdown handoff remains the complete accessible fallback.
 - Malformed, omitted, duplicated, split, reused, stale, future, cross-revision, cross-currency, reversal-invalid, arithmetically inconsistent, incompletely covered, or root-drifted evidence fails closed.

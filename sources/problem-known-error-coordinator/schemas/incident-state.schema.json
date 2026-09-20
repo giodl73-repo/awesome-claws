@@ -1,0 +1,1739 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/incident-state.schema.json",
+  "title": "Incident response state",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/legacyIncident"
+    },
+    {
+      "$ref": "#/$defs/enrichedV1"
+    },
+    {
+      "$ref": "#/$defs/enrichedV2"
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nonEmptyStringList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "nullableTimestamp": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/timestamp"
+        }
+      ]
+    },
+    "nullableId": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/id"
+        }
+      ]
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "legacyIncident": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "incidentId",
+        "severity",
+        "status",
+        "startedAt",
+        "incidentCommander",
+        "impact",
+        "timeline",
+        "mitigations",
+        "recoveryCriteria",
+        "communications",
+        "decisionState"
+      ],
+      "properties": {
+        "incidentId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "severity": {
+          "enum": [
+            "SEV-1",
+            "SEV-2",
+            "SEV-3",
+            "SEV-4"
+          ]
+        },
+        "status": {
+          "enum": [
+            "investigating",
+            "mitigating",
+            "monitoring",
+            "recovering",
+            "resolved"
+          ]
+        },
+        "startedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "incidentCommander": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "impact": {
+          "$ref": "#/$defs/legacyImpact"
+        },
+        "timeline": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/legacyEvent"
+          }
+        },
+        "mitigations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/legacyMitigation"
+          }
+        },
+        "recoveryCriteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/legacyCriterion"
+          }
+        },
+        "communications": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/legacyCommunication"
+          }
+        },
+        "decisionState": {
+          "enum": [
+            "not-ready",
+            "ready-for-recovery-review",
+            "monitoring",
+            "closed-by-incident-commander"
+          ]
+        }
+      }
+    },
+    "enrichedV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "incident",
+        "principals",
+        "services",
+        "signals",
+        "evidence",
+        "hypotheses",
+        "timelineEvents",
+        "actions",
+        "recoveryChecks",
+        "communications",
+        "followUps",
+        "limitations",
+        "recommendation",
+        "owner",
+        "ownerId",
+        "handoff"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "awesomeClaws.incidentResponse.v1"
+        },
+        "incident": {
+          "type": "object"
+        },
+        "principals": {
+          "type": "array"
+        },
+        "services": {
+          "type": "array"
+        },
+        "signals": {
+          "type": "array"
+        },
+        "evidence": {
+          "type": "array"
+        },
+        "hypotheses": {
+          "type": "array"
+        },
+        "timelineEvents": {
+          "type": "array"
+        },
+        "actions": {
+          "type": "array"
+        },
+        "recoveryChecks": {
+          "type": "array"
+        },
+        "communications": {
+          "type": "array"
+        },
+        "followUps": {
+          "type": "array"
+        },
+        "limitations": {
+          "type": "array"
+        },
+        "recommendation": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "owner": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "handoff": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/noLegacyFields"
+        }
+      ]
+    },
+    "enrichedV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "incident",
+        "principals",
+        "roleAssignments",
+        "services",
+        "signals",
+        "evidence",
+        "hypotheses",
+        "updateCadence",
+        "updates",
+        "decisions",
+        "timelineEvents",
+        "actions",
+        "recoveryChecks",
+        "serviceRecovery",
+        "incidentRecoveryRecommendation",
+        "closure",
+        "communications",
+        "followUps",
+        "complianceHandoffs",
+        "limitations",
+        "authority",
+        "recommendation",
+        "owner",
+        "ownerId",
+        "handoff"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "awesomeClaws.incidentResponse.v2"
+        },
+        "incident": {
+          "$ref": "#/$defs/incident"
+        },
+        "principals": {
+          "type": "array",
+          "minItems": 6,
+          "items": {
+            "$ref": "#/$defs/principal"
+          }
+        },
+        "roleAssignments": {
+          "$ref": "#/$defs/roleAssignments"
+        },
+        "services": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/service"
+          }
+        },
+        "signals": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/signal"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "hypotheses": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/hypothesis"
+          }
+        },
+        "updateCadence": {
+          "$ref": "#/$defs/updateCadence"
+        },
+        "updates": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/update"
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/$defs/decision"
+          }
+        },
+        "timelineEvents": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/timelineEvent"
+          }
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/action"
+          }
+        },
+        "recoveryChecks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recoveryCheck"
+          }
+        },
+        "serviceRecovery": {
+          "$ref": "#/$defs/serviceRecovery"
+        },
+        "incidentRecoveryRecommendation": {
+          "$ref": "#/$defs/incidentRecoveryRecommendation"
+        },
+        "closure": {
+          "$ref": "#/$defs/closure"
+        },
+        "communications": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/communication"
+          }
+        },
+        "followUps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/followUp"
+          }
+        },
+        "complianceHandoffs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/complianceHandoff"
+          }
+        },
+        "limitations": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "authority": {
+          "$ref": "#/$defs/authority"
+        },
+        "recommendation": {
+          "$ref": "#/$defs/recommendation"
+        },
+        "owner": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/id"
+        },
+        "handoff": {
+          "$ref": "#/$defs/handoff"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/noLegacyFields"
+        }
+      ]
+    },
+    "noLegacyFields": {
+      "type": "object",
+      "propertyNames": {
+        "not": {
+          "enum": [
+            "incidentId",
+            "severity",
+            "status",
+            "startedAt",
+            "incidentCommander",
+            "impact",
+            "timeline",
+            "mitigations",
+            "recoveryCriteria",
+            "decisionState"
+          ]
+        }
+      }
+    },
+    "incident": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "service",
+        "environment",
+        "deploymentOrBuild",
+        "timelineSnapshotRef",
+        "severity",
+        "status",
+        "startedAt",
+        "requestedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "service": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "environment": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "deploymentOrBuild": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "timelineSnapshotRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "severity": {
+          "enum": [
+            "SEV-1",
+            "SEV-2",
+            "SEV-3",
+            "SEV-4"
+          ]
+        },
+        "status": {
+          "enum": [
+            "investigating",
+            "mitigating",
+            "monitoring",
+            "recovering",
+            "resolved"
+          ]
+        },
+        "startedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "scopes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "scopes": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        }
+      }
+    },
+    "roleLoop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principalId",
+        "responsibilities"
+      ],
+      "properties": {
+        "principalId": {
+          "$ref": "#/$defs/id"
+        },
+        "responsibilities": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        }
+      }
+    },
+    "roleAssignments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "technicalDri",
+        "incidentManager"
+      ],
+      "properties": {
+        "technicalDri": {
+          "$ref": "#/$defs/roleLoop"
+        },
+        "incidentManager": {
+          "$ref": "#/$defs/roleLoop"
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "environment",
+        "deploymentOrBuild",
+        "ownerId"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "environment": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "deploymentOrBuild": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "serviceRef",
+        "severity",
+        "state",
+        "evidenceRefs",
+        "observedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "serviceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "state": {
+          "enum": [
+            "observed",
+            "monitoring",
+            "resolved"
+          ]
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "resolvedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "incidentRef",
+        "serviceRef",
+        "environment",
+        "deploymentOrBuild",
+        "timelineSnapshotRef",
+        "outcome",
+        "sourceRef",
+        "assertedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "signal",
+            "hypothesis",
+            "action-approval",
+            "owner-execution",
+            "recovery-check",
+            "communication-draft",
+            "follow-up",
+            "owner-closure"
+          ]
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "serviceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "hypothesisRef": {
+          "$ref": "#/$defs/id"
+        },
+        "actionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "recoveryCheckRef": {
+          "$ref": "#/$defs/id"
+        },
+        "communicationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "followUpRef": {
+          "$ref": "#/$defs/id"
+        },
+        "closureRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedById": {
+          "$ref": "#/$defs/id"
+        },
+        "environment": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "deploymentOrBuild": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "timelineSnapshotRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "outcome": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "sourceRef": {
+          "type": "string",
+          "pattern": "^controlled://.+"
+        },
+        "assertedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "hypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "serviceRef",
+        "state",
+        "ownerId",
+        "evidenceRefs",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "serviceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "proposed",
+            "testing",
+            "confirmed",
+            "rejected"
+          ]
+        },
+        "ownerId": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "updateCadence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "incidentRef",
+        "managedById",
+        "intervalMinutes",
+        "anchorAt",
+        "asOf",
+        "updateIdPrefix",
+        "requiredSections",
+        "nextUpdateId"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "managedById": {
+          "$ref": "#/$defs/id"
+        },
+        "intervalMinutes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "anchorAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "asOf": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "updateIdPrefix": {
+          "$ref": "#/$defs/id"
+        },
+        "requiredSections": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "nextUpdateId": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "update": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sequence",
+        "revision",
+        "incidentRef",
+        "timelineSnapshotRef",
+        "state",
+        "dueAt",
+        "issuedAt",
+        "observedThrough",
+        "authorId",
+        "requiredSections",
+        "evidenceRefs",
+        "nextUpdateId"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "revision": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "timelineSnapshotRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "state": {
+          "enum": [
+            "scheduled",
+            "issued",
+            "overdue",
+            "missed"
+          ]
+        },
+        "dueAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/nullableTimestamp"
+        },
+        "observedThrough": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "authorId": {
+          "$ref": "#/$defs/id"
+        },
+        "requiredSections": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "nextUpdateId": {
+          "$ref": "#/$defs/nullableId"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "incidentRef",
+        "timelineSnapshotRef",
+        "decisionMakerId",
+        "recordedById",
+        "authorityScope",
+        "decisionType",
+        "subjectRef",
+        "subjectRevision",
+        "inputEvidenceRefs",
+        "decidedAt",
+        "supersedesDecisionId"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "timelineSnapshotRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "decisionMakerId": {
+          "$ref": "#/$defs/id"
+        },
+        "recordedById": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityScope": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "decisionType": {
+          "enum": [
+            "severity-state",
+            "cadence",
+            "action-approval",
+            "communication-approval",
+            "escalation",
+            "incident-recovery-recommendation",
+            "closure-recommendation",
+            "owner-closure"
+          ]
+        },
+        "subjectRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "subjectRevision": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "inputEvidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "decidedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "supersedesDecisionId": {
+          "$ref": "#/$defs/nullableId"
+        }
+      }
+    },
+    "timelineEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "incidentRef",
+        "kind",
+        "summary",
+        "evidenceRefs",
+        "ownerId",
+        "occurredAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "kind": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/id"
+        },
+        "occurredAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "incidentRef",
+        "serviceRef",
+        "kind",
+        "summary",
+        "target",
+        "timing",
+        "verificationCriteria",
+        "rollbackCondition",
+        "executionState",
+        "proposedById",
+        "ownerId",
+        "approvalDecisionRef",
+        "approvalEvidenceRef",
+        "executionEvidenceRef",
+        "reconciledById",
+        "executedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "serviceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "target": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "timing": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "verificationCriteria": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "rollbackCondition": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "executionState": {
+          "enum": [
+            "proposed",
+            "owner-executed"
+          ]
+        },
+        "proposedById": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/id"
+        },
+        "approvalDecisionRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "approvalEvidenceRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "executionEvidenceRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "reconciledById": {
+          "$ref": "#/$defs/id"
+        },
+        "executedAt": {
+          "$ref": "#/$defs/nullableTimestamp"
+        }
+      }
+    },
+    "recoveryCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "incidentRef",
+        "serviceRef",
+        "environment",
+        "deploymentOrBuild",
+        "timelineSnapshotRef",
+        "state",
+        "evidenceRef",
+        "verifiedById",
+        "checkedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "serviceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "environment": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "deploymentOrBuild": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "timelineSnapshotRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "state": {
+          "const": "passed"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "verifiedById": {
+          "$ref": "#/$defs/id"
+        },
+        "checkedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "serviceRecovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "state",
+        "technicalDriId",
+        "timelineSnapshotRef",
+        "recoveryCheckRefs",
+        "evaluatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "state": {
+          "enum": [
+            "criteria-unmet",
+            "criteria-met"
+          ]
+        },
+        "technicalDriId": {
+          "$ref": "#/$defs/id"
+        },
+        "timelineSnapshotRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "recoveryCheckRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evaluatedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "incidentRecoveryRecommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "state",
+        "serviceRecoveryRef",
+        "technicalDriId",
+        "incidentManagerId",
+        "decisionRef",
+        "recommendedAt",
+        "reviewedAt",
+        "rationale"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "state": {
+          "enum": [
+            "not-ready",
+            "recommended-for-owner-review",
+            "withheld"
+          ]
+        },
+        "technicalDriId": {
+          "$ref": "#/$defs/id"
+        },
+        "incidentManagerId": {
+          "$ref": "#/$defs/id"
+        },
+        "serviceRecoveryRef": {
+          "$ref": "#/$defs/id"
+        },
+        "decisionRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "recommendedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "reviewedAt": {
+          "$ref": "#/$defs/nullableTimestamp"
+        },
+        "rationale": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "closure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "incidentRef",
+        "incidentRecoveryRecommendationRef",
+        "state",
+        "incidentManagerId",
+        "authorityOwnerId",
+        "recommendationDecisionRef",
+        "closureDecisionRef",
+        "evidenceRef",
+        "closedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "incidentRecoveryRecommendationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "open",
+            "closure-recommended",
+            "closed-by-owner"
+          ]
+        },
+        "incidentManagerId": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityOwnerId": {
+          "$ref": "#/$defs/id"
+        },
+        "recommendationDecisionRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "closureDecisionRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "closedAt": {
+          "$ref": "#/$defs/nullableTimestamp"
+        }
+      }
+    },
+    "communication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "incidentRef",
+        "audience",
+        "channel",
+        "timing",
+        "state",
+        "authorId",
+        "ownerId",
+        "approvedById",
+        "approvalDecisionRef",
+        "messageRef",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "audience": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "channel": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "timing": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "approved-draft"
+          ]
+        },
+        "authorId": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedById": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "approvalDecisionRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "messageRef": {
+          "type": "string",
+          "pattern": "^controlled://.+"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "followUp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "identityKey",
+        "incidentRef",
+        "originatingEvidenceRefs",
+        "originatingDecisionRefs",
+        "originatingActionRefs",
+        "assetRefs",
+        "serviceRefs",
+        "controlRefs",
+        "ownerId",
+        "openedAt",
+        "dueAt",
+        "slaPolicyRef",
+        "slaDurationHours",
+        "state",
+        "summary",
+        "complianceRequired",
+        "complianceHandoffRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "identityKey": {
+          "$ref": "#/$defs/digest"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "originatingEvidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "originatingDecisionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "originatingActionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "assetRefs": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "serviceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "controlRefs": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/id"
+        },
+        "openedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "dueAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "slaPolicyRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "slaDurationHours": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "state": {
+          "enum": [
+            "proposed",
+            "planned",
+            "in-progress",
+            "blocked",
+            "owner-completed"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "complianceRequired": {
+          "type": "boolean"
+        },
+        "complianceHandoffRef": {
+          "$ref": "#/$defs/nullableId"
+        }
+      }
+    },
+    "complianceHandoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "targetClaw",
+        "state",
+        "deduplicationKey",
+        "incidentRef",
+        "followUpRef",
+        "originatingEvidenceRefs",
+        "originatingDecisionRefs",
+        "originatingActionRefs",
+        "assetRefs",
+        "serviceRefs",
+        "controlRefs",
+        "ownerId",
+        "dueAt",
+        "slaPolicyRef",
+        "slaDurationHours",
+        "issueMutationState",
+        "remediationState",
+        "verificationState",
+        "closureState"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "const": "repository-compliance-program-manager.incident-obligation-handoff.v1"
+        },
+        "targetClaw": {
+          "const": "repository-compliance-program-manager"
+        },
+        "state": {
+          "enum": [
+            "proposed",
+            "ready"
+          ]
+        },
+        "deduplicationKey": {
+          "$ref": "#/$defs/digest"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "followUpRef": {
+          "$ref": "#/$defs/id"
+        },
+        "originatingEvidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "originatingDecisionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "originatingActionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "assetRefs": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "serviceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "controlRefs": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "ownerId": {
+          "$ref": "#/$defs/id"
+        },
+        "dueAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "slaPolicyRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "slaDurationHours": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "issueMutationState": {
+          "const": "not-requested"
+        },
+        "remediationState": {
+          "const": "not-claimed"
+        },
+        "verificationState": {
+          "const": "not-claimed"
+        },
+        "closureState": {
+          "const": "not-claimed"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "productionMutation",
+        "trafficShift",
+        "credentialRevocation",
+        "communicationSend",
+        "incidentDeclaration",
+        "incidentClosure",
+        "riskAcceptance",
+        "complianceIssueMutation",
+        "complianceRemediation",
+        "complianceVerification",
+        "complianceClosure"
+      ],
+      "properties": {
+        "productionMutation": {
+          "const": "not-permitted"
+        },
+        "trafficShift": {
+          "const": "not-permitted"
+        },
+        "credentialRevocation": {
+          "const": "not-permitted"
+        },
+        "communicationSend": {
+          "const": "not-permitted"
+        },
+        "incidentDeclaration": {
+          "const": "not-permitted"
+        },
+        "incidentClosure": {
+          "const": "not-permitted"
+        },
+        "riskAcceptance": {
+          "const": "not-permitted"
+        },
+        "complianceIssueMutation": {
+          "const": "not-permitted"
+        },
+        "complianceRemediation": {
+          "const": "not-claimed"
+        },
+        "complianceVerification": {
+          "const": "not-claimed"
+        },
+        "complianceClosure": {
+          "const": "not-claimed"
+        }
+      }
+    },
+    "recommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reviewerId",
+        "reviewedAt",
+        "rationale"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "blocked",
+            "ready-for-incident-manager-review",
+            "closed-by-owner"
+          ]
+        },
+        "reviewerId": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "reviewedAt": {
+          "$ref": "#/$defs/nullableTimestamp"
+        },
+        "rationale": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner",
+        "summary",
+        "prohibitedActions"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "blocked",
+            "ready"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "prohibitedActions": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        }
+      }
+    },
+    "legacyImpact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "affectedServices",
+        "customerImpact",
+        "evidenceRef",
+        "observedAt"
+      ],
+      "properties": {
+        "summary": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "affectedServices": {
+          "$ref": "#/$defs/nonEmptyStringList"
+        },
+        "customerImpact": {
+          "enum": [
+            "none",
+            "degraded",
+            "partial-outage",
+            "major-outage",
+            "unknown"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "legacyEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timestamp",
+        "kind",
+        "summary",
+        "evidenceRef",
+        "owner"
+      ],
+      "properties": {
+        "timestamp": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "kind": {
+          "enum": [
+            "observation",
+            "hypothesis",
+            "decision",
+            "action",
+            "verification",
+            "communication"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "owner": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "legacyMitigation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "target",
+        "owner",
+        "state",
+        "approvalRef",
+        "verification",
+        "rollbackCondition"
+      ],
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "target": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "owner": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "state": {
+          "enum": [
+            "proposed",
+            "approved",
+            "in-progress",
+            "verified",
+            "rolled-back"
+          ]
+        },
+        "approvalRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "verification": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "rollbackCondition": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "legacyCriterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "criterion",
+        "state",
+        "evidenceRef",
+        "owner"
+      ],
+      "properties": {
+        "criterion": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "state": {
+          "enum": [
+            "unmet",
+            "met",
+            "blocked"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "owner": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "legacyCommunication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "audience",
+        "state",
+        "owner",
+        "messageRef"
+      ],
+      "properties": {
+        "audience": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "approved",
+            "sent",
+            "corrected"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "messageRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    }
+  }
+}

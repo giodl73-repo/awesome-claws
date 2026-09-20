@@ -19,6 +19,8 @@ workspace:
       path: templates/session-handoff.md
     - source: schemas/procure-to-pay-three-way-match.schema.json
       path: schemas/procure-to-pay-three-way-match.schema.json
+    - source: scripts/procure-to-pay-three-way-match-validator.mjs
+      path: scripts/procure-to-pay-three-way-match-validator.mjs
     - source: fixtures/procure-to-pay-three-way-match.example.json
       path: fixtures/procure-to-pay-three-way-match.example.json
     - source: fixtures/procure-to-pay-three-way-match.failures.json

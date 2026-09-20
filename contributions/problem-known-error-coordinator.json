@@ -60,7 +60,8 @@
       "No output claims inferred correlation or root cause, workaround approval or execution, known-error publication, production change, closure, mutation, or risk acceptance"
     ],
     "capabilityGuidance": [
-      "The base package uses supplied workspace evidence and caller-provided trust only; it has no incident, change, deployment, publication, messaging, or ticket mutation capability.",
+      "The base package uses supplied workspace evidence and caller-provided trust only and grants workspace-local execution solely for the packaged deterministic validator; it has no incident, change, deployment, publication, messaging, or ticket mutation capability.",
+      "Run node scripts/problem-known-error-validator.mjs against the bounded artifact with explicit --workspace-root, --cutoff, --public-trust, --trust-keyring, and --source-bundle arguments before rendering any lifecycle result.",
       "Inline visualization is presentation-only and must preserve the complete Markdown fallback and structural authority non-claims."
     ],
     "openclawProfile": {
@@ -72,6 +73,7 @@
             "read",
             "write",
             "edit",
+            "exec",
             "show_widget"
           ],
           "fs": {
@@ -114,6 +116,21 @@
       {
         "source": "schemas/problem-known-error-owner-artifacts.schema.json",
         "path": "schemas/problem-known-error-owner-artifacts.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "schemas/incident-state.schema.json",
+        "path": "schemas/incident-state.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "schemas/test-evidence.schema.json",
+        "path": "schemas/test-evidence.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "schemas/change-plan.schema.json",
+        "path": "schemas/change-plan.schema.json",
         "role": "schema"
       },
       {
@@ -160,6 +177,11 @@
         "source": "assets/problem-known-error-review.html",
         "path": "assets/problem-known-error-review.html",
         "role": "asset"
+      },
+      {
+        "source": "scripts/problem-known-error-validator.mjs",
+        "path": "scripts/problem-known-error-validator.mjs",
+        "role": "reference"
       }
     ]
   },

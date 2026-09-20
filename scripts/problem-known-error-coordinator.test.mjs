@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { createHash, generateKeyPairSync, sign } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -632,6 +633,32 @@ test("accepted candidate is strict-schema valid and semantically clean", () => {
     Date.parse(accepted.recurrences[0].observedAt) >
       Date.parse(accepted.incidentMemberships[2].declaredAt),
   );
+});
+
+test("packaged validator checks explicit trust and owner artifacts", () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      "claws/problem-known-error-coordinator/scripts/problem-known-error-validator.mjs",
+      "fixtures/problem-known-error.example.json",
+      "--workspace-root",
+      "claws/problem-known-error-coordinator",
+      "--cutoff",
+      "2026-09-16T20:00:00Z",
+      "--public-trust",
+      "references/public-trust.example.json",
+      "--trust-keyring",
+      "references/trust-keyring.example.json",
+      "--source-bundle",
+      "references/owner-artifacts.example.json",
+    ],
+    {
+      cwd: new URL("..", import.meta.url),
+      encoding: "utf8",
+    },
+  );
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  assert.equal(JSON.parse(result.stdout).valid, true);
 });
 
 test("strict owner schemas do not directly carry the candidate lifecycle", () => {

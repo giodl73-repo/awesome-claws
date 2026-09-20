@@ -1,16 +1,24 @@
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
-const schema = JSON.parse(
-  await readFile(
-    new URL(
-      "../sources/procure-to-pay-three-way-match-exception-reconciler/schemas/procure-to-pay-three-way-match.schema.json",
-      import.meta.url,
-    ),
-    "utf8",
-  ),
+function readSupportJson(repositoryPath, packagePath) {
+  for (const relativePath of [repositoryPath, packagePath]) {
+    try {
+      return JSON.parse(
+        readFileSync(new URL(relativePath, import.meta.url), "utf8"),
+      );
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+    }
+  }
+  throw new Error(`Required validator support file is unavailable: ${packagePath}`);
+}
+
+const schema = readSupportJson(
+  "../sources/procure-to-pay-three-way-match-exception-reconciler/schemas/procure-to-pay-three-way-match.schema.json",
+  "../schemas/procure-to-pay-three-way-match.schema.json",
 );
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);

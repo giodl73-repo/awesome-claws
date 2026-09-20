@@ -4425,7 +4425,7 @@ function civicDataFindings(value) {
   return findings;
 }
 
-function changeControlFindings(value) {
+export function changeControlFindings(value) {
   const stepIds = value.plan.steps.map((item) => item.id);
   const steps = new Set(stepIds);
   const findings = [
@@ -40281,7 +40281,7 @@ function researchSynthesisFindings(value) {
   return findings;
 }
 
-function qualityAssuranceReleaseFindings(value) {
+export function qualityAssuranceReleaseFindings(value) {
   const findings = [];
   function toEpochMillis(text) {
     if (typeof text !== "string") return NaN;
@@ -45581,7 +45581,7 @@ function dataGovernanceAssessmentFindings(input) {
   return findings;
 }
 
-function incidentResponseFindings(input) {
+export function incidentResponseFindings(input) {
   const value = isRecord(input) ? input : {};
   const findings = [];
   const version2 = value.schemaVersion === "awesomeClaws.incidentResponse.v2";

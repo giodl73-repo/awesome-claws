@@ -25,6 +25,12 @@ workspace:
       path: schemas/problem-known-error-trust-keyring.schema.json
     - source: schemas/problem-known-error-owner-artifacts.schema.json
       path: schemas/problem-known-error-owner-artifacts.schema.json
+    - source: schemas/incident-state.schema.json
+      path: schemas/incident-state.schema.json
+    - source: schemas/test-evidence.schema.json
+      path: schemas/test-evidence.schema.json
+    - source: schemas/change-plan.schema.json
+      path: schemas/change-plan.schema.json
     - source: fixtures/problem-known-error.example.json
       path: fixtures/problem-known-error.example.json
     - source: fixtures/problem-known-error.missing-coverage.json
@@ -43,6 +49,8 @@ workspace:
       path: templates/problem-known-error-review.md
     - source: assets/problem-known-error-review.html
       path: assets/problem-known-error-review.html
+    - source: scripts/problem-known-error-validator.mjs
+      path: scripts/problem-known-error-validator.mjs
 packages: []
 mcpServers: {}
 cronJobs: []

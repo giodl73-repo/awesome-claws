@@ -234,6 +234,30 @@ test("public artifact CLI validates the exact fixture with owner policy and call
   assert.equal(JSON.parse(result.stdout).valid, true);
 });
 
+test("packaged validator enforces exact matching with bounded workspace inputs", () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      "claws/procure-to-pay-three-way-match-exception-reconciler/scripts/procure-to-pay-three-way-match-validator.mjs",
+      "fixtures/procure-to-pay-three-way-match.example.json",
+      "--workspace-root",
+      "claws/procure-to-pay-three-way-match-exception-reconciler",
+      "--as-of",
+      context.asOf,
+      "--cutoff",
+      context.cutoffAt,
+      "--owner-trust-policy",
+      "fixtures/owner-trust-policy.example.json",
+    ],
+    {
+      cwd: new URL("..", import.meta.url),
+      encoding: "utf8",
+    },
+  );
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  assert.equal(JSON.parse(result.stdout).valid, true);
+});
+
 test("human approvals and handoff bind exact immutable payloads", () => {
   assert.equal(
     acceptedFixture.matchingPolicy.approvedPayloadDigest,

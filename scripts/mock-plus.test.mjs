@@ -44,7 +44,7 @@ test("inventory derives the current portfolio oracle surface", async () => {
     inventory.entries.filter((entry) => entry.fixtureResources.length > 0)
       .length,
   );
-  assert.equal(inventory.summary.packagedSchemaCount, 131);
+  assert.equal(inventory.summary.packagedSchemaCount, 134);
   assert.equal(
     inventory.summary.schemaFixturePairClawCount,
     inventory.entries.filter((entry) =>
@@ -245,8 +245,8 @@ test("lifecycle portfolio classifies faults and removes every capability adapter
     "infrastructure-failure",
   ]);
   assert.equal(run.coverage.capabilities.applicableClawCount, 65);
-  assert.equal(run.coverage.capabilities.caseCount, 91);
-  assert.equal(run.coverage.capabilities.killedCount, 91);
+  assert.equal(run.coverage.capabilities.caseCount, 93);
+  assert.equal(run.coverage.capabilities.killedCount, 93);
   assert.deepEqual(run.coverage.capabilities.classes, [
     "bootstrap",
     "clawhub-plugin",
