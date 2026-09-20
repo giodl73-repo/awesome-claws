@@ -3,8 +3,16 @@ import {
   createPublicKey,
   verify as verifySignature,
 } from "node:crypto";
-import { closeSync, openSync, readFileSync, readSync } from "node:fs";
+import {
+  closeSync,
+  openSync,
+  readFileSync,
+  readSync,
+  realpathSync,
+  statSync,
+} from "node:fs";
 import { isIP } from "node:net";
+import { isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isProxy } from "node:util/types";
 import Ajv2020 from "ajv/dist/2020.js";
@@ -2454,8 +2462,19 @@ function cliFailure(code) {
   };
 }
 
-function readBoundedJson(path, maxBytes) {
-  const descriptor = openSync(path, "r");
+function readBoundedJson(workspaceRoot, path, maxBytes) {
+  const root = realpathSync(resolve(workspaceRoot));
+  const candidate = realpathSync(resolve(root, path));
+  const relativePath = relative(root, candidate);
+  if (
+    relativePath === ".." ||
+    relativePath.startsWith(`..${sep}`) ||
+    isAbsolute(relativePath) ||
+    !statSync(candidate).isFile()
+  ) {
+    throw new Error("bounded file rejected");
+  }
+  const descriptor = openSync(candidate, "r");
   try {
     const buffer = Buffer.allocUnsafe(maxBytes + 1);
     let total = 0;
@@ -2480,21 +2499,42 @@ function readBoundedJson(path, maxBytes) {
 }
 
 async function runCli() {
-  const [inputPath, asOf, publicTrustPath, sourceReceiptsPath] =
-    process.argv.slice(2);
-  if (!inputPath || !asOf || !publicTrustPath || !sourceReceiptsPath) {
+  const args = process.argv.slice(2);
+  const [
+    inputPath,
+    asOf,
+    publicTrustPath,
+    sourceReceiptsPath,
+    workspaceFlag,
+    workspaceRoot,
+  ] = args;
+  if (
+    args.length !== 6 ||
+    !inputPath ||
+    !asOf ||
+    !publicTrustPath ||
+    !sourceReceiptsPath ||
+    workspaceFlag !== "--workspace-root" ||
+    !workspaceRoot
+  ) {
     process.stdout.write(`${JSON.stringify(cliFailure("invalid-cli-input"))}\n`);
     process.exitCode = 2;
     return;
   }
   let evaluation;
   try {
-    const input = readBoundedJson(inputPath, SLICE_LIMITS.inputBytes);
+    const input = readBoundedJson(
+      workspaceRoot,
+      inputPath,
+      SLICE_LIMITS.inputBytes,
+    );
     const publicTrust = readBoundedJson(
+      workspaceRoot,
       publicTrustPath,
       SLICE_LIMITS.validationContextBytes,
     );
     const sourceReceipts = readBoundedJson(
+      workspaceRoot,
       sourceReceiptsPath,
       SLICE_LIMITS.validationContextBytes,
     );

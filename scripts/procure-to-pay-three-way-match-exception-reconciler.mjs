@@ -27,6 +27,7 @@ const validateSchema = ajv.compile(schema);
 const OFFSET_TIMESTAMP =
   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/u;
 const INTEGER = /^-?(?:0|[1-9][0-9]*)$/u;
+const MAX_EXACT_SUBSET_STATES = 100_000;
 
 const LINE_FIELDS = Object.freeze({
   "purchase-order": [
@@ -532,11 +533,17 @@ function greatestCommonDivisor(left, right) {
   return a;
 }
 
-export function exactSubsetExists(values, target) {
+export function exactSubsetExists(
+  values,
+  target,
+  { maxStates = MAX_EXACT_SUBSET_STATES } = {},
+) {
   if (
     target === null ||
     target <= 0n ||
-    values.some((value) => value === null || value < 0n)
+    values.some((value) => value === null || value < 0n) ||
+    !Number.isInteger(maxStates) ||
+    maxStates < 1
   ) {
     return null;
   }
@@ -569,6 +576,7 @@ export function exactSubsetExists(values, target) {
   }
 
   const misses = new Set();
+  let visitedStates = 0;
   const search = (index, remaining) => {
     if (remaining === 0n) return true;
     if (
@@ -581,6 +589,8 @@ export function exactSubsetExists(values, target) {
     }
     const memoKey = `${index}:${remaining}`;
     if (misses.has(memoKey)) return false;
+    visitedStates += 1;
+    if (visitedStates > maxStates) return null;
 
     const { value, count } = groups[index];
     const maxUse =
@@ -588,9 +598,11 @@ export function exactSubsetExists(values, target) {
         ? count
         : Number(remaining / value);
     for (let used = maxUse; used >= 0; used -= 1) {
-      if (search(index + 1, remaining - value * BigInt(used))) {
-        return true;
-      }
+      const result = search(
+        index + 1,
+        remaining - value * BigInt(used),
+      );
+      if (result !== false) return result;
     }
     misses.add(memoKey);
     return false;
@@ -1413,12 +1425,20 @@ export function validateThreeWayMatch(candidate, context = {}) {
     const invoiceSubset = unitsValid
       ? exactSubsetExists(invoiceFamilies, poQuantity)
       : null;
-    const status =
-      receiptSubset === true && invoiceSubset === true
-        ? true
-        : receiptSubset === false || invoiceSubset === false
-          ? false
-          : null;
+    let status;
+    if (receiptSubset === false || invoiceSubset === false) {
+      status = false;
+    } else if (receiptSubset === true && invoiceSubset === true) {
+      status = true;
+    } else {
+      status = null;
+      add(
+        "exact_subset_search_budget_exceeded",
+        `/purchaseOrderLines/${poLines.indexOf(poLine)}`,
+        `Exact subset verification exceeded the deterministic ${MAX_EXACT_SUBSET_STATES}-state budget; the partition remains blocked instead of guessing whether an exact match exists.`,
+        [poLine.id],
+      );
+    }
     exactSubsetByPoLine.set(poLine.id, status);
     return status;
   };
@@ -1619,11 +1639,11 @@ export function validateThreeWayMatch(candidate, context = {}) {
             relatedInvoices.length === 0) ||
           (residual.reasonCode === "three-way-mismatch-needs-owner-review" &&
             (relatedReceipts.length > 0 || relatedInvoices.length > 0) &&
-            exactRelatedMatch === false)
+            exactRelatedMatch !== true)
         : residual.reasonCode ===
             (residual.side === "receipt"
               ? "receipt-needs-owner-review"
-              : "invoice-needs-owner-review") && exactRelatedMatch === false;
+              : "invoice-needs-owner-review") && exactRelatedMatch !== true;
     const recordedAt = timestamp(residual.recordedAt);
     if (
       !line ||

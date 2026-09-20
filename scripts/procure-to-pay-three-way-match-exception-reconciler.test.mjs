@@ -266,6 +266,10 @@ test("exact subset search remains complete beyond the former state cutoff", () =
   );
   assert.equal(exactSubsetExists(families, 12_345n), true);
   assert.equal(exactSubsetExists(families, 16_384n), false);
+  assert.equal(
+    exactSubsetExists([4n, 3n, 2n], 5n, { maxStates: 1 }),
+    null,
+  );
 });
 
 test("human approvals and handoff bind exact immutable payloads", () => {

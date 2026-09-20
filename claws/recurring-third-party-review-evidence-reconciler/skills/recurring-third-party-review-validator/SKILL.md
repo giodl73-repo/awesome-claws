@@ -12,7 +12,7 @@ freshness, reopening, typed-authority, and evidence-closure checks locally.
 Run only the packaged verifier against workspace files:
 
 ```text
-node skills/recurring-third-party-review-validator/scripts/verify.mjs <artifact.json> <asOf> <public-trust.json> <source-receipts.json>
+node skills/recurring-third-party-review-validator/scripts/verify.mjs <artifact.json> <asOf> <public-trust.json> <source-receipts.json> --workspace-root <workspace-root>
 ```
 
 Treat exit code `0` and JSON `"valid": true` as accepted validation. Any other

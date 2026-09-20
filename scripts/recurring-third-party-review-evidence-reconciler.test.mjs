@@ -2080,6 +2080,8 @@ test("public CLI accepts the trusted fixture but reports a blocked handoff", () 
       asOf,
       resolve(sourceRoot, "fixtures", "public-trust.example.json"),
       resolve(sourceRoot, "fixtures", "source-receipts.example.json"),
+      "--workspace-root",
+      sourceRoot,
     ],
     { cwd: root, encoding: "utf8" },
   );
@@ -2109,6 +2111,8 @@ test("packaged Agent Skill verifier executes without repository dependencies", (
       asOf,
       resolve(sourceRoot, "fixtures", "public-trust.example.json"),
       resolve(sourceRoot, "fixtures", "source-receipts.example.json"),
+      "--workspace-root",
+      sourceRoot,
     ],
     {
       cwd: sourceRoot,
@@ -2159,6 +2163,8 @@ test("public CLI bounds every file and never echoes parser or file failures", as
     asOf,
     resolve(sourceRoot, "fixtures", "public-trust.example.json"),
     resolve(sourceRoot, "fixtures", "source-receipts.example.json"),
+    "--workspace-root",
+    root,
   ];
   try {
     for (const badPath of [invalidPath, oversizedPath]) {
@@ -2188,12 +2194,32 @@ test("public CLI bounds every file and never echoes parser or file failures", as
         asOf,
         validArgs[2],
         validArgs[3],
+        "--workspace-root",
+        root,
       ],
       { cwd: root, encoding: "utf8" },
     );
     assert.equal(missing.status, 1);
     assert.equal(missing.stderr, "");
     assert.deepEqual(JSON.parse(missing.stdout).findings.map((item) => item.code), [
+      "invalid-cli-file",
+    ]);
+    const escaped = spawnSync(
+      process.execPath,
+      [
+        resolve(here, "recurring-third-party-review-evidence-reconciler.mjs"),
+        resolve(root, "catalog.json"),
+        asOf,
+        validArgs[2],
+        validArgs[3],
+        "--workspace-root",
+        sourceRoot,
+      ],
+      { cwd: root, encoding: "utf8" },
+    );
+    assert.equal(escaped.status, 1);
+    assert.equal(escaped.stderr, "");
+    assert.deepEqual(JSON.parse(escaped.stdout).findings.map((item) => item.code), [
       "invalid-cli-file",
     ]);
   } finally {
