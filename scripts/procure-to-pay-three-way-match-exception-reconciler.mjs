@@ -523,29 +523,79 @@ function maximumTimestamp(values) {
   return parsed.some((value) => value === null) ? null : Math.max(...parsed);
 }
 
-function exactSubsetExists(vectors, targets) {
+function greatestCommonDivisor(left, right) {
+  let a = left;
+  let b = right;
+  while (b !== 0n) {
+    [a, b] = [b, a % b];
+  }
+  return a;
+}
+
+export function exactSubsetExists(values, target) {
   if (
-    targets.some((target) => target === null || target <= 0n) ||
-    vectors.some(
-      (vector) =>
-        vector.length !== targets.length ||
-        vector.some((value) => value === null || value < 0n),
-    )
+    target === null ||
+    target <= 0n ||
+    values.some((value) => value === null || value < 0n)
   ) {
     return null;
   }
-  const key = (values) => values.map(String).join(":");
-  const zero = targets.map(() => 0n);
-  const reachable = new Map([[key(zero), zero]]);
-  for (const vector of vectors) {
-    for (const current of [...reachable.values()]) {
-      const next = current.map((value, index) => value + vector[index]);
-      if (next.some((value, index) => value > targets[index])) continue;
-      reachable.set(key(next), next);
-      if (reachable.size > 10_000) return null;
-    }
+
+  const counts = new Map();
+  let total = 0n;
+  for (const value of values) {
+    if (value === 0n || value > target) continue;
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+    total += value;
   }
-  return reachable.has(key(targets));
+  if (total < target) return false;
+  if (total === target) return true;
+
+  const groups = [...counts.entries()]
+    .map(([value, count]) => ({ value, count }))
+    .sort((left, right) =>
+      left.value === right.value ? 0 : left.value > right.value ? -1 : 1,
+    );
+  const suffixSums = new Array(groups.length + 1).fill(0n);
+  const suffixDivisors = new Array(groups.length + 1).fill(0n);
+  for (let index = groups.length - 1; index >= 0; index -= 1) {
+    const group = groups[index];
+    suffixSums[index] =
+      suffixSums[index + 1] + group.value * BigInt(group.count);
+    suffixDivisors[index] = greatestCommonDivisor(
+      group.value,
+      suffixDivisors[index + 1],
+    );
+  }
+
+  const misses = new Set();
+  const search = (index, remaining) => {
+    if (remaining === 0n) return true;
+    if (
+      index === groups.length ||
+      remaining < 0n ||
+      suffixSums[index] < remaining ||
+      remaining % suffixDivisors[index] !== 0n
+    ) {
+      return false;
+    }
+    const memoKey = `${index}:${remaining}`;
+    if (misses.has(memoKey)) return false;
+
+    const { value, count } = groups[index];
+    const maxUse =
+      remaining / value >= BigInt(count)
+        ? count
+        : Number(remaining / value);
+    for (let used = maxUse; used >= 0; used -= 1) {
+      if (search(index + 1, remaining - value * BigInt(used))) {
+        return true;
+      }
+    }
+    misses.add(memoKey);
+    return false;
+  };
+  return search(0, target);
 }
 
 export function validateThreeWayMatch(candidate, context = {}) {
@@ -1321,7 +1371,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
               receiptReversalValid.get(line.id),
           ),
         ];
-        return [sumIntegerField(family, "quantity")];
+        return sumIntegerField(family, "quantity");
       });
     const invoiceFamilies = relatedInvoices
       .filter((line) => line.kind === "invoice")
@@ -1335,10 +1385,7 @@ export function validateThreeWayMatch(candidate, context = {}) {
               invoiceReversalValid.get(line.id),
           ),
         ];
-        return [
-          sumIntegerField(family, "quantity"),
-          sumIntegerField(family, "lineMinorUnits"),
-        ];
+        return sumIntegerField(family, "quantity");
       });
     const unitsValid =
       poUnit !== null &&
@@ -1359,10 +1406,12 @@ export function validateThreeWayMatch(candidate, context = {}) {
         );
       });
     const receiptSubset = unitsValid
-      ? exactSubsetExists(receiptFamilies, [poQuantity])
+      ? exactSubsetExists(receiptFamilies, poQuantity)
       : null;
+    // unitsValid binds every invoice amount to the PO unit price, so exact
+    // quantity equality also proves exact minor-unit amount equality.
     const invoiceSubset = unitsValid
-      ? exactSubsetExists(invoiceFamilies, [poQuantity, poAmount])
+      ? exactSubsetExists(invoiceFamilies, poQuantity)
       : null;
     const status =
       receiptSubset === true && invoiceSubset === true

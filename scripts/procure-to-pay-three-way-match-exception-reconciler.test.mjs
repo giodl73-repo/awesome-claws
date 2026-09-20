@@ -19,6 +19,7 @@ import {
   computePartitionRootDigest,
   computePurchaseOrderRevisionPayloadDigest,
   evaluateIrreducibilityWitness,
+  exactSubsetExists,
   validateThreeWayMatch,
 } from "./procure-to-pay-three-way-match-exception-reconciler.mjs";
 
@@ -256,6 +257,15 @@ test("packaged validator enforces exact matching with bounded workspace inputs",
   );
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.equal(JSON.parse(result.stdout).valid, true);
+});
+
+test("exact subset search remains complete beyond the former state cutoff", () => {
+  const families = Array.from(
+    { length: 14 },
+    (_, index) => 1n << BigInt(index),
+  );
+  assert.equal(exactSubsetExists(families, 12_345n), true);
+  assert.equal(exactSubsetExists(families, 16_384n), false);
 });
 
 test("human approvals and handoff bind exact immutable payloads", () => {
