@@ -53423,8 +53423,6 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
     cutoffAt: "2026-09-15T23:59:59Z",
     ownerTrustPolicy: procureToPayOwnerTrustPolicy,
   }),
-  "problem-known-error-coordinator":
-    PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS,
   "supplier-capacity-assurance-manager": Object.freeze({
     asOf: "2026-09-14T18:00:00Z",
   }),
@@ -53445,6 +53443,9 @@ const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
 });
 
 export function artifactSemanticValidationOptions(id) {
+  if (id === "problem-known-error-coordinator") {
+    return structuredClone(PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS);
+  }
   return structuredClone(DEFAULT_VALIDATION_OPTIONS[id] ?? {});
 }
 
