@@ -1490,4 +1490,28 @@ test("public CLI validates only with explicit caller-controlled trust and time",
     valid: true,
     findings: [],
   });
+
+  const generic = spawnSync(
+    process.execPath,
+    [
+      resolve(root, "scripts", "validate-artifact.mjs"),
+      "security-alert-review-reconciler",
+      resolve(packageRoot, "fixtures", "security-alert-review.example.json"),
+      "--as-of",
+      AS_OF,
+      "--principal-roster-digest",
+      accepted.principalRoster.digest,
+      "--evidence-root",
+      accepted.evidenceRoot,
+      "--owner-trust",
+      resolve(packageRoot, "fixtures", "owner-trust.example.json"),
+      "--source-bundle",
+      resolve(packageRoot, "references", "source-bytes.example.json"),
+      "--public-trust",
+      resolve(packageRoot, "references", "public-trust.example.json"),
+    ],
+    { cwd: root, encoding: "utf8" },
+  );
+  assert.equal(generic.status, 0, generic.stderr || generic.stdout);
+  assert.equal(JSON.parse(generic.stdout).valid, true);
 });

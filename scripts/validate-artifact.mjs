@@ -8,7 +8,7 @@ import {
 const [id, input, ...args] = process.argv.slice(2);
 const semanticOptions = {};
 const usage =
-  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--cutoff <RFC3339>] [--p2p-cutoff-at <RFC3339>] [--p2p-owner-policy <owner-policy.json>] [--public-trust <trust.json>] [--source-receipts <receipts.json>] [--license-trust-root <trust-root.json>] [--trust-store <trust.json>] [--source-bundle <sources.json>] [--trust-keys <keys.json>] [--public-trust-input <trust.json>] [--trust-keyring <keyring.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
+  "Usage: npm run validate:artifact -- <claw-id> <artifact.json> [--as-of <RFC3339>] [--cutoff <RFC3339>] [--p2p-cutoff-at <RFC3339>] [--p2p-owner-policy <owner-policy.json>] [--principal-roster-digest <sha256:digest>] [--evidence-root <sha256:digest>] [--owner-trust <trust.json>] [--public-trust <trust.json>] [--source-receipts <receipts.json>] [--license-trust-root <trust-root.json>] [--trust-store <trust.json>] [--source-bundle <sources.json>] [--trust-keys <keys.json>] [--public-trust-input <trust.json>] [--trust-keyring <keyring.json>] [--approved-plan-public-keys <keys.json>] [--approved-plan-metric-digests <digests.json>]";
 for (let index = 0; index < args.length; index += 2) {
   const flag = args[index];
   const argument = args[index + 1];
@@ -19,6 +19,9 @@ for (let index = 0; index < args.length; index += 2) {
       "--p2p-cutoff-at",
       "--p2p-owner-policy",
       "--cutoff",
+      "--principal-roster-digest",
+      "--evidence-root",
+      "--owner-trust",
       "--public-trust",
       "--source-receipts",
       "--license-trust-root",
@@ -39,6 +42,10 @@ for (let index = 0; index < args.length; index += 2) {
     semanticOptions.cutoffAt = argument;
   } else if (flag === "--cutoff") {
     semanticOptions.cutoff = argument;
+  } else if (flag === "--principal-roster-digest") {
+    semanticOptions.principalRosterDigest = argument;
+  } else if (flag === "--evidence-root") {
+    semanticOptions.evidenceRoot = argument;
   } else if (flag === "--trust-keys") {
     const content = await readFile(resolve(argument));
     const trustConfiguration = JSON.parse(content.toString("utf8"));
@@ -58,8 +65,11 @@ for (let index = 0; index < args.length; index += 2) {
     }
     if (flag === "--p2p-owner-policy") {
       semanticOptions.ownerTrustPolicy = trustConfiguration;
+    } else if (flag === "--owner-trust") {
+      semanticOptions.ownerTrust = trustConfiguration;
     } else if (flag === "--public-trust") {
       semanticOptions.publicTrust = trustConfiguration;
+      semanticOptions.publicTrustBundle = trustConfiguration;
     } else if (flag === "--source-receipts") {
       semanticOptions.sourceReceipts = trustConfiguration;
     } else if (flag === "--license-trust-root") {
