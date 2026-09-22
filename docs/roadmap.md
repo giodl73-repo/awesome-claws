@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 119 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 125 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -8,11 +8,11 @@ show how Claws compose into larger managed workflows.
 
 | Category | Count | Current emphasis |
 | --- | ---: | --- |
-| Productivity | 47 | Personal operating systems, personal media, fantasy sports, household planning, documents, travel, meetings, and knowledge work |
-| Operations | 22 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
+| Productivity | 48 | Personal operating systems, personal media, fantasy sports, household planning, documents, travel, meetings, and knowledge work |
+| Operations | 28 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
 | Analysis | 16 | Research, evidence collection, financial monitoring, public/company watching, data work, and model evaluation |
-| Engineering | 8 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
-| Governance | 7 | Compliance, privacy requests, accessibility review, data governance, legal-matter preservation, records retention and disposition, and vulnerability exposure disposition |
+| Engineering | 11 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
+| Governance | 19 | Compliance, privacy requests, accessibility review, data governance, legal-matter preservation, records retention and disposition, and vulnerability exposure disposition |
 | Product | 3 | Product decisions, UX synthesis, and experiments |
 
 The strongest recent expansion is practical personal work: vehicle service,
@@ -39,15 +39,15 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 ## Quality Uplift
 
 The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
-post-100 prioritization tool. The current baseline has 119 of 119 Claws passing
+post-100 prioritization tool. The current baseline has 125 of 125 Claws passing
 the non-negotiable package, regression, resource, and Experience gates. The
 highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 108 of 119 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 119 of 119 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 119 of 119 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 114 of 125 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 125 of 125 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 125 of 125 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
