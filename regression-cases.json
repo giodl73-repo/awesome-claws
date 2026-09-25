@@ -3133,6 +3133,28 @@
         "visual"
       ],
       "capabilityDigest": "sha256:049a5c760d609d4edcc686bfa485aa80270b4046b05ad1199e5509fbbe676a9d"
+    },
+    {
+      "id": "learning-plan-coordinator",
+      "acceptedRequest": "Build a twelve-week learner-controlled plan for practical data visualization using my supplied portfolio samples, weekly availability, free-resource constraint, and checkpoint rubric.",
+      "requiredEvidence": [
+        "Learner-owned goal, target competencies, intended use, time horizon, availability, constraints, and review cadence",
+        "Current-skill self-report plus supplied practice, assessment, portfolio, or coach evidence with dates and provenance",
+        "Candidate resources, prerequisites, accessibility needs, cost limits, checkpoint criteria, and authorized coach scope"
+      ],
+      "authorityBoundaries": [
+        "Do not enroll in courses, buy resources, schedule sessions, submit work, send messages, grade the learner, or award credentials",
+        "Do not diagnose learning disabilities or infer ability, motivation, identity, or protected traits",
+        "Do not claim mastery from completion, time spent, or unverified self-report"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/learning-plan-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

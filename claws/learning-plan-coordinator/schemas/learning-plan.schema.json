@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/learning-plan.schema.json",
+  "title": "Learning plan coordinator artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "competencies", "resources", "evidence", "checkpoints", "activities", "review", "prohibitedActions"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.learningPlan.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "revision", "goal", "intendedUse", "asOf", "startDate", "durationWeeks", "weeklyMinutes", "currency", "costLimitMinor", "freeResourcesOnly", "reviewCadenceDays", "owner", "competencyRefs", "resourceRefs", "checkpointRefs", "activityRefs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^plan-[a-z0-9-]+$" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "goal": { "type": "string", "minLength": 1 },
+        "intendedUse": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "startDate": { "type": "string", "format": "date" },
+        "durationWeeks": { "type": "integer", "minimum": 1, "maximum": 104 },
+        "weeklyMinutes": { "type": "integer", "minimum": 1, "maximum": 10080 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "costLimitMinor": { "type": "integer", "minimum": 0 },
+        "freeResourcesOnly": { "type": "boolean" },
+        "reviewCadenceDays": { "type": "integer", "minimum": 1, "maximum": 365 },
+        "owner": { "type": "string", "minLength": 1 },
+        "competencyRefs": { "$ref": "#/$defs/uniqueCompetencyRefs" },
+        "resourceRefs": { "$ref": "#/$defs/uniqueResourceRefs" },
+        "checkpointRefs": { "$ref": "#/$defs/uniqueCheckpointRefs" },
+        "activityRefs": { "$ref": "#/$defs/uniqueActivityRefs" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "observedAt", "freshness", "privacy"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^source-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["learner-self-report", "practice-artifact", "assessment-record", "coach-observation", "portfolio-sample", "resource-description", "checkpoint-rubric"] },
+          "label": { "type": "string", "minLength": 1 },
+          "observedAt": { "type": "string", "format": "date-time" },
+          "freshness": { "type": "string", "enum": ["current", "stale", "missing", "conflicting"] },
+          "privacy": { "type": "string", "enum": ["owner-only", "redact-before-sharing", "shareable-after-review"] }
+        }
+      }
+    },
+    "competencies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "status", "prerequisiteRefs", "evidenceRefs", "checkpointRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^competency-[a-z0-9-]+$" },
+          "name": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["not-started", "practicing", "evidenced", "gap", "blocked"] },
+          "prerequisiteRefs": { "$ref": "#/$defs/uniqueCompetencyRefsAllowEmpty" },
+          "evidenceRefs": { "$ref": "#/$defs/uniqueEvidenceRefsAllowEmpty" },
+          "checkpointRefs": { "$ref": "#/$defs/uniqueCheckpointRefs" }
+        }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "selected", "costMinor", "currency", "retrievedAt", "sourceRefs", "competencyRefs"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^resource-[a-z0-9-]+$" },
+          "title": { "type": "string", "minLength": 1 },
+          "selected": { "type": "boolean" },
+          "costMinor": { "type": "integer", "minimum": 0 },
+          "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+          "retrievedAt": { "type": "string", "format": "date-time" },
+          "sourceRefs": { "$ref": "#/$defs/uniqueSourceRefs" },
+          "competencyRefs": { "$ref": "#/$defs/uniqueCompetencyRefs" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "competencyRef", "observedAt", "sourceRefs", "result"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^evidence-[a-z0-9-]+$" },
+          "kind": { "type": "string", "enum": ["self-report", "practice-artifact", "assessment", "coach-observation"] },
+          "competencyRef": { "type": "string", "pattern": "^competency-[a-z0-9-]+$" },
+          "observedAt": { "type": "string", "format": "date-time" },
+          "sourceRefs": { "$ref": "#/$defs/uniqueSourceRefs" },
+          "result": { "type": "string", "enum": ["supports", "gap", "conflicts"] }
+        }
+      }
+    },
+    "checkpoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "competencyRef", "dueDate", "criterion", "status", "evidenceRefs", "owner"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^checkpoint-[a-z0-9-]+$" },
+          "competencyRef": { "type": "string", "pattern": "^competency-[a-z0-9-]+$" },
+          "dueDate": { "type": "string", "format": "date" },
+          "criterion": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["planned", "passed", "failed", "skipped", "blocked"] },
+          "evidenceRefs": { "$ref": "#/$defs/uniqueEvidenceRefsAllowEmpty" },
+          "owner": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "activities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "sequence", "startWeek", "endWeek", "competencyRef", "prerequisiteRefs", "resourceRefs", "minutesPerWeek", "checkpointRef", "owner", "status"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^activity-[a-z0-9-]+$" },
+          "sequence": { "type": "integer", "minimum": 1 },
+          "startWeek": { "type": "integer", "minimum": 1 },
+          "endWeek": { "type": "integer", "minimum": 1 },
+          "competencyRef": { "type": "string", "pattern": "^competency-[a-z0-9-]+$" },
+          "prerequisiteRefs": { "$ref": "#/$defs/uniqueCompetencyRefsAllowEmpty" },
+          "resourceRefs": { "$ref": "#/$defs/uniqueResourceRefs" },
+          "minutesPerWeek": { "type": "integer", "minimum": 1 },
+          "checkpointRef": { "type": "string", "pattern": "^checkpoint-[a-z0-9-]+$" },
+          "owner": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["planned", "completed", "skipped", "blocked"] }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asOf", "decision", "nextPlanRevision", "failedOrSkippedCheckpointRefs", "blockedCheckpointRefs", "questions", "nextPlanOwner"],
+      "properties": {
+        "asOf": { "type": "string", "format": "date-time" },
+        "decision": { "type": "string", "enum": ["continue", "revise", "blocked", "complete"] },
+        "nextPlanRevision": { "type": "integer", "minimum": 2 },
+        "failedOrSkippedCheckpointRefs": { "$ref": "#/$defs/uniqueCheckpointRefsAllowEmpty" },
+        "blockedCheckpointRefs": { "$ref": "#/$defs/uniqueCheckpointRefsAllowEmpty" },
+        "questions": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "nextPlanOwner": { "type": "string", "minLength": 1 }
+      }
+    },
+    "prohibitedActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enrollmentPerformed", "purchasePerformed", "sessionScheduled", "workSubmitted", "messageSent", "learnerGraded", "credentialAwarded", "masteryClaimed", "diagnosisInferred"],
+      "properties": {
+        "enrollmentPerformed": { "const": false },
+        "purchasePerformed": { "const": false },
+        "sessionScheduled": { "const": false },
+        "workSubmitted": { "const": false },
+        "messageSent": { "const": false },
+        "learnerGraded": { "const": false },
+        "credentialAwarded": { "const": false },
+        "masteryClaimed": { "const": false },
+        "diagnosisInferred": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "uniqueSourceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^source-[a-z0-9-]+$" } },
+    "uniqueCompetencyRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^competency-[a-z0-9-]+$" } },
+    "uniqueCompetencyRefsAllowEmpty": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^competency-[a-z0-9-]+$" } },
+    "uniqueResourceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^resource-[a-z0-9-]+$" } },
+    "uniqueEvidenceRefsAllowEmpty": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^evidence-[a-z0-9-]+$" } },
+    "uniqueCheckpointRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^checkpoint-[a-z0-9-]+$" } },
+    "uniqueCheckpointRefsAllowEmpty": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^checkpoint-[a-z0-9-]+$" } },
+    "uniqueActivityRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^activity-[a-z0-9-]+$" } }
+  }
+}

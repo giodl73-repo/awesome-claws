@@ -13,6 +13,7 @@ import { enterpriseLicenseEntitlementFindings } from "./enterprise-license-entit
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
 import { learningProgramFindings } from "./learning-program-manager.mjs";
+import { learningPlanFindings } from "./learning-plan-coordinator.mjs";
 import { partnerBusinessPlanFindings } from "./partner-business-manager.mjs";
 import { ownerTrustPolicy as procureToPayOwnerTrustPolicy } from "./procure-to-pay-three-way-match-exception-reconciler-fixtures.mjs";
 import { procureToPayThreeWayMatchFindings } from "./procure-to-pay-three-way-match-exception-reconciler.mjs";
@@ -53288,6 +53289,7 @@ const validators = {
   "knowledge-gardener": knowledgeSpaceChangePlanFindings,
   "legal-matter-organizer": legalMatterFindings,
   "learning-program-manager": learningProgramFindings,
+  "learning-plan-coordinator": learningPlanFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "localization-program-manager": localizationReadinessFindings,

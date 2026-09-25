@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (125)
+### Active (126)
 
 | Claw | Detail |
 | --- | --- |
@@ -68,6 +68,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Job application tracker](claws/job-application-tracker) | @giodl73-repo; last verified 2026-08-28 |
 | [Knowledge curator](claws/knowledge-curator) | @giodl73-repo; last verified 2026-08-31 |
 | [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-31 |
+| [Learning plan coordinator](claws/learning-plan-coordinator) | @giodl73-repo; last verified 2026-09-25 |
 | [Learning program manager](claws/learning-program-manager) | @giodl73; last verified 2026-09-14 |
 | [Legal matter organizer](claws/legal-matter-organizer) | @giodl73; last verified 2026-09-06 |
 | [Life timeline keeper](claws/life-timeline-keeper) | @giodl73-repo; last verified 2026-08-27 |
@@ -152,7 +153,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (93)
+### Low setup (94)
 
 | Claw | Detail |
 | --- | --- |
@@ -199,6 +200,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Job application tracker](claws/job-application-tracker) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
 | [Knowledge gardener](claws/knowledge-gardener) | no bootstrap, external dependency, or schedule |
+| [Learning plan coordinator](claws/learning-plan-coordinator) | no bootstrap, external dependency, or schedule |
 | [Learning program manager](claws/learning-program-manager) | no bootstrap, external dependency, or schedule |
 | [Legal matter organizer](claws/legal-matter-organizer) | no bootstrap, external dependency, or schedule |
 | [Life timeline keeper](claws/life-timeline-keeper) | no bootstrap, external dependency, or schedule |
@@ -296,7 +298,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (102)
+### No external dependencies (103)
 
 | Claw | Detail |
 | --- | --- |
@@ -350,6 +352,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Job application tracker](claws/job-application-tracker) | None |
 | [Knowledge curator](claws/knowledge-curator) | None |
 | [Knowledge gardener](claws/knowledge-gardener) | None |
+| [Learning plan coordinator](claws/learning-plan-coordinator) | None |
 | [Learning program manager](claws/learning-program-manager) | None |
 | [Legal matter organizer](claws/legal-matter-organizer) | None |
 | [Life timeline keeper](claws/life-timeline-keeper) | None |
@@ -435,7 +438,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (86)
+### X3 (87)
 
 | Claw | Detail |
 | --- | --- |
@@ -477,6 +480,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Job application tracker](claws/job-application-tracker) | Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice. |
 | [Knowledge curator](claws/knowledge-curator) | Maintains one bounded, durable, normalized, source-linked collection index of topics, claims, human-owned decisions, duplicates, disputes, gaps, freshness, retention, and review state without owning or mutating source systems. |
 | [Knowledge gardener](claws/knowledge-gardener) | Maintains a private, digest-bound, exact-version change plan from one operator-supplied, versioned, secret-free read-only Notion observation export and authorization/scope receipt, without Notion, network, or source-mutation access. |
+| [Learning plan coordinator](claws/learning-plan-coordinator) | Maintains one learner-controlled competency plan from a stated goal through prerequisite evidence, practice checkpoints, and revision without enrolling, purchasing, grading, or awarding credentials. |
 | [Legal matter organizer](claws/legal-matter-organizer) | Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action. |
 | [Life timeline keeper](claws/life-timeline-keeper) | Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories. |
 | [Local events watcher](claws/local-events-watcher) | Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
@@ -681,7 +685,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (48)
+### Productivity (49)
 
 | Claw | Detail |
 | --- | --- |
@@ -706,6 +710,7 @@ Categories come directly from the catalog entry.
 | [Job application tracker](claws/job-application-tracker) | X3; Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice. |
 | [Knowledge curator](claws/knowledge-curator) | X3; Maintains one bounded, durable, normalized, source-linked collection index of topics, claims, human-owned decisions, duplicates, disputes, gaps, freshness, retention, and review state without owning or mutating source systems. |
 | [Knowledge gardener](claws/knowledge-gardener) | X3; Maintains a private, digest-bound, exact-version change plan from one operator-supplied, versioned, secret-free read-only Notion observation export and authorization/scope receipt, without Notion, network, or source-mutation access. |
+| [Learning plan coordinator](claws/learning-plan-coordinator) | X3; Maintains one learner-controlled competency plan from a stated goal through prerequisite evidence, practice checkpoints, and revision without enrolling, purchasing, grading, or awarding credentials. |
 | [Learning program manager](claws/learning-program-manager) | X4; Converts an approved aggregate capability-gap revision into evidence-bound curriculum releases, cohort assignments, delivery readiness, completion and assessment evidence, effectiveness review, refresh decisions, and owner handoff. |
 | [Life timeline keeper](claws/life-timeline-keeper) | X3; Maintains an owner-reviewed timeline of important trips, moves, milestones, family events, achievements, and document or media pointers without posting publicly, identifying faces, making legal claims, or disclosing sensitive memories. |
 | [Local events watcher](claws/local-events-watcher) | X3; Tracks concerts, theater, sports, community events, family-friendly options, ticketing signals, accessibility, timing, and conflicts from approved sources without buying tickets, joining waitlists, contacting venues, or editing calendars. |
@@ -738,7 +743,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (58)
+### Standard attention (59)
 
 | Claw | Detail |
 | --- | --- |
@@ -768,6 +773,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | portable workspace artifacts only |
 | [Job application tracker](claws/job-application-tracker) | portable workspace artifacts only |
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
+| [Learning plan coordinator](claws/learning-plan-coordinator) | portable workspace artifacts only |
 | [Legal matter organizer](claws/legal-matter-organizer) | portable workspace artifacts only |
 | [Life timeline keeper](claws/life-timeline-keeper) | portable workspace artifacts only |
 | [Local events watcher](claws/local-events-watcher) | portable workspace artifacts only |

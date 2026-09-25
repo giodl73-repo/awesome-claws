@@ -66,6 +66,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "knowledge-curator": "knowledge-collection-index.schema.json",
   "knowledge-gardener": "knowledge-space-change-plan.schema.json",
   "learning-program-manager": "learning-program-release.schema.json",
+  "learning-plan-coordinator": "learning-plan.schema.json",
   "legal-matter-organizer": "legal-matter.schema.json",
   "life-timeline-keeper": "life-timeline.schema.json",
   "local-events-watcher": "event-watchlist.schema.json",

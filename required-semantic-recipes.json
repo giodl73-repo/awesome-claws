@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 125,
-    "coveredCount": 125,
-    "recipeCount": 343,
-    "findingCodeCount": 463
+    "validatorCount": 126,
+    "coveredCount": 126,
+    "recipeCount": 346,
+    "findingCodeCount": 464
   },
   "entries": [
     {
@@ -5435,6 +5435,48 @@
             "plan_scope_mismatch",
             "scenario_projection_mismatch",
             "unbound_plan_approval"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "learning-plan-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-revision-lineage-1",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "revision"
+          ],
+          "replacement": 2,
+          "expectedCodes": [
+            "invalid_revision_lineage"
+          ]
+        },
+        {
+          "id": "semantic-invalid-review-boundary-2",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_review_boundary"
+          ]
+        },
+        {
+          "id": "semantic-invalid-evidence-chronology-3",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_evidence_chronology",
+            "invalid_review_boundary"
           ]
         }
       ]

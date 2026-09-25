@@ -91,7 +91,8 @@
       "backup-restore-verification-coordinator",
       "tls-certificate-rotation-verification-coordinator",
       "repository-operations-manager",
-      "repository-compliance-program-manager"
+      "repository-compliance-program-manager",
+      "learning-plan-coordinator"
     ]
   },
   "visualCases": [
