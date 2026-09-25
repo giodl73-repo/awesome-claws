@@ -1,0 +1,271 @@
+{
+  "schemaVersion": "awesomeClaws.learningPlan.v1",
+  "plan": {
+    "id": "plan-data-visualization-2026",
+    "revision": 1,
+    "goal": "Build practical data-visualization judgment and an accessible portfolio sample.",
+    "intendedUse": "Create reviewable charts for internal analysis without claiming professional certification.",
+    "asOf": "2026-09-25T12:00:00Z",
+    "startDate": "2026-09-28",
+    "durationWeeks": 12,
+    "weeklyMinutes": 240,
+    "currency": "USD",
+    "costLimitMinor": 0,
+    "freeResourcesOnly": true,
+    "reviewCadenceDays": 21,
+    "owner": "learner-owner",
+    "competencyRefs": ["competency-foundations", "competency-chart-choice", "competency-accessibility", "competency-capstone"],
+    "resourceRefs": ["resource-open-course", "resource-accessibility-guide", "resource-portfolio-prompts"],
+    "checkpointRefs": ["checkpoint-foundations", "checkpoint-chart-choice", "checkpoint-accessibility", "checkpoint-capstone"],
+    "activityRefs": ["activity-foundations", "activity-chart-choice", "activity-accessibility", "activity-capstone"]
+  },
+  "sources": [
+    {
+      "id": "source-portfolio-samples",
+      "kind": "portfolio-sample",
+      "label": "Learner-supplied chart portfolio samples",
+      "observedAt": "2026-09-24T18:00:00Z",
+      "freshness": "current",
+      "privacy": "owner-only"
+    },
+    {
+      "id": "source-foundations-assessment",
+      "kind": "assessment-record",
+      "label": "Learner-supplied foundations checkpoint rubric",
+      "observedAt": "2026-09-24T19:00:00Z",
+      "freshness": "current",
+      "privacy": "redact-before-sharing"
+    },
+    {
+      "id": "source-open-course",
+      "kind": "resource-description",
+      "label": "Free data-visualization course outline",
+      "observedAt": "2026-09-23T17:00:00Z",
+      "freshness": "current",
+      "privacy": "shareable-after-review"
+    },
+    {
+      "id": "source-accessibility-guide",
+      "kind": "resource-description",
+      "label": "Free accessible-chart guidance",
+      "observedAt": "2026-09-23T17:15:00Z",
+      "freshness": "current",
+      "privacy": "shareable-after-review"
+    },
+    {
+      "id": "source-checkpoint-rubric",
+      "kind": "checkpoint-rubric",
+      "label": "Learner-approved portfolio checkpoint rubric",
+      "observedAt": "2026-09-24T20:00:00Z",
+      "freshness": "current",
+      "privacy": "owner-only"
+    }
+  ],
+  "competencies": [
+    {
+      "id": "competency-foundations",
+      "name": "Data and chart foundations",
+      "status": "evidenced",
+      "prerequisiteRefs": [],
+      "evidenceRefs": ["evidence-foundations"],
+      "checkpointRefs": ["checkpoint-foundations"]
+    },
+    {
+      "id": "competency-chart-choice",
+      "name": "Chart selection and critique",
+      "status": "practicing",
+      "prerequisiteRefs": ["competency-foundations"],
+      "evidenceRefs": ["evidence-chart-choice"],
+      "checkpointRefs": ["checkpoint-chart-choice"]
+    },
+    {
+      "id": "competency-accessibility",
+      "name": "Accessible visual communication",
+      "status": "gap",
+      "prerequisiteRefs": ["competency-chart-choice"],
+      "evidenceRefs": ["evidence-accessibility-gap"],
+      "checkpointRefs": ["checkpoint-accessibility"]
+    },
+    {
+      "id": "competency-capstone",
+      "name": "Evidence-linked portfolio narrative",
+      "status": "blocked",
+      "prerequisiteRefs": ["competency-chart-choice", "competency-accessibility"],
+      "evidenceRefs": [],
+      "checkpointRefs": ["checkpoint-capstone"]
+    }
+  ],
+  "resources": [
+    {
+      "id": "resource-open-course",
+      "title": "Open data-visualization course",
+      "selected": true,
+      "costMinor": 0,
+      "currency": "USD",
+      "retrievedAt": "2026-09-23T17:00:00Z",
+      "sourceRefs": ["source-open-course"],
+      "competencyRefs": ["competency-foundations", "competency-chart-choice"]
+    },
+    {
+      "id": "resource-accessibility-guide",
+      "title": "Accessible chart design guide",
+      "selected": true,
+      "costMinor": 0,
+      "currency": "USD",
+      "retrievedAt": "2026-09-23T17:15:00Z",
+      "sourceRefs": ["source-accessibility-guide"],
+      "competencyRefs": ["competency-accessibility", "competency-capstone"]
+    },
+    {
+      "id": "resource-portfolio-prompts",
+      "title": "Learner-owned portfolio prompts",
+      "selected": true,
+      "costMinor": 0,
+      "currency": "USD",
+      "retrievedAt": "2026-09-24T18:00:00Z",
+      "sourceRefs": ["source-portfolio-samples", "source-checkpoint-rubric"],
+      "competencyRefs": ["competency-chart-choice", "competency-accessibility", "competency-capstone"]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-foundations",
+      "kind": "assessment",
+      "competencyRef": "competency-foundations",
+      "observedAt": "2026-09-24T19:00:00Z",
+      "sourceRefs": ["source-foundations-assessment"],
+      "result": "supports"
+    },
+    {
+      "id": "evidence-chart-choice",
+      "kind": "practice-artifact",
+      "competencyRef": "competency-chart-choice",
+      "observedAt": "2026-09-24T18:00:00Z",
+      "sourceRefs": ["source-portfolio-samples"],
+      "result": "supports"
+    },
+    {
+      "id": "evidence-accessibility-gap",
+      "kind": "practice-artifact",
+      "competencyRef": "competency-accessibility",
+      "observedAt": "2026-09-24T18:00:00Z",
+      "sourceRefs": ["source-portfolio-samples", "source-checkpoint-rubric"],
+      "result": "gap"
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "checkpoint-foundations",
+      "competencyRef": "competency-foundations",
+      "dueDate": "2026-09-27",
+      "criterion": "Explain the supplied data types and critique two chart encodings using the learner-approved rubric.",
+      "status": "passed",
+      "evidenceRefs": ["evidence-foundations"],
+      "owner": "learner-owner"
+    },
+    {
+      "id": "checkpoint-chart-choice",
+      "competencyRef": "competency-chart-choice",
+      "dueDate": "2026-11-08",
+      "criterion": "Create and critique two alternative charts for the same supplied question.",
+      "status": "planned",
+      "evidenceRefs": ["evidence-chart-choice"],
+      "owner": "learner-owner"
+    },
+    {
+      "id": "checkpoint-accessibility",
+      "competencyRef": "competency-accessibility",
+      "dueDate": "2026-11-29",
+      "criterion": "Revise one portfolio chart to meet the supplied accessibility rubric and record remaining gaps.",
+      "status": "blocked",
+      "evidenceRefs": ["evidence-accessibility-gap"],
+      "owner": "learner-owner"
+    },
+    {
+      "id": "checkpoint-capstone",
+      "competencyRef": "competency-capstone",
+      "dueDate": "2026-12-20",
+      "criterion": "Produce one evidence-linked accessible portfolio narrative for owner review.",
+      "status": "blocked",
+      "evidenceRefs": [],
+      "owner": "learner-owner"
+    }
+  ],
+  "activities": [
+    {
+      "id": "activity-foundations",
+      "sequence": 1,
+      "startWeek": 1,
+      "endWeek": 3,
+      "competencyRef": "competency-foundations",
+      "prerequisiteRefs": [],
+      "resourceRefs": ["resource-open-course"],
+      "minutesPerWeek": 180,
+      "checkpointRef": "checkpoint-foundations",
+      "owner": "learner-owner",
+      "status": "completed"
+    },
+    {
+      "id": "activity-chart-choice",
+      "sequence": 2,
+      "startWeek": 4,
+      "endWeek": 6,
+      "competencyRef": "competency-chart-choice",
+      "prerequisiteRefs": ["competency-foundations"],
+      "resourceRefs": ["resource-open-course", "resource-portfolio-prompts"],
+      "minutesPerWeek": 210,
+      "checkpointRef": "checkpoint-chart-choice",
+      "owner": "learner-owner",
+      "status": "planned"
+    },
+    {
+      "id": "activity-accessibility",
+      "sequence": 3,
+      "startWeek": 7,
+      "endWeek": 9,
+      "competencyRef": "competency-accessibility",
+      "prerequisiteRefs": ["competency-chart-choice"],
+      "resourceRefs": ["resource-accessibility-guide", "resource-portfolio-prompts"],
+      "minutesPerWeek": 210,
+      "checkpointRef": "checkpoint-accessibility",
+      "owner": "learner-owner",
+      "status": "blocked"
+    },
+    {
+      "id": "activity-capstone",
+      "sequence": 4,
+      "startWeek": 10,
+      "endWeek": 12,
+      "competencyRef": "competency-capstone",
+      "prerequisiteRefs": ["competency-chart-choice", "competency-accessibility"],
+      "resourceRefs": ["resource-accessibility-guide", "resource-portfolio-prompts"],
+      "minutesPerWeek": 240,
+      "checkpointRef": "checkpoint-capstone",
+      "owner": "learner-owner",
+      "status": "blocked"
+    }
+  ],
+  "review": {
+    "asOf": "2026-09-25T12:00:00Z",
+    "decision": "revise",
+    "nextPlanRevision": 2,
+    "failedOrSkippedCheckpointRefs": [],
+    "blockedCheckpointRefs": ["checkpoint-accessibility", "checkpoint-capstone"],
+    "questions": [
+      "Which accessibility checkpoint evidence should the learner collect before beginning the capstone?",
+      "Should the learner reduce the capstone scope if the chart-choice checkpoint needs another cycle?"
+    ],
+    "nextPlanOwner": "learner-owner"
+  },
+  "prohibitedActions": {
+    "enrollmentPerformed": false,
+    "purchasePerformed": false,
+    "sessionScheduled": false,
+    "workSubmitted": false,
+    "messageSent": false,
+    "learnerGraded": false,
+    "credentialAwarded": false,
+    "masteryClaimed": false,
+    "diagnosisInferred": false
+  }
+}
