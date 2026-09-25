@@ -3202,6 +3202,31 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "identity-theft-recovery-coordinator",
+      "acceptedRequest": "Organize the recovery case after I found an unfamiliar credit account and received a tax-account notice. Use only the redacted bureau, issuer, tax-agency, and identity-recovery records I supplied. Separate suspicion from confirmed facts, map official routes and deadlines, reconcile the calls and reports I completed against receipts, and show unresolved exposure. Do not contact anyone, file anything, access accounts, freeze credit, or decide that fraud occurred.",
+      "requiredEvidence": [
+        "Case owner, explicitly authorized helpers, privacy and sharing ceiling, relevant jurisdictions, discovery time, review cadence, and emergency escalation path",
+        "Owner-reported events, institution notices, account observations, credit-report entries, tax or benefits notices, device or credential signals, and controlled evidence references",
+        "Potentially affected identity surfaces represented by redacted identifiers, authoritative institution, observed state, known dependencies, and owner priority",
+        "Dated official recovery instructions, reporting channels, dispute or freeze procedures, deadlines, retention rules, receipt expectations, and professional or agency escalation points",
+        "Owner-executed action history, independent confirmations, case or confirmation references, failed attempts, conflicts, costs, and unresolved questions"
+      ],
+      "authorityBoundaries": [
+        "Do not determine that identity theft or fraud occurred, attribute an actor, assess legal liability, promise reimbursement, or provide legal, financial, credit, tax, insurance, law-enforcement, or cybersecurity advice",
+        "Do not contact institutions, bureaus, agencies, insurers, employers, creditors, merchants, law enforcement, or other people; all calls, messages, reports, disputes, affidavits, and notices remain owner-executed",
+        "Do not authenticate, access accounts, reset credentials, freeze or unfreeze credit, place alerts, close or open accounts, move money, pay fees, upload documents, sign statements, or submit forms",
+        "Never store secrets, full credentials, full government identifiers, full payment-card numbers, authentication answers, recovery codes, or unredacted evidence when a controlled reference is sufficient"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/identity-theft-recovery-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

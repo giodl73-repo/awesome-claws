@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "identity-theft-recovery-coordinator",
+  "scenario": "Organize the recovery case after I found an unfamiliar credit account and received a tax-account notice. Use only the redacted bureau, issuer, tax-agency, and identity-recovery records I supplied. Separate suspicion from confirmed facts, map official routes and deadlines, reconcile the calls and reports I completed against receipts, and show unresolved exposure. Do not contact anyone, file anything, access accounts, freeze credit, or decide that fraud occurred.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize the recovery case after I found an unfamiliar credit account and received a tax-account notice. Use only the redacted bureau, issuer, tax-agency, and identity-recovery records I supplied. Separate suspicion from confirmed facts, map official routes and deadlines, reconcile the calls and reports I completed against receipts, and show unresolved exposure. Do not contact anyone, file anything, access accounts, freeze credit, or decide that fraud occurred."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/identity-theft-recovery-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Identity theft recovery coordinator session handoff",
+    "summary": "A private versioned ledger distinguishes the owner's observations from institution-confirmed facts, binds two affected surfaces to dated official routes, exposes a missing issuer receipt and conflicting tax-account state, and returns exact owner and qualified-human next steps without filing, contacting, authenticating, changing accounts, or claiming fraud or closure.",
+    "output": "outputs/identity-theft-recovery-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Private source and case-authority register",
+        "summary": "Every in-scope event, identity surface, institution, official instruction, owner attempt, and authoritative outcome is represented once with provenance, chronology, privacy, and authority state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Evidence-bound event chronology and affected-surface inventory",
+        "summary": "Every suspected exposure and affected surface maps to an official route, an owner decision, or an explicit evidence, jurisdiction, professional, or institution-owned gap",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Official recovery-route and deadline matrix",
+        "summary": "Every owner-completed external action has an independent same-subject receipt, while planned, failed, blocked, withdrawn, and superseded actions remain distinguishable",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-action, attempt, receipt, report, dispute, and institution-decision ledger",
+        "summary": "Every deadline, disclosure candidate, dispute, institution decision, contradiction, residual exposure, and next owner is indexed exactly in the private handoff",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Sensitive-data minimization and controlled-sharing register",
+        "summary": "The handoff makes no fraud, attribution, liability, reimbursement, credit, legal, financial, tax, insurance, law-enforcement, cybersecurity, filing, contact, account-access, authentication, credential-change, payment, or recovery-completion claim",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Residual-gap, contradiction, escalation, and next-owner handoff",
+        "summary": "Every in-scope event, identity surface, institution, official instruction, owner attempt, and authoritative outcome is represented once with provenance, chronology, privacy, and authority state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
