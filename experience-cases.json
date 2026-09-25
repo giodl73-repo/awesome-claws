@@ -92,7 +92,8 @@
       "tls-certificate-rotation-verification-coordinator",
       "repository-operations-manager",
       "repository-compliance-program-manager",
-      "learning-plan-coordinator"
+      "learning-plan-coordinator",
+      "civic-services-navigator"
     ]
   },
   "visualCases": [

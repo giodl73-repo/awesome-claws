@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 126,
-    "coveredCount": 126,
-    "recipeCount": 346,
-    "findingCodeCount": 464
+    "validatorCount": 127,
+    "coveredCount": 127,
+    "recipeCount": 349,
+    "findingCodeCount": 465
   },
   "entries": [
     {
@@ -5477,6 +5477,50 @@
           "expectedCodes": [
             "invalid_evidence_chronology",
             "invalid_review_boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "civic-services-navigator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-revision-lineage-1",
+          "operator": "replace",
+          "path": [
+            "case",
+            "revision"
+          ],
+          "replacement": 2,
+          "expectedCodes": [
+            "invalid_revision_lineage"
+          ]
+        },
+        {
+          "id": "semantic-invalid-review-boundary-2",
+          "operator": "replace",
+          "path": [
+            "case",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_review_boundary",
+            "invalid_selected_route"
+          ]
+        },
+        {
+          "id": "semantic-invalid-evidence-chronology-3",
+          "operator": "replace",
+          "path": [
+            "case",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_evidence_chronology",
+            "invalid_review_boundary",
+            "invalid_source_chronology"
           ]
         }
       ]

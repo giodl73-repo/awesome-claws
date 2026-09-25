@@ -1,0 +1,447 @@
+{
+  "schemaVersion": "awesomeClaws.civicServiceAccess.v1",
+  "case": {
+    "id": "case-reduced-fare-transit",
+    "revision": 1,
+    "need": "Resolve the official reduced-fare transit access route at a city-county boundary.",
+    "asOf": "2026-09-25T17:00:00Z",
+    "residentOwner": "resident-owner",
+    "privacy": "owner-only",
+    "localityClaimRefs": ["locality-city-service", "locality-county-service"],
+    "routeRefs": ["route-city-transit", "route-county-transit"],
+    "nextRouteRef": "route-city-transit"
+  },
+  "sources": [
+    {
+      "id": "source-city-boundary",
+      "kind": "jurisdiction-locator",
+      "publisher": "Example City geographic services",
+      "authorityRef": "jurisdiction-city",
+      "controlledRef": "official://example-city/service-area/2026-09",
+      "retrievedAt": "2026-09-24T16:00:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-county-boundary",
+      "kind": "jurisdiction-locator",
+      "publisher": "Example County geographic services",
+      "authorityRef": "jurisdiction-county",
+      "controlledRef": "official://example-county/service-area/2026-09",
+      "retrievedAt": "2026-09-24T16:05:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-city-agency",
+      "kind": "agency-directory",
+      "publisher": "Example City",
+      "authorityRef": "jurisdiction-city",
+      "controlledRef": "official://example-city/agencies/transit",
+      "retrievedAt": "2026-09-24T16:10:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-county-agency",
+      "kind": "agency-directory",
+      "publisher": "Example County",
+      "authorityRef": "jurisdiction-county",
+      "controlledRef": "official://example-county/agencies/mobility",
+      "retrievedAt": "2026-09-24T16:15:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-city-program",
+      "kind": "program-page",
+      "publisher": "Example City Transit Authority",
+      "authorityRef": "agency-city-transit",
+      "controlledRef": "official://example-city/transit/reduced-fare/rev-2026-08",
+      "revision": "2026-08",
+      "retrievedAt": "2026-09-24T16:20:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-county-program",
+      "kind": "program-page",
+      "publisher": "Example County Mobility Agency",
+      "authorityRef": "agency-county-mobility",
+      "controlledRef": "official://example-county/mobility/reduced-fare/rev-2026-07",
+      "revision": "2026-07",
+      "retrievedAt": "2026-09-24T16:25:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-city-criteria",
+      "kind": "criterion-text",
+      "publisher": "Example City Transit Authority",
+      "authorityRef": "agency-city-transit",
+      "controlledRef": "official://example-city/transit/reduced-fare/criteria/rev-2026-08",
+      "revision": "2026-08",
+      "retrievedAt": "2026-09-24T16:30:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-city-channels",
+      "kind": "channel-description",
+      "publisher": "Example City Transit Authority",
+      "authorityRef": "agency-city-transit",
+      "controlledRef": "official://example-city/transit/reduced-fare/channels/rev-2026-08",
+      "retrievedAt": "2026-09-24T16:35:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-county-channels",
+      "kind": "channel-description",
+      "publisher": "Example County Mobility Agency",
+      "authorityRef": "agency-county-mobility",
+      "controlledRef": "official://example-county/mobility/reduced-fare/channels/rev-2026-07",
+      "retrievedAt": "2026-09-24T16:40:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-city-fee",
+      "kind": "fee-schedule",
+      "publisher": "Example City Transit Authority",
+      "authorityRef": "agency-city-transit",
+      "controlledRef": "official://example-city/transit/fees/rev-2026-08",
+      "retrievedAt": "2026-09-24T16:45:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-owner-location",
+      "kind": "resident-record",
+      "publisher": "Resident owner",
+      "authorityRef": "resident-owner",
+      "controlledRef": "workspace://resident/location-proof-redacted",
+      "retrievedAt": "2026-09-25T15:00:00Z",
+      "freshness": "current"
+    },
+    {
+      "id": "source-owner-age",
+      "kind": "resident-record",
+      "publisher": "Resident owner",
+      "authorityRef": "resident-owner",
+      "controlledRef": "workspace://resident/age-self-attestation",
+      "retrievedAt": "2026-09-25T15:05:00Z",
+      "freshness": "current"
+    }
+  ],
+  "jurisdictions": [
+    {
+      "id": "jurisdiction-city",
+      "name": "Example City",
+      "level": "city",
+      "sourceRefs": ["source-city-boundary"]
+    },
+    {
+      "id": "jurisdiction-county",
+      "name": "Example County",
+      "level": "county",
+      "sourceRefs": ["source-county-boundary"]
+    }
+  ],
+  "localityClaims": [
+    {
+      "id": "locality-city-service",
+      "jurisdictionRef": "jurisdiction-city",
+      "claim": "The resident-controlled location is inside the published city transit service area.",
+      "state": "confirmed",
+      "sourceRefs": ["source-city-boundary", "source-owner-location"],
+      "ownerConfirmed": true
+    },
+    {
+      "id": "locality-county-service",
+      "jurisdictionRef": "jurisdiction-county",
+      "claim": "The county program excludes locations already served by the city transit authority.",
+      "state": "excluded",
+      "sourceRefs": ["source-county-boundary", "source-city-boundary"],
+      "ownerConfirmed": false
+    }
+  ],
+  "agencies": [
+    {
+      "id": "agency-city-transit",
+      "name": "Example City Transit Authority",
+      "jurisdictionRef": "jurisdiction-city",
+      "sourceRefs": ["source-city-agency"]
+    },
+    {
+      "id": "agency-county-mobility",
+      "name": "Example County Mobility Agency",
+      "jurisdictionRef": "jurisdiction-county",
+      "sourceRefs": ["source-county-agency"]
+    }
+  ],
+  "routes": [
+    {
+      "id": "route-city-transit",
+      "title": "Example City reduced-fare transit card",
+      "agencyRef": "agency-city-transit",
+      "jurisdictionRef": "jurisdiction-city",
+      "programCode": "CITY-RF-2026",
+      "programRevision": "2026-08",
+      "programSourceRef": "source-city-program",
+      "status": "preferred",
+      "ownerSelected": true,
+      "sourceRefs": ["source-city-program", "source-city-criteria", "source-city-channels", "source-city-fee"],
+      "criterionRefs": ["criterion-city-residency", "criterion-city-age", "criterion-city-disability-review"],
+      "channelRefs": ["channel-city-online", "channel-city-in-person", "channel-city-interpreter"],
+      "stepRefs": ["step-city-review", "step-city-choose-channel", "step-city-initiate"],
+      "questionRefs": ["question-city-disability-review", "question-city-interpreter"],
+      "requiredMaterials": [
+        {
+          "label": "Government-issued identity material placeholder",
+          "status": "conditional",
+          "sourceRef": "source-city-criteria"
+        },
+        {
+          "label": "Agency-accepted disability support material placeholder",
+          "status": "unknown",
+          "sourceRef": "source-city-criteria"
+        }
+      ],
+      "timingWindows": [
+        {
+          "label": "Published 2026 intake deadline",
+          "status": "confirmed",
+          "opensAt": null,
+          "closesAt": "2026-12-31T23:59:59-08:00",
+          "sourceRef": "source-city-program"
+        }
+      ],
+      "offices": [
+        {
+          "label": "Published in-person intake office",
+          "status": "confirmed",
+          "channelRef": "channel-city-in-person",
+          "address": "100 Example Plaza, Example City",
+          "sourceRef": "source-city-channels"
+        }
+      ],
+      "feeMinor": 0,
+      "currency": "USD",
+      "feeSourceRef": "source-city-fee"
+    },
+    {
+      "id": "route-county-transit",
+      "title": "Example County reduced-fare mobility card",
+      "agencyRef": "agency-county-mobility",
+      "jurisdictionRef": "jurisdiction-county",
+      "programCode": "COUNTY-RF-2026",
+      "programRevision": "2026-07",
+      "programSourceRef": "source-county-program",
+      "status": "excluded",
+      "ownerSelected": false,
+      "sourceRefs": ["source-county-program", "source-county-channels"],
+      "criterionRefs": [],
+      "channelRefs": ["channel-county-online"],
+      "stepRefs": ["step-county-verify-area"],
+      "questionRefs": [],
+      "requiredMaterials": [
+        {
+          "label": "County-route material requirements not yet crosswalked",
+          "status": "unknown",
+          "sourceRef": "source-county-program"
+        }
+      ],
+      "timingWindows": [
+        {
+          "label": "Timing not applicable while route remains excluded",
+          "status": "not-applicable",
+          "opensAt": null,
+          "closesAt": null,
+          "sourceRef": "source-county-program"
+        }
+      ],
+      "offices": [
+        {
+          "label": "Office details not applicable while route remains excluded",
+          "status": "not-applicable",
+          "channelRef": null,
+          "address": null,
+          "sourceRef": "source-county-channels"
+        }
+      ],
+      "feeMinor": 0,
+      "currency": "USD",
+      "feeSourceRef": "source-county-program"
+    }
+  ],
+  "criteria": [
+    {
+      "id": "criterion-city-residency",
+      "routeRef": "route-city-transit",
+      "text": "Published service-area residency criterion.",
+      "sourceRefs": ["source-city-criteria"],
+      "evidenceState": "document-backed",
+      "evidenceRef": "evidence-city-residency",
+      "adjudicationState": "not-claimed"
+    },
+    {
+      "id": "criterion-city-age",
+      "routeRef": "route-city-transit",
+      "text": "Published age-path criterion.",
+      "sourceRefs": ["source-city-criteria"],
+      "evidenceState": "self-attested",
+      "evidenceRef": "evidence-city-age",
+      "adjudicationState": "not-claimed"
+    },
+    {
+      "id": "criterion-city-disability-review",
+      "routeRef": "route-city-transit",
+      "text": "Published disability-path criterion requires agency interpretation of acceptable supporting material.",
+      "sourceRefs": ["source-city-criteria"],
+      "evidenceState": "agency-review-needed",
+      "evidenceRef": null,
+      "adjudicationState": "not-claimed"
+    }
+  ],
+  "residentEvidence": [
+    {
+      "id": "evidence-city-residency",
+      "criterionRef": "criterion-city-residency",
+      "kind": "document-reference",
+      "sourceRef": "source-owner-location",
+      "observedAt": "2026-09-25T15:00:00Z",
+      "privacy": "owner-only"
+    },
+    {
+      "id": "evidence-city-age",
+      "criterionRef": "criterion-city-age",
+      "kind": "self-attestation",
+      "sourceRef": "source-owner-age",
+      "observedAt": "2026-09-25T15:05:00Z",
+      "privacy": "owner-only"
+    }
+  ],
+  "channels": [
+    {
+      "id": "channel-city-online",
+      "routeRef": "route-city-transit",
+      "kind": "online",
+      "status": "available",
+      "languageCodes": ["en", "es"],
+      "accessibilityFeatures": ["screen-reader guidance"],
+      "sourceRefs": ["source-city-channels"]
+    },
+    {
+      "id": "channel-city-in-person",
+      "routeRef": "route-city-transit",
+      "kind": "in-person",
+      "status": "available",
+      "languageCodes": ["en", "es"],
+      "accessibilityFeatures": ["step-free office route"],
+      "sourceRefs": ["source-city-channels"]
+    },
+    {
+      "id": "channel-city-interpreter",
+      "routeRef": "route-city-transit",
+      "kind": "interpreter",
+      "status": "unconfirmed",
+      "languageCodes": ["es"],
+      "accessibilityFeatures": [],
+      "sourceRefs": ["source-city-channels"]
+    },
+    {
+      "id": "channel-county-online",
+      "routeRef": "route-county-transit",
+      "kind": "online",
+      "status": "available",
+      "languageCodes": ["en"],
+      "accessibilityFeatures": [],
+      "sourceRefs": ["source-county-channels"]
+    }
+  ],
+  "steps": [
+    {
+      "id": "step-city-review",
+      "routeRef": "route-city-transit",
+      "sequence": 1,
+      "label": "Resident reviews the criterion crosswalk and withheld details.",
+      "prerequisiteRefs": [],
+      "channelRef": "channel-city-online",
+      "sourceRefs": ["source-city-program", "source-city-criteria"],
+      "state": "planned",
+      "owner": "resident-owner",
+      "externalActionRequired": false,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-city-choose-channel",
+      "routeRef": "route-city-transit",
+      "sequence": 2,
+      "label": "Resident chooses an online, in-person, or interpreter-supported path after agency questions are answered.",
+      "prerequisiteRefs": ["step-city-review"],
+      "channelRef": "channel-city-in-person",
+      "sourceRefs": ["source-city-channels"],
+      "state": "blocked",
+      "owner": "resident-owner",
+      "externalActionRequired": false,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-city-initiate",
+      "routeRef": "route-city-transit",
+      "sequence": 3,
+      "label": "Resident may initiate the agency intake outside this workspace.",
+      "prerequisiteRefs": ["step-city-choose-channel"],
+      "channelRef": "channel-city-in-person",
+      "sourceRefs": ["source-city-program", "source-city-channels"],
+      "state": "blocked",
+      "owner": "resident-owner",
+      "externalActionRequired": true,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-county-verify-area",
+      "routeRef": "route-county-transit",
+      "sequence": 1,
+      "label": "Preserve the county route only as excluded service-area history.",
+      "prerequisiteRefs": [],
+      "channelRef": "channel-county-online",
+      "sourceRefs": ["source-county-boundary", "source-county-program"],
+      "state": "blocked",
+      "owner": "resident-owner",
+      "externalActionRequired": false,
+      "completionSourceRef": null
+    }
+  ],
+  "questions": [
+    {
+      "id": "question-city-disability-review",
+      "routeRef": "route-city-transit",
+      "kind": "criterion",
+      "subjectRef": "criterion-city-disability-review",
+      "prompt": "Which supporting-material categories does the authority accept for its disability path?",
+      "owner": "agency-city-transit",
+      "status": "open",
+      "answerSourceRef": null
+    },
+    {
+      "id": "question-city-interpreter",
+      "routeRef": "route-city-transit",
+      "kind": "accommodation",
+      "subjectRef": "channel-city-interpreter",
+      "prompt": "Is a Spanish interpreter available for the in-person intake path?",
+      "owner": "agency-city-transit",
+      "status": "open",
+      "answerSourceRef": null
+    }
+  ],
+  "review": {
+    "asOf": "2026-09-25T17:00:00Z",
+    "decision": "revise",
+    "nextRevision": 2,
+    "conflictingLocalityClaimRefs": [],
+    "unresolvedQuestionRefs": ["question-city-disability-review", "question-city-interpreter"],
+    "nextOwner": "resident-owner"
+  },
+  "prohibitedActions": {
+    "eligibilityDetermined": false,
+    "caseInitiated": false,
+    "residentMaterialTransmitted": false,
+    "agencyContacted": false,
+    "appointmentBooked": false,
+    "feePaid": false,
+    "accountCreated": false,
+    "professionalAdviceGiven": false
+  }
+}

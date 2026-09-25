@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (126)
+### Active (127)
 
 | Claw | Detail |
 | --- | --- |
@@ -26,6 +26,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Change control operator](claws/change-control-operator) | @giodl73-repo; last verified 2026-08-19 |
 | [Child activity manager](claws/child-activity-manager) | @giodl73-repo; last verified 2026-08-27 |
 | [Civic data analyst](claws/civic-data-analyst) | @giodl73-repo; last verified 2026-08-19 |
+| [Civic services navigator](claws/civic-services-navigator) | @giodl73-repo; last verified 2026-09-25 |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | @giodl73-repo; last verified 2026-08-19 |
 | [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | @giodl73; last verified 2026-09-14 |
 | [Compliance reviewer](claws/compliance-reviewer) | @giodl73-repo; last verified 2026-08-19 |
@@ -153,7 +154,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (94)
+### Low setup (95)
 
 | Claw | Detail |
 | --- | --- |
@@ -169,6 +170,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Certification renewal planner](claws/certification-renewal-planner) | no bootstrap, external dependency, or schedule |
 | [Change control operator](claws/change-control-operator) | no bootstrap, external dependency, or schedule |
 | [Child activity manager](claws/child-activity-manager) | no bootstrap, external dependency, or schedule |
+| [Civic services navigator](claws/civic-services-navigator) | no bootstrap, external dependency, or schedule |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | no bootstrap, external dependency, or schedule |
 | [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | no bootstrap, external dependency, or schedule |
 | [Compliance reviewer](claws/compliance-reviewer) | no bootstrap, external dependency, or schedule |
@@ -298,7 +300,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (103)
+### No external dependencies (104)
 
 | Claw | Detail |
 | --- | --- |
@@ -315,6 +317,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Certification renewal planner](claws/certification-renewal-planner) | None |
 | [Change control operator](claws/change-control-operator) | None |
 | [Child activity manager](claws/child-activity-manager) | None |
+| [Civic services navigator](claws/civic-services-navigator) | None |
 | [Cloud cost analyst](claws/cloud-cost-analyst) | None |
 | [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | None |
 | [Compliance reviewer](claws/compliance-reviewer) | None |
@@ -438,7 +441,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (87)
+### X3 (88)
 
 | Claw | Detail |
 | --- | --- |
@@ -452,6 +455,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Change control operator](claws/change-control-operator) | Prepares and executes bounded workspace changes only after an accountable owner approves the exact plan digest. |
 | [Child activity manager](claws/child-activity-manager) | Coordinates child sports, lessons, clubs, camps, equipment, fees, schedules, locations, carpools, and guardian-review questions from approved family sources without registering, paying, messaging, sharing locations, making pickup commitments, or changing calendars without exact guardian approval. |
 | [Civic data analyst](claws/civic-data-analyst) | Combines public demographic, budget, service, land-use, and mobility data into reproducible civic decision evidence. |
+| [Civic services navigator](claws/civic-services-navigator) | Translates one resident-stated need into a jurisdiction-resolved map of official public-service routes, preserving program-version provenance, criterion-level unknowns, channel accommodations, and an agency-question docket while leaving adjudication and case initiation outside the workspace. |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, and submission drafts without applying, publishing, booking, or contacting organizers. |
 | [Content operations](claws/content-operations) | Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it. |
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | Tracks one exact owner-confirmed obligation-register version for a bounded review round, proving every registered obligation appears exactly once and receives one current evidence-bound observation or one exact blocker, while contract owners retain all interpretation, acceptance, notice, payment, amendment, renewal, termination, dispute, and system authority. |
@@ -685,7 +689,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (49)
+### Productivity (50)
 
 | Claw | Detail |
 | --- | --- |
@@ -693,6 +697,7 @@ Categories come directly from the catalog entry.
 | [Care Circle Coordinator](claws/care-circle-coordinator) | X3; Coordinates a consent-bounded support plan for a person who relies on family, friends, or aides without giving medical, legal, or financial advice. |
 | [Certification renewal planner](claws/certification-renewal-planner) | X3; Tracks professional certifications, renewal windows, continuing-education evidence, and owner-submitted renewal packets without filing renewals or claiming credential advice. |
 | [Child activity manager](claws/child-activity-manager) | X3; Coordinates child sports, lessons, clubs, camps, equipment, fees, schedules, locations, carpools, and guardian-review questions from approved family sources without registering, paying, messaging, sharing locations, making pickup commitments, or changing calendars without exact guardian approval. |
+| [Civic services navigator](claws/civic-services-navigator) | X3; Translates one resident-stated need into a jurisdiction-resolved map of official public-service routes, preserving program-version provenance, criterion-level unknowns, channel accommodations, and an agency-question docket while leaving adjudication and case initiation outside the workspace. |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | X3; Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, and submission drafts without applying, publishing, booking, or contacting organizers. |
 | [Delegation coordinator](claws/delegation-coordinator) | X3; Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Document renewal tracker](claws/document-renewal-tracker) | X3; Tracks passports, IDs, licenses, permits, registrations, certifications, memberships, expiration windows, source freshness, required owner documents, and review questions without filing forms, paying fees, changing accounts, submitting documents, or giving legal, immigration, tax, medical, or eligibility advice. |
@@ -743,7 +748,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (59)
+### Standard attention (60)
 
 | Claw | Detail |
 | --- | --- |
@@ -754,6 +759,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Care Circle Coordinator](claws/care-circle-coordinator) | portable workspace artifacts only |
 | [Certification renewal planner](claws/certification-renewal-planner) | portable workspace artifacts only |
 | [Child activity manager](claws/child-activity-manager) | portable workspace artifacts only |
+| [Civic services navigator](claws/civic-services-navigator) | portable workspace artifacts only |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | portable workspace artifacts only |
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | portable workspace artifacts only |
