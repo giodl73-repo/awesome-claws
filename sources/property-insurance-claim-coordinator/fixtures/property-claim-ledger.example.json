@@ -1,0 +1,148 @@
+{
+  "schemaVersion": "awesomeClaws.propertyInsuranceClaim.v1",
+  "claim": {
+    "id": "claim-rivera-water-loss",
+    "ownerAuthorityRef": "owner-rivera",
+    "authorizedHelperRefs": [],
+    "carrierAuthorityRef": "carrier-harbor",
+    "policyRefRedacted": "renters-policy-ending-2048",
+    "claimRefRedacted": "claim-reference-ending-731",
+    "jurisdictions": ["US", "US-CA"],
+    "privacyCeiling": "owner-only",
+    "lossDiscoveredAt": "2026-09-10T14:30:00-07:00",
+    "asOf": "2026-09-25T18:00:00-07:00",
+    "revision": 1,
+    "previousRevisionRef": null,
+    "eventRefs": ["event-loss-observed", "event-inventory-receipt", "event-mitigation-attempt", "event-inspection-receipt", "event-contractor-estimate", "event-carrier-estimate", "event-carrier-scope", "event-carrier-laptop-pending", "event-payment-statement", "event-mitigation-record"],
+    "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"],
+    "requirementRefs": ["requirement-inventory", "requirement-mitigation-record", "requirement-inspection"],
+    "actionRefs": ["action-submit-inventory", "action-perform-mitigation", "action-submit-mitigation-record", "action-attend-inspection"],
+    "estimateRefs": ["estimate-contractor-scope", "estimate-carrier-scope"],
+    "carrierPositionRefs": ["position-scope-partial", "position-laptop-pending", "position-initial-payment"],
+    "paymentRefs": ["payment-initial"],
+    "repairRecordRefs": ["repair-emergency-mitigation"],
+    "ownerDecisionRefs": ["decision-wait-flooring-scope"],
+    "gapRefs": ["gap-mitigation-receipt", "gap-flooring-scope", "gap-laptop-pending", "gap-payment-receipt", "gap-residual-property"]
+  },
+  "authorities": [
+    { "id": "owner-rivera", "kind": "case-owner", "name": "Case owner", "authorizationSourceRef": null },
+    { "id": "carrier-harbor", "kind": "carrier", "name": "Property carrier", "authorizationSourceRef": null },
+    { "id": "adjuster-north", "kind": "adjuster", "name": "Carrier adjuster", "authorizationSourceRef": null },
+    { "id": "provider-floorworks", "kind": "repair-provider", "name": "Flooring contractor", "authorizationSourceRef": null },
+    { "id": "provider-drycare", "kind": "repair-provider", "name": "Mitigation provider", "authorizationSourceRef": null }
+  ],
+  "sources": [
+    { "id": "source-owner-loss", "kind": "owner-observation", "subjectRef": "event-loss-observed", "issuerAuthorityRef": "owner-rivera", "controlledRef": "workspace://property-claim/owner-loss-observation", "revision": "1", "issuedAt": "2026-09-10T14:30:00-07:00", "retrievedAt": "2026-09-10T14:35:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-policy", "kind": "policy-document", "subjectRef": "claim-rivera-water-loss", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/policy-declarations-redacted", "revision": "2026-01", "issuedAt": "2026-01-01T00:00:00-08:00", "retrievedAt": "2026-09-10T15:00:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-inventory-instruction", "kind": "official-claim-instruction", "subjectRef": "requirement-inventory", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/inventory-instruction", "revision": "2026-09-11", "issuedAt": "2026-09-11T09:00:00-07:00", "retrievedAt": "2026-09-11T09:30:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-mitigation-instruction", "kind": "official-claim-instruction", "subjectRef": "requirement-mitigation-record", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/mitigation-record-instruction", "revision": "2026-09-11", "issuedAt": "2026-09-11T09:05:00-07:00", "retrievedAt": "2026-09-11T09:30:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-inspection-request", "kind": "carrier-request", "subjectRef": "requirement-inspection", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/inspection-request", "revision": "1", "issuedAt": "2026-09-12T10:00:00-07:00", "retrievedAt": "2026-09-12T10:15:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-inventory-action-receipt", "kind": "independent-receipt", "subjectRef": "action-submit-inventory", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/inventory-submission-confirmation", "revision": "1", "issuedAt": "2026-09-13T16:02:00-07:00", "retrievedAt": "2026-09-13T16:05:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-owner-mitigation-attempt", "kind": "owner-action-note", "subjectRef": "action-submit-mitigation-record", "issuerAuthorityRef": "owner-rivera", "controlledRef": "workspace://property-claim/mitigation-upload-attempt", "revision": "1", "issuedAt": "2026-09-14T11:00:00-07:00", "retrievedAt": "2026-09-14T11:01:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-mitigation-action-receipt", "kind": "independent-receipt", "subjectRef": "action-perform-mitigation", "issuerAuthorityRef": "provider-drycare", "controlledRef": "provider://drycare/mitigation-service-confirmation", "revision": "1", "issuedAt": "2026-09-11T18:30:00-07:00", "retrievedAt": "2026-09-11T18:35:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-inspection-action-receipt", "kind": "independent-receipt", "subjectRef": "action-attend-inspection", "issuerAuthorityRef": "adjuster-north", "controlledRef": "carrier://harbor/inspection-attendance-confirmation", "revision": "1", "issuedAt": "2026-09-15T15:05:00-07:00", "retrievedAt": "2026-09-15T15:10:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-adjuster-observation", "kind": "adjuster-observation", "subjectRef": "event-inspection-receipt", "issuerAuthorityRef": "adjuster-north", "controlledRef": "carrier://harbor/adjuster-observation-redacted", "revision": "1", "issuedAt": "2026-09-15T15:00:00-07:00", "retrievedAt": "2026-09-16T09:00:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-contractor-estimate", "kind": "contractor-estimate", "subjectRef": "estimate-contractor-scope", "issuerAuthorityRef": "provider-floorworks", "controlledRef": "provider://floorworks/estimate-redacted", "revision": "1", "issuedAt": "2026-09-17T10:00:00-07:00", "retrievedAt": "2026-09-17T10:30:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-carrier-estimate", "kind": "carrier-estimate", "subjectRef": "estimate-carrier-scope", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/estimate-redacted", "revision": "1", "issuedAt": "2026-09-18T12:00:00-07:00", "retrievedAt": "2026-09-18T12:30:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-carrier-scope", "kind": "carrier-position", "subjectRef": "position-scope-partial", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/scope-position-redacted", "revision": "1", "issuedAt": "2026-09-18T12:05:00-07:00", "retrievedAt": "2026-09-18T12:30:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-laptop-pending", "kind": "carrier-position", "subjectRef": "position-laptop-pending", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/laptop-review-pending", "revision": "1", "issuedAt": "2026-09-18T12:06:00-07:00", "retrievedAt": "2026-09-18T12:30:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-payment-position", "kind": "carrier-position", "subjectRef": "position-initial-payment", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/payment-position-redacted", "revision": "1", "issuedAt": "2026-09-20T09:00:00-07:00", "retrievedAt": "2026-09-20T09:30:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-payment-statement", "kind": "payment-statement", "subjectRef": "payment-initial", "issuerAuthorityRef": "carrier-harbor", "controlledRef": "carrier://harbor/payment-statement-redacted", "revision": "1", "issuedAt": "2026-09-20T09:02:00-07:00", "retrievedAt": "2026-09-20T09:30:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-mitigation-repair-receipt", "kind": "repair-receipt", "subjectRef": "repair-emergency-mitigation", "issuerAuthorityRef": "provider-drycare", "controlledRef": "provider://drycare/mitigation-receipt-redacted", "revision": "1", "issuedAt": "2026-09-11T18:31:00-07:00", "retrievedAt": "2026-09-11T18:35:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-owner-decision", "kind": "owner-decision", "subjectRef": "decision-wait-flooring-scope", "issuerAuthorityRef": "owner-rivera", "controlledRef": "workspace://property-claim/owner-wait-decision", "revision": "1", "issuedAt": "2026-09-19T09:00:00-07:00", "retrievedAt": "2026-09-19T09:01:00-07:00", "jurisdiction": "US-CA", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false }
+  ],
+  "events": [
+    { "id": "event-loss-observed", "kind": "owner-loss-observation", "occurredAt": "2026-09-10T14:30:00-07:00", "assertionState": "owner-reported", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "sourceRefs": ["source-owner-loss"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false },
+    { "id": "event-inventory-receipt", "kind": "receipt", "occurredAt": "2026-09-13T16:02:00-07:00", "assertionState": "independently-receipted-outcome", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "sourceRefs": ["source-inventory-action-receipt"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false },
+    { "id": "event-mitigation-attempt", "kind": "owner-attempt", "occurredAt": "2026-09-14T11:00:00-07:00", "assertionState": "owner-reported", "propertyUnitRefs": ["property-flooring"], "sourceRefs": ["source-owner-mitigation-attempt"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false },
+    { "id": "event-inspection-receipt", "kind": "receipt", "occurredAt": "2026-09-15T15:05:00-07:00", "assertionState": "independently-receipted-outcome", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "sourceRefs": ["source-inspection-action-receipt", "source-adjuster-observation"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false },
+    { "id": "event-contractor-estimate", "kind": "qualified-assessment", "occurredAt": "2026-09-17T10:00:00-07:00", "assertionState": "qualified-observation", "propertyUnitRefs": ["property-flooring", "property-desk"], "sourceRefs": ["source-contractor-estimate"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false },
+    { "id": "event-carrier-estimate", "kind": "carrier-position", "occurredAt": "2026-09-18T12:00:00-07:00", "assertionState": "carrier-issued-fact", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "sourceRefs": ["source-carrier-estimate"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false },
+    { "id": "event-carrier-scope", "kind": "carrier-position", "occurredAt": "2026-09-18T12:05:00-07:00", "assertionState": "carrier-issued-fact", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "sourceRefs": ["source-carrier-scope"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false },
+    { "id": "event-carrier-laptop-pending", "kind": "carrier-position", "occurredAt": "2026-09-18T12:06:00-07:00", "assertionState": "carrier-issued-fact", "propertyUnitRefs": ["property-laptop"], "sourceRefs": ["source-laptop-pending"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false },
+    { "id": "event-payment-statement", "kind": "payment-statement", "occurredAt": "2026-09-20T09:02:00-07:00", "assertionState": "carrier-issued-fact", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "sourceRefs": ["source-payment-statement"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false },
+    { "id": "event-mitigation-record", "kind": "repair-record", "occurredAt": "2026-09-11T18:31:00-07:00", "assertionState": "independently-receipted-outcome", "propertyUnitRefs": ["property-flooring"], "sourceRefs": ["source-mitigation-repair-receipt"], "coverageDetermination": false, "causeDetermination": false, "safetyDetermination": false }
+  ],
+  "propertyUnits": [
+    { "id": "property-flooring", "kind": "room-surface", "redactedIdentifier": "living-room-flooring", "state": "carrier-positioned", "eventRefs": ["event-loss-observed", "event-inventory-receipt", "event-mitigation-attempt", "event-inspection-receipt", "event-contractor-estimate", "event-carrier-estimate", "event-carrier-scope", "event-payment-statement", "event-mitigation-record"], "requirementRefs": ["requirement-inventory", "requirement-mitigation-record", "requirement-inspection"], "actionRefs": ["action-submit-inventory", "action-perform-mitigation", "action-submit-mitigation-record", "action-attend-inspection"], "estimateRefs": ["estimate-contractor-scope", "estimate-carrier-scope"], "carrierPositionRefs": ["position-scope-partial", "position-initial-payment"], "paymentRefs": ["payment-initial"], "repairRecordRefs": ["repair-emergency-mitigation"], "ownerDecisionRefs": ["decision-wait-flooring-scope"], "gapRefs": ["gap-mitigation-receipt", "gap-flooring-scope", "gap-payment-receipt", "gap-residual-property"], "sourceRefs": ["source-owner-loss", "source-adjuster-observation"] },
+    { "id": "property-desk", "kind": "personal-property", "redactedIdentifier": "home-office-desk", "state": "carrier-positioned", "eventRefs": ["event-loss-observed", "event-inventory-receipt", "event-inspection-receipt", "event-contractor-estimate", "event-carrier-estimate", "event-carrier-scope", "event-payment-statement"], "requirementRefs": ["requirement-inventory", "requirement-inspection"], "actionRefs": ["action-submit-inventory", "action-attend-inspection"], "estimateRefs": ["estimate-contractor-scope", "estimate-carrier-scope"], "carrierPositionRefs": ["position-scope-partial", "position-initial-payment"], "paymentRefs": ["payment-initial"], "repairRecordRefs": [], "ownerDecisionRefs": [], "gapRefs": ["gap-payment-receipt", "gap-residual-property"], "sourceRefs": ["source-owner-loss", "source-adjuster-observation"] },
+    { "id": "property-laptop", "kind": "personal-property", "redactedIdentifier": "laptop-serial-redacted", "state": "carrier-positioned", "eventRefs": ["event-loss-observed", "event-inventory-receipt", "event-inspection-receipt", "event-carrier-estimate", "event-carrier-scope", "event-carrier-laptop-pending", "event-payment-statement"], "requirementRefs": ["requirement-inventory", "requirement-inspection"], "actionRefs": ["action-submit-inventory", "action-attend-inspection"], "estimateRefs": ["estimate-carrier-scope"], "carrierPositionRefs": ["position-scope-partial", "position-laptop-pending", "position-initial-payment"], "paymentRefs": ["payment-initial"], "repairRecordRefs": [], "ownerDecisionRefs": [], "gapRefs": ["gap-laptop-pending", "gap-payment-receipt", "gap-residual-property"], "sourceRefs": ["source-owner-loss", "source-adjuster-observation"] }
+  ],
+  "requirements": [
+    { "id": "requirement-inventory", "kind": "inventory", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "officialSourceRef": "source-inventory-instruction", "carrierAuthorityRef": "carrier-harbor", "jurisdiction": "US-CA", "revision": "2026-09-11", "state": "carrier-acknowledged", "deadlineAt": "2026-10-10T23:59:59-07:00", "actionRefs": ["action-submit-inventory"], "disclosureClass": "controlled-evidence", "externalExecution": "owner-only" },
+    { "id": "requirement-mitigation-record", "kind": "mitigation-record", "propertyUnitRefs": ["property-flooring"], "officialSourceRef": "source-mitigation-instruction", "carrierAuthorityRef": "carrier-harbor", "jurisdiction": "US-CA", "revision": "2026-09-11", "state": "owner-completed-unacknowledged", "deadlineAt": "2026-10-01T23:59:59-07:00", "actionRefs": ["action-perform-mitigation", "action-submit-mitigation-record"], "disclosureClass": "controlled-evidence", "externalExecution": "owner-only" },
+    { "id": "requirement-inspection", "kind": "inspection", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "officialSourceRef": "source-inspection-request", "carrierAuthorityRef": "carrier-harbor", "jurisdiction": "US-CA", "revision": "1", "state": "carrier-acknowledged", "deadlineAt": "2026-09-20T23:59:59-07:00", "actionRefs": ["action-attend-inspection"], "disclosureClass": "minimized-property", "externalExecution": "owner-only" }
+  ],
+  "actions": [
+    { "id": "action-submit-inventory", "kind": "submit-document", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "requirementRef": "requirement-inventory", "ownerAuthorityRef": "owner-rivera", "state": "owner-completed", "attemptedAt": "2026-09-13T16:00:00-07:00", "sourceRefs": ["source-inventory-action-receipt"], "receiptSourceRef": "source-inventory-action-receipt", "externalAction": true, "agentExecuted": false },
+    { "id": "action-perform-mitigation", "kind": "perform-mitigation", "propertyUnitRefs": ["property-flooring"], "requirementRef": "requirement-mitigation-record", "ownerAuthorityRef": "owner-rivera", "state": "owner-completed", "attemptedAt": "2026-09-11T16:00:00-07:00", "sourceRefs": ["source-mitigation-action-receipt"], "receiptSourceRef": "source-mitigation-action-receipt", "externalAction": true, "agentExecuted": false },
+    { "id": "action-submit-mitigation-record", "kind": "submit-document", "propertyUnitRefs": ["property-flooring"], "requirementRef": "requirement-mitigation-record", "ownerAuthorityRef": "owner-rivera", "state": "attempted", "attemptedAt": "2026-09-14T11:00:00-07:00", "sourceRefs": ["source-owner-mitigation-attempt"], "receiptSourceRef": null, "externalAction": true, "agentExecuted": false },
+    { "id": "action-attend-inspection", "kind": "attend-inspection", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "requirementRef": "requirement-inspection", "ownerAuthorityRef": "owner-rivera", "state": "owner-completed", "attemptedAt": "2026-09-15T14:00:00-07:00", "sourceRefs": ["source-inspection-action-receipt"], "receiptSourceRef": "source-inspection-action-receipt", "externalAction": true, "agentExecuted": false }
+  ],
+  "estimates": [
+    { "id": "estimate-contractor-scope", "kind": "contractor-estimate", "issuerAuthorityRef": "provider-floorworks", "sourceRef": "source-contractor-estimate", "propertyUnitRefs": ["property-flooring", "property-desk"], "issuedAt": "2026-09-17T10:00:00-07:00", "revision": "1", "status": "current", "amountMinorUnits": 920000, "currency": "USD", "clawRecommended": false },
+    { "id": "estimate-carrier-scope", "kind": "carrier-estimate", "issuerAuthorityRef": "carrier-harbor", "sourceRef": "source-carrier-estimate", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "issuedAt": "2026-09-18T12:00:00-07:00", "revision": "1", "status": "current", "amountMinorUnits": 640000, "currency": "USD", "clawRecommended": false }
+  ],
+  "carrierPositions": [
+    { "id": "position-scope-partial", "kind": "scope-position", "carrierAuthorityRef": "carrier-harbor", "sourceRef": "source-carrier-scope", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "issuedAt": "2026-09-18T12:05:00-07:00", "state": "carrier-partial", "clawEndorsed": false },
+    { "id": "position-laptop-pending", "kind": "claim-status", "carrierAuthorityRef": "carrier-harbor", "sourceRef": "source-laptop-pending", "propertyUnitRefs": ["property-laptop"], "issuedAt": "2026-09-18T12:06:00-07:00", "state": "carrier-pending", "clawEndorsed": false },
+    { "id": "position-initial-payment", "kind": "payment-position", "carrierAuthorityRef": "carrier-harbor", "sourceRef": "source-payment-position", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "issuedAt": "2026-09-20T09:00:00-07:00", "state": "carrier-issued", "clawEndorsed": false }
+  ],
+  "payments": [
+    { "id": "payment-initial", "carrierAuthorityRef": "carrier-harbor", "statementSourceRef": "source-payment-statement", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "issuedAt": "2026-09-20T09:02:00-07:00", "amountMinorUnits": 480000, "currency": "USD", "allocations": [{ "propertyUnitRef": "property-flooring", "amountMinorUnits": 300000 }, { "propertyUnitRef": "property-desk", "amountMinorUnits": 80000 }, { "propertyUnitRef": "property-laptop", "amountMinorUnits": 100000 }], "state": "carrier-announced", "receiptSourceRef": null, "ownerAcceptanceClaim": false, "settlementClaim": false }
+  ],
+  "repairRecords": [
+    { "id": "repair-emergency-mitigation", "kind": "mitigation", "providerAuthorityRef": "provider-drycare", "propertyUnitRefs": ["property-flooring"], "sourceRefs": ["source-mitigation-repair-receipt"], "state": "provider-reported-complete", "authorizedActionRef": "action-perform-mitigation", "completionReceiptSourceRef": "source-mitigation-repair-receipt", "amountMinorUnits": 125000, "currency": "USD", "agentAuthorized": false, "repairSufficiencyClaim": false }
+  ],
+  "ownerDecisions": [
+    { "id": "decision-wait-flooring-scope", "kind": "wait-for-information", "propertyUnitRefs": ["property-flooring"], "ownerAuthorityRef": "owner-rivera", "sourceRef": "source-owner-decision", "decidedAt": "2026-09-19T09:00:00-07:00", "agentDecision": false }
+  ],
+  "gaps": [
+    { "id": "gap-mitigation-receipt", "kind": "missing-receipt", "propertyUnitRefs": ["property-flooring"], "relatedRefs": ["action-submit-mitigation-record"], "ownerAuthorityRef": "owner-rivera", "state": "open", "resolutionSourceRef": null },
+    { "id": "gap-flooring-scope", "kind": "scope-difference", "propertyUnitRefs": ["property-flooring"], "relatedRefs": ["estimate-contractor-scope", "estimate-carrier-scope", "position-scope-partial"], "ownerAuthorityRef": "owner-rivera", "state": "open", "resolutionSourceRef": null },
+    { "id": "gap-laptop-pending", "kind": "carrier-pending", "propertyUnitRefs": ["property-laptop"], "relatedRefs": ["position-laptop-pending"], "ownerAuthorityRef": "owner-rivera", "state": "open", "resolutionSourceRef": null },
+    { "id": "gap-payment-receipt", "kind": "payment-question", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "relatedRefs": ["payment-initial"], "ownerAuthorityRef": "owner-rivera", "state": "open", "resolutionSourceRef": null },
+    { "id": "gap-residual-property", "kind": "residual-exposure", "propertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"], "relatedRefs": ["position-scope-partial", "position-laptop-pending", "repair-emergency-mitigation"], "ownerAuthorityRef": "owner-rivera", "state": "open", "resolutionSourceRef": null }
+  ],
+  "review": {
+    "asOf": "2026-09-25T18:00:00-07:00",
+    "nextRevision": 2,
+    "decision": "owner-review-required",
+    "nextOwnerAuthorityRef": "owner-rivera",
+    "openGapRefs": ["gap-mitigation-receipt", "gap-flooring-scope", "gap-laptop-pending", "gap-payment-receipt", "gap-residual-property"],
+    "missingReceiptActionRefs": ["action-submit-mitigation-record"],
+    "openRequirementRefs": ["requirement-mitigation-record"],
+    "pendingCarrierPositionRefs": ["position-laptop-pending"],
+    "announcedPaymentRefs": ["payment-initial"],
+    "unverifiedRepairRecordRefs": ["repair-emergency-mitigation"],
+    "residualPropertyUnitRefs": ["property-flooring", "property-desk", "property-laptop"],
+    "closureClaim": false
+  },
+  "prohibitedActions": {
+    "coverageDetermined": false,
+    "causeDetermined": false,
+    "faultDetermined": false,
+    "liabilityDetermined": false,
+    "valueDetermined": false,
+    "depreciationDetermined": false,
+    "deductibleDetermined": false,
+    "safetyDetermined": false,
+    "settlementRecommended": false,
+    "fraudDetermined": false,
+    "badFaithDetermined": false,
+    "adviceGiven": false,
+    "externalContacted": false,
+    "claimFiledOrAmended": false,
+    "evidenceSubmitted": false,
+    "inspectionOrRepairScheduled": false,
+    "settlementAcceptedOrRejected": false,
+    "checkEndorsed": false,
+    "workAuthorized": false,
+    "paymentMade": false,
+    "purchaseMade": false,
+    "salvageDisposed": false,
+    "accountOrPolicyChanged": false,
+    "recoveryDeclared": false,
+    "claimClosed": false
+  }
+}

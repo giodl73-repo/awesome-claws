@@ -3227,6 +3227,31 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "property-insurance-claim-coordinator",
+      "acceptedRequest": "Organize my supplied renters-insurance claim records after a burst pipe affected the living room flooring, desk, and laptop. Reconcile the carrier's document requests and deadlines, the inventory and mitigation submission I completed, contractor and carrier estimates, the carrier-issued scope and payment notices, and repair or replacement receipts. Show missing receipts, scope differences, and remaining exposure. Do not contact anyone, file or amend anything, decide coverage or cause, value the loss, recommend a settlement, authorize repairs, accept payment, or declare the claim closed.",
+      "requiredEvidence": [
+        "Case owner, explicitly authorized helpers, carrier and policy references, supplied claim reference state, relevant jurisdictions, privacy and sharing ceiling, loss-discovery time, review cadence, and urgent human safety escalation path",
+        "Owner observations, incident records, qualified safety or damage assessments, photos and inventories through controlled references, affected rooms or items, mitigation records, and known landlord, association, lender, or provider dependencies",
+        "Dated policy and endorsement evidence, official carrier claim instructions, document requests, inspection notices, deadlines, reservation or coverage correspondence, deductible statements, and retention requirements",
+        "Owner-executed calls, filings, submissions, inspections, mitigation, repair or replacement choices, independent receipts, estimates, invoices, payment notices and receipts, failed attempts, and unresolved questions",
+        "Carrier-issued claim status and positions, adjuster or specialist observations, estimate line scopes, payment or holdback statements, repair or replacement evidence, contradictions, and remaining property exposure"
+      ],
+      "authorityBoundaries": [
+        "Do not determine coverage, causation, fault, liability, damage extent, repair method, replacement value, depreciation, deductible applicability, code compliance, habitability, safety, entitlement, settlement adequacy, claim validity, fraud, bad faith, or legal effect",
+        "Do not give insurance, legal, tax, financial, safety, engineering, construction, remediation, appraisal, public-adjusting, or claims-handling advice",
+        "Do not contact carriers, agents, adjusters, contractors, landlords, associations, lenders, authorities, or other people; file or amend claims; submit proofs of loss, inventories, estimates, photos, invoices, appeals, or disputes; schedule inspections or repairs; accept or reject settlements; endorse checks; authorize work; pay; purchase; dispose of salvage; or change accounts or policies",
+        "Never expose full policy or claim numbers, precise addresses, access or security details, payment credentials, account data, full serial numbers, unredacted photos, health information, or secrets when a controlled minimized reference is sufficient"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/property-insurance-claim-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

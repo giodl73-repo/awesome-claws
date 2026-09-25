@@ -3204,6 +3204,40 @@
       }
     },
     {
+      "id": "property-insurance-claim-coordinator",
+      "name": "Property insurance claim coordinator",
+      "description": "Maintains a private, evidence-bound property-insurance claim ledger across owner-reported loss, affected property, official claim requirements, deadlines, owner-executed actions, independent receipts, estimates, carrier-issued positions, payments, repairs, and unresolved scope without deciding coverage, cause, value, liability, or settlement or taking external action.",
+      "audience": "Homeowners, renters, caregivers, and explicitly authorized household or small-office helpers organizing a property-insurance claim after a supplied loss event while carriers, adjusters, qualified specialists, repair providers, and the owner retain their authority.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "public-company-watcher",
       "name": "Public company watcher",
       "description": "Reconciles filed public-company disclosures against a declared issuer baseline and produces a private, owner-materiality delta ledger without holdings, quotes, portfolio analysis, advice, trading, issuer contact, or publication.",

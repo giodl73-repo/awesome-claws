@@ -100,6 +100,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "resume-portfolio-curator": "resume-portfolio.schema.json",
   "project-manager": "project-state.schema.json",
   "product-manager": "product-decision.schema.json",
+  "property-insurance-claim-coordinator": "property-claim-ledger.schema.json",
   "purchase-researcher": "purchase-research.schema.json",
   "public-safety-monitor": "public-safety-state.schema.json",
   "quality-assurance-lead": "test-evidence.schema.json",
