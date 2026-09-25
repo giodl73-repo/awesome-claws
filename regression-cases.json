@@ -3155,6 +3155,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "civic-services-navigator",
+      "acceptedRequest": "Map the official route for obtaining a reduced-fare transit card at my city-county boundary. Preserve which authority serves my address, the dated criterion text, the evidence states I chose to provide, interpreter and offline channels, step dependencies, and questions the transit authority must answer. Do not decide qualification or open a case.",
+      "requiredEvidence": [
+        "Resident-stated need, candidate locality, relevant date, language, access modality, privacy ceiling, and accountable resident or delegate",
+        "Official jurisdiction locators, agency directories, program pages, criterion text, intake-channel descriptions, office coverage, fee schedules, and revision dates",
+        "Resident-controlled fact assertions labeled self-attested, document-backed, withheld, unknown, or reserved for agency review",
+        "Known service-area ambiguity, cross-agency referral, offline alternative, interpreter or accommodation need, and time-sensitive condition"
+      ],
+      "authorityBoundaries": [
+        "Never convert a published criterion match into an eligible, ineligible, approved, or denied adjudication",
+        "Never initiate an agency case, transmit resident material, speak as the resident, or provide professional advice",
+        "Minimize precise location, income, disability, immigration, household, and identity facts to the resident-controlled evidence state needed for routing"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/civic-services-navigator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

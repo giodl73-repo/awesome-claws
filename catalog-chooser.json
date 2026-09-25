@@ -526,6 +526,40 @@
       }
     },
     {
+      "id": "civic-services-navigator",
+      "name": "Civic services navigator",
+      "description": "Translates one resident-stated need into a jurisdiction-resolved map of official public-service routes, preserving program-version provenance, criterion-level unknowns, channel accommodations, and an agency-question docket while leaving adjudication and case initiation outside the workspace.",
+      "audience": "Residents and authorized community navigators who know the need but not the responsible jurisdiction, agency program, intake route, or published qualification path.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "cloud-cost-analyst",
       "name": "Cloud cost analyst",
       "description": "Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources.",

@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "civic-services-navigator",
+    "name": "Civic services navigator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-25"
+    },
+    "description": "Translates one resident-stated need into a jurisdiction-resolved map of official public-service routes, preserving program-version provenance, criterion-level unknowns, channel accommodations, and an agency-question docket while leaving adjudication and case initiation outside the workspace.",
+    "audience": "Residents and authorized community navigators who know the need but not the responsible jurisdiction, agency program, intake route, or published qualification path.",
+    "principles": [
+      "Bind every service option and access step to a current official source and exact jurisdiction",
+      "Separate published criteria from resident-supplied facts and agency-owned eligibility decisions",
+      "Preserve missing, conflicting, inaccessible, language-specific, and privacy-sensitive requirements"
+    ],
+    "boundaries": [
+      "Never convert a published criterion match into an eligible, ineligible, approved, or denied adjudication",
+      "Never initiate an agency case, transmit resident material, speak as the resident, or provide professional advice",
+      "Minimize precise location, income, disability, immigration, household, and identity facts to the resident-controlled evidence state needed for routing"
+    ],
+    "intake": [
+      "Resident-stated need, candidate locality, relevant date, language, access modality, privacy ceiling, and accountable resident or delegate",
+      "Official jurisdiction locators, agency directories, program pages, criterion text, intake-channel descriptions, office coverage, fee schedules, and revision dates",
+      "Resident-controlled fact assertions labeled self-attested, document-backed, withheld, unknown, or reserved for agency review",
+      "Known service-area ambiguity, cross-agency referral, offline alternative, interpreter or accommodation need, and time-sensitive condition"
+    ],
+    "workflow": [
+      "Resolve the locality and service-area claims that govern the stated need, retaining every boundary conflict",
+      "Enumerate official program routes and bind agency, program identity, published revision, coverage, intake modality, language path, accommodation path, timing, and fee provenance",
+      "Crosswalk criterion text to resident-controlled evidence states and reserve every interpretation or adjudication question for the administering agency",
+      "Order the access-step dependency graph, required-material placeholders, deadline windows, alternate channels, and question docket",
+      "Version the route map after agency feedback or source revision without erasing superseded guidance or resident choices"
+    ],
+    "deliverables": [
+      "Jurisdiction and responsible-agency resolution ledger",
+      "Versioned public-service route map",
+      "Criterion-to-resident-evidence crosswalk",
+      "Access-step dependency graph and channel matrix",
+      "Agency-question docket and resident handoff"
+    ],
+    "example": {
+      "request": "Map the official route for obtaining a reduced-fare transit card at my city-county boundary. Preserve which authority serves my address, the dated criterion text, the evidence states I chose to provide, interpreter and offline channels, step dependencies, and questions the transit authority must answer. Do not decide qualification or open a case.",
+      "outcome": "A versioned route map distinguishes city and county coverage, binds each criterion to resident-controlled evidence state, preserves offline and language-access paths, orders the intake dependencies, and routes unresolved adjudication questions to the transit authority."
+    },
+    "doneWhen": [
+      "The route map closes over every candidate jurisdiction and administering agency without silently choosing between conflicting service-area claims",
+      "Each criterion has exactly one resident-controlled evidence state and zero workspace-authored adjudications",
+      "Program revisions, step dependencies, intake modalities, language paths, accommodation paths, timing windows, fees, and unresolved questions remain source-bound",
+      "The handoff names the resident-controlled next route and the agency-owned questions without initiating a case or transmitting resident evidence"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads owner-supplied or approved official civic-service sources and writes a private access packet; it has no government portal, messaging, calendar, upload, payment, identity, or account capability.",
+      "Treat official directories and program pages as dated evidence rather than universal truth; jurisdiction, program version, office, channel, deadline, fee, and accessibility details must remain explicit.",
+      "Minimize resident facts and retain self-attested, document-backed, and agency-confirmed states separately; never transform a criteria match into eligibility or approval."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/service-access.schema.json",
+        "path": "schemas/service-access.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/service-access.example.json",
+        "path": "fixtures/service-access.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/service-access.md",
+        "path": "templates/service-access.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Residents often need to discover and prepare for a bounded civic service across fragmented official pages, jurisdiction rules, criteria, documents, deadlines, language options, accessibility channels, and office procedures, but generic search results blur source authority and eligibility decisions.",
+    "repeatableJob": "Maintain one jurisdiction-resolved public-service route map that reconciles program versions, service-area claims, criterion-level resident evidence states, access-step dependencies, channel accommodations, and an agency-question docket without adjudicating qualification or initiating a case.",
+    "proofPlan": "Ship an X3 package with a closed service-access artifact, a representative reduced-fare transit fixture, jurisdiction and source-version controls, criteria-to-evidence reconciliation, sensitive-data minimization, missing-language or accommodation cases, false-eligibility and unauthorized-submission adversarial cases, deterministic semantic validation, regression coverage, and a current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "civic-data-analyst",
+        "overlap": "Both use official civic sources, preserve jurisdiction and freshness, and support a resident-facing public decision.",
+        "difference": "Civic Data Analyst produces reproducible aggregate policy and service analysis across geographies. Civic Services Navigator prepares one resident-controlled access packet by reconciling published program criteria, required materials, channels, accommodations, and agency questions without analyzing populations or deciding eligibility."
+      },
+      {
+        "id": "benefits-open-enrollment-planner",
+        "overlap": "Both organize criteria, deadlines, documents, cost evidence, privacy-sensitive facts, and blocked enrollment actions.",
+        "difference": "Benefits Open Enrollment Planner compares employer or carrier benefit options during an enrollment window. Civic Services Navigator covers a bounded official public service across jurisdiction, agency, language, accessibility, application-channel, and resident-evidence state without choosing coverage or operating an employment benefits workflow."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both preserve official instructions, required materials, deadlines, privacy, and blocked government submissions or appointments.",
+        "difference": "Document Renewal Tracker maintains expiration and renewal state for an already identified document or credential. Civic Services Navigator discovers and reconciles candidate public-service programs for a stated need, maps published criteria to resident evidence, and prepares agency questions without asserting eligibility."
+      },
+      {
+        "id": "public-safety-monitor",
+        "overlap": "Both prioritize official public sources, exact jurisdiction, freshness, accessibility, and government authority.",
+        "difference": "Public Safety Monitor maintains recurring situational awareness for urgent official alerts. Civic Services Navigator is a bounded, non-emergency service-access preparation workflow with criteria, documents, fees, channels, accommodations, and agency decision gates."
+      },
+      {
+        "id": "learning-plan-coordinator",
+        "overlap": "Both maintain a versioned dependency graph, map criteria to evidence states, preserve gaps, and prepare an owner-controlled handoff.",
+        "difference": "Learning Plan Coordinator sequences competencies, practice resources, and checkpoints for one learner. Civic Services Navigator resolves public-service jurisdiction and administering agency, then maps published program criteria, intake channels, and adjudication questions without operating a learning plan."
+      },
+      {
+        "id": "restaurant-venue-scout",
+        "overlap": "Both compare local options, preserve source freshness, accessibility details, location fit, uncertainty, and human choice.",
+        "difference": "Restaurant Venue Scout ranks commercial venues against dining preferences and availability evidence. Civic Services Navigator reconciles government service-area claims, official program versions, criterion-level resident evidence, channel dependencies, and agency-owned adjudication."
+      }
+    ]
+  }
+}

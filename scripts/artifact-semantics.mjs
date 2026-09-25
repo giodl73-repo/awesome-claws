@@ -9,6 +9,7 @@ import {
 import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.mjs";
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
+import { civicServiceAccessFindings } from "./civic-services-navigator.mjs";
 import { enterpriseLicenseEntitlementFindings } from "./enterprise-license-entitlement-reconciler.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
@@ -53241,6 +53242,7 @@ const validators = {
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
   "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
+  "civic-services-navigator": civicServiceAccessFindings,
   "certification-renewal-planner": certificationRenewalFindings,
   "conference-opportunity-scout": conferenceOpportunityFindings,
   "contract-obligation-tracker": contractObligationTrackerFindings,
