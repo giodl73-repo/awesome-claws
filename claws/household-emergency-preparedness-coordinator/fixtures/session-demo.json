@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "household-emergency-preparedness-coordinator",
+  "scenario": "Reconcile our earthquake, wildfire, smoke, and outage preparedness for two adults, one child, a dog, and a mobility-device user. Use the dated county, fire, utility, school, and building guidance I supplied; map evacuation and shelter options, communication and reunification fallbacks, supplies and expirations, and drill findings. Keep precise locations private and do not issue emergency instructions or contact anyone.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile our earthquake, wildfire, smoke, and outage preparedness for two adults, one child, a dog, and a mobility-device user. Use the dated county, fire, utility, school, and building guidance I supplied; map evacuation and shelter options, communication and reunification fallbacks, supplies and expirations, and drill findings. Keep precise locations private and do not issue emergency instructions or contact anyone."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/household-emergency-preparedness-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Household emergency preparedness coordinator session handoff",
+    "summary": "A versioned private preparedness packet binds each hazard to official guidance, covers every represented person and animal across plan options and fallbacks, exposes expired supplies and unacknowledged dependencies, records drill findings and owned corrections, and defers all live incident decisions to official authorities and the household owner.",
+    "output": "outputs/household-emergency-preparedness-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Official-source and location-bound hazard register",
+        "summary": "Every declared location and hazard is reconciled to dated official guidance or an explicit evidence gap without workspace-authored warning thresholds",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Privacy-minimized household needs and assistance coverage matrix",
+        "summary": "Every represented person, dependent, animal, accessibility need, communication need, transport constraint, and critical dependency is covered by an owner-approved option or an explicit unresolved gap",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Evacuation, shelter, communication, transport, and reunification option map",
+        "summary": "Every plan step, supply, document pointer, helper dependency, drill finding, and corrective action has a current state, accountable owner, provenance, and review or expiry condition",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Supply, document, dependency, expiry, and gap ledger",
+        "summary": "The private handoff preserves superseded plans and blocked external actions and makes no claim of live safety, readiness certification, emergency direction, contact, purchase, enrollment, or transmission",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Drill, finding, corrective-action, and owner-review record",
+        "summary": "Every declared location and hazard is reconciled to dated official guidance or an explicit evidence gap without workspace-authored warning thresholds",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Private preparedness handoff with live-emergency boundaries",
+        "summary": "Every represented person, dependent, animal, accessibility need, communication need, transport constraint, and critical dependency is covered by an owner-approved option or an explicit unresolved gap",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

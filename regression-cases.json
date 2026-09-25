@@ -3178,6 +3178,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "household-emergency-preparedness-coordinator",
+      "acceptedRequest": "Reconcile our earthquake, wildfire, smoke, and outage preparedness for two adults, one child, a dog, and a mobility-device user. Use the dated county, fire, utility, school, and building guidance I supplied; map evacuation and shelter options, communication and reunification fallbacks, supplies and expirations, and drill findings. Keep precise locations private and do not issue emergency instructions or contact anyone.",
+      "requiredEvidence": [
+        "Prepared locations, responsible owner, household members and dependents represented by privacy-safe identifiers, trusted-helper scope, and review cadence",
+        "Dated official hazard guidance, evacuation-zone and shelter sources, local alert enrollment references, building instructions, utility shutoff guidance, and source authority hierarchy",
+        "Owner-approved accessibility, language, mobility, communication, medical-device, transport, pet, school, workplace, custody, and reunification constraints",
+        "Current evacuation and shelter options, communication fallbacks, supplies and expirations, documents, insurance references, drill history, and known gaps"
+      ],
+      "authorityBoundaries": [
+        "Do not monitor live incidents, issue alerts, interpret warning thresholds, declare an evacuation, or override emergency services and official instructions",
+        "Do not contact helpers, register residents, buy supplies, book transport, change accounts, publish locations, or transmit household information",
+        "Do not provide medical, legal, insurance, structural-safety, firefighting, hazardous-material, or survival advice; route specialist questions to qualified authorities",
+        "Minimize precise addresses, access codes, health details, dependent identities, absence patterns, and meet-point data to the private owner-controlled artifact"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/household-emergency-preparedness-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

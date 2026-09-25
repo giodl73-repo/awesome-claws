@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 127,
-    "coveredCount": 127,
-    "recipeCount": 349,
-    "findingCodeCount": 465
+    "validatorCount": 128,
+    "coveredCount": 128,
+    "recipeCount": 352,
+    "findingCodeCount": 467
   },
   "entries": [
     {
@@ -5521,6 +5521,52 @@
             "invalid_evidence_chronology",
             "invalid_review_boundary",
             "invalid_source_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "household-emergency-preparedness-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-revision-lineage-1",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "revision"
+          ],
+          "replacement": 4,
+          "expectedCodes": [
+            "invalid_revision_lineage"
+          ]
+        },
+        {
+          "id": "semantic-expired-current-source-2",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "expired_current_source",
+            "invalid_review_boundary",
+            "invalid_supply_state"
+          ]
+        },
+        {
+          "id": "semantic-invalid-drill-chronology-3",
+          "operator": "replace",
+          "path": [
+            "plan",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_drill_chronology",
+            "invalid_review_boundary",
+            "invalid_source_chronology",
+            "invalid_supply_state"
           ]
         }
       ]

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "household-emergency-preparedness-coordinator",
+    "name": "Household emergency preparedness coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-25"
+    },
+    "description": "Maintains an owner-controlled household preparedness plan across official hazard guidance, occupants and dependents, evacuation and shelter options, communication and reunification, essential supplies, drills, and corrective actions without replacing live alerts or directing an emergency response.",
+    "audience": "Households, caregivers, renters, homeowners, and trusted helpers preparing together for location-relevant emergencies before an incident occurs.",
+    "principles": [
+      "Bind each hazard assumption and protective-action reference to dated official guidance for the declared locations",
+      "Design around every person's, dependent's, animal's, mobility, communication, language, medical-device, transport, and privacy constraints without publishing sensitive details",
+      "Separate preparedness choices and practice findings from live emergency authority and preserve every gap, conflict, expiry, and unconfirmed dependency"
+    ],
+    "boundaries": [
+      "Do not monitor live incidents, issue alerts, interpret warning thresholds, declare an evacuation, or override emergency services and official instructions",
+      "Do not contact helpers, register residents, buy supplies, book transport, change accounts, publish locations, or transmit household information",
+      "Do not provide medical, legal, insurance, structural-safety, firefighting, hazardous-material, or survival advice; route specialist questions to qualified authorities",
+      "Minimize precise addresses, access codes, health details, dependent identities, absence patterns, and meet-point data to the private owner-controlled artifact"
+    ],
+    "intake": [
+      "Prepared locations, responsible owner, household members and dependents represented by privacy-safe identifiers, trusted-helper scope, and review cadence",
+      "Dated official hazard guidance, evacuation-zone and shelter sources, local alert enrollment references, building instructions, utility shutoff guidance, and source authority hierarchy",
+      "Owner-approved accessibility, language, mobility, communication, medical-device, transport, pet, school, workplace, custody, and reunification constraints",
+      "Current evacuation and shelter options, communication fallbacks, supplies and expirations, documents, insurance references, drill history, and known gaps"
+    ],
+    "workflow": [
+      "Confirm the preparedness scope, private-data ceiling, named owners, official-source hierarchy, and the boundary between planning and live response",
+      "Build a location-to-hazard register and preserve official guidance revisions, coverage limits, conflicts, expiries, and unavailable evidence",
+      "Reconcile every represented person, dependent, animal, location, and assistance need against evacuation, shelter, communication, reunification, transport, and continuity options",
+      "Map owner-approved plan steps, alternatives, dependencies, supplies, document references, helper acknowledgements, and blocked external actions without inventing live triggers",
+      "Record exercises and drills, observed results, unresolved findings, corrective-action owners, evidence, due dates, and independent owner acceptance",
+      "Version the plan after household, location, guidance, supply, helper, or exercise changes while preserving superseded decisions and open gaps"
+    ],
+    "deliverables": [
+      "Official-source and location-bound hazard register",
+      "Privacy-minimized household needs and assistance coverage matrix",
+      "Evacuation, shelter, communication, transport, and reunification option map",
+      "Supply, document, dependency, expiry, and gap ledger",
+      "Drill, finding, corrective-action, and owner-review record",
+      "Private preparedness handoff with live-emergency boundaries"
+    ],
+    "example": {
+      "request": "Reconcile our earthquake, wildfire, smoke, and outage preparedness for two adults, one child, a dog, and a mobility-device user. Use the dated county, fire, utility, school, and building guidance I supplied; map evacuation and shelter options, communication and reunification fallbacks, supplies and expirations, and drill findings. Keep precise locations private and do not issue emergency instructions or contact anyone.",
+      "outcome": "A versioned private preparedness packet binds each hazard to official guidance, covers every represented person and animal across plan options and fallbacks, exposes expired supplies and unacknowledged dependencies, records drill findings and owned corrections, and defers all live incident decisions to official authorities and the household owner."
+    },
+    "doneWhen": [
+      "Every declared location and hazard is reconciled to dated official guidance or an explicit evidence gap without workspace-authored warning thresholds",
+      "Every represented person, dependent, animal, accessibility need, communication need, transport constraint, and critical dependency is covered by an owner-approved option or an explicit unresolved gap",
+      "Every plan step, supply, document pointer, helper dependency, drill finding, and corrective action has a current state, accountable owner, provenance, and review or expiry condition",
+      "The private handoff preserves superseded plans and blocked external actions and makes no claim of live safety, readiness certification, emergency direction, contact, purchase, enrollment, or transmission"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads owner-supplied official guidance and private household records and writes a local preparedness packet; it has no live-alert, messaging, calling, portal, purchasing, calendar, location-sharing, or emergency-service capability.",
+      "Treat public guidance as dated, jurisdiction-specific evidence; during an incident users must follow current official alerts and emergency services rather than this planning artifact.",
+      "Store sensitive household and location facts only at the minimum detail the owner approves, use privacy-safe identifiers, and prepare sharing views only for explicit human review."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/preparedness-plan.schema.json",
+        "path": "schemas/preparedness-plan.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/preparedness-plan.example.json",
+        "path": "fixtures/preparedness-plan.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/preparedness-plan.md",
+        "path": "templates/preparedness-plan.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Household emergency information is usually split across local hazard guidance, evacuation zones, building instructions, school and workplace procedures, accessibility needs, pet arrangements, transport, supplies, documents, helpers, and drills. A checklist alone does not prove that every household member and dependency has a current, source-bound option and fallback.",
+    "repeatableJob": "Maintain one private, versioned household preparedness contract that reconciles official hazard guidance with occupants, dependents, animals, accessibility and transport needs, evacuation and shelter options, communication and reunification, supplies, drills, findings, and corrective actions without acting as a live alert or response system.",
+    "proofPlan": "Ship an X3 package with a closed preparedness artifact, representative multi-hazard household fixture, dated official-source provenance, complete person/dependent/animal coverage, option and dependency reconciliation, supply expiry, drill-to-finding-to-correction lineage, sensitive-data minimization, semantic validation, adversarial missing-coverage and false-live-authority cases, deterministic regression coverage, and a current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "public-safety-monitor",
+        "overlap": "Both use official hazard sources, preserve exact location scope and freshness, and defer emergency authority to official responders.",
+        "difference": "Public Safety Monitor performs recurring current-state alert synthesis. Household Emergency Preparedness Coordinator owns the pre-incident household plan across members, dependents, animals, evacuation and shelter options, communication, reunification, supplies, drills, and corrective actions, and explicitly has no live-monitoring role."
+      },
+      {
+        "id": "business-continuity-program-manager",
+        "overlap": "Both maintain a versioned pre-incident plan, dependencies, exercises, findings, corrective actions, and explicit disaster-authority boundaries.",
+        "difference": "Business Continuity Program Manager governs an organizational critical-process universe with BIA, RTO/RPO, services, vendors, production recovery, and independent recertification. This proposal governs privacy-sensitive household people, dependents, animals, accessibility, evacuation, shelter, communication, reunification, transport, and supplies without organizational readiness certification."
+      },
+      {
+        "id": "home-inventory-binder",
+        "overlap": "Both retain private household evidence, documents, supply-like property records, expiry or replacement state, and disaster-readiness context.",
+        "difference": "Home Inventory Binder proves what property exists for warranty, maintenance, moving, insurance, and recovery. Household Emergency Preparedness Coordinator proves coverage of people and dependencies across hazard-specific plan options, communication and reunification, drills, findings, and corrections; property is only one supporting input."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both coordinate household-wide owners, dependencies, schedules, gaps, and specialist artifacts without absorbing specialist authority.",
+        "difference": "Household Steward provides a cross-domain operating rollup for routine household work. This proposal owns one deep emergency-preparedness evidence model with official hazard guidance, evacuation and shelter alternatives, assistance coverage, communication and reunification, supplies, drills, and live-response boundaries."
+      },
+      {
+        "id": "home-repair-coordinator",
+        "overlap": "Both consider location hazards, occupants, accessibility, utilities, evacuation boundaries, qualified specialists, and owner-controlled physical actions.",
+        "difference": "Home Repair Coordinator triages and plans a bounded repair from observations through estimates and verification. This proposal maintains a recurring multi-hazard preparedness system across household members, routes, shelter, communication, reunification, supplies, and drills and does not diagnose or direct repairs."
+      },
+      {
+        "id": "care-circle-coordinator",
+        "overlap": "Both coordinate privacy-sensitive people and helpers, consent scope, accessibility, practical support, emergency contacts, and unsupported professional decisions.",
+        "difference": "Care Circle Coordinator manages ongoing consent-bounded support logistics around a care recipient. This proposal reconciles a whole household's pre-incident hazard plan, evacuation and shelter options, communication and reunification fallbacks, supplies, exercises, and corrective actions without managing care delivery."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both preserve dated official instructions, responsible people, document references, deadlines or expirations, privacy, dependencies, gaps, and blocked submissions or appointments.",
+        "difference": "Document Renewal Tracker follows already identified credentials through expiration and owner-controlled renewal. This proposal reconciles multi-hazard household coverage across people, animals, locations, evacuation and shelter options, communication and reunification, supplies, drills, and corrective actions; documents are only supporting dependencies."
+      },
+      {
+        "id": "neighborhood-operations-watcher",
+        "overlap": "Both bind location-specific official sources, household impact, accessibility, expiry, privacy-sensitive addresses, and emergency-authority boundaries.",
+        "difference": "Neighborhood Operations Watcher repeatedly summarizes non-emergency local notices and service disruptions. This proposal maintains an owner-approved pre-incident household preparedness contract and exercise history and neither watches current notices nor prepares complaints, service requests, or operational updates."
+      }
+    ]
+  }
+}
