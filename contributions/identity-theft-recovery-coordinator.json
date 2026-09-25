@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "identity-theft-recovery-coordinator",
+    "name": "Identity theft recovery coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-25"
+    },
+    "description": "Maintains a private, evidence-bound identity-theft recovery ledger across suspected events, affected identity surfaces, official recovery routes, deadlines, owner actions, independent receipts, disputes, and residual gaps without determining fraud or contacting, filing with, authenticating to, or changing any external system.",
+    "audience": "Individuals, caregivers, and explicitly authorized helpers organizing recovery after suspected identity theft, impersonation, account takeover, or misuse of personal identifiers.",
+    "principles": [
+      "Separate owner-reported suspicion, institution-confirmed facts, official instructions, and completed-action receipts",
+      "Minimize credentials, government identifiers, account numbers, addresses, and dependent data to redacted references under the owner's privacy ceiling",
+      "Preserve every affected surface, deadline, dependency, contradiction, failed attempt, superseded instruction, and unresolved exposure without declaring fraud or recovery complete"
+    ],
+    "boundaries": [
+      "Do not determine that identity theft or fraud occurred, attribute an actor, assess legal liability, promise reimbursement, or provide legal, financial, credit, tax, insurance, law-enforcement, or cybersecurity advice",
+      "Do not contact institutions, bureaus, agencies, insurers, employers, creditors, merchants, law enforcement, or other people; all calls, messages, reports, disputes, affidavits, and notices remain owner-executed",
+      "Do not authenticate, access accounts, reset credentials, freeze or unfreeze credit, place alerts, close or open accounts, move money, pay fees, upload documents, sign statements, or submit forms",
+      "Never store secrets, full credentials, full government identifiers, full payment-card numbers, authentication answers, recovery codes, or unredacted evidence when a controlled reference is sufficient"
+    ],
+    "intake": [
+      "Case owner, explicitly authorized helpers, privacy and sharing ceiling, relevant jurisdictions, discovery time, review cadence, and emergency escalation path",
+      "Owner-reported events, institution notices, account observations, credit-report entries, tax or benefits notices, device or credential signals, and controlled evidence references",
+      "Potentially affected identity surfaces represented by redacted identifiers, authoritative institution, observed state, known dependencies, and owner priority",
+      "Dated official recovery instructions, reporting channels, dispute or freeze procedures, deadlines, retention rules, receipt expectations, and professional or agency escalation points",
+      "Owner-executed action history, independent confirmations, case or confirmation references, failed attempts, conflicts, costs, and unresolved questions"
+    ],
+    "workflow": [
+      "Confirm authority, privacy, case scope, declared jurisdictions, evidence ceiling, official-source hierarchy, and urgent human escalation boundaries",
+      "Build a chronology that distinguishes owner reports, institution notices, observations, official instructions, and independently confirmed outcomes",
+      "Inventory affected identity surfaces and bind each suspected exposure, contradiction, and impact to minimized evidence without declaring fraud",
+      "Map official recovery routes into ordered owner-action candidates with prerequisites, deadlines, disclosure scope, expected receipts, and blocked external execution",
+      "Reconcile owner-executed attempts and authoritative receipts against every action, report, dispute, alert, freeze, account, credential, document, tax, benefits, insurance, and law-enforcement surface in scope",
+      "Version the recovery ledger after new evidence, source revisions, institution decisions, corrections, or owner choices while retaining failed, withdrawn, superseded, and unresolved state",
+      "Prepare a private owner handoff naming gaps, deadlines, contradictions, residual exposure, exact next owners, and prohibited actions without claiming closure"
+    ],
+    "deliverables": [
+      "Private source and case-authority register",
+      "Evidence-bound event chronology and affected-surface inventory",
+      "Official recovery-route and deadline matrix",
+      "Owner-action, attempt, receipt, report, dispute, and institution-decision ledger",
+      "Sensitive-data minimization and controlled-sharing register",
+      "Residual-gap, contradiction, escalation, and next-owner handoff"
+    ],
+    "example": {
+      "request": "Organize the recovery case after I found an unfamiliar credit account and received a tax-account notice. Use only the redacted bureau, issuer, tax-agency, and identity-recovery records I supplied. Separate suspicion from confirmed facts, map official routes and deadlines, reconcile the calls and reports I completed against receipts, and show unresolved exposure. Do not contact anyone, file anything, access accounts, freeze credit, or decide that fraud occurred.",
+      "outcome": "A private versioned ledger distinguishes the owner's observations from institution-confirmed facts, binds two affected surfaces to dated official routes, exposes a missing issuer receipt and conflicting tax-account state, and returns exact owner and qualified-human next steps without filing, contacting, authenticating, changing accounts, or claiming fraud or closure."
+    },
+    "doneWhen": [
+      "Every in-scope event, identity surface, institution, official instruction, owner attempt, and authoritative outcome is represented once with provenance, chronology, privacy, and authority state",
+      "Every suspected exposure and affected surface maps to an official route, an owner decision, or an explicit evidence, jurisdiction, professional, or institution-owned gap",
+      "Every owner-completed external action has an independent same-subject receipt, while planned, failed, blocked, withdrawn, and superseded actions remain distinguishable",
+      "Every deadline, disclosure candidate, dispute, institution decision, contradiction, residual exposure, and next owner is indexed exactly in the private handoff",
+      "The handoff makes no fraud, attribution, liability, reimbursement, credit, legal, financial, tax, insurance, law-enforcement, cybersecurity, filing, contact, account-access, authentication, credential-change, payment, or recovery-completion claim"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads owner-supplied redacted records and dated official instructions and writes a private local recovery ledger; it has no browser, messaging, calling, portal, account, identity, credential, financial, upload, payment, form-submission, or external-system capability.",
+      "Treat official instructions, deadlines, institution notices, and case statuses as dated evidence rather than universal guidance; preserve jurisdiction and source revision and route interpretation questions to the issuing institution or qualified professional.",
+      "Use redacted identifiers and controlled references, keep sharing candidates draft-only, and refuse secrets or full identity and payment values when minimized evidence is sufficient."
+    ],
+    "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/recovery-ledger.example.json",
+          "path": "fixtures/recovery-ledger.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "schemas/recovery-ledger.schema.json",
+          "path": "schemas/recovery-ledger.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "templates/recovery-ledger.md",
+          "path": "templates/recovery-ledger.md",
+          "role": "template"
+        }
+    ]
+  },
+  "contribution": {
+    "problem": "A suspected identity-theft case spans personal observations, institution notices, credit files, tax or benefits records, account and credential surfaces, official instructions, deadlines, disputes, reports, repeated contacts, receipts, privacy-sensitive evidence, and conflicting status. Generic checklists do not prove that every affected surface and owner-executed action is reconciled to current authoritative evidence.",
+    "repeatableJob": "Maintain one private, versioned identity-theft recovery ledger that distinguishes suspicion from confirmed facts, maps each affected identity surface to dated official routes and owner decisions, reconciles owner-executed attempts to independent receipts and institution outcomes, and preserves residual gaps without determining fraud or taking external action.",
+    "proofPlan": "Ship an X3 package with a closed identity-recovery artifact, representative credit-and-tax fixture, redacted identity-surface model, official-source revision and jurisdiction controls, event chronology, route and deadline coverage, attempt-to-receipt reconciliation, report/dispute/institution-decision states, sensitive-data minimization, semantic validation, adversarial false-fraud, missing-receipt, cross-subject, premature-closure, secret-bearing, and unauthorized-action cases, deterministic regression coverage, and a current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "tax-document-organizer",
+        "overlap": "Both organize owner-supplied tax-related records, provenance, deadlines, unresolved questions, and a bounded handoff without filing or giving tax advice.",
+        "difference": "Tax Document Organizer assembles a filing-period tax document packet and completeness checklist. This proposal maintains a continuing cross-institution identity-recovery case in which a tax notice is only one possible surface, with suspicion-versus-confirmation state, official recovery routes, owner attempts, independent receipts, disputes, institution decisions, and residual exposure."
+      },
+      {
+        "id": "household-emergency-preparedness-coordinator",
+        "overlap": "Both maintain a private household-owned plan with authoritative sources, deadlines, blocked external actions, evidence receipts, contradictions, and accountable next owners.",
+        "difference": "Household Emergency Preparedness Coordinator reconciles hazards, people, places, supplies, communications, drills, and event-time readiness. This proposal reconciles suspected identity misuse across redacted identity surfaces, official recovery routes, reports, disputes, alerts or freezes, institution decisions, and same-subject action receipts without declaring fraud or executing recovery actions."
+      },
+      {
+        "id": "health-records-binder",
+        "overlap": "Both organize highly sensitive personal records using minimized references, provenance, chronology, authority boundaries, contradictions, and owner-controlled follow-up.",
+        "difference": "Health Records Binder consolidates health information for care continuity and clinical handoff. This proposal operates an identity-recovery ledger across credit, tax, benefits, financial, credential, insurance, and reporting surfaces, proving official-route coverage and attempt-to-receipt reconciliation while making no clinical or fraud determination."
+      },
+      {
+        "id": "benefits-open-enrollment-planner",
+        "overlap": "Both track personal account evidence, official rules, deadlines, owner choices, dependencies, contradictions, and prohibited submissions or account changes.",
+        "difference": "Benefits Open Enrollment Planner compares benefit options for a bounded enrollment decision. This proposal preserves an ongoing suspected-identity-misuse case across multiple institutions, mapping each affected surface to a recovery route and reconciling reports, disputes, owner attempts, receipts, and institution outcomes without recommending benefits or submitting changes."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both track sensitive documents, authoritative issuers, deadlines, owner-executed actions, status evidence, and blocked external contact or submission.",
+        "difference": "Document Renewal Tracker manages ordinary expiration and renewal lifecycles for known documents. This proposal handles suspected misuse and recovery across identity surfaces, separating allegations from confirmed facts and requiring route, dispute, report, institution-decision, and independent-receipt consistency even when no document is expiring or being renewed."
+      },
+      {
+        "id": "security-analyst",
+        "overlap": "Both preserve security observations, evidence, uncertainty, affected assets, escalation, and explicit boundaries around consequential remediation.",
+        "difference": "Security Analyst evaluates technical security findings and remediation readiness for systems. Identity Theft Recovery Coordinator maintains a personal multi-institution recovery case across redacted identity surfaces, official reports, freezes or alerts, disputes, deadlines, owner attempts, and independent receipts without technical investigation or system remediation."
+      },
+      {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both reconcile account-related evidence, discrepancies, authoritative outcomes, chronology, and owner-controlled follow-up.",
+        "difference": "Financial Account Reconciliation Coordinator performs exact enterprise financial subledger reconciliation. This proposal tracks suspected misuse across personal credit, tax, benefits, identity, account, credential, insurance, and law-enforcement surfaces and never performs accounting reconciliation or determines fraud."
+      },
+      {
+        "id": "privacy-request-coordinator",
+        "overlap": "Both handle identity-sensitive evidence, verification boundaries, deadlines, official requests, holds, exemptions, responses, and blocked submissions.",
+        "difference": "Privacy Request Coordinator manages a statutory data-rights request to one organization. This proposal reconciles a cross-institution recovery case with suspected exposures, official recovery routes, owner attempts, independent receipts, disputes, freezes or alerts, and residual identity risk without operating a privacy-rights request."
+      },
+      {
+        "id": "legal-matter-organizer",
+        "overlap": "Both maintain a private matter chronology, evidence, deadlines, controlled disclosures, professional boundaries, and an owner-review handoff.",
+        "difference": "Legal Matter Organizer preserves counsel-controlled legal-matter evidence, privilege, holds, custody, and deadlines. This proposal maintains an operational personal recovery ledger across institutions and identity surfaces while expressly making no legal conclusion and requiring no legal matter or counsel relationship."
+      },
+      {
+        "id": "case-continuity-coordinator",
+        "overlap": "Both retain one case's evidence, chronology, open work, handoffs, resume points, and accountable next owners over multiple sessions.",
+        "difference": "Case Continuity Coordinator is a generic cross-session continuity contract. This proposal owns a domain-specific evidence model for identity surfaces, suspicion versus confirmation, official recovery routes, reports, disputes, alerts or freezes, attempts, institution receipts, sensitive-data minimization, and prohibited account actions."
+      },
+      {
+        "id": "document-intake-analyst",
+        "overlap": "Both classify supplied records, preserve provenance, extract bounded facts, expose conflicts, and retain sensitive documents under owner authority.",
+        "difference": "Document Intake Analyst processes a bounded document set into an evidence-backed intake artifact. This proposal maintains a recurring recovery lifecycle that reconciles events, affected surfaces, official routes, deadlines, owner actions, independent receipts, institution decisions, and residual gaps; documents are only one evidence source."
+      }
+    ]
+  }
+}

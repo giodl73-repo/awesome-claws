@@ -11,6 +11,7 @@ import { contractObligationTrackerFindings } from "./contract-obligation-tracker
 import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
 import { civicServiceAccessFindings } from "./civic-services-navigator.mjs";
 import { householdEmergencyPreparednessFindings } from "./household-emergency-preparedness-coordinator.mjs";
+import { identityTheftRecoveryFindings } from "./identity-theft-recovery-coordinator.mjs";
 import { enterpriseLicenseEntitlementFindings } from "./enterprise-license-entitlement-reconciler.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
@@ -53283,6 +53284,7 @@ const validators = {
   "home-repair-coordinator": homeRepairFindings,
   "household-budget-steward": householdBudgetFindings,
   "household-emergency-preparedness-coordinator": householdEmergencyPreparednessFindings,
+  "identity-theft-recovery-coordinator": identityTheftRecoveryFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,

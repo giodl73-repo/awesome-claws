@@ -1,0 +1,280 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/identity-theft-recovery-ledger.v1.json",
+  "title": "Identity theft recovery ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "case",
+    "authorities",
+    "sources",
+    "events",
+    "surfaces",
+    "routes",
+    "actions",
+    "reports",
+    "disputes",
+    "decisions",
+    "gaps",
+    "review",
+    "prohibitedActions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.identityTheftRecovery.v1" },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ownerAuthorityRef", "authorizedHelperRefs", "jurisdictions", "privacyCeiling", "asOf", "revision", "previousRevisionRef", "eventRefs", "surfaceRefs", "routeRefs", "actionRefs", "reportRefs", "disputeRefs", "decisionRefs", "gapRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+        "authorizedHelperRefs": { "$ref": "#/$defs/refArray" },
+        "jurisdictions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 2, "maxLength": 80 } },
+        "privacyCeiling": { "enum": ["owner-only", "owner-and-explicit-helper"] },
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "previousRevisionRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "eventRefs": { "$ref": "#/$defs/refArray" },
+        "surfaceRefs": { "$ref": "#/$defs/refArray" },
+        "routeRefs": { "$ref": "#/$defs/refArray" },
+        "actionRefs": { "$ref": "#/$defs/refArray" },
+        "reportRefs": { "$ref": "#/$defs/refArray" },
+        "disputeRefs": { "$ref": "#/$defs/refArray" },
+        "decisionRefs": { "$ref": "#/$defs/refArray" },
+        "gapRefs": { "$ref": "#/$defs/refArray" }
+      }
+    },
+    "authorities": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "name", "authorizationSourceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["case-owner", "authorized-helper", "institution", "qualified-professional"] },
+          "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "authorizationSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "subjectRef", "issuerAuthorityRef", "controlledRef", "revision", "publishedAt", "retrievedAt", "jurisdiction", "freshness", "redaction", "containsSecrets"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["owner-observation", "owner-action-note", "helper-authorization", "institution-notice", "official-recovery-guidance", "independent-receipt", "institution-decision", "qualified-guidance"] },
+          "subjectRef": { "$ref": "#/$defs/id" },
+          "issuerAuthorityRef": { "$ref": "#/$defs/id" },
+          "controlledRef": { "type": "string", "pattern": "^(?:workspace|official|institution)://[a-z0-9][a-z0-9./_-]*$", "maxLength": 240 },
+          "revision": { "type": "string", "minLength": 1, "maxLength": 40 },
+          "publishedAt": { "$ref": "#/$defs/timestamp" },
+          "retrievedAt": { "$ref": "#/$defs/timestamp" },
+          "jurisdiction": { "type": "string", "minLength": 2, "maxLength": 80 },
+          "freshness": { "enum": ["current", "superseded", "stale", "unknown"] },
+          "redaction": { "const": "minimized-reference-only" },
+          "containsSecrets": { "const": false }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "occurredAt", "assertionState", "surfaceRefs", "sourceRefs", "fraudDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["owner-observation", "institution-notice", "owner-attempt", "receipt", "institution-outcome"] },
+          "occurredAt": { "$ref": "#/$defs/timestamp" },
+          "assertionState": { "enum": ["owner-reported", "institution-confirmed-fact", "official-instruction", "independently-receipted-outcome"] },
+          "surfaceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "fraudDetermination": { "const": false }
+        }
+      }
+    },
+    "surfaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "redactedIdentifier", "institutionAuthorityRef", "state", "eventRefs", "routeRefs", "actionRefs", "reportRefs", "disputeRefs", "decisionRefs", "gapRefs", "sourceRefs"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["credit-file", "financial-account", "tax-account", "benefits-account", "identity-document", "credential", "insurance-record", "employment-record", "law-enforcement-report", "other-identity-surface"] },
+          "redactedIdentifier": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{3,79}$" },
+          "institutionAuthorityRef": { "$ref": "#/$defs/id" },
+          "state": { "enum": ["suspected-misuse", "institution-confirmed-impact", "unresolved", "not-affected"] },
+          "eventRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "routeRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "actionRefs": { "$ref": "#/$defs/refArray" },
+          "reportRefs": { "$ref": "#/$defs/refArray" },
+          "disputeRefs": { "$ref": "#/$defs/refArray" },
+          "decisionRefs": { "$ref": "#/$defs/refArray" },
+          "gapRefs": { "$ref": "#/$defs/refArray" },
+          "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" }
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "surfaceRefs", "officialSourceRef", "jurisdiction", "revision", "status", "ownerActionRefs", "deadlineAt", "disclosureClass", "externalExecution"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "surfaceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "officialSourceRef": { "$ref": "#/$defs/id" },
+          "jurisdiction": { "type": "string", "minLength": 2, "maxLength": 80 },
+          "revision": { "type": "string", "minLength": 1, "maxLength": 40 },
+          "status": { "enum": ["current", "superseded", "jurisdiction-question"] },
+          "ownerActionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "deadlineAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "disclosureClass": { "enum": ["none", "minimized-identity", "controlled-evidence"] },
+          "externalExecution": { "const": "owner-only" }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "surfaceRefs", "routeRef", "ownerAuthorityRef", "state", "attemptedAt", "sourceRefs", "receiptSourceRef", "expectedReceiptKind", "externalAction", "agentExecuted"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["contact-institution", "file-report", "open-dispute", "place-alert-or-freeze", "secure-account", "replace-document", "consult-qualified-human", "review-evidence"] },
+          "surfaceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "routeRef": { "$ref": "#/$defs/id" },
+          "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+          "state": { "enum": ["planned", "attempted", "failed", "owner-completed", "blocked", "withdrawn", "superseded"] },
+          "attemptedAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "sourceRefs": { "$ref": "#/$defs/refArray" },
+          "receiptSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "expectedReceiptKind": { "type": "string", "minLength": 2, "maxLength": 100 },
+          "externalAction": { "type": "boolean" },
+          "agentExecuted": { "const": false }
+        }
+      }
+    },
+    "reports": { "$ref": "#/$defs/filingCollection" },
+    "disputes": { "$ref": "#/$defs/filingCollection" },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "surfaceRefs", "institutionAuthorityRef", "sourceRef", "occurredAt", "status", "fraudDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "surfaceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "institutionAuthorityRef": { "$ref": "#/$defs/id" },
+          "sourceRef": { "$ref": "#/$defs/id" },
+          "occurredAt": { "$ref": "#/$defs/timestamp" },
+          "status": { "enum": ["institution-pending", "institution-confirmed-impact", "institution-rejected-claim", "institution-corrected-record", "institution-needs-more-evidence"] },
+          "fraudDetermination": { "const": false }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "surfaceRefs", "relatedRefs", "ownerAuthorityRef", "state", "resolutionSourceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["missing-evidence", "missing-receipt", "conflicting-state", "route-question", "jurisdiction-question", "professional-question", "institution-question", "residual-exposure"] },
+          "surfaceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "relatedRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+          "state": { "enum": ["open", "owner-accepted", "resolved"] },
+          "resolutionSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asOf", "nextRevision", "decision", "nextOwnerAuthorityRef", "openGapRefs", "missingReceiptActionRefs", "pendingReportRefs", "pendingDisputeRefs", "pendingDecisionRefs", "residualSurfaceRefs", "closureClaim"],
+      "properties": {
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "nextRevision": { "type": "integer", "minimum": 2 },
+        "decision": { "enum": ["owner-review-required", "ready-for-owner-review"] },
+        "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+        "openGapRefs": { "$ref": "#/$defs/refArray" },
+        "missingReceiptActionRefs": { "$ref": "#/$defs/refArray" },
+        "pendingReportRefs": { "$ref": "#/$defs/refArray" },
+        "pendingDisputeRefs": { "$ref": "#/$defs/refArray" },
+        "pendingDecisionRefs": { "$ref": "#/$defs/refArray" },
+        "residualSurfaceRefs": { "$ref": "#/$defs/refArray" },
+        "closureClaim": { "const": false }
+      }
+    },
+    "prohibitedActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fraudDetermined", "actorAttributed", "legalAdviceGiven", "financialAdviceGiven", "creditAdviceGiven", "taxAdviceGiven", "insuranceAdviceGiven", "lawEnforcementAdviceGiven", "cybersecurityAdviceGiven", "externalContacted", "reportFiled", "disputeFiled", "accountAccessed", "authenticated", "credentialsChanged", "alertOrFreezeChanged", "accountChanged", "moneyMoved", "feePaid", "documentsUploaded", "formsSubmitted", "recoveryDeclared", "caseClosed"],
+      "properties": {
+        "fraudDetermined": { "const": false },
+        "actorAttributed": { "const": false },
+        "legalAdviceGiven": { "const": false },
+        "financialAdviceGiven": { "const": false },
+        "creditAdviceGiven": { "const": false },
+        "taxAdviceGiven": { "const": false },
+        "insuranceAdviceGiven": { "const": false },
+        "lawEnforcementAdviceGiven": { "const": false },
+        "cybersecurityAdviceGiven": { "const": false },
+        "externalContacted": { "const": false },
+        "reportFiled": { "const": false },
+        "disputeFiled": { "const": false },
+        "accountAccessed": { "const": false },
+        "authenticated": { "const": false },
+        "credentialsChanged": { "const": false },
+        "alertOrFreezeChanged": { "const": false },
+        "accountChanged": { "const": false },
+        "moneyMoved": { "const": false },
+        "feePaid": { "const": false },
+        "documentsUploaded": { "const": false },
+        "formsSubmitted": { "const": false },
+        "recoveryDeclared": { "const": false },
+        "caseClosed": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 100 },
+    "timestamp": { "type": "string", "format": "date-time", "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$" },
+    "refArray": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "nonEmptyRefArray": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "filingCollection": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "surfaceRefs", "actionRef", "ownerAuthorityRef", "state", "receiptSourceRef", "agentFiled"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "surfaceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "actionRef": { "$ref": "#/$defs/id" },
+          "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+          "state": { "enum": ["planned", "owner-filed", "acknowledged", "rejected", "withdrawn"] },
+          "receiptSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "agentFiled": { "const": false }
+        }
+      }
+    }
+  }
+}

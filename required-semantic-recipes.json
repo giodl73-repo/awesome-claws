@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 128,
-    "coveredCount": 128,
-    "recipeCount": 352,
-    "findingCodeCount": 467
+    "validatorCount": 129,
+    "coveredCount": 129,
+    "recipeCount": 355,
+    "findingCodeCount": 472
   },
   "entries": [
     {
@@ -5567,6 +5567,52 @@
             "invalid_review_boundary",
             "invalid_source_chronology",
             "invalid_supply_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "identity-theft-recovery-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-action-owner-1",
+          "operator": "replace",
+          "path": [
+            "case",
+            "ownerAuthorityRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_action_owner",
+            "invalid_case_owner",
+            "invalid_gap_owner",
+            "invalid_next_owner",
+            "invalid_source_authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-source-jurisdiction-2",
+          "operator": "replace",
+          "path": [
+            "case",
+            "jurisdictions",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_source_jurisdiction"
+          ]
+        },
+        {
+          "id": "semantic-invalid-review-boundary-3",
+          "operator": "replace",
+          "path": [
+            "case",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_review_boundary"
           ]
         }
       ]
