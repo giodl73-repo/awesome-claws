@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (133)
+### Active (134)
 
 | Claw | Detail |
 | --- | --- |
@@ -43,6 +43,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Document intake analyst](claws/document-intake-analyst) | @giodl73-repo; last verified 2026-08-29 |
 | [Document renewal tracker](claws/document-renewal-tracker) | @giodl73-repo; last verified 2026-08-27 |
 | [Enterprise License Entitlement Reconciler](claws/enterprise-license-entitlement-reconciler) | @giodl73; last verified 2026-09-15 |
+| [Estate administration coordinator](claws/estate-administration-coordinator) | @giodl73-repo; last verified 2026-09-25 |
 | [Event operations director](claws/event-operations-director) | @giodl73-repo; last verified 2026-08-19 |
 | [Executive assistant](claws/executive-assistant) | @giodl73-repo; last verified 2026-08-31 |
 | [Executive briefing](claws/executive-briefing) | @giodl73-repo; last verified 2026-08-31 |
@@ -160,7 +161,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (101)
+### Low setup (102)
 
 | Claw | Detail |
 | --- | --- |
@@ -191,6 +192,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Delegation coordinator](claws/delegation-coordinator) | no bootstrap, external dependency, or schedule |
 | [Document renewal tracker](claws/document-renewal-tracker) | no bootstrap, external dependency, or schedule |
 | [Enterprise License Entitlement Reconciler](claws/enterprise-license-entitlement-reconciler) | no bootstrap, external dependency, or schedule |
+| [Estate administration coordinator](claws/estate-administration-coordinator) | no bootstrap, external dependency, or schedule |
 | [Experimentation lead](claws/experimentation-lead) | no bootstrap, external dependency, or schedule |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | no bootstrap, external dependency, or schedule |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | no bootstrap, external dependency, or schedule |
@@ -312,7 +314,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (110)
+### No external dependencies (111)
 
 | Claw | Detail |
 | --- | --- |
@@ -344,6 +346,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Delegation coordinator](claws/delegation-coordinator) | None |
 | [Document renewal tracker](claws/document-renewal-tracker) | None |
 | [Enterprise License Entitlement Reconciler](claws/enterprise-license-entitlement-reconciler) | None |
+| [Estate administration coordinator](claws/estate-administration-coordinator) | None |
 | [Event operations director](claws/event-operations-director) | None |
 | [Executive assistant](claws/executive-assistant) | None |
 | [Experimentation lead](claws/experimentation-lead) | None |
@@ -459,7 +462,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (94)
+### X3 (95)
 
 | Claw | Detail |
 | --- | --- |
@@ -481,6 +484,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Delegation coordinator](claws/delegation-coordinator) | Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Document intake analyst](claws/document-intake-analyst) | Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty. |
 | [Document renewal tracker](claws/document-renewal-tracker) | Tracks passports, IDs, licenses, permits, registrations, certifications, memberships, expiration windows, source freshness, required owner documents, and review questions without filing forms, paying fees, changing accounts, submitting documents, or giving legal, immigration, tax, medical, or eligibility advice. |
+| [Estate administration coordinator](claws/estate-administration-coordinator) | Maintains one already-open decedent-estate administration ledger across supplied appointment authority, court and professional records, assets, liabilities, notices, creditor claims, deadlines, proposed distributions, independent receipts, and unresolved questions without interpreting law, tax, title, entitlement, priority, solvency, or taking estate action. |
 | [Executive assistant](claws/executive-assistant) | Turns executive priorities into a prepared commitment ledger of ranked outcomes, meetings, decisions, and follow-through that named humans still have to act on. |
 | [Executive briefing](claws/executive-briefing) | Reconciles one bounded scheduled run into a private source-timestamped executive briefing snapshot of agenda observations, decision asks, preparation needs, conflicts, weather implications, questions, and blockers. |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | Manages fantasy-team rosters, league rules, matchup evidence, waiver windows, trade ideas, injury uncertainty, and owner-review lineup decisions without submitting changes, joining contests, betting, messaging managers, or giving gambling advice. |
@@ -648,7 +652,7 @@ Categories come directly from the catalog entry.
 | [Software maintainer](claws/software-maintainer) | X3; Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | X4; Turns one exact approved workload requirements revision into evidence-comparable architecture options, validation experiments, ADR chronology, and an accountable owner decision. |
 
-### Governance (19)
+### Governance (20)
 
 | Claw | Detail |
 | --- | --- |
@@ -660,6 +664,7 @@ Categories come directly from the catalog entry.
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | X3; Tracks one exact owner-confirmed obligation-register version for a bounded review round, proving every registered obligation appears exactly once and receives one current evidence-bound observation or one exact blocker, while contract owners retain all interpretation, acceptance, notice, payment, amendment, renewal, termination, dispute, and system authority. |
 | [Data governance steward](claws/data-governance-steward) | X4; Builds a reviewable governance assessment across data products, critical data elements, evidence health, and accountable remediation without replacing source-system ownership. |
 | [Enterprise License Entitlement Reconciler](claws/enterprise-license-entitlement-reconciler) | X4; Reconciles one organization's versioned owner-supplied license rights and SKU mapping against assigned entitlements and measured consumption for one agreement, license program, fixed period, cutoff, and review round without interpreting contracts or changing licenses or accounts. |
+| [Estate administration coordinator](claws/estate-administration-coordinator) | X3; Maintains one already-open decedent-estate administration ledger across supplied appointment authority, court and professional records, assets, liabilities, notices, creditor claims, deadlines, proposed distributions, independent receipts, and unresolved questions without interpreting law, tax, title, entitlement, priority, solvency, or taking estate action. |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | X3; Reconciles one exact owner-supplied ledger transaction export against one exact owner-supplied statement transaction export for a bounded account and period, partitioning every row exactly once into an evidence-bound 1:1, 1:n, or n:1 match group or an explicit residual, without reaching financial systems, posting entries, moving money, or claiming the account or books are closed. |
 | [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | X3; Reconciles owner-supplied desired-state and observed-state infrastructure snapshots into one exact symmetric resource universe, with one evidence-backed converged, drifted, missing, or unmanaged disposition per resolved identity and fail-closed deviation authority, without accessing or changing infrastructure. |
 | [Legal matter organizer](claws/legal-matter-organizer) | X3; Maintains an already-open legal matter as one source- and custody-bound snapshot for authorized legal-operations staff under named counsel supervision, producing a preservation-safe counsel-review handoff without giving legal advice or taking legal action. |
@@ -778,7 +783,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (66)
+### Standard attention (67)
 
 | Claw | Detail |
 | --- | --- |
@@ -795,6 +800,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Content operations](claws/content-operations) | portable workspace artifacts only |
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | portable workspace artifacts only |
 | [Document renewal tracker](claws/document-renewal-tracker) | portable workspace artifacts only |
+| [Estate administration coordinator](claws/estate-administration-coordinator) | portable workspace artifacts only |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | portable workspace artifacts only |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | portable workspace artifacts only |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | portable workspace artifacts only |

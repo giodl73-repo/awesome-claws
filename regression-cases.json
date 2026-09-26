@@ -3324,6 +3324,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "estate-administration-coordinator",
+      "acceptedRequest": "Reconcile the appointment letters, court notices, account statements, property inventory, valuation records, bills, creditor correspondence, tax-preparer requests, proposed distributions, and receipts I supplied for estate EST-2026-04. Preserve disputed claims, unknown ownership and values, deadline conflicts, missing receipts, and questions for counsel, the preparer, appraiser, institutions, and personal representative. Do not interpret the will or law, determine entitlement or claim priority, contact anyone, file, sign, access accounts, transfer, sell, pay, settle, distribute, or claim the estate is ready or closed.",
+      "requiredEvidence": [
+        "Stable estate reference, generalized jurisdiction, review cutoff, approved private workspace and destination, documented personal-representative authority, named professional and institutional authorities, and privacy or sharing ceiling",
+        "Supplied death, will or trust pointer, appointment or letters, court order, professional instruction, notice, filing, asset, liability, valuation, statement, receipt, correspondence, tax-preparer, and institution records with exact revisions and controlled references",
+        "Owner-approved asset and liability inventory, ownership and value evidence states, creditor claims, notice and deadline candidates, beneficiary or interested-party references, tax and professional questions, reserves, actions, and blockers",
+        "Proposed or owner-executed contacts, filings, payments, transfers, sales, settlements, distributions, and closures, with independent same-subject receipts where an external action is claimed complete"
+      ],
+      "authorityBoundaries": [
+        "Do not interpret wills, trusts, statutes, court orders, tax rules, ownership, title, creditor priority, claim validity, beneficiary rights, fiduciary duties, or provide legal, tax, investment, valuation, insurance, or financial advice",
+        "Do not decide that appointment authority is sufficient, an asset belongs to the estate, a debt or claim is valid or payable, a deadline applies, a reserve is sufficient, a person is entitled, a distribution is authorized, or the estate is solvent, ready, settled, or closed",
+        "Do not file, publish notice, contact courts, creditors, beneficiaries, institutions, professionals, or agencies, sign, certify, attest, access or change accounts, transfer title, sell, insure, invest, liquidate, pay, settle, distribute, discard, destroy, or close anything",
+        "Do not expose full names, addresses, account numbers, taxpayer identifiers, credentials, document numbers, precise asset locations, medical or family facts, testamentary content, or other sensitive estate data beyond the approved minimized workspace and destination"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/estate-administration-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

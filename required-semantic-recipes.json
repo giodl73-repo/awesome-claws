@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 133,
-    "coveredCount": 133,
-    "recipeCount": 367,
-    "findingCodeCount": 496
+    "validatorCount": 134,
+    "coveredCount": 134,
+    "recipeCount": 370,
+    "findingCodeCount": 503
   },
   "entries": [
     {
@@ -5816,6 +5816,55 @@
             "invalid_action_chronology",
             "invalid_occurrence_chronology",
             "invalid_review_boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estate-administration-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-cross-estate-record-1",
+          "operator": "replace",
+          "path": [
+            "estate",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_estate_record",
+            "invalid_action_receipt",
+            "invalid_authority_evidence",
+            "invalid_deadline",
+            "invalid_source_subject"
+          ]
+        },
+        {
+          "id": "semantic-invalid-action-owner-2",
+          "operator": "replace",
+          "path": [
+            "estate",
+            "personalRepresentativeAuthorityRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_action_owner",
+            "invalid_authority_evidence",
+            "invalid_distribution",
+            "invalid_estate_authority",
+            "invalid_notice_receipt"
+          ]
+        },
+        {
+          "id": "semantic-invalid-estate-chronology-3",
+          "operator": "replace",
+          "path": [
+            "estate",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_estate_chronology"
           ]
         }
       ]

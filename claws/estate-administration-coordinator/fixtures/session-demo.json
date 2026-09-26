@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "estate-administration-coordinator",
+  "scenario": "Reconcile the appointment letters, court notices, account statements, property inventory, valuation records, bills, creditor correspondence, tax-preparer requests, proposed distributions, and receipts I supplied for estate EST-2026-04. Preserve disputed claims, unknown ownership and values, deadline conflicts, missing receipts, and questions for counsel, the preparer, appraiser, institutions, and personal representative. Do not interpret the will or law, determine entitlement or claim priority, contact anyone, file, sign, access accounts, transfer, sell, pay, settle, distribute, or claim the estate is ready or closed.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the appointment letters, court notices, account statements, property inventory, valuation records, bills, creditor correspondence, tax-preparer requests, proposed distributions, and receipts I supplied for estate EST-2026-04. Preserve disputed claims, unknown ownership and values, deadline conflicts, missing receipts, and questions for counsel, the preparer, appraiser, institutions, and personal representative. Do not interpret the will or law, determine entitlement or claim priority, contact anyone, file, sign, access accounts, transfer, sell, pay, settle, distribute, or claim the estate is ready or closed."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/estate-administration-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Estate administration coordinator session handoff",
+    "summary": "A private appointment- and source-bound estate administration ledger accounts for each asset, liability, notice, claim, deadline, owner action, proposed distribution, and independent receipt, keeps legal, tax, valuation, entitlement, reserve, and closure questions unresolved, and prepares an exact personal-representative review handoff without estate action or professional conclusions.",
+    "output": "outputs/estate-administration-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Private estate, authority, professional-role, source-revision, and chronology register",
+        "summary": "Every in-scope authority record, source revision, asset, liability, valuation, notice, deadline, claim, reserve, action, distribution proposal, receipt, question, gap, blocker, and next owner is represented exactly once with complete reciprocal provenance and chronology",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Evidence-bound asset, liability, valuation, custody, notice, deadline, creditor-claim, and reserve ledgers",
+        "summary": "Every asserted appointment, ownership, amount, value, notice, claim, deadline, action, payment, transfer, sale, settlement, distribution, and closure state follows exact kind-appropriate evidence from the documented authority, supplier, or independent recipient",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-controlled action, filing, contact, payment, transfer, sale, settlement, distribution, and independent-receipt register",
+        "summary": "Every unknown, stale, disputed, conflicting, unsupported, or professional-judgment state remains open and routes to a qualified human without the Claw deciding legal effect, tax treatment, ownership, priority, validity, entitlement, solvency, reserve sufficiency, or readiness",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Conflict, missing-evidence, privacy, qualified-human question, blocker, and next-owner register",
+        "summary": "Every external action remains proposed or owner-controlled, every claimed completion has an independent same-subject receipt where applicable, and the handoff exactly mirrors all unresolved state without exposing unapproved sensitive data or claiming the estate settled or closed",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked or ready-for-personal-representative-review estate-administration handoff",
+        "summary": "Every in-scope authority record, source revision, asset, liability, valuation, notice, deadline, claim, reserve, action, distribution proposal, receipt, question, gap, blocker, and next owner is represented exactly once with complete reciprocal provenance and chronology",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
