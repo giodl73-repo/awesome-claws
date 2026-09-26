@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/rental-housing-ledger.v1.json",
+  "title": "Rental housing ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "tenancy", "authorities", "sources", "leaseRevisions", "obligations", "conditionItems", "maintenanceEpisodes", "notices", "payments", "accessEvents", "actions", "moveStates", "returnedProperties", "charges", "gaps", "review", "prohibitedActions"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.rentalHousingLedger.v1" },
+    "tenancy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "renterAuthorityRef", "authorizedHelperRefs", "landlordAuthorityRef", "generalizedPremisesRef", "jurisdictions", "privacyCeiling", "asOf", "revision", "previousRevisionRef", "leaseRevisionRefs", "obligationRefs", "conditionItemRefs", "maintenanceEpisodeRefs", "noticeRefs", "paymentRefs", "accessEventRefs", "actionRefs", "moveStateRefs", "returnedPropertyRefs", "chargeRefs", "gapRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "renterAuthorityRef": { "$ref": "#/$defs/id" },
+        "authorizedHelperRefs": { "$ref": "#/$defs/refArray" },
+        "landlordAuthorityRef": { "$ref": "#/$defs/id" },
+        "generalizedPremisesRef": { "$ref": "#/$defs/redactedRef" },
+        "jurisdictions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 2, "maxLength": 80 } },
+        "privacyCeiling": { "enum": ["renter-only", "renter-and-explicit-helper"] },
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "previousRevisionRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "leaseRevisionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "obligationRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "conditionItemRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "maintenanceEpisodeRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "noticeRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "paymentRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "accessEventRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "actionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "moveStateRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "returnedPropertyRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "chargeRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "gapRefs": { "$ref": "#/$defs/nonEmptyRefArray" }
+      }
+    },
+    "authorities": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "authorizationSourceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["renter-owner", "authorized-helper", "landlord-or-manager", "qualified-specialist", "housing-authority", "payment-provider", "other-interested-party"] },
+          "label": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "authorizationSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "subjectRef", "issuerAuthorityRef", "controlledRef", "revision", "issuedAt", "retrievedAt", "jurisdiction", "freshness", "redaction", "containsSecrets"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["helper-authorization", "lease-document", "lease-amendment", "official-procedure", "landlord-notice", "renter-observation", "qualified-finding", "renter-action-note", "independent-receipt", "payment-statement", "payment-receipt", "maintenance-response", "access-notice", "move-condition-record", "deposit-or-charge-statement", "returned-property-receipt", "owner-decision"] },
+          "subjectRef": { "$ref": "#/$defs/id" },
+          "issuerAuthorityRef": { "$ref": "#/$defs/id" },
+          "controlledRef": { "type": "string", "pattern": "^(?:workspace|official|manager|provider|payment)://[a-z0-9][a-z0-9./_-]*$", "maxLength": 240 },
+          "revision": { "type": "string", "minLength": 1, "maxLength": 40 },
+          "issuedAt": { "$ref": "#/$defs/timestamp" },
+          "retrievedAt": { "$ref": "#/$defs/timestamp" },
+          "jurisdiction": { "type": "string", "minLength": 2, "maxLength": 80 },
+          "freshness": { "enum": ["current", "superseded", "stale", "unknown"] },
+          "redaction": { "const": "minimized-reference-only" },
+          "containsSecrets": { "const": false }
+        }
+      }
+    },
+    "leaseRevisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "revision", "state", "effectiveAt", "endedAt", "sourceRef", "predecessorRef", "successorRef", "interpretedByClaw"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "revision": { "type": "string", "minLength": 1, "maxLength": 40 },
+          "state": { "enum": ["controlling", "superseded", "future"] },
+          "effectiveAt": { "$ref": "#/$defs/timestamp" },
+          "endedAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "sourceRef": { "$ref": "#/$defs/id" },
+          "predecessorRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "successorRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "interpretedByClaw": { "const": false }
+        }
+      }
+    },
+    "obligations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "leaseRevisionRef", "kind", "summary", "dueAt", "sourceRefs", "actionRefs", "state", "externalExecution", "legalConclusion"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "leaseRevisionRef": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["rent-or-payment", "notice", "access", "maintenance", "condition", "move", "deposit-or-charge", "other-supplied-obligation"] },
+          "summary": { "$ref": "#/$defs/shortText" },
+          "dueAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "actionRefs": { "$ref": "#/$defs/refArray" },
+          "state": { "enum": ["current", "owner-completed-receipted", "blocked", "disputed", "superseded"] },
+          "externalExecution": { "const": "owner-only" },
+          "legalConclusion": { "const": false }
+        }
+      }
+    },
+    "conditionItems": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "generalizedAreaRef", "redactedItemRef", "phase", "assertionState", "sourceRefs", "maintenanceEpisodeRefs", "chargeRefs", "gapRefs", "habitabilityDetermination", "faultDetermination", "safetyDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "generalizedAreaRef": { "$ref": "#/$defs/redactedRef" },
+          "redactedItemRef": { "$ref": "#/$defs/redactedRef" },
+          "phase": { "enum": ["move-in", "current", "move-out"] },
+          "assertionState": { "enum": ["renter-observed", "qualified-observed", "landlord-positioned", "conflicting"] },
+          "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "maintenanceEpisodeRefs": { "$ref": "#/$defs/refArray" },
+          "chargeRefs": { "$ref": "#/$defs/refArray" },
+          "gapRefs": { "$ref": "#/$defs/refArray" },
+          "habitabilityDetermination": { "const": false },
+          "faultDetermination": { "const": false },
+          "safetyDetermination": { "const": false }
+        }
+      }
+    },
+    "maintenanceEpisodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "conditionItemRefs", "openedAt", "state", "sourceRefs", "actionRefs", "accessEventRefs", "gapRefs", "repairSufficiencyDetermination", "habitabilityDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "conditionItemRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "openedAt": { "$ref": "#/$defs/timestamp" },
+          "state": { "enum": ["renter-reported", "landlord-acknowledged", "provider-scheduled", "provider-attended", "landlord-positioned-resolved", "unresolved"] },
+          "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "actionRefs": { "$ref": "#/$defs/refArray" },
+          "accessEventRefs": { "$ref": "#/$defs/refArray" },
+          "gapRefs": { "$ref": "#/$defs/refArray" },
+          "repairSufficiencyDetermination": { "const": false },
+          "habitabilityDetermination": { "const": false }
+        }
+      }
+    },
+    "notices": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "leaseRevisionRef", "sourceRef", "issuedAt", "effectiveAt", "deadlineAt", "state", "actionRefs", "legalValidityDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["entry", "payment", "lease-change", "maintenance", "move", "charge-or-deposit", "other-supplied-notice"] },
+          "leaseRevisionRef": { "$ref": "#/$defs/id" },
+          "sourceRef": { "$ref": "#/$defs/id" },
+          "issuedAt": { "$ref": "#/$defs/timestamp" },
+          "effectiveAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "deadlineAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "state": { "enum": ["current", "owner-addressed-receipted", "expired", "disputed", "superseded"] },
+          "actionRefs": { "$ref": "#/$defs/refArray" },
+          "legalValidityDetermination": { "const": false }
+        }
+      }
+    },
+    "payments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "obligationRef", "periodRef", "amountNote", "statementSourceRef", "receiptSourceRef", "actionRef", "state", "paymentValidityDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "obligationRef": { "$ref": "#/$defs/id" },
+          "periodRef": { "$ref": "#/$defs/redactedRef" },
+          "amountNote": { "$ref": "#/$defs/shortText" },
+          "statementSourceRef": { "$ref": "#/$defs/id" },
+          "receiptSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "actionRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "state": { "enum": ["due", "owner-reported-paid", "independently-receipted", "disputed", "credited", "refunded"] },
+          "paymentValidityDetermination": { "const": false }
+        }
+      }
+    },
+    "accessEvents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "noticeRef", "maintenanceEpisodeRef", "scheduledAt", "occurredAt", "state", "sourceRefs", "ownerConsentClaim", "legalAccessDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "noticeRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "maintenanceEpisodeRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "scheduledAt": { "$ref": "#/$defs/timestamp" },
+          "occurredAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "state": { "enum": ["noticed", "owner-approved", "owner-observed-occurred", "cancelled", "disputed"] },
+          "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "ownerConsentClaim": { "const": false },
+          "legalAccessDetermination": { "const": false }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "subjectRef", "ownerAuthorityRef", "state", "attemptedAt", "sourceRefs", "receiptSourceRef", "externalExecution", "agentExecuted"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["send-notice", "submit-maintenance-request", "make-payment", "schedule", "grant-access", "authorize-repair", "return-property", "respond-to-charge", "review-record", "other-owner-action"] },
+          "subjectRef": { "$ref": "#/$defs/id" },
+          "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+          "state": { "enum": ["planned", "attempted", "failed", "owner-completed-receipted", "blocked", "withdrawn", "superseded"] },
+          "attemptedAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "sourceRefs": { "$ref": "#/$defs/refArray" },
+          "receiptSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "externalExecution": { "const": "owner-only" },
+          "agentExecuted": { "const": false }
+        }
+      }
+    },
+    "moveStates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "phase", "state", "conditionItemRefs", "returnedPropertyRefs", "chargeRefs", "sourceRefs", "gapRefs", "closureDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "phase": { "enum": ["move-in", "move-out"] },
+          "state": { "enum": ["recorded", "under-review", "owner-completed-receipted", "disputed", "incomplete"] },
+          "conditionItemRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "returnedPropertyRefs": { "$ref": "#/$defs/refArray" },
+          "chargeRefs": { "$ref": "#/$defs/refArray" },
+          "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "gapRefs": { "$ref": "#/$defs/refArray" },
+          "closureDetermination": { "const": false }
+        }
+      }
+    },
+    "returnedProperties": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "redactedLabel", "state", "actionRef", "receiptSourceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["key", "access-device", "parking-device", "other-rental-property"] },
+          "redactedLabel": { "$ref": "#/$defs/redactedRef" },
+          "state": { "enum": ["retained", "owner-reported-returned", "independently-receipted-returned", "lost", "disputed"] },
+          "actionRef": { "$ref": "#/$defs/id" },
+          "receiptSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+        }
+      }
+    },
+    "charges": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "amountNote", "statementSourceRef", "conditionItemRefs", "paymentRef", "state", "entitlementDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["deposit", "rent", "fee", "condition-related", "utility", "credit", "other-stated-charge"] },
+          "amountNote": { "$ref": "#/$defs/shortText" },
+          "statementSourceRef": { "$ref": "#/$defs/id" },
+          "conditionItemRefs": { "$ref": "#/$defs/refArray" },
+          "paymentRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "state": { "enum": ["stated", "paid", "credited", "disputed", "unresolved", "superseded"] },
+          "entitlementDetermination": { "const": false }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "subjectRefs", "sourceRefs", "nextOwnerAuthorityRef", "state", "resolutionSourceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["missing-evidence", "missing-receipt", "conflict", "safety-question", "legal-question", "financial-question", "maintenance-question", "disputed-charge", "deadline", "residual-tenancy-state"] },
+          "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "sourceRefs": { "$ref": "#/$defs/refArray" },
+          "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+          "state": { "enum": ["open", "resolved"] },
+          "resolutionSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asOf", "nextRevision", "nextOwnerAuthorityRef", "openGapRefs", "deadlineRefs", "missingReceiptActionRefs", "disputedChargeRefs", "safetyGapRefs", "tenancyClosureClaim", "legalRightsConclusion", "habitabilityConclusion", "entitlementConclusion"],
+      "properties": {
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "nextRevision": { "type": "integer", "minimum": 2 },
+        "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+        "openGapRefs": { "$ref": "#/$defs/refArray" },
+        "deadlineRefs": { "$ref": "#/$defs/refArray" },
+        "missingReceiptActionRefs": { "$ref": "#/$defs/refArray" },
+        "disputedChargeRefs": { "$ref": "#/$defs/refArray" },
+        "safetyGapRefs": { "$ref": "#/$defs/refArray" },
+        "tenancyClosureClaim": { "const": false },
+        "legalRightsConclusion": { "const": false },
+        "habitabilityConclusion": { "const": false },
+        "entitlementConclusion": { "const": false }
+      }
+    },
+    "prohibitedActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["legalInterpretation", "advice", "contact", "submission", "payment", "signature", "scheduling", "accessGrant", "repairAuthorization", "accountChange", "surrenderPossession", "closure"],
+      "properties": {
+        "legalInterpretation": { "const": false },
+        "advice": { "const": false },
+        "contact": { "const": false },
+        "submission": { "const": false },
+        "payment": { "const": false },
+        "signature": { "const": false },
+        "scheduling": { "const": false },
+        "accessGrant": { "const": false },
+        "repairAuthorization": { "const": false },
+        "accountChange": { "const": false },
+        "surrenderPossession": { "const": false },
+        "closure": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,79}$" },
+    "timestamp": { "type": "string", "format": "date-time", "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$" },
+    "refArray": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "nonEmptyRefArray": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "redactedRef": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,79}$" },
+    "shortText": { "type": "string", "minLength": 1, "maxLength": 240 }
+  }
+}

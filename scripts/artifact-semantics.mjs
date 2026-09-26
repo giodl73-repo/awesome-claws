@@ -13,6 +13,7 @@ import { civicServiceAccessFindings } from "./civic-services-navigator.mjs";
 import { householdEmergencyPreparednessFindings } from "./household-emergency-preparedness-coordinator.mjs";
 import { identityTheftRecoveryFindings } from "./identity-theft-recovery-coordinator.mjs";
 import { propertyInsuranceClaimFindings } from "./property-insurance-claim-coordinator.mjs";
+import { rentalHousingFindings } from "./rental-housing-coordinator.mjs";
 import { enterpriseLicenseEntitlementFindings } from "./enterprise-license-entitlement-reconciler.mjs";
 import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
@@ -53287,6 +53288,7 @@ const validators = {
   "household-emergency-preparedness-coordinator": householdEmergencyPreparednessFindings,
   "identity-theft-recovery-coordinator": identityTheftRecoveryFindings,
   "property-insurance-claim-coordinator": propertyInsuranceClaimFindings,
+  "rental-housing-coordinator": rentalHousingFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,

@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (130)
+### Active (131)
 
 | Claw | Detail |
 | --- | --- |
@@ -108,6 +108,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Recruiting coordinator](claws/recruiting-coordinator) | @giodl73-repo; last verified 2026-08-19 |
 | [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | @giodl73; last verified 2026-09-17 |
 | [Release coordinator](claws/release-coordinator) | @giodl73-repo; last verified 2026-08-19 |
+| [Rental housing coordinator](claws/rental-housing-coordinator) | @giodl73-repo; last verified 2026-09-25 |
 | [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | @giodl73-repo; last verified 2026-09-14 |
 | [Repository Operations Manager](claws/repository-operations-manager) | @giodl73-repo; last verified 2026-09-13 |
 | [Research briefing](claws/research-briefing) | @giodl73-repo; last verified 2026-08-19 |
@@ -157,7 +158,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (98)
+### Low setup (99)
 
 | Claw | Detail |
 | --- | --- |
@@ -236,6 +237,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | no bootstrap, external dependency, or schedule |
 | [Recruiting coordinator](claws/recruiting-coordinator) | no bootstrap, external dependency, or schedule |
 | [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | no bootstrap, external dependency, or schedule |
+| [Rental housing coordinator](claws/rental-housing-coordinator) | no bootstrap, external dependency, or schedule |
 | [Repository Operations Manager](claws/repository-operations-manager) | no bootstrap, external dependency, or schedule |
 | [Research briefing](claws/research-briefing) | no bootstrap, external dependency, or schedule |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | no bootstrap, external dependency, or schedule |
@@ -306,7 +308,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (107)
+### No external dependencies (108)
 
 | Claw | Detail |
 | --- | --- |
@@ -394,6 +396,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | None |
 | [Recruiting coordinator](claws/recruiting-coordinator) | None |
 | [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | None |
+| [Rental housing coordinator](claws/rental-housing-coordinator) | None |
 | [Repository Operations Manager](claws/repository-operations-manager) | None |
 | [Research briefing](claws/research-briefing) | None |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | None |
@@ -450,7 +453,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (91)
+### X3 (92)
 
 | Claw | Detail |
 | --- | --- |
@@ -519,6 +522,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Purchase researcher](claws/purchase-researcher) | Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice. |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | Reconciles an authoritative retention schedule, exact record-copy inventory, trigger and hold evidence, approved disposition batch, independently observed outcomes and certificates, and residual-copy closure into one snapshot-bound human-review handoff without interpreting policy or executing disposition. |
 | [Recruiting coordinator](claws/recruiting-coordinator) | Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
+| [Rental housing coordinator](claws/rental-housing-coordinator) | Maintains a private, evidence-bound rental-housing ledger across supplied lease terms, premises condition, obligations, notices, maintenance episodes, owner-executed actions, receipts, payments, access events, and move-in or move-out state without interpreting legal rights or contacting, paying, scheduling, or submitting anything. |
 | [Repository Compliance Program Manager](claws/repository-compliance-program-manager) | Runs a recurring vendor-neutral security and compliance remediation program by reconciling approved signals and control revisions into deduplicated repository issues, accountable ownership, SLA state, exceptions, escalations, and independently verified closure without changing code, suppressing findings, approving exceptions, or accepting risk. |
 | [Repository Operations Manager](claws/repository-operations-manager) | Supervises an approved repository portfolio by reconciling pull requests, head-bound reviews and checks, builds, release trains, cross-repository dependencies, human approval decisions, and trusted system deadline observations without making owner decisions or performing repository mutations. |
 | [Research monitor](claws/research-monitor) | Maintains a private topic-watch delta ledger that reconciles approved public source changes, corrections, withdrawals, contradictions, priorities, and owner review against a declared baseline without inferring consensus, causality, or autonomous decisions. |
@@ -702,7 +706,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (52)
+### Productivity (53)
 
 | Claw | Detail |
 | --- | --- |
@@ -746,6 +750,7 @@ Categories come directly from the catalog entry.
 | [Professional networking follow-up](claws/professional-networking-followup) | X3; Organizes owner-supplied professional contacts, meeting notes, event context, introduction requests, follow-up drafts, relationship tags, and reminder questions into a private networking ledger without sending messages, making introductions, scheduling meetings, changing accounts, scraping contacts, committing referrals, or giving career, legal, financial, recruiting, or sales advice. |
 | [Project manager](claws/project-manager) | X4; Keeps projects aligned through milestones, dependencies, decisions, and accountable execution. |
 | [Purchase researcher](claws/purchase-researcher) | X3; Compares owner-approved product candidates, constraints, source quality, warranty, return, shipping, availability, and fit evidence without buying, opening credit, contacting sellers, changing carts, or claiming an unsupported best choice. |
+| [Rental housing coordinator](claws/rental-housing-coordinator) | X3; Maintains a private, evidence-bound rental-housing ledger across supplied lease terms, premises condition, obligations, notices, maintenance episodes, owner-executed actions, receipts, payments, access events, and move-in or move-out state without interpreting legal rights or contacting, paying, scheduling, or submitting anything. |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | X3; Compares restaurants and venues from approved sources with dietary, accessibility, hours, reservation, price, distance, and group-preference evidence without reserving, ordering, paying, messaging, or posting reviews. |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | X3; Maintains a candidate-owned resume, portfolio, and proof ledger for role-specific review without submitting applications or inventing credentials. |
 | [School coordinator](claws/school-coordinator) | X3; Tracks assignments, forms, teacher notes, school calendars, supply lists, events, accommodations, and parent review questions from approved sources without submitting forms, messaging teachers, changing enrollment, or making education, medical, legal, or payment decisions. |
@@ -763,7 +768,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (63)
+### Standard attention (64)
 
 | Claw | Detail |
 | --- | --- |
@@ -815,6 +820,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Purchase researcher](claws/purchase-researcher) | portable workspace artifacts only |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | portable workspace artifacts only |
 | [Recruiting coordinator](claws/recruiting-coordinator) | portable workspace artifacts only |
+| [Rental housing coordinator](claws/rental-housing-coordinator) | portable workspace artifacts only |
 | [Repository Operations Manager](claws/repository-operations-manager) | portable workspace artifacts only |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | portable workspace artifacts only |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | portable workspace artifacts only |

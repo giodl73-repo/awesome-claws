@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 130 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 131 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -8,7 +8,7 @@ show how Claws compose into larger managed workflows.
 
 | Category | Count | Current emphasis |
 | --- | ---: | --- |
-| Productivity | 52 | Personal operating systems, personal media, fantasy sports, household planning, civic services, documents, travel, meetings, and knowledge work |
+| Productivity | 53 | Personal operating systems, personal media, fantasy sports, household planning, civic services, documents, travel, meetings, and knowledge work |
 | Operations | 29 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
 | Analysis | 16 | Research, evidence collection, financial monitoring, public/company watching, data work, and model evaluation |
 | Engineering | 11 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
@@ -20,7 +20,7 @@ home repair, garden care, pet care, pond and water features, appliance care,
 care-circle coordination, favorite sports teams, fantasy sports, stock portfolios, movies and
 streaming, subscriptions, music, relationships and gifts, personal archives,
 restaurants and venues, local events, school logistics, games backlogs, home
-inventory, meals and groceries, insurance policies, tax documents, identity recovery, purchase
+inventory, rental housing, meals and groceries, insurance policies, tax documents, identity recovery, purchase
 research, household budgets, life timelines, child activities, neighborhood
 operations, wardrobes, document renewals, and medical appointment prep.
 
@@ -31,7 +31,7 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 
 | Manager Claw | Coordinates | Boundary |
 | --- | --- | --- |
-| Household Steward | Meal and Grocery Planner, Home Inventory Binder, Subscription Manager, Household Budget Steward, Document Renewal Tracker, Medical Appointment Prep, Child Activity Manager, Care Circle Coordinator, Vehicle Service Coordinator, Appliance Care Coordinator, Home Repair Coordinator, Green Thumb Coordinator, Pet Care Coordinator, Pond and Water Feature Coordinator | Keeps household-wide conflicts visible while leaving purchases, appointments, care, payments, messages, and account changes with the owner |
+| Household Steward | Meal and Grocery Planner, Home Inventory Binder, Subscription Manager, Household Budget Steward, Document Renewal Tracker, Medical Appointment Prep, Child Activity Manager, Care Circle Coordinator, Vehicle Service Coordinator, Appliance Care Coordinator, Home Repair Coordinator, Rental Housing Coordinator, Green Thumb Coordinator, Pet Care Coordinator, Pond and Water Feature Coordinator | Keeps household-wide conflicts visible while leaving purchases, appointments, care, payments, messages, and account changes with the owner |
 | Work Chief of Staff | Project Manager, Product Manager, Release Coordinator, Recruiting Coordinator, Sales Operations, Customer Support, Procurement Evaluator, Grant Portfolio Manager, Fundraising Campaign Manager, Experimentation Lead, Localization Program Manager | Coordinates portfolio state, decision forums, capacity, and commitments without becoming the executive or functional owner |
 | Care Circle Coordinator | Medical Appointment Prep, Document Renewal Tracker, Meal and Grocery Planner, Home Repair Coordinator, Pet Care Coordinator, Child Activity Manager, Gift and Relationship Manager | Coordinates helpers, privacy, consent, logistics, and recipient needs without making care, clinical, financial, legal, scheduling, or messaging decisions |
 | Delegation Coordinator | Software Maintainer, Research Briefing, Data Analyst, Document Intake Analyst, Presentation Producer, Spreadsheet Analyst, Model Evaluation Adjudicator | Tracks worker-session scope, evidence, provenance, and handoff quality without granting hidden authority to workers |
@@ -39,15 +39,15 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 ## Quality Uplift
 
 The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
-post-100 prioritization tool. The current baseline has 130 of 130 Claws passing
+post-100 prioritization tool. The current baseline has 131 of 131 Claws passing
 the non-negotiable package, regression, resource, and Experience gates. The
 highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 119 of 130 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 130 of 130 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 130 of 130 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 120 of 131 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 131 of 131 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 131 of 131 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -176,6 +176,16 @@ findings, and corrective actions. It does not monitor incidents, issue alerts,
 interpret warning thresholds, direct an emergency response, contact helpers,
 purchase or book services, transmit household data, publish precise locations,
 provide professional advice, or certify readiness.
+
+Rental Housing Coordinator now owns the resident-controlled tenancy-lifecycle
+lane. It binds one controlling supplied lease revision to recurring obligations,
+notices and deadlines, payments and independent receipts, generalized premises
+condition, maintenance episodes, access events, move-in and move-out evidence,
+returned keys or devices, charges, disputes, and residual gaps. It does not
+interpret leases or rights, diagnose habitability or safety, decide payment or
+deposit entitlement, contact anyone, submit notices, pay, sign, schedule, grant
+access, authorize repairs, change accounts, surrender possession, or claim the
+tenancy closed.
 
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Home Project Planner should first be tested as an
