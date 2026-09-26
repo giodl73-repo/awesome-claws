@@ -153,6 +153,11 @@
         "difference": "Legal Matter Organizer preserves counsel-controlled legal-matter evidence, privilege, holds, custody, and deadlines. This proposal maintains an operational personal recovery ledger across institutions and identity surfaces while expressly making no legal conclusion and requiring no legal matter or counsel relationship."
       },
       {
+        "id": "estate-administration-coordinator",
+        "overlap": "Both maintain highly sensitive, evidence-bound multi-party ledgers across documented authority, official instructions, claims or disputes, deadlines, owner actions, independent receipts, privacy limits, qualified-human questions, and unresolved exposure without taking external action or claiming closure.",
+        "difference": "Estate Administration Coordinator owns one already-open decedent estate under documented personal-representative authority, reconciling assets, liabilities, valuations, creditor claims, notices, reserves, proposed distributions, and fiduciary questions. Identity Theft Recovery Coordinator owns suspected misuse across identity, credit, credential, tax, benefits, insurance, and account surfaces, separating suspicion from confirmation and mapping official recovery routes without operating an estate lifecycle."
+      },
+      {
         "id": "case-continuity-coordinator",
         "overlap": "Both retain one case's evidence, chronology, open work, handoffs, resume points, and accountable next owners over multiple sessions.",
         "difference": "Case Continuity Coordinator is a generic cross-session continuity contract. This proposal owns a domain-specific evidence model for identity surfaces, suspicion versus confirmation, official recovery routes, reports, disputes, alerts or freezes, attempts, institution receipts, sensitive-data minimization, and prohibited account actions."

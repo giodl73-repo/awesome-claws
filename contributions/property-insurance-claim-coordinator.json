@@ -138,6 +138,11 @@
         "difference": "Identity Theft Recovery Coordinator reconciles suspected misuse across personal identity surfaces under suspicion-versus-confirmation rules. This proposal reconciles a supplied property-loss claim across affected areas and items, claim requirements, estimates, carrier positions, payments, repairs, and property-specific safety boundaries without any identity-misuse workflow."
       },
       {
+        "id": "estate-administration-coordinator",
+        "overlap": "Both maintain private authority- and evidence-bound ledgers across property or assets, valuations or amounts, official notices, claims, deadlines, owner actions, independent receipts, disputes, professional questions, and unresolved exposure without deciding validity, entitlement, payment, or closure.",
+        "difference": "Estate Administration Coordinator owns an entire decedent-estate administration lifecycle under documented personal-representative authority, including assets, liabilities, creditor claims, reserves, and proposed distributions. Property Insurance Claim Coordinator owns one policy-governed post-loss claim across affected property, carrier requirements, estimate scopes, coverage positions, payments, repairs, and residual loss; estate administration treats any insurance claim as only one possible asset or receivable source."
+      },
+      {
         "id": "household-steward",
         "overlap": "Both preserve household privacy, cross-record dependencies, accountable owners, blocked external actions, contradictions, and a reviewable handoff.",
         "difference": "Household Steward coordinates a broad household portfolio across specialist Claw artifacts and shared resources. This proposal owns one claim-specific evidence contract with affected-property units, carrier requirements, independent submission receipts, estimate and carrier-position scope, payments, repairs or replacements, and residual loss exposure; it does not coordinate the household portfolio."

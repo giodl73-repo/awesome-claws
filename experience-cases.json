@@ -99,7 +99,8 @@
       "property-insurance-claim-coordinator",
       "rental-housing-coordinator",
       "consumer-product-recall-coordinator",
-      "medication-regimen-coordinator"
+      "medication-regimen-coordinator",
+      "estate-administration-coordinator"
     ]
   },
   "visualCases": [
