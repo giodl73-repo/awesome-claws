@@ -1,16 +1,16 @@
 # Catalog quality scorecard
 
-This report scores all 134 maintained Claws as of 2026-09-26. It uses only repository-observable evidence and does not claim live-model quality or real-world outcomes. See [the rubric](catalog-quality-rubric.md) for interpretation and point rules.
+This report scores all 135 maintained Claws as of 2026-09-26. It uses only repository-observable evidence and does not claim live-model quality or real-world outcomes. See [the rubric](catalog-quality-rubric.md) for interpretation and point rules.
 
 ## Portfolio result
 
 - Average: **99/100**
 - Median: **100/100**
-- Qualified through all non-negotiable gates: **134/134**
+- Qualified through all non-negotiable gates: **135/135**
 
 | Band | Count |
 | --- | ---: |
-| exemplary | 134 |
+| exemplary | 135 |
 | strong | 0 |
 | solid | 0 |
 | needs-uplift | 0 |
@@ -90,101 +90,102 @@ The queue is ordered from lowest score upward. It is a documentation and contrac
 | 36 | `green-thumb-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
 | 37 | `health-records-binder` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
 | 38 | `home-inventory-binder` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 39 | `home-repair-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 40 | `household-budget-steward` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 41 | `household-emergency-preparedness-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 42 | `household-steward` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 43 | `identity-theft-recovery-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 44 | `incident-response` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 45 | `infrastructure-drift-reconciliation-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 46 | `insurance-policy-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 47 | `invoice-payment-followup` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 48 | `job-application-tracker` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 49 | `knowledge-curator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 50 | `knowledge-gardener` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 51 | `learning-plan-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 52 | `learning-program-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 53 | `legal-matter-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 54 | `life-timeline-keeper` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 55 | `local-events-watcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 56 | `localization-program-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 57 | `manufacturing-operations-planner` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 58 | `meal-grocery-planner` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 59 | `medical-appointment-prep` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 60 | `medication-regimen-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 61 | `meeting-intelligence` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 62 | `movie-streaming-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 63 | `moving-checklist-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 64 | `music-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 65 | `neighborhood-operations-watcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 66 | `partner-business-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 67 | `personal-archive-curator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 68 | `pet-care-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 69 | `pond-water-feature-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 70 | `privacy-request-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 71 | `problem-known-error-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 72 | `procure-to-pay-three-way-match-exception-reconciler` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 73 | `procurement-evaluator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 74 | `professional-networking-followup` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 75 | `property-insurance-claim-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 76 | `purchase-researcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 77 | `quality-assurance-lead` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 78 | `records-retention-disposition-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 79 | `recurring-third-party-review-evidence-reconciler` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 80 | `release-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 81 | `rental-housing-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 82 | `repository-compliance-program-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 83 | `repository-operations-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 84 | `restaurant-venue-scout` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 85 | `resume-portfolio-curator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 86 | `school-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 87 | `security-alert-review-reconciler` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 88 | `security-analyst` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 89 | `software-maintainer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 90 | `solution-architecture-decision-advisor` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 91 | `sports-team-watcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 92 | `stock-portfolio-monitor` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 93 | `subscription-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 94 | `supplier-capacity-assurance-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 95 | `tax-document-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 96 | `tls-certificate-rotation-verification-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 97 | `travel-concierge` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 98 | `travel-loyalty-points-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 99 | `ux-research-synthesizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 100 | `vehicle-service-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 101 | `video-concept-producer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 102 | `vulnerability-disposition-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 103 | `wardrobe-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 104 | `warranty-returns-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 105 | `web-evidence-researcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 106 | `website-evidence-collector` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 107 | `work-chief-of-staff` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 108 | `workflow-operator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 109 | `workforce-planning-partner` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 110 | `benefits-realization-manager` | 99 | exemplary | 15 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 111 | `model-evaluation-adjudicator` | 99 | exemplary | 15 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 112 | `care-circle-coordinator` | 96 | exemplary | 15 | 20 | 20 | 16 | 10 | 10 | 5 |
-| 113 | `case-continuity-coordinator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 114 | `change-control-operator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 115 | `delegation-coordinator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 116 | `executive-briefing` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 117 | `feed-intelligence-monitor` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 118 | `fundraising-campaign-manager` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 119 | `media-evidence-reviewer` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 120 | `presentation-producer` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 121 | `public-company-watcher` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 122 | `research-briefing` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
-| 123 | `research-monitor` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 124 | `research-scout` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 125 | `spreadsheet-analyst` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 126 | `travel-planner` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 127 | `data-analyst` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 128 | `document-intake-analyst` | 94 | exemplary | 15 | 20 | 20 | 14 | 10 | 10 | 5 |
-| 129 | `product-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 130 | `project-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 131 | `recruiting-coordinator` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 132 | `sales-operations` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
-| 133 | `civic-data-analyst` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
-| 134 | `public-safety-monitor` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 39 | `home-purchase-transaction-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 40 | `home-repair-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 41 | `household-budget-steward` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 42 | `household-emergency-preparedness-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 43 | `household-steward` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 44 | `identity-theft-recovery-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 45 | `incident-response` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 46 | `infrastructure-drift-reconciliation-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 47 | `insurance-policy-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 48 | `invoice-payment-followup` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 49 | `job-application-tracker` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 50 | `knowledge-curator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 51 | `knowledge-gardener` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 52 | `learning-plan-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 53 | `learning-program-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 54 | `legal-matter-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 55 | `life-timeline-keeper` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 56 | `local-events-watcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 57 | `localization-program-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 58 | `manufacturing-operations-planner` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 59 | `meal-grocery-planner` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 60 | `medical-appointment-prep` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 61 | `medication-regimen-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 62 | `meeting-intelligence` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 63 | `movie-streaming-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 64 | `moving-checklist-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 65 | `music-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 66 | `neighborhood-operations-watcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 67 | `partner-business-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 68 | `personal-archive-curator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 69 | `pet-care-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 70 | `pond-water-feature-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 71 | `privacy-request-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 72 | `problem-known-error-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 73 | `procure-to-pay-three-way-match-exception-reconciler` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 74 | `procurement-evaluator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 75 | `professional-networking-followup` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 76 | `property-insurance-claim-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 77 | `purchase-researcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 78 | `quality-assurance-lead` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 79 | `records-retention-disposition-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 80 | `recurring-third-party-review-evidence-reconciler` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 81 | `release-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 82 | `rental-housing-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 83 | `repository-compliance-program-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 84 | `repository-operations-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 85 | `restaurant-venue-scout` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 86 | `resume-portfolio-curator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 87 | `school-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 88 | `security-alert-review-reconciler` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 89 | `security-analyst` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 90 | `software-maintainer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 91 | `solution-architecture-decision-advisor` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 92 | `sports-team-watcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 93 | `stock-portfolio-monitor` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 94 | `subscription-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 95 | `supplier-capacity-assurance-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 96 | `tax-document-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 97 | `tls-certificate-rotation-verification-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 98 | `travel-concierge` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 99 | `travel-loyalty-points-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 100 | `ux-research-synthesizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 101 | `vehicle-service-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 102 | `video-concept-producer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 103 | `vulnerability-disposition-coordinator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 104 | `wardrobe-organizer` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 105 | `warranty-returns-manager` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 106 | `web-evidence-researcher` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 107 | `website-evidence-collector` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 108 | `work-chief-of-staff` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 109 | `workflow-operator` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 110 | `workforce-planning-partner` | 100 | exemplary | 15 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 111 | `benefits-realization-manager` | 99 | exemplary | 15 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 112 | `model-evaluation-adjudicator` | 99 | exemplary | 15 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 113 | `care-circle-coordinator` | 96 | exemplary | 15 | 20 | 20 | 16 | 10 | 10 | 5 |
+| 114 | `case-continuity-coordinator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 115 | `change-control-operator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 116 | `delegation-coordinator` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 117 | `executive-briefing` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 118 | `feed-intelligence-monitor` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 119 | `fundraising-campaign-manager` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 120 | `media-evidence-reviewer` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 121 | `presentation-producer` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 122 | `public-company-watcher` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 123 | `research-briefing` | 95 | exemplary | 10 | 20 | 20 | 20 | 10 | 10 | 5 |
+| 124 | `research-monitor` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 125 | `research-scout` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 126 | `spreadsheet-analyst` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 127 | `travel-planner` | 95 | exemplary | 15 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 128 | `data-analyst` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 129 | `document-intake-analyst` | 94 | exemplary | 15 | 20 | 20 | 14 | 10 | 10 | 5 |
+| 130 | `product-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 131 | `project-manager` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 132 | `recruiting-coordinator` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 133 | `sales-operations` | 94 | exemplary | 10 | 20 | 20 | 19 | 10 | 10 | 5 |
+| 134 | `civic-data-analyst` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
+| 135 | `public-safety-monitor` | 90 | exemplary | 10 | 20 | 20 | 15 | 10 | 10 | 5 |
 
 The machine-readable source for this report is [`catalog-quality-scores.json`](../catalog-quality-scores.json).

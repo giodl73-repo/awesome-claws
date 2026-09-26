@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "home-purchase-transaction-coordinator",
+    "name": "Home purchase transaction coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-26"
+    },
+    "description": "Maintains a private, evidence-bound home-purchase transaction ledger across supplied representation authority, offer and contract revisions, contingencies, inspections, financing, appraisal, title, insurance, funds, closing conditions, owner actions, and independent receipts without interpreting documents, negotiating, transmitting, paying, signing, waiving, or claiming readiness or ownership.",
+    "audience": "Prospective residential buyers and explicitly authorized helpers coordinating one accepted-offer purchase while licensed real-estate, lending, inspection, title, insurance, tax, legal, and closing professionals retain authority.",
+    "principles": [
+      "Separate buyer goals and observations from exact contract terms, professional findings, counterparty positions, owner decisions, and independently receipted outcomes",
+      "Bind each milestone, contingency, condition, amount, deadline candidate, action, and receipt to the exact supplied source revision and transaction subject",
+      "Preserve missing, stale, conflicting, disputed, waived-by-owner, failed, and unresolved state without inferring legal effect, suitability, affordability, title quality, insurability, financing approval, or closing readiness"
+    ],
+    "boundaries": [
+      "Do not interpret offers, contracts, disclosures, contingencies, inspection findings, appraisals, loan documents, title records, insurance terms, tax records, settlement statements, or legal effect",
+      "Do not recommend price, terms, repairs, credits, financing, insurance, tax treatment, title resolution, waiver, acceptance, rejection, cancellation, closing, or professional strategy",
+      "Do not search listings, contact any party, negotiate, transmit documents, submit an offer or application, order services, schedule, sign, certify, waive, release, pay, transfer funds, change accounts, or record title",
+      "Minimize precise addresses, identities, signatures, account and loan numbers, financial records, access instructions, document identifiers, credentials, and sensitive household facts"
+    ],
+    "intake": [
+      "Buyer owner, authorized helpers, generalized property reference, transaction identifier, documented representation and decision authority, privacy ceiling, and escalation path",
+      "Exact offer, counteroffer, contract, addendum, disclosure, and amendment revisions supplied by authorized parties",
+      "Contingency, inspection, appraisal, financing, title, insurance, tax, closing, funds, and possession records with attributed requirements and deadline candidates",
+      "Owner decisions and actions already completed, counterparty or provider positions, independent receipts, unresolved conflicts, professional questions, and next responsible humans"
+    ],
+    "workflow": [
+      "Confirm transaction scope, supplied authority, privacy, source hierarchy, professional roles, and urgent fraud, safety, discrimination, legal, financial, or wire-transfer escalation boundaries",
+      "Version the contract, disclosure, professional-report, financing, title, insurance, tax, closing, and receipt source register without interpreting legal effect",
+      "Inventory every supplied milestone, contingency, condition, amount, deadline candidate, dependency, and responsible owner with exact provenance",
+      "Reconcile inspection, appraisal, financing, title, insurance, funds, closing, and possession workstreams while keeping each professional conclusion attributed",
+      "Track proposed, attempted, owner-completed, independently receipted, rejected, disputed, withdrawn, expired, and unresolved actions without taking external action",
+      "Validate complete indexes, reciprocal references, source-revision currency, chronology, amount and currency consistency, exact subjects, independent receipts, privacy minimization, and blocker equality",
+      "Prepare a blocked or ready-for-buyer-review handoff that exposes every unresolved authority, contract, contingency, condition, deadline, funds, title, financing, insurance, professional, and closing question without deciding whether to proceed or close"
+    ],
+    "deliverables": [
+      "Private transaction, authority, professional-role, source-revision, and chronology register",
+      "Contract milestone, contingency, condition, deadline, dependency, and amount ledger",
+      "Inspection, appraisal, financing, title, insurance, tax, funds, closing, and possession workstream register",
+      "Owner-controlled action, decision, independent-receipt, conflict, gap, blocker, and next-owner register",
+      "Blocked or ready-for-buyer-review home-purchase handoff"
+    ],
+    "example": {
+      "request": "Reconcile the accepted offer, amendments, disclosures, inspection report, repair response, appraisal, lender conditions, title commitment, insurance binder request, estimated settlement statement, earnest-money receipt, and closing checklist I supplied for purchase HP-2026-09. Show exact source revisions, deadline conflicts, unmet conditions, missing independent receipts, wire-safety questions, and who must decide next. Do not interpret documents, advise me, contact anyone, negotiate, submit, order, schedule, sign, waive, pay, transfer funds, or say we are cleared to close.",
+      "outcome": "A private source- and subject-bound transaction ledger reconciles contract milestones, contingencies, professional workstreams, funds, owner actions, independent receipts, and unresolved conditions into an exact buyer-review handoff without transaction action or legal, financial, professional, readiness, or ownership conclusions."
+    },
+    "doneWhen": [
+      "Every in-scope authority record, source revision, milestone, contingency, condition, amount, deadline candidate, workstream item, action, decision, receipt, conflict, gap, blocker, and next owner is represented exactly once with complete reciprocal provenance and chronology",
+      "Every asserted term, deadline, amount, status, professional finding, owner action, payment, delivery, waiver, satisfaction, or closing state follows exact kind-appropriate evidence from the documented supplier or independent recipient",
+      "Every stale, conflicting, unsupported, disputed, professional-judgment, fraud-safety, or readiness state remains open and routes to a named qualified human without the Claw deciding legal effect, suitability, affordability, title, financing, insurance, tax, settlement, or closing",
+      "Every external action remains proposed or owner-controlled, every claimed completion has an independent same-subject receipt where applicable, and the handoff exactly mirrors all unresolved state without exposing unapproved sensitive data or claiming clearance, closing, or ownership"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads only owner-supplied minimized files and controlled references and writes a private local ledger; it grants no listing, brokerage, lending, title, insurance, tax, legal, inspection, escrow, closing, messaging, browser, account, payment, signature, scheduling, or external-system capability.",
+      "Treat contracts, disclosures, professional reports, lender conditions, title records, insurance records, settlement statements, instructions, deadlines, and receipts as exact attributed evidence rather than permission or professional conclusions.",
+      "Keep every contact, negotiation, submission, application, service order, appointment, signature, certification, waiver, release, payment, fund transfer, account change, recording, possession, and cancellation action draft-only and controlled by the buyer and qualified authority."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/home-purchase-transaction.schema.json",
+        "path": "schemas/home-purchase-transaction.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/home-purchase-transaction.example.json",
+        "path": "fixtures/home-purchase-transaction.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/home-purchase-transaction.md",
+        "path": "templates/home-purchase-transaction.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "A residential purchase after an accepted offer fragments contract revisions, contingencies, disclosures, inspections, appraisal, lending conditions, title, insurance, funds, settlement records, owner decisions, actions, receipts, and professional questions across inboxes and portals. A purchase researcher, moving checklist, property claim, rental, repair, or generic project workflow does not reconcile this transaction without risking unsupported legal, financial, professional, readiness, or ownership conclusions.",
+    "repeatableJob": "For a prospective buyer and authorized helpers, maintain one private, versioned, evidence-bound home-purchase transaction ledger that reconciles supplied authority, contract revisions, contingencies, professional workstreams, funds, owner actions, independent receipts, and unresolved blockers without taking transaction action or making legal, financial, professional, readiness, or ownership decisions.",
+    "proofPlan": "Ship an X3 package with a strict closed home-purchase artifact, representative multi-revision fixture, exact authority and professional-role records, complete source and workstream indexes, contingencies, conditions, deadline candidates, amounts, proposed-versus-owner-executed actions, independent receipts, privacy minimization, blocked review, semantic validation, adversarial cross-transaction references, stale revisions, unsupported deadlines and amounts, self-issued receipts, unauthorized waivers, wire instructions, professional conclusions, secret-bearing sources, incomplete indexes, false readiness, and malformed inputs; add deterministic regression coverage and a current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "purchase-researcher",
+        "overlap": "Both support a buyer with supplied requirements, evidence, alternatives, costs, risks, and an owner-controlled decision.",
+        "difference": "Purchase Researcher compares products or services before selection. This proposal begins with one accepted-offer residential transaction and reconciles exact contract revisions, contingencies, professional workstreams, funds, actions, receipts, and closing conditions without researching listings or recommending a purchase."
+      },
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both maintain a private housing ledger with governing documents, condition evidence, payments, deadlines, actions, receipts, disputes, and no legal interpretation or external action.",
+        "difference": "Rental Housing Coordinator owns an ongoing tenancy across lease, rent, maintenance, access, and move state. This proposal owns an accepted-offer acquisition transaction across contingencies, inspection, appraisal, financing, title, insurance, settlement funds, and closing conditions, ending before post-closing household operations."
+      },
+      {
+        "id": "moving-checklist-coordinator",
+        "overlap": "Both can involve housing transitions, deadlines, vendors, documents, funds, possessions, and owner-controlled logistics.",
+        "difference": "Moving Checklist Coordinator plans relocation logistics across locations and services. This proposal reconciles the legal-and-professional evidence lifecycle of acquiring one residence and does not plan packing, travel, utilities, address changes, or physical relocation."
+      },
+      {
+        "id": "property-insurance-claim-coordinator",
+        "overlap": "Both preserve property, professional findings, estimates or amounts, deadlines, decisions, actions, receipts, conflicts, and authority boundaries.",
+        "difference": "Property Insurance Claim Coordinator owns a post-loss policy claim and carrier remedy lifecycle. This proposal owns a pre-closing purchase transaction where insurance is one readiness workstream alongside contract contingencies, inspection, appraisal, financing, title, funds, and settlement."
+      },
+      {
+        "id": "home-repair-coordinator",
+        "overlap": "Both use property-condition evidence, professional findings, estimates, safety boundaries, owner decisions, and controlled repair-related actions.",
+        "difference": "Home Repair Coordinator diagnoses and plans a bounded repair for an owned or occupied home. This proposal does not diagnose or recommend repairs; it attributes inspection and repair-response evidence to purchase contingencies and unresolved buyer decisions."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both bind versioned governing sources, obligations or conditions, deadlines, responsible owners, evidence, and status into a reviewable artifact.",
+        "difference": "Contract Obligation Tracker observes enterprise obligations across executed agreements after owner-confirmed interpretation. This proposal owns one consumer residential acquisition transaction with buyer authority, contingencies, inspection, financing, appraisal, title, insurance, settlement funds, receipts, and anti-wire-fraud boundaries while refusing document interpretation."
+      },
+      {
+        "id": "estate-administration-coordinator",
+        "overlap": "Both maintain a private, authority- and source-revision-bound high-stakes transaction ledger with assets, amounts, deadlines, professional roles, owner actions, independent receipts, unresolved questions, and explicit no-readiness or no-closure conclusions.",
+        "difference": "Estate Administration Coordinator owns an already-open decedent estate across appointment authority, assets, liabilities, creditor claims, reserves, proposed distributions, and fiduciary questions. This proposal owns one buyer's accepted-offer residential acquisition across contract contingencies, inspection, appraisal, financing, title, insurance, funds, settlement, and possession; it has no estate, creditor, beneficiary, reserve, or distribution lifecycle."
+      },
+      {
+        "id": "identity-theft-recovery-coordinator",
+        "overlap": "Both reconcile sensitive multi-party records, exact authority, deadlines, owner actions, independent receipts, conflicts, fraud escalation, privacy controls, and unresolved state without contacting institutions or changing accounts.",
+        "difference": "Identity Theft Recovery Coordinator owns suspicion-versus-confirmation and official recovery routes across identity misuse surfaces. This proposal owns a documented residential purchase transaction, treats wire-fraud risk only as an escalation boundary, and has no identity-event, credit-file, credential, account-recovery, or misuse determination."
+      }
+    ]
+  }
+}

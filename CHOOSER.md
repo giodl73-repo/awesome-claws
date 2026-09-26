@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (134)
+### Active (135)
 
 | Claw | Detail |
 | --- | --- |
@@ -61,6 +61,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Health records binder](claws/health-records-binder) | @giodl73-repo; last verified 2026-08-28 |
 | [Home inventory binder](claws/home-inventory-binder) | @giodl73-repo; last verified 2026-08-23 |
+| [Home purchase transaction coordinator](claws/home-purchase-transaction-coordinator) | @giodl73-repo; last verified 2026-09-26 |
 | [Home repair coordinator](claws/home-repair-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Household budget steward](claws/household-budget-steward) | @giodl73-repo; last verified 2026-08-27 |
 | [Household emergency preparedness coordinator](claws/household-emergency-preparedness-coordinator) | @giodl73-repo; last verified 2026-09-25 |
@@ -161,7 +162,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (102)
+### Low setup (103)
 
 | Claw | Detail |
 | --- | --- |
@@ -202,6 +203,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | no bootstrap, external dependency, or schedule |
 | [Health records binder](claws/health-records-binder) | no bootstrap, external dependency, or schedule |
 | [Home inventory binder](claws/home-inventory-binder) | no bootstrap, external dependency, or schedule |
+| [Home purchase transaction coordinator](claws/home-purchase-transaction-coordinator) | no bootstrap, external dependency, or schedule |
 | [Home repair coordinator](claws/home-repair-coordinator) | no bootstrap, external dependency, or schedule |
 | [Household budget steward](claws/household-budget-steward) | no bootstrap, external dependency, or schedule |
 | [Household emergency preparedness coordinator](claws/household-emergency-preparedness-coordinator) | no bootstrap, external dependency, or schedule |
@@ -314,7 +316,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (111)
+### No external dependencies (112)
 
 | Claw | Detail |
 | --- | --- |
@@ -361,6 +363,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | None |
 | [Health records binder](claws/health-records-binder) | None |
 | [Home inventory binder](claws/home-inventory-binder) | None |
+| [Home purchase transaction coordinator](claws/home-purchase-transaction-coordinator) | None |
 | [Home repair coordinator](claws/home-repair-coordinator) | None |
 | [Household budget steward](claws/household-budget-steward) | None |
 | [Household emergency preparedness coordinator](claws/household-emergency-preparedness-coordinator) | None |
@@ -462,7 +465,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (95)
+### X3 (96)
 
 | Claw | Detail |
 | --- | --- |
@@ -498,6 +501,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | Coordinates evidence-bound seasonal garden planning, plant-health triage, low-risk care, and explicitly approved landscaper appointments. |
 | [Health records binder](claws/health-records-binder) | Organizes owner-supplied health records, portal exports, visit summaries, lab and imaging reports, medication lists, immunization records, insurance document pointers, and caregiver notes into a private longitudinal binder without diagnosing, interpreting results, changing care, messaging providers, uploading records, sharing PHI, scheduling, billing, or filing insurance claims. |
 | [Home inventory binder](claws/home-inventory-binder) | Organizes possessions, rooms, categories, serials, receipts, photos, warranties, manuals, value evidence, and owner-review questions without filing claims, giving insurance/legal advice, sharing private addresses, or exposing valuables. |
+| [Home purchase transaction coordinator](claws/home-purchase-transaction-coordinator) | Maintains a private, evidence-bound home-purchase transaction ledger across supplied representation authority, offer and contract revisions, contingencies, inspections, financing, appraisal, title, insurance, funds, closing conditions, owner actions, and independent receipts without interpreting documents, negotiating, transmitting, paying, signing, waiving, or claiming readiness or ownership. |
 | [Home repair coordinator](claws/home-repair-coordinator) | Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
 | [Household budget steward](claws/household-budget-steward) | Reviews owner-supplied household bills, recurring expenses, categories, budget targets, variance evidence, and owner questions without banking access, payments, credit, tax/legal/financial advice, vendor contact, or cancellations. |
 | [Household emergency preparedness coordinator](claws/household-emergency-preparedness-coordinator) | Maintains an owner-controlled household preparedness plan across official hazard guidance, occupants and dependents, evacuation and shelter options, communication and reunification, essential supplies, drills, and corrective actions without replacing live alerts or directing an emergency response. |
@@ -720,7 +724,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (54)
+### Productivity (55)
 
 | Claw | Detail |
 | --- | --- |
@@ -740,6 +744,7 @@ Categories come directly from the catalog entry.
 | [Gift and relationship manager](claws/gift-relationship-manager) | X3; Organizes relationship notes, occasions, gift ideas, preference evidence, budgets, and owner-review reminders without buying gifts, sending messages, editing calendars, or inferring sensitive relationship meaning. |
 | [Health records binder](claws/health-records-binder) | X3; Organizes owner-supplied health records, portal exports, visit summaries, lab and imaging reports, medication lists, immunization records, insurance document pointers, and caregiver notes into a private longitudinal binder without diagnosing, interpreting results, changing care, messaging providers, uploading records, sharing PHI, scheduling, billing, or filing insurance claims. |
 | [Home inventory binder](claws/home-inventory-binder) | X3; Organizes possessions, rooms, categories, serials, receipts, photos, warranties, manuals, value evidence, and owner-review questions without filing claims, giving insurance/legal advice, sharing private addresses, or exposing valuables. |
+| [Home purchase transaction coordinator](claws/home-purchase-transaction-coordinator) | X3; Maintains a private, evidence-bound home-purchase transaction ledger across supplied representation authority, offer and contract revisions, contingencies, inspections, financing, appraisal, title, insurance, funds, closing conditions, owner actions, and independent receipts without interpreting documents, negotiating, transmitting, paying, signing, waiving, or claiming readiness or ownership. |
 | [Household budget steward](claws/household-budget-steward) | X3; Reviews owner-supplied household bills, recurring expenses, categories, budget targets, variance evidence, and owner questions without banking access, payments, credit, tax/legal/financial advice, vendor contact, or cancellations. |
 | [Household emergency preparedness coordinator](claws/household-emergency-preparedness-coordinator) | X3; Maintains an owner-controlled household preparedness plan across official hazard guidance, occupants and dependents, evacuation and shelter options, communication and reunification, essential supplies, drills, and corrective actions without replacing live alerts or directing an emergency response. |
 | [Identity theft recovery coordinator](claws/identity-theft-recovery-coordinator) | X3; Maintains a private, evidence-bound identity-theft recovery ledger across suspected events, affected identity surfaces, official recovery routes, deadlines, owner actions, independent receipts, disputes, and residual gaps without determining fraud or contacting, filing with, authenticating to, or changing any external system. |
@@ -783,7 +788,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (67)
+### Standard attention (68)
 
 | Claw | Detail |
 | --- | --- |
@@ -809,6 +814,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | portable workspace artifacts only |
 | [Health records binder](claws/health-records-binder) | portable workspace artifacts only |
 | [Home inventory binder](claws/home-inventory-binder) | portable workspace artifacts only |
+| [Home purchase transaction coordinator](claws/home-purchase-transaction-coordinator) | portable workspace artifacts only |
 | [Home repair coordinator](claws/home-repair-coordinator) | portable workspace artifacts only |
 | [Household budget steward](claws/household-budget-steward) | portable workspace artifacts only |
 | [Household emergency preparedness coordinator](claws/household-emergency-preparedness-coordinator) | portable workspace artifacts only |

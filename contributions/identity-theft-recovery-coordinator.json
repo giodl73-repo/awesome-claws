@@ -166,6 +166,11 @@
         "id": "document-intake-analyst",
         "overlap": "Both classify supplied records, preserve provenance, extract bounded facts, expose conflicts, and retain sensitive documents under owner authority.",
         "difference": "Document Intake Analyst processes a bounded document set into an evidence-backed intake artifact. This proposal maintains a recurring recovery lifecycle that reconciles events, affected surfaces, official routes, deadlines, owner actions, independent receipts, institution decisions, and residual gaps; documents are only one evidence source."
+      },
+      {
+        "id": "home-purchase-transaction-coordinator",
+        "overlap": "Both reconcile a sensitive multi-party case with exact authority, source revisions, deadlines, owner actions, independent receipts, conflicts, fraud-safety escalation, privacy controls, and unresolved state while blocking contact, account changes, payments, and transfers.",
+        "difference": "Home Purchase Transaction Coordinator owns one documented accepted-offer residential acquisition across contract contingencies, inspection, appraisal, financing, title, insurance, funds, settlement, and closing conditions; wire fraud is only an escalation boundary. Identity Theft Recovery Coordinator owns suspicion-versus-confirmation and official recovery routes across identity, credit, credential, tax, benefits, insurance, and institution-account misuse, with no purchase contract, property, closing, title, or acquisition workflow."
       }
     ]
   }

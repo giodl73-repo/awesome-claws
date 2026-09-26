@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 134 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 135 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -8,7 +8,7 @@ show how Claws compose into larger managed workflows.
 
 | Category | Count | Current emphasis |
 | --- | ---: | --- |
-| Productivity | 54 | Personal operating systems, personal media, fantasy sports, household planning, civic services, documents, travel, meetings, and knowledge work |
+| Productivity | 55 | Personal operating systems, personal media, fantasy sports, household planning, civic services, documents, travel, meetings, and knowledge work |
 | Operations | 30 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
 | Analysis | 16 | Research, evidence collection, financial monitoring, public/company watching, data work, and model evaluation |
 | Engineering | 11 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
@@ -20,7 +20,7 @@ home repair, garden care, pet care, pond and water features, appliance care,
 care-circle coordination, favorite sports teams, fantasy sports, stock portfolios, movies and
 streaming, subscriptions, music, relationships and gifts, personal archives,
 restaurants and venues, local events, school logistics, games backlogs, home
-inventory, rental housing, meals and groceries, medication regimens, estate administration, insurance policies, tax documents, identity recovery, purchase
+inventory, rental housing, home purchase transactions, meals and groceries, medication regimens, estate administration, insurance policies, tax documents, identity recovery, purchase
 research, household budgets, life timelines, child activities, neighborhood
 operations, wardrobes, document renewals, and medical appointment prep.
 
@@ -39,15 +39,15 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 ## Quality Uplift
 
 The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
-post-100 prioritization tool. The current baseline has 134 of 134 Claws passing
+post-100 prioritization tool. The current baseline has 135 of 135 Claws passing
 the non-negotiable package, regression, resource, and Experience gates. The
 highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 123 of 134 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 134 of 134 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 134 of 134 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 124 of 135 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 135 of 135 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 135 of 135 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -186,6 +186,20 @@ interpret leases or rights, diagnose habitability or safety, decide payment or
 deposit entitlement, contact anyone, submit notices, pay, sign, schedule, grant
 access, authorize repairs, change accounts, surrender possession, or claim the
 tenancy closed.
+
+Home Purchase Transaction Coordinator now owns the accepted-offer residential
+acquisition lane. It binds the buyer, exact contract revisions, contingencies,
+conditions, deadline candidates, inspection, appraisal, financing, title,
+insurance, funds, settlement, closing, and possession workstreams to attributed
+professional evidence, buyer-controlled actions, and independent receipts. It
+keeps stale revisions, conflicting deadlines or amounts, unmet conditions,
+wire-safety questions, and missing receipts blocked without interpreting a
+document, recommending terms, validating transfer instructions, contacting or
+negotiating with anyone, submitting, ordering, scheduling, signing, waiving,
+paying, transferring funds, recording title, or claiming clearance, closing, or
+ownership. It ends at the buyer review gate rather than becoming Rental Housing
+Coordinator's tenancy lifecycle, Moving Checklist Coordinator's relocation
+plan, or Home Repair Coordinator's repair workflow.
 
 Potential additions remain subject to the
 [contribution admission policy](contribution-admission.md). Home Project Planner should first be tested as an

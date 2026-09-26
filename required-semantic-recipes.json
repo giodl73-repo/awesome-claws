@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 134,
-    "coveredCount": 134,
-    "recipeCount": 370,
-    "findingCodeCount": 503
+    "validatorCount": 135,
+    "coveredCount": 135,
+    "recipeCount": 373,
+    "findingCodeCount": 507
   },
   "entries": [
     {
@@ -5865,6 +5865,53 @@
           "replacement": "2099-12-31T23:59:59Z",
           "expectedCodes": [
             "invalid_estate_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-purchase-transaction-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-cross-transaction-record-1",
+          "operator": "replace",
+          "path": [
+            "transaction",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_transaction_record",
+            "invalid_authority_evidence",
+            "invalid_source_subject",
+            "irrelevant_source_reference",
+            "missing_current_contract"
+          ]
+        },
+        {
+          "id": "semantic-invalid-transaction-chronology-2",
+          "operator": "replace",
+          "path": [
+            "transaction",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_transaction_chronology"
+          ]
+        },
+        {
+          "id": "semantic-invalid-action-chronology-3",
+          "operator": "replace",
+          "path": [
+            "transaction",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_action_chronology",
+            "invalid_source_chronology",
+            "invalid_transaction_chronology"
           ]
         }
       ]

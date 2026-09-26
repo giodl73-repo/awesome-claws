@@ -3348,6 +3348,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "home-purchase-transaction-coordinator",
+      "acceptedRequest": "Reconcile the accepted offer, amendments, disclosures, inspection report, repair response, appraisal, lender conditions, title commitment, insurance binder request, estimated settlement statement, earnest-money receipt, and closing checklist I supplied for purchase HP-2026-09. Show exact source revisions, deadline conflicts, unmet conditions, missing independent receipts, wire-safety questions, and who must decide next. Do not interpret documents, advise me, contact anyone, negotiate, submit, order, schedule, sign, waive, pay, transfer funds, or say we are cleared to close.",
+      "requiredEvidence": [
+        "Buyer owner, authorized helpers, generalized property reference, transaction identifier, documented representation and decision authority, privacy ceiling, and escalation path",
+        "Exact offer, counteroffer, contract, addendum, disclosure, and amendment revisions supplied by authorized parties",
+        "Contingency, inspection, appraisal, financing, title, insurance, tax, closing, funds, and possession records with attributed requirements and deadline candidates",
+        "Owner decisions and actions already completed, counterparty or provider positions, independent receipts, unresolved conflicts, professional questions, and next responsible humans"
+      ],
+      "authorityBoundaries": [
+        "Do not interpret offers, contracts, disclosures, contingencies, inspection findings, appraisals, loan documents, title records, insurance terms, tax records, settlement statements, or legal effect",
+        "Do not recommend price, terms, repairs, credits, financing, insurance, tax treatment, title resolution, waiver, acceptance, rejection, cancellation, closing, or professional strategy",
+        "Do not search listings, contact any party, negotiate, transmit documents, submit an offer or application, order services, schedule, sign, certify, waive, release, pay, transfer funds, change accounts, or record title",
+        "Minimize precise addresses, identities, signatures, account and loan numbers, financial records, access instructions, document identifiers, credentials, and sensitive household facts"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/home-purchase-transaction-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

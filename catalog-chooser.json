@@ -1828,6 +1828,40 @@
       }
     },
     {
+      "id": "home-purchase-transaction-coordinator",
+      "name": "Home purchase transaction coordinator",
+      "description": "Maintains a private, evidence-bound home-purchase transaction ledger across supplied representation authority, offer and contract revisions, contingencies, inspections, financing, appraisal, title, insurance, funds, closing conditions, owner actions, and independent receipts without interpreting documents, negotiating, transmitting, paying, signing, waiving, or claiming readiness or ownership.",
+      "audience": "Prospective residential buyers and explicitly authorized helpers coordinating one accepted-offer purchase while licensed real-estate, lending, inspection, title, insurance, tax, legal, and closing professionals retain authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-26"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "home-repair-coordinator",
       "name": "Home repair coordinator",
       "description": "Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments.",
