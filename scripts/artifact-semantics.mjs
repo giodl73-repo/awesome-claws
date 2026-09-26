@@ -11,6 +11,7 @@ import { contractObligationTrackerFindings } from "./contract-obligation-tracker
 import { consumerProductRecallFindings } from "./consumer-product-recall-coordinator.mjs";
 import { medicationRegimenFindings } from "./medication-regimen-coordinator.mjs";
 import { estateAdministrationFindings } from "./estate-administration-coordinator.mjs";
+import { homePurchaseTransactionFindings } from "./home-purchase-transaction-coordinator.mjs";
 import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
 import { civicServiceAccessFindings } from "./civic-services-navigator.mjs";
 import { householdEmergencyPreparednessFindings } from "./household-emergency-preparedness-coordinator.mjs";
@@ -53295,6 +53296,7 @@ const validators = {
   "consumer-product-recall-coordinator": consumerProductRecallFindings,
   "medication-regimen-coordinator": medicationRegimenFindings,
   "estate-administration-coordinator": estateAdministrationFindings,
+  "home-purchase-transaction-coordinator": homePurchaseTransactionFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,

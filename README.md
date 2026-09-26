@@ -40,11 +40,11 @@ copyable reference is optimized for a small package that is easy to rename and
 adapt. The other starters demonstrate different application shapes between
 those two points; they are not expected to contain the same components.
 
-The 134-Claw catalog now also has a practical personal-agent lane. Vehicle, home,
+The 135-Claw catalog now also has a practical personal-agent lane. Vehicle, home,
 garden, pet, pond, appliance, care-circle, sports-team, stock-portfolio,
 movie-and-streaming, subscription, music, gift-and-relationship,
 personal-archive, restaurant-and-venue, local-events, school, games-backlog,
-home-inventory, household-emergency-preparedness, rental-housing, meal-and-grocery, insurance-policy, tax-document,
+home-inventory, household-emergency-preparedness, rental-housing, home-purchase, meal-and-grocery, insurance-policy, tax-document,
 purchase-research, household-budget, life-timeline, child-activity, neighborhood-operations, wardrobe, document-renewal, medical-appointment-prep, and civic-services starters cover everyday bounded
 workflows with explicit owner authority. Household Steward, Work Chief of
 Staff, and Care Circle Coordinator show the manager-Claw pattern: they
@@ -57,11 +57,11 @@ Experience proof tier, category, and boundary-attention level. The same derived 
 [`catalog-chooser.json`](catalog-chooser.json) for tools and other catalogs.
 For the maintainer view of current coverage, manager-Claw composition, and the
 next likely gaps, see the [Awesome Claws roadmap](docs/roadmap.md).
-For a repository-evidence quality baseline across all 134 Claws, see the
+For a repository-evidence quality baseline across all 135 Claws, see the
 [catalog quality rubric](docs/catalog-quality-rubric.md) and generated
 [scorecard](docs/catalog-quality-scorecard.md).
 For the separate observed-behavior pillar, identity-bound trial schemas, and
-402-trial baseline or 2,814-trial seven-day plan, see the [Runtime Evidence
+405-trial baseline or 2,835-trial seven-day plan, see the [Runtime Evidence
 Quality rubric](docs/runtime-evidence-quality-rubric.md). Runtime results are
 reported beside, never blended into, the unchanged Catalog Quality score.
 For interactive search and shareable filters across proof lanes, capabilities,
@@ -108,7 +108,7 @@ does not execute or grade an LLM, replace installed lifecycle proof, or claim
 live-provider behavior.
 
 The table below highlights the main reviewed application shapes. Use the
-chooser or explorer for the complete 134-Claw catalog.
+chooser or explorer for the complete 135-Claw catalog.
 
 | Claw | Category | Capabilities | Focus |
 | --- | --- | --- | --- |
@@ -282,7 +282,7 @@ regression coverage, content quality, and basic secret hygiene. Maintainers can 
 `CLAWS_CLI_ENTRY` and run
 `npm run inspect` to inspect every package with a standalone Claws reference
 CLI. With `CLAWS_CLI_ENTRY` and `OPENCLAW_CLI_ENTRY` set to compatible built
-checkouts, `npm run proof:openclaw` dry-runs all 134 packages through the
+checkouts, `npm run proof:openclaw` dry-runs all 135 packages through the
 OpenClaw adapter in disposable state.
 
 ### Catalog invariants
@@ -290,7 +290,7 @@ OpenClaw adapter in disposable state.
 - `catalog.json` owns catalog metadata and resource declarations.
   `sources/<claw-id>/` owns the declared resource bodies in their native file
   formats. `npm run build` materializes both, and `npm run check` requires
-  byte-for-byte agreement with all 134 generated packages and rejects missing
+  byte-for-byte agreement with all 135 generated packages and rejects missing
   or undeclared source files.
 - Harness profiles use the conventional `profiles/openclaw.yml` path, strict
   schema version 1, exact pinned extension releases, and unique extension ids
@@ -315,7 +315,7 @@ OpenClaw adapter in disposable state.
   It does not mutate state or prove provider behavior.
 - `npm run proof:portfolio` first checks deterministic materialization, then
   exercises inspect, consent-bound add, status, export inspection, and removal
-  for all 134 packages in isolated local state. Executive Assistant additionally
+  for all 135 packages in isolated local state. Executive Assistant additionally
   proves a real managed-resource update from a checked-in previous-version fixture,
   stale-consent rejection, reverse rollback, and repeat upgrade while preserving user-owned state. Its
   agent turn uses the checked-in OpenAI-compatible fixture, so it proves runtime

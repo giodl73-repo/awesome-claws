@@ -79,6 +79,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "medical-appointment-prep": "medical-appointment.schema.json",
   "medication-regimen-coordinator": "medication-regimen.schema.json",
   "estate-administration-coordinator": "estate-administration.schema.json",
+  "home-purchase-transaction-coordinator": "home-purchase-transaction.schema.json",
   "meeting-intelligence": "meeting-record.schema.json",
   "model-evaluation-adjudicator": "model-evaluation.schema.json",
   "moving-checklist-coordinator": "moving-plan.schema.json",

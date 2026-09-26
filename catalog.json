@@ -13926,6 +13926,100 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "home-purchase-transaction-coordinator",
+      "name": "Home purchase transaction coordinator",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-26"
+      },
+      "description": "Maintains a private, evidence-bound home-purchase transaction ledger across supplied representation authority, offer and contract revisions, contingencies, inspections, financing, appraisal, title, insurance, funds, closing conditions, owner actions, and independent receipts without interpreting documents, negotiating, transmitting, paying, signing, waiving, or claiming readiness or ownership.",
+      "audience": "Prospective residential buyers and explicitly authorized helpers coordinating one accepted-offer purchase while licensed real-estate, lending, inspection, title, insurance, tax, legal, and closing professionals retain authority.",
+      "principles": [
+        "Separate buyer goals and observations from exact contract terms, professional findings, counterparty positions, owner decisions, and independently receipted outcomes",
+        "Bind each milestone, contingency, condition, amount, deadline candidate, action, and receipt to the exact supplied source revision and transaction subject",
+        "Preserve missing, stale, conflicting, disputed, waived-by-owner, failed, and unresolved state without inferring legal effect, suitability, affordability, title quality, insurability, financing approval, or closing readiness"
+      ],
+      "boundaries": [
+        "Do not interpret offers, contracts, disclosures, contingencies, inspection findings, appraisals, loan documents, title records, insurance terms, tax records, settlement statements, or legal effect",
+        "Do not recommend price, terms, repairs, credits, financing, insurance, tax treatment, title resolution, waiver, acceptance, rejection, cancellation, closing, or professional strategy",
+        "Do not search listings, contact any party, negotiate, transmit documents, submit an offer or application, order services, schedule, sign, certify, waive, release, pay, transfer funds, change accounts, or record title",
+        "Minimize precise addresses, identities, signatures, account and loan numbers, financial records, access instructions, document identifiers, credentials, and sensitive household facts"
+      ],
+      "intake": [
+        "Buyer owner, authorized helpers, generalized property reference, transaction identifier, documented representation and decision authority, privacy ceiling, and escalation path",
+        "Exact offer, counteroffer, contract, addendum, disclosure, and amendment revisions supplied by authorized parties",
+        "Contingency, inspection, appraisal, financing, title, insurance, tax, closing, funds, and possession records with attributed requirements and deadline candidates",
+        "Owner decisions and actions already completed, counterparty or provider positions, independent receipts, unresolved conflicts, professional questions, and next responsible humans"
+      ],
+      "workflow": [
+        "Confirm transaction scope, supplied authority, privacy, source hierarchy, professional roles, and urgent fraud, safety, discrimination, legal, financial, or wire-transfer escalation boundaries",
+        "Version the contract, disclosure, professional-report, financing, title, insurance, tax, closing, and receipt source register without interpreting legal effect",
+        "Inventory every supplied milestone, contingency, condition, amount, deadline candidate, dependency, and responsible owner with exact provenance",
+        "Reconcile inspection, appraisal, financing, title, insurance, funds, closing, and possession workstreams while keeping each professional conclusion attributed",
+        "Track proposed, attempted, owner-completed, independently receipted, rejected, disputed, withdrawn, expired, and unresolved actions without taking external action",
+        "Validate complete indexes, reciprocal references, source-revision currency, chronology, amount and currency consistency, exact subjects, independent receipts, privacy minimization, and blocker equality",
+        "Prepare a blocked or ready-for-buyer-review handoff that exposes every unresolved authority, contract, contingency, condition, deadline, funds, title, financing, insurance, professional, and closing question without deciding whether to proceed or close"
+      ],
+      "deliverables": [
+        "Private transaction, authority, professional-role, source-revision, and chronology register",
+        "Contract milestone, contingency, condition, deadline, dependency, and amount ledger",
+        "Inspection, appraisal, financing, title, insurance, tax, funds, closing, and possession workstream register",
+        "Owner-controlled action, decision, independent-receipt, conflict, gap, blocker, and next-owner register",
+        "Blocked or ready-for-buyer-review home-purchase handoff"
+      ],
+      "example": {
+        "request": "Reconcile the accepted offer, amendments, disclosures, inspection report, repair response, appraisal, lender conditions, title commitment, insurance binder request, estimated settlement statement, earnest-money receipt, and closing checklist I supplied for purchase HP-2026-09. Show exact source revisions, deadline conflicts, unmet conditions, missing independent receipts, wire-safety questions, and who must decide next. Do not interpret documents, advise me, contact anyone, negotiate, submit, order, schedule, sign, waive, pay, transfer funds, or say we are cleared to close.",
+        "outcome": "A private source- and subject-bound transaction ledger reconciles contract milestones, contingencies, professional workstreams, funds, owner actions, independent receipts, and unresolved conditions into an exact buyer-review handoff without transaction action or legal, financial, professional, readiness, or ownership conclusions."
+      },
+      "doneWhen": [
+        "Every in-scope authority record, source revision, milestone, contingency, condition, amount, deadline candidate, workstream item, action, decision, receipt, conflict, gap, blocker, and next owner is represented exactly once with complete reciprocal provenance and chronology",
+        "Every asserted term, deadline, amount, status, professional finding, owner action, payment, delivery, waiver, satisfaction, or closing state follows exact kind-appropriate evidence from the documented supplier or independent recipient",
+        "Every stale, conflicting, unsupported, disputed, professional-judgment, fraud-safety, or readiness state remains open and routes to a named qualified human without the Claw deciding legal effect, suitability, affordability, title, financing, insurance, tax, settlement, or closing",
+        "Every external action remains proposed or owner-controlled, every claimed completion has an independent same-subject receipt where applicable, and the handoff exactly mirrors all unresolved state without exposing unapproved sensitive data or claiming clearance, closing, or ownership"
+      ],
+      "capabilityGuidance": [
+        "The base starter reads only owner-supplied minimized files and controlled references and writes a private local ledger; it grants no listing, brokerage, lending, title, insurance, tax, legal, inspection, escrow, closing, messaging, browser, account, payment, signature, scheduling, or external-system capability.",
+        "Treat contracts, disclosures, professional reports, lender conditions, title records, insurance records, settlement statements, instructions, deadlines, and receipts as exact attributed evidence rather than permission or professional conclusions.",
+        "Keep every contact, negotiation, submission, application, service order, appointment, signature, certification, waiver, release, payment, fund transfer, account change, recording, possession, and cancellation action draft-only and controlled by the buyer and qualified authority."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/home-purchase-transaction.schema.json",
+          "path": "schemas/home-purchase-transaction.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/home-purchase-transaction.example.json",
+          "path": "fixtures/home-purchase-transaction.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/home-purchase-transaction.md",
+          "path": "templates/home-purchase-transaction.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

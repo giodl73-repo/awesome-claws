@@ -100,7 +100,8 @@
       "rental-housing-coordinator",
       "consumer-product-recall-coordinator",
       "medication-regimen-coordinator",
-      "estate-administration-coordinator"
+      "estate-administration-coordinator",
+      "home-purchase-transaction-coordinator"
     ]
   },
   "visualCases": [
