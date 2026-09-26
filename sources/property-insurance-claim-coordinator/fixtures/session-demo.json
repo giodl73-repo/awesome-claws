@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "property-insurance-claim-coordinator",
+  "scenario": "Organize my supplied renters-insurance claim records after a burst pipe affected the living room flooring, desk, and laptop. Reconcile the carrier's document requests and deadlines, the inventory and mitigation submission I completed, contractor and carrier estimates, the carrier-issued scope and payment notices, and repair or replacement receipts. Show missing receipts, scope differences, and remaining exposure. Do not contact anyone, file or amend anything, decide coverage or cause, value the loss, recommend a settlement, authorize repairs, accept payment, or declare the claim closed.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my supplied renters-insurance claim records after a burst pipe affected the living room flooring, desk, and laptop. Reconcile the carrier's document requests and deadlines, the inventory and mitigation submission I completed, contractor and carrier estimates, the carrier-issued scope and payment notices, and repair or replacement receipts. Show missing receipts, scope differences, and remaining exposure. Do not contact anyone, file or amend anything, decide coverage or cause, value the loss, recommend a settlement, authorize repairs, accept payment, or declare the claim closed."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/property-insurance-claim-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Property insurance claim coordinator session handoff",
+    "summary": "A private versioned claim ledger separates the owner's observations from qualified and carrier-issued facts, maps three affected-property units to current official requirements, confirms one owner submission through an independent same-subject receipt, exposes a missing mitigation-upload receipt and a flooring-scope difference between dated estimates, and returns exact owner, carrier, and qualified-specialist questions without filing, contacting, valuing, advising, authorizing, accepting, or claiming closure.",
+    "output": "outputs/property-insurance-claim-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Private claim authority, source, policy-reference, and chronology register",
+        "summary": "Every in-scope loss event, affected property unit, authority, source, official requirement, owner attempt, receipt, estimate, carrier position, payment statement, repair or replacement record, owner decision, and residual gap is represented once with provenance, chronology, privacy, and authority state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Affected-property, evidence, mitigation, safety-boundary, and residual-exposure inventory",
+        "summary": "Every affected property unit maps to current dated official requirements plus exact estimate, carrier-position, payment, repair or replacement, and unresolved-gap indexes without inferring coverage, cause, value, liability, safety, or entitlement",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Official claim-requirement, deadline, owner-action, attempt, and independent-receipt matrix",
+        "summary": "Every owner-completed external action has an independent same-subject receipt, while planned, attempted, failed, blocked, withdrawn, superseded, and unreceipted actions remain distinguishable",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Estimate-scope, carrier-position, payment-statement, repair, replacement, and owner-decision reconciliation ledger",
+        "summary": "Every deadline, missing receipt, estimate or scope difference, carrier-issued pending or disputed state, payment or holdback statement, safety or professional question, residual exposure, and next owner is indexed exactly in the private handoff",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Sensitive-data minimization and controlled-disclosure register",
+        "summary": "The handoff makes no coverage, causation, fault, liability, valuation, depreciation, deductible, code, habitability, safety, entitlement, settlement, fraud, bad-faith, repair-sufficiency, claim-validity, filing, contact, submission, scheduling, authorization, payment, purchase, disposal, account, policy-change, advice, recovery-completion, or claim-closure claim",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Missing-receipt, contradiction, scope-difference, escalation, deadline, and next-owner handoff",
+        "summary": "Every in-scope loss event, affected property unit, authority, source, official requirement, owner attempt, receipt, estimate, carrier position, payment statement, repair or replacement record, owner decision, and residual gap is represented once with provenance, chronology, privacy, and authority state",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
