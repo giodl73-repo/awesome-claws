@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "awesomeClaws.rentalHousingLedger.v1",
+  "tenancy": {
+    "id": "tenancy-riverbend-r2",
+    "renterAuthorityRef": "renter-owner",
+    "authorizedHelperRefs": ["helper-family"],
+    "landlordAuthorityRef": "manager-riverbend",
+    "generalizedPremisesRef": "premises-unit-redacted",
+    "jurisdictions": ["US-CA-example-city"],
+    "privacyCeiling": "renter-and-explicit-helper",
+    "asOf": "2026-09-25T17:00:00-07:00",
+    "revision": 2,
+    "previousRevisionRef": "tenancy-riverbend-r1",
+    "leaseRevisionRefs": ["lease-r1", "lease-r2"],
+    "obligationRefs": ["obligation-rent-september", "obligation-maintenance", "obligation-entry-review", "obligation-move-out"],
+    "conditionItemRefs": ["condition-sink", "condition-wall"],
+    "maintenanceEpisodeRefs": ["maintenance-sink-leak"],
+    "noticeRefs": ["notice-entry"],
+    "paymentRefs": ["payment-september"],
+    "accessEventRefs": ["access-plumber"],
+    "actionRefs": ["action-submit-maintenance", "action-pay-september", "action-review-entry", "action-return-key"],
+    "moveStateRefs": ["move-in-state", "move-out-state"],
+    "returnedPropertyRefs": ["property-key"],
+    "chargeRefs": ["charge-cleaning"],
+    "gapRefs": ["gap-maintenance-completion", "gap-cleaning-charge"]
+  },
+  "authorities": [
+    { "id": "renter-owner", "kind": "renter-owner", "label": "Renter owner", "authorizationSourceRef": null },
+    { "id": "helper-family", "kind": "authorized-helper", "label": "Authorized household helper", "authorizationSourceRef": "source-helper-authorization" },
+    { "id": "manager-riverbend", "kind": "landlord-or-manager", "label": "Property manager", "authorizationSourceRef": null },
+    { "id": "provider-plumbing", "kind": "qualified-specialist", "label": "Qualified plumbing provider", "authorizationSourceRef": null }
+  ],
+  "sources": [
+    { "id": "source-helper-authorization", "kind": "helper-authorization", "subjectRef": "helper-family", "issuerAuthorityRef": "renter-owner", "controlledRef": "workspace://rental/helper-authorization", "revision": "1", "issuedAt": "2026-09-10T09:00:00-07:00", "retrievedAt": "2026-09-10T09:05:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-lease-original", "kind": "lease-document", "subjectRef": "lease-r1", "issuerAuthorityRef": "manager-riverbend", "controlledRef": "manager://rental/lease-r1", "revision": "1", "issuedAt": "2025-10-01T10:00:00-07:00", "retrievedAt": "2026-09-10T09:10:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "superseded", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-lease-amendment", "kind": "lease-amendment", "subjectRef": "lease-r2", "issuerAuthorityRef": "manager-riverbend", "controlledRef": "manager://rental/lease-r2", "revision": "2", "issuedAt": "2026-06-01T10:00:00-07:00", "retrievedAt": "2026-09-10T09:12:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-owner-sink-observation", "kind": "renter-observation", "subjectRef": "condition-sink", "issuerAuthorityRef": "renter-owner", "controlledRef": "workspace://rental/sink-observation", "revision": "1", "issuedAt": "2026-09-12T08:00:00-07:00", "retrievedAt": "2026-09-12T08:00:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-qualified-sink-finding", "kind": "qualified-finding", "subjectRef": "condition-sink", "issuerAuthorityRef": "provider-plumbing", "controlledRef": "provider://rental/sink-finding", "revision": "1", "issuedAt": "2026-09-15T14:00:00-07:00", "retrievedAt": "2026-09-15T14:10:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-maintenance-action", "kind": "renter-action-note", "subjectRef": "action-submit-maintenance", "issuerAuthorityRef": "helper-family", "controlledRef": "workspace://rental/maintenance-action", "revision": "1", "issuedAt": "2026-09-12T08:15:00-07:00", "retrievedAt": "2026-09-12T08:15:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-maintenance-receipt", "kind": "independent-receipt", "subjectRef": "action-submit-maintenance", "issuerAuthorityRef": "manager-riverbend", "controlledRef": "manager://rental/maintenance-receipt", "revision": "1", "issuedAt": "2026-09-12T08:20:00-07:00", "retrievedAt": "2026-09-12T08:21:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-maintenance-response", "kind": "maintenance-response", "subjectRef": "maintenance-sink-leak", "issuerAuthorityRef": "manager-riverbend", "controlledRef": "manager://rental/maintenance-response", "revision": "1", "issuedAt": "2026-09-13T11:00:00-07:00", "retrievedAt": "2026-09-13T11:05:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-entry-notice", "kind": "access-notice", "subjectRef": "notice-entry", "issuerAuthorityRef": "manager-riverbend", "controlledRef": "manager://rental/entry-notice", "revision": "1", "issuedAt": "2026-09-14T09:00:00-07:00", "retrievedAt": "2026-09-14T09:05:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-access-observation", "kind": "renter-observation", "subjectRef": "access-plumber", "issuerAuthorityRef": "renter-owner", "controlledRef": "workspace://rental/access-observation", "revision": "1", "issuedAt": "2026-09-15T14:30:00-07:00", "retrievedAt": "2026-09-15T14:30:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-rent-statement", "kind": "payment-statement", "subjectRef": "payment-september", "issuerAuthorityRef": "manager-riverbend", "controlledRef": "manager://rental/rent-statement", "revision": "1", "issuedAt": "2026-09-01T08:00:00-07:00", "retrievedAt": "2026-09-01T08:05:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-rent-action", "kind": "renter-action-note", "subjectRef": "action-pay-september", "issuerAuthorityRef": "renter-owner", "controlledRef": "workspace://rental/rent-action", "revision": "1", "issuedAt": "2026-09-03T10:00:00-07:00", "retrievedAt": "2026-09-03T10:00:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-rent-receipt", "kind": "payment-receipt", "subjectRef": "payment-september", "issuerAuthorityRef": "manager-riverbend", "controlledRef": "payment://rental/rent-receipt", "revision": "1", "issuedAt": "2026-09-03T10:02:00-07:00", "retrievedAt": "2026-09-03T10:03:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-move-in-record", "kind": "move-condition-record", "subjectRef": "move-in-state", "issuerAuthorityRef": "renter-owner", "controlledRef": "workspace://rental/move-in-record", "revision": "1", "issuedAt": "2025-10-01T16:00:00-07:00", "retrievedAt": "2026-09-10T09:20:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-wall-observation", "kind": "renter-observation", "subjectRef": "condition-wall", "issuerAuthorityRef": "renter-owner", "controlledRef": "workspace://rental/wall-observation", "revision": "1", "issuedAt": "2026-09-20T12:00:00-07:00", "retrievedAt": "2026-09-20T12:00:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-move-out-statement", "kind": "deposit-or-charge-statement", "subjectRef": "charge-cleaning", "issuerAuthorityRef": "manager-riverbend", "controlledRef": "manager://rental/move-out-statement", "revision": "1", "issuedAt": "2026-09-22T09:00:00-07:00", "retrievedAt": "2026-09-22T09:10:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-key-action", "kind": "renter-action-note", "subjectRef": "action-return-key", "issuerAuthorityRef": "renter-owner", "controlledRef": "workspace://rental/key-action", "revision": "1", "issuedAt": "2026-09-21T17:00:00-07:00", "retrievedAt": "2026-09-21T17:00:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-key-receipt", "kind": "returned-property-receipt", "subjectRef": "property-key", "issuerAuthorityRef": "manager-riverbend", "controlledRef": "manager://rental/key-receipt", "revision": "1", "issuedAt": "2026-09-21T17:05:00-07:00", "retrievedAt": "2026-09-21T17:06:00-07:00", "jurisdiction": "US-CA-example-city", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false }
+  ],
+  "leaseRevisions": [
+    { "id": "lease-r1", "revision": "1", "state": "superseded", "effectiveAt": "2025-10-01T00:00:00-07:00", "endedAt": "2026-06-01T00:00:00-07:00", "sourceRef": "source-lease-original", "predecessorRef": null, "successorRef": "lease-r2", "interpretedByClaw": false },
+    { "id": "lease-r2", "revision": "2", "state": "controlling", "effectiveAt": "2026-06-01T00:00:00-07:00", "endedAt": null, "sourceRef": "source-lease-amendment", "predecessorRef": "lease-r1", "successorRef": null, "interpretedByClaw": false }
+  ],
+  "obligations": [
+    { "id": "obligation-rent-september", "leaseRevisionRef": "lease-r2", "kind": "rent-or-payment", "summary": "Supplied September rent obligation", "dueAt": "2026-09-05T23:59:00-07:00", "sourceRefs": ["source-lease-amendment", "source-rent-statement"], "actionRefs": ["action-pay-september"], "state": "owner-completed-receipted", "externalExecution": "owner-only", "legalConclusion": false },
+    { "id": "obligation-maintenance", "leaseRevisionRef": "lease-r2", "kind": "maintenance", "summary": "Supplied maintenance reporting route", "dueAt": null, "sourceRefs": ["source-lease-amendment"], "actionRefs": ["action-submit-maintenance"], "state": "owner-completed-receipted", "externalExecution": "owner-only", "legalConclusion": false },
+    { "id": "obligation-entry-review", "leaseRevisionRef": "lease-r2", "kind": "access", "summary": "Review supplied entry notice", "dueAt": "2026-09-15T13:00:00-07:00", "sourceRefs": ["source-lease-amendment", "source-entry-notice"], "actionRefs": ["action-review-entry"], "state": "current", "externalExecution": "owner-only", "legalConclusion": false },
+    { "id": "obligation-move-out", "leaseRevisionRef": "lease-r2", "kind": "move", "summary": "Return supplied rental property at move-out", "dueAt": "2026-09-21T18:00:00-07:00", "sourceRefs": ["source-lease-amendment"], "actionRefs": ["action-return-key"], "state": "owner-completed-receipted", "externalExecution": "owner-only", "legalConclusion": false }
+  ],
+  "conditionItems": [
+    { "id": "condition-sink", "generalizedAreaRef": "kitchen-area", "redactedItemRef": "sink-fixture", "phase": "current", "assertionState": "qualified-observed", "sourceRefs": ["source-owner-sink-observation", "source-qualified-sink-finding"], "maintenanceEpisodeRefs": ["maintenance-sink-leak"], "chargeRefs": [], "gapRefs": ["gap-maintenance-completion"], "habitabilityDetermination": false, "faultDetermination": false, "safetyDetermination": false },
+    { "id": "condition-wall", "generalizedAreaRef": "living-area", "redactedItemRef": "wall-surface", "phase": "move-out", "assertionState": "conflicting", "sourceRefs": ["source-wall-observation", "source-move-out-statement"], "maintenanceEpisodeRefs": [], "chargeRefs": ["charge-cleaning"], "gapRefs": ["gap-cleaning-charge"], "habitabilityDetermination": false, "faultDetermination": false, "safetyDetermination": false }
+  ],
+  "maintenanceEpisodes": [
+    { "id": "maintenance-sink-leak", "conditionItemRefs": ["condition-sink"], "openedAt": "2026-09-12T08:00:00-07:00", "state": "provider-attended", "sourceRefs": ["source-owner-sink-observation", "source-maintenance-response", "source-qualified-sink-finding"], "actionRefs": ["action-submit-maintenance"], "accessEventRefs": ["access-plumber"], "gapRefs": ["gap-maintenance-completion"], "repairSufficiencyDetermination": false, "habitabilityDetermination": false }
+  ],
+  "notices": [
+    { "id": "notice-entry", "kind": "entry", "leaseRevisionRef": "lease-r2", "sourceRef": "source-entry-notice", "issuedAt": "2026-09-14T09:00:00-07:00", "effectiveAt": "2026-09-15T13:00:00-07:00", "deadlineAt": "2026-09-15T13:00:00-07:00", "state": "current", "actionRefs": ["action-review-entry"], "legalValidityDetermination": false }
+  ],
+  "payments": [
+    { "id": "payment-september", "obligationRef": "obligation-rent-september", "periodRef": "period-2026-09", "amountNote": "Amount retained only in controlled statement", "statementSourceRef": "source-rent-statement", "receiptSourceRef": "source-rent-receipt", "actionRef": "action-pay-september", "state": "independently-receipted", "paymentValidityDetermination": false }
+  ],
+  "accessEvents": [
+    { "id": "access-plumber", "noticeRef": "notice-entry", "maintenanceEpisodeRef": "maintenance-sink-leak", "scheduledAt": "2026-09-15T13:00:00-07:00", "occurredAt": "2026-09-15T14:00:00-07:00", "state": "owner-observed-occurred", "sourceRefs": ["source-entry-notice", "source-access-observation"], "ownerConsentClaim": false, "legalAccessDetermination": false }
+  ],
+  "actions": [
+    { "id": "action-submit-maintenance", "kind": "submit-maintenance-request", "subjectRef": "maintenance-sink-leak", "ownerAuthorityRef": "helper-family", "state": "owner-completed-receipted", "attemptedAt": "2026-09-12T08:15:00-07:00", "sourceRefs": ["source-maintenance-action", "source-maintenance-receipt"], "receiptSourceRef": "source-maintenance-receipt", "externalExecution": "owner-only", "agentExecuted": false },
+    { "id": "action-pay-september", "kind": "make-payment", "subjectRef": "payment-september", "ownerAuthorityRef": "renter-owner", "state": "owner-completed-receipted", "attemptedAt": "2026-09-03T10:00:00-07:00", "sourceRefs": ["source-rent-action", "source-rent-receipt"], "receiptSourceRef": "source-rent-receipt", "externalExecution": "owner-only", "agentExecuted": false },
+    { "id": "action-review-entry", "kind": "review-record", "subjectRef": "notice-entry", "ownerAuthorityRef": "renter-owner", "state": "planned", "attemptedAt": null, "sourceRefs": ["source-entry-notice"], "receiptSourceRef": null, "externalExecution": "owner-only", "agentExecuted": false },
+    { "id": "action-return-key", "kind": "return-property", "subjectRef": "property-key", "ownerAuthorityRef": "renter-owner", "state": "owner-completed-receipted", "attemptedAt": "2026-09-21T17:00:00-07:00", "sourceRefs": ["source-key-action", "source-key-receipt"], "receiptSourceRef": "source-key-receipt", "externalExecution": "owner-only", "agentExecuted": false }
+  ],
+  "moveStates": [
+    { "id": "move-in-state", "phase": "move-in", "state": "recorded", "conditionItemRefs": ["condition-sink", "condition-wall"], "returnedPropertyRefs": [], "chargeRefs": [], "sourceRefs": ["source-move-in-record"], "gapRefs": [], "closureDetermination": false },
+    { "id": "move-out-state", "phase": "move-out", "state": "under-review", "conditionItemRefs": ["condition-wall"], "returnedPropertyRefs": ["property-key"], "chargeRefs": ["charge-cleaning"], "sourceRefs": ["source-wall-observation", "source-move-out-statement", "source-key-receipt"], "gapRefs": ["gap-cleaning-charge"], "closureDetermination": false }
+  ],
+  "returnedProperties": [
+    { "id": "property-key", "kind": "key", "redactedLabel": "primary-key-redacted", "state": "independently-receipted-returned", "actionRef": "action-return-key", "receiptSourceRef": "source-key-receipt" }
+  ],
+  "charges": [
+    { "id": "charge-cleaning", "kind": "condition-related", "amountNote": "Amount retained only in controlled move-out statement", "statementSourceRef": "source-move-out-statement", "conditionItemRefs": ["condition-wall"], "paymentRef": null, "state": "disputed", "entitlementDetermination": false }
+  ],
+  "gaps": [
+    { "id": "gap-maintenance-completion", "kind": "maintenance-question", "subjectRefs": ["maintenance-sink-leak", "condition-sink"], "sourceRefs": ["source-qualified-sink-finding"], "nextOwnerAuthorityRef": "manager-riverbend", "state": "open", "resolutionSourceRef": null },
+    { "id": "gap-cleaning-charge", "kind": "disputed-charge", "subjectRefs": ["charge-cleaning", "condition-wall"], "sourceRefs": ["source-wall-observation", "source-move-out-statement"], "nextOwnerAuthorityRef": "renter-owner", "state": "open", "resolutionSourceRef": null }
+  ],
+  "review": {
+    "asOf": "2026-09-25T17:00:00-07:00",
+    "nextRevision": 3,
+    "nextOwnerAuthorityRef": "renter-owner",
+    "openGapRefs": ["gap-maintenance-completion", "gap-cleaning-charge"],
+    "deadlineRefs": ["obligation-rent-september", "obligation-entry-review", "obligation-move-out", "notice-entry"],
+    "missingReceiptActionRefs": [],
+    "disputedChargeRefs": ["charge-cleaning"],
+    "safetyGapRefs": [],
+    "tenancyClosureClaim": false,
+    "legalRightsConclusion": false,
+    "habitabilityConclusion": false,
+    "entitlementConclusion": false
+  },
+  "prohibitedActions": {
+    "legalInterpretation": false,
+    "advice": false,
+    "contact": false,
+    "submission": false,
+    "payment": false,
+    "signature": false,
+    "scheduling": false,
+    "accessGrant": false,
+    "repairAuthorization": false,
+    "accountChange": false,
+    "surrenderPossession": false,
+    "closure": false
+  }
+}

@@ -3252,6 +3252,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "rental-housing-coordinator",
+      "acceptedRequest": "Organize my supplied apartment lease, move-in condition record, rent receipts, repair requests, entry notices, and the move-out statement. Reconcile what I already sent with independent receipts and show missing evidence and disputed charges, but do not interpret my rights, contact anyone, submit notices, pay, schedule, authorize repairs, or decide what I am owed.",
+      "requiredEvidence": [
+        "Renter owner, authorized helpers, generalized premises reference, supplied lease and amendment set, jurisdictions, privacy ceiling, and escalation path",
+        "Official or landlord notices, published procedures, obligations, deadlines, payment statements and receipts, deposit records, and access notices",
+        "Condition evidence, maintenance episodes, renter reports, qualified findings, requests already sent, provider or landlord responses, attempts, and independent receipts",
+        "Move-in or move-out evidence, keys and access-device state, owner decisions, disputed charges, unresolved questions, and next responsible humans"
+      ],
+      "authorityBoundaries": [
+        "Do not interpret leases, statutes, notices, rights, duties, habitability, retaliation, discrimination, fault, liability, rent validity, deposit entitlement, or legal effect",
+        "Do not give legal, housing, safety, financial, tax, inspection, repair, engineering, or health advice",
+        "Do not contact landlords, managers, neighbors, authorities, providers, or advocates; submit notices or requests; pay; sign; schedule; grant access; authorize repairs; change accounts; or surrender possession",
+        "Minimize precise addresses, access details, identities, account data, payment details, health information, photos, credentials, and private household information"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/rental-housing-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

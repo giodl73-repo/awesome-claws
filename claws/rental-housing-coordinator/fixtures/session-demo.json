@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "rental-housing-coordinator",
+  "scenario": "Organize my supplied apartment lease, move-in condition record, rent receipts, repair requests, entry notices, and the move-out statement. Reconcile what I already sent with independent receipts and show missing evidence and disputed charges, but do not interpret my rights, contact anyone, submit notices, pay, schedule, authorize repairs, or decide what I am owed.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize my supplied apartment lease, move-in condition record, rent receipts, repair requests, entry notices, and the move-out statement. Reconcile what I already sent with independent receipts and show missing evidence and disputed charges, but do not interpret my rights, contact anyone, submit notices, pay, schedule, authorize repairs, or decide what I am owed."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/rental-housing-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Rental housing coordinator session handoff",
+    "summary": "A private versioned rental ledger links the controlling supplied lease revision to obligations, condition items, maintenance episodes, owner actions, receipts, access events, move-out records, and unresolved deposit or charge questions without legal conclusions or external action.",
+    "output": "outputs/rental-housing-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Private tenancy authority, source, lease-revision, and chronology register",
+        "summary": "Every in-scope lease revision, source, obligation, notice, deadline, payment, condition item, maintenance episode, access event, action, receipt, move-state item, charge, and dispute is represented once with provenance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Obligation, notice, deadline, payment, and independent-receipt matrix",
+        "summary": "Every owner-completed external action has an independent same-subject receipt or remains explicitly unreceipted",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Premises-condition, maintenance-episode, access-event, and safety-boundary ledger",
+        "summary": "Every missing record, conflict, safety question, disputed charge, deadline, and residual tenancy state has an accountable next owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Move-in or move-out, deposit, charge, returned-property, and dispute register",
+        "summary": "The handoff makes no legal-rights, habitability, fault, liability, payment-validity, deposit-entitlement, repair-sufficiency, or closure conclusion",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Sensitive-data minimization and next-owner handoff",
+        "summary": "Every in-scope lease revision, source, obligation, notice, deadline, payment, condition item, maintenance episode, access event, action, receipt, move-state item, charge, and dispute is represented once with provenance",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
