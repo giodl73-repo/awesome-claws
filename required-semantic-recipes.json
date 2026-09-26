@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 131,
-    "coveredCount": 131,
-    "recipeCount": 361,
-    "findingCodeCount": 488
+    "validatorCount": 132,
+    "coveredCount": 132,
+    "recipeCount": 364,
+    "findingCodeCount": 489
   },
   "entries": [
     {
@@ -5717,6 +5717,55 @@
             "invalid_landlord_authority",
             "invalid_lease_source",
             "invalid_source_authority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "consumer-product-recall-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-action-owner-1",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "ownerAuthorityRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_action_owner",
+            "invalid_helper_authorization",
+            "invalid_next_owner",
+            "invalid_owner_authority",
+            "invalid_source_authority"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-helper-index-2",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "authorizedHelperRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_helper_index",
+            "invalid_action_owner",
+            "invalid_source_authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-source-jurisdiction-3",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "jurisdictions",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_source_jurisdiction"
           ]
         }
       ]

@@ -138,6 +138,11 @@
         "id": "neighborhood-operations-watcher",
         "overlap": "Both bind location-specific official sources, household impact, accessibility, expiry, privacy-sensitive addresses, and emergency-authority boundaries.",
         "difference": "Neighborhood Operations Watcher repeatedly summarizes non-emergency local notices and service disruptions. This proposal maintains an owner-approved pre-incident household preparedness contract and exercise history and neither watches current notices nor prepares complaints, service requests, or operational updates."
+      },
+      {
+        "id": "consumer-product-recall-coordinator",
+        "overlap": "Both maintain private household evidence against dated official hazard guidance, preserve uncertain applicability and superseded instructions, track owner actions and unresolved gaps, minimize sensitive location or identity details, and leave urgent safety authority with official issuers and qualified humans.",
+        "difference": "Consumer Product Recall Coordinator reconciles exact owned-product identity against official campaign revisions, affected criteria, remedy paths, owner actions, and independent correction receipts. Household Emergency Preparedness Coordinator reconciles people, dependents, animals, locations, accessibility and transport needs across multi-hazard evacuation, shelter, communication, reunification, supplies, drills, and corrective actions; it has no product-campaign applicability or recall-remedy lifecycle."
       }
     ]
   }

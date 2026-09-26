@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "awesomeClaws.consumerRecallLedger.v1",
+  "portfolio": {
+    "id": "recall-portfolio-household-r2",
+    "ownerAuthorityRef": "owner-household",
+    "authorizedHelperRefs": ["helper-household"],
+    "generalizedScopeRef": "household-products-redacted",
+    "jurisdictions": ["us-ca-example"],
+    "privacyCeiling": "owner-and-explicit-helper",
+    "asOf": "2026-09-25T17:00:00-07:00",
+    "revision": 2,
+    "previousRevisionRef": "recall-portfolio-household-r1",
+    "sourceRefs": ["source-helper-authorization", "source-power-inventory", "source-blender-inventory", "source-power-campaign-r1", "source-power-campaign-r2", "source-power-lookup", "source-power-action", "source-power-correction-receipt", "source-blender-campaign"],
+    "productRefs": ["product-power-bank", "product-blender"],
+    "identityClaimRefs": ["identity-power-manufacturer", "identity-power-model", "identity-power-lot", "identity-blender-manufacturer", "identity-blender-model", "identity-blender-lot"],
+    "campaignRefs": ["campaign-power-r1", "campaign-power-r2", "campaign-blender-r1"],
+    "criterionRefs": ["criterion-power-r1-model", "criterion-power-r2-model", "criterion-power-r2-lot", "criterion-blender-model", "criterion-blender-lot"],
+    "applicabilityCheckRefs": ["check-power-r2", "check-blender-r1"],
+    "instructionRefs": ["instruction-power-r1-stop", "instruction-power-r2-stop", "instruction-power-r2-return", "instruction-blender-stop", "instruction-blender-contact"],
+    "remedyRefs": ["remedy-power-r1-replacement", "remedy-power-r2-replacement", "remedy-blender-refund"],
+    "actionRefs": ["action-power-submit", "action-blender-review"],
+    "outcomeRefs": ["outcome-power-replacement"],
+    "gapRefs": ["gap-blender-identity", "gap-blender-remedy"]
+  },
+  "authorities": [
+    { "id": "owner-household", "kind": "owner", "label": "Household product owner", "authorizationSourceRef": null },
+    { "id": "helper-household", "kind": "authorized-helper", "label": "Authorized household helper", "authorizationSourceRef": "source-helper-authorization" },
+    { "id": "regulator-products", "kind": "regulator", "label": "Public product-safety regulator", "authorizationSourceRef": null },
+    { "id": "issuer-northstar", "kind": "manufacturer-or-issuer", "label": "Northstar product issuer", "authorizationSourceRef": null },
+    { "id": "issuer-kitchenworks", "kind": "manufacturer-or-issuer", "label": "Kitchenworks product issuer", "authorizationSourceRef": null }
+  ],
+  "sources": [
+    { "id": "source-helper-authorization", "kind": "helper-authorization", "subjectRef": "helper-household", "issuerAuthorityRef": "owner-household", "controlledRef": "workspace://recall/helper-authorization", "revision": "1", "issuedAt": "2026-08-01T09:00:00-07:00", "retrievedAt": "2026-08-01T09:05:00-07:00", "jurisdiction": "us-ca-example", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-power-inventory", "kind": "owner-inventory", "subjectRef": "product-power-bank", "issuerAuthorityRef": "owner-household", "controlledRef": "workspace://recall/power-bank-inventory", "revision": "2", "issuedAt": "2026-08-20T10:00:00-07:00", "retrievedAt": "2026-08-20T10:00:00-07:00", "jurisdiction": "us-ca-example", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-blender-inventory", "kind": "owner-inventory", "subjectRef": "product-blender", "issuerAuthorityRef": "helper-household", "controlledRef": "workspace://recall/blender-inventory", "revision": "1", "issuedAt": "2026-09-03T11:00:00-07:00", "retrievedAt": "2026-09-03T11:00:00-07:00", "jurisdiction": "us-ca-example", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-power-campaign-r1", "kind": "official-campaign-notice", "subjectRef": "campaign-power-r1", "issuerAuthorityRef": "regulator-products", "controlledRef": "regulator://recall/power-campaign-r1", "revision": "1", "issuedAt": "2026-07-01T12:00:00-07:00", "retrievedAt": "2026-07-02T09:00:00-07:00", "jurisdiction": "us-ca-example", "freshness": "superseded", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-power-campaign-r2", "kind": "official-campaign-revision", "subjectRef": "campaign-power-r2", "issuerAuthorityRef": "regulator-products", "controlledRef": "regulator://recall/power-campaign-r2", "revision": "2", "issuedAt": "2026-08-15T12:00:00-07:00", "retrievedAt": "2026-08-16T09:00:00-07:00", "jurisdiction": "us-ca-example", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-power-lookup", "kind": "manufacturer-lookup", "subjectRef": "check-power-r2", "issuerAuthorityRef": "issuer-northstar", "controlledRef": "issuer://recall/power-lookup-result", "revision": "1", "issuedAt": "2026-09-10T09:05:00-07:00", "retrievedAt": "2026-09-10T09:06:00-07:00", "jurisdiction": "us-ca-example", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-power-action", "kind": "owner-action-note", "subjectRef": "action-power-submit", "issuerAuthorityRef": "owner-household", "controlledRef": "workspace://recall/power-replacement-request", "revision": "1", "issuedAt": "2026-09-10T09:10:00-07:00", "retrievedAt": "2026-09-10T09:10:00-07:00", "jurisdiction": "us-ca-example", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-power-correction-receipt", "kind": "correction-receipt", "subjectRef": "action-power-submit", "issuerAuthorityRef": "issuer-northstar", "controlledRef": "issuer://recall/power-replacement-receipt", "revision": "1", "issuedAt": "2026-09-20T14:00:00-07:00", "retrievedAt": "2026-09-20T14:05:00-07:00", "jurisdiction": "us-ca-example", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false },
+    { "id": "source-blender-campaign", "kind": "official-campaign-notice", "subjectRef": "campaign-blender-r1", "issuerAuthorityRef": "regulator-products", "controlledRef": "regulator://recall/blender-campaign-r1", "revision": "1", "issuedAt": "2026-09-01T12:00:00-07:00", "retrievedAt": "2026-09-02T09:00:00-07:00", "jurisdiction": "us-ca-example", "freshness": "current", "redaction": "minimized-reference-only", "containsSecrets": false }
+  ],
+  "products": [
+    { "id": "product-power-bank", "generalizedLabel": "Portable power bank A", "category": "electronics", "generalizedLocationRef": "household-storage-redacted", "custodyState": "owned", "identityClaimRefs": ["identity-power-manufacturer", "identity-power-model", "identity-power-lot"], "applicabilityCheckRefs": ["check-power-r2"], "actionRefs": ["action-power-submit"], "outcomeRefs": ["outcome-power-replacement"], "gapRefs": [], "safetyDetermination": false, "defectDetermination": false },
+    { "id": "product-blender", "generalizedLabel": "Countertop blender B", "category": "appliance", "generalizedLocationRef": "household-kitchen-redacted", "custodyState": "owned", "identityClaimRefs": ["identity-blender-manufacturer", "identity-blender-model", "identity-blender-lot"], "applicabilityCheckRefs": ["check-blender-r1"], "actionRefs": ["action-blender-review"], "outcomeRefs": [], "gapRefs": ["gap-blender-identity", "gap-blender-remedy"], "safetyDetermination": false, "defectDetermination": false }
+  ],
+  "identityClaims": [
+    { "id": "identity-power-manufacturer", "productRef": "product-power-bank", "kind": "manufacturer", "valueRef": "northstar", "sourceRefs": ["source-power-inventory"], "state": "verified" },
+    { "id": "identity-power-model", "productRef": "product-power-bank", "kind": "model", "valueRef": "model-px20", "sourceRefs": ["source-power-inventory"], "state": "verified" },
+    { "id": "identity-power-lot", "productRef": "product-power-bank", "kind": "lot", "valueRef": "lot-l7", "sourceRefs": ["source-power-inventory"], "state": "verified" },
+    { "id": "identity-blender-manufacturer", "productRef": "product-blender", "kind": "manufacturer", "valueRef": "kitchenworks", "sourceRefs": ["source-blender-inventory"], "state": "verified" },
+    { "id": "identity-blender-model", "productRef": "product-blender", "kind": "model", "valueRef": "model-mix4", "sourceRefs": ["source-blender-inventory"], "state": "verified" },
+    { "id": "identity-blender-lot", "productRef": "product-blender", "kind": "lot", "valueRef": "lot-unreadable", "sourceRefs": ["source-blender-inventory"], "state": "unverified" }
+  ],
+  "campaigns": [
+    { "id": "campaign-power-r1", "stableCampaignRef": "campaign-power-portable", "revision": "1", "state": "superseded", "predecessorRef": null, "successorRef": "campaign-power-r2", "issuerAuthorityRef": "regulator-products", "issuedAt": "2026-07-01T12:00:00-07:00", "sourceRef": "source-power-campaign-r1", "criterionRefs": ["criterion-power-r1-model"], "instructionRefs": ["instruction-power-r1-stop"], "remedyRefs": ["remedy-power-r1-replacement"], "deadlineAt": "2026-10-01T23:59:00-07:00", "safetyDetermination": false, "eligibilityDetermination": false },
+    { "id": "campaign-power-r2", "stableCampaignRef": "campaign-power-portable", "revision": "2", "state": "current", "predecessorRef": "campaign-power-r1", "successorRef": null, "issuerAuthorityRef": "regulator-products", "issuedAt": "2026-08-15T12:00:00-07:00", "sourceRef": "source-power-campaign-r2", "criterionRefs": ["criterion-power-r2-model", "criterion-power-r2-lot"], "instructionRefs": ["instruction-power-r2-stop", "instruction-power-r2-return"], "remedyRefs": ["remedy-power-r2-replacement"], "deadlineAt": "2026-12-31T23:59:00-08:00", "safetyDetermination": false, "eligibilityDetermination": false },
+    { "id": "campaign-blender-r1", "stableCampaignRef": "campaign-blender-countertop", "revision": "1", "state": "current", "predecessorRef": null, "successorRef": null, "issuerAuthorityRef": "regulator-products", "issuedAt": "2026-09-01T12:00:00-07:00", "sourceRef": "source-blender-campaign", "criterionRefs": ["criterion-blender-model", "criterion-blender-lot"], "instructionRefs": ["instruction-blender-stop", "instruction-blender-contact"], "remedyRefs": ["remedy-blender-refund"], "deadlineAt": "2026-11-30T23:59:00-08:00", "safetyDetermination": false, "eligibilityDetermination": false }
+  ],
+  "criteria": [
+    { "id": "criterion-power-r1-model", "campaignRef": "campaign-power-r1", "effect": "affected", "kind": "model", "valueRef": "model-px20", "sourceRef": "source-power-campaign-r1" },
+    { "id": "criterion-power-r2-model", "campaignRef": "campaign-power-r2", "effect": "affected", "kind": "model", "valueRef": "model-px20", "sourceRef": "source-power-campaign-r2" },
+    { "id": "criterion-power-r2-lot", "campaignRef": "campaign-power-r2", "effect": "affected", "kind": "lot", "valueRef": "lot-l7", "sourceRef": "source-power-campaign-r2" },
+    { "id": "criterion-blender-model", "campaignRef": "campaign-blender-r1", "effect": "affected", "kind": "model", "valueRef": "model-mix4", "sourceRef": "source-blender-campaign" },
+    { "id": "criterion-blender-lot", "campaignRef": "campaign-blender-r1", "effect": "affected", "kind": "lot", "valueRef": "lot-k2", "sourceRef": "source-blender-campaign" }
+  ],
+  "applicabilityChecks": [
+    { "id": "check-power-r2", "productRef": "product-power-bank", "campaignRef": "campaign-power-r2", "criterionRefs": ["criterion-power-r2-model", "criterion-power-r2-lot"], "evidenceSourceRefs": ["source-power-inventory", "source-power-campaign-r2", "source-power-lookup"], "state": "corrected-with-receipt", "resultSourceRef": "source-power-lookup", "outcomeRef": "outcome-power-replacement", "safetyDetermination": false, "defectDetermination": false, "eligibilityDetermination": false },
+    { "id": "check-blender-r1", "productRef": "product-blender", "campaignRef": "campaign-blender-r1", "criterionRefs": ["criterion-blender-model", "criterion-blender-lot"], "evidenceSourceRefs": ["source-blender-inventory", "source-blender-campaign"], "state": "unresolved", "resultSourceRef": null, "outcomeRef": null, "safetyDetermination": false, "defectDetermination": false, "eligibilityDetermination": false }
+  ],
+  "instructions": [
+    { "id": "instruction-power-r1-stop", "campaignRef": "campaign-power-r1", "kind": "stop-use", "summary": "Superseded regulator stop-use instruction", "sourceRef": "source-power-campaign-r1", "state": "superseded", "actionRefs": [], "adviceByClaw": false },
+    { "id": "instruction-power-r2-stop", "campaignRef": "campaign-power-r2", "kind": "stop-use", "summary": "Current regulator stop-use instruction retained verbatim in controlled evidence", "sourceRef": "source-power-campaign-r2", "state": "current", "actionRefs": [], "adviceByClaw": false },
+    { "id": "instruction-power-r2-return", "campaignRef": "campaign-power-r2", "kind": "submit-request", "summary": "Current issuer replacement-request route", "sourceRef": "source-power-campaign-r2", "state": "current", "actionRefs": ["action-power-submit"], "adviceByClaw": false },
+    { "id": "instruction-blender-stop", "campaignRef": "campaign-blender-r1", "kind": "stop-use", "summary": "Current regulator stop-use instruction pending exact lot evidence", "sourceRef": "source-blender-campaign", "state": "current", "actionRefs": ["action-blender-review"], "adviceByClaw": false },
+    { "id": "instruction-blender-contact", "campaignRef": "campaign-blender-r1", "kind": "contact-issuer", "summary": "Current issuer lookup route retained as an owner-controlled option", "sourceRef": "source-blender-campaign", "state": "current", "actionRefs": [], "adviceByClaw": false }
+  ],
+  "remedies": [
+    { "id": "remedy-power-r1-replacement", "campaignRef": "campaign-power-r1", "kind": "replacement", "summary": "Superseded replacement route", "sourceRef": "source-power-campaign-r1", "prerequisiteCriterionRefs": ["criterion-power-r1-model"], "deadlineAt": "2026-10-01T23:59:00-07:00", "state": "superseded", "actionRefs": [], "entitlementDetermination": false },
+    { "id": "remedy-power-r2-replacement", "campaignRef": "campaign-power-r2", "kind": "replacement", "summary": "Current replacement route for issuer-confirmed products", "sourceRef": "source-power-campaign-r2", "prerequisiteCriterionRefs": ["criterion-power-r2-model", "criterion-power-r2-lot"], "deadlineAt": "2026-12-31T23:59:00-08:00", "state": "published", "actionRefs": ["action-power-submit"], "entitlementDetermination": false },
+    { "id": "remedy-blender-refund", "campaignRef": "campaign-blender-r1", "kind": "refund", "summary": "Published refund route pending exact identity confirmation", "sourceRef": "source-blender-campaign", "prerequisiteCriterionRefs": ["criterion-blender-model", "criterion-blender-lot"], "deadlineAt": "2026-11-30T23:59:00-08:00", "state": "published", "actionRefs": [], "entitlementDetermination": false }
+  ],
+  "actions": [
+    { "id": "action-power-submit", "productRef": "product-power-bank", "campaignRef": "campaign-power-r2", "remedyRef": "remedy-power-r2-replacement", "kind": "submit-request", "ownerAuthorityRef": "owner-household", "state": "owner-completed-receipted", "attemptedAt": "2026-09-10T09:10:00-07:00", "sourceRefs": ["source-power-action", "source-power-correction-receipt"], "receiptSourceRef": "source-power-correction-receipt", "externalExecution": "owner-only", "agentExecuted": false },
+    { "id": "action-blender-review", "productRef": "product-blender", "campaignRef": "campaign-blender-r1", "remedyRef": null, "kind": "review-record", "ownerAuthorityRef": "helper-household", "state": "planned", "attemptedAt": null, "sourceRefs": ["source-blender-campaign"], "receiptSourceRef": null, "externalExecution": "owner-only", "agentExecuted": false }
+  ],
+  "outcomes": [
+    { "id": "outcome-power-replacement", "productRef": "product-power-bank", "campaignRef": "campaign-power-r2", "actionRef": "action-power-submit", "kind": "replacement-received", "state": "independently-receipted", "sourceRef": "source-power-correction-receipt", "correctionSufficiencyDetermination": false, "closureDetermination": false }
+  ],
+  "gaps": [
+    { "id": "gap-blender-identity", "kind": "missing-identity", "subjectRefs": ["product-blender", "identity-blender-lot", "campaign-blender-r1", "check-blender-r1"], "sourceRefs": ["source-blender-inventory", "source-blender-campaign"], "nextOwnerAuthorityRef": "owner-household", "state": "open", "resolutionSourceRef": null },
+    { "id": "gap-blender-remedy", "kind": "blocked-remedy", "subjectRefs": ["product-blender", "check-blender-r1", "remedy-blender-refund"], "sourceRefs": ["source-blender-campaign"], "nextOwnerAuthorityRef": "owner-household", "state": "open", "resolutionSourceRef": null }
+  ],
+  "review": {
+    "asOf": "2026-09-25T17:00:00-07:00",
+    "nextRevision": 3,
+    "nextOwnerAuthorityRef": "owner-household",
+    "possibleApplicabilityRefs": [],
+    "confirmedApplicabilityRefs": [],
+    "unresolvedApplicabilityRefs": ["check-blender-r1"],
+    "correctedApplicabilityRefs": ["check-power-r2"],
+    "openGapRefs": ["gap-blender-identity", "gap-blender-remedy"],
+    "deadlineRefs": ["campaign-power-r2", "campaign-blender-r1", "remedy-power-r2-replacement", "remedy-blender-refund"],
+    "missingReceiptActionRefs": [],
+    "urgentGapRefs": [],
+    "portfolioClosureClaim": false,
+    "safetyConclusion": false,
+    "defectConclusion": false,
+    "eligibilityConclusion": false,
+    "correctionConclusion": false
+  },
+  "prohibitedActions": {
+    "diagnosis": false,
+    "safetyAdvice": false,
+    "legalAdvice": false,
+    "consumerRightsAdvice": false,
+    "contact": false,
+    "registration": false,
+    "submission": false,
+    "labelCreation": false,
+    "shipping": false,
+    "transport": false,
+    "return": false,
+    "repair": false,
+    "disable": false,
+    "destruction": false,
+    "disposal": false,
+    "donation": false,
+    "sale": false,
+    "replacement": false,
+    "purchase": false,
+    "scheduling": false,
+    "authorization": false,
+    "acceptance": false,
+    "disclosure": false,
+    "payment": false,
+    "closure": false
+  }
+}

@@ -3276,6 +3276,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "consumer-product-recall-coordinator",
+      "acceptedRequest": "Organize the official recall notices I supplied for our portable power banks, countertop appliance, child product, and office charger. Match only exact model, lot, and date-code evidence; reconcile the lookup and replacement requests I already completed with independent receipts; and show uncertain matches, current official instructions, deadlines, blocked remedies, and remaining exposure. Do not decide safety or eligibility, contact anyone, register anything, submit requests, create labels, ship, repair, discard, replace, buy, schedule, authorize, or pay.",
+      "requiredEvidence": [
+        "Owner and explicitly authorized helper roles, private portfolio scope, generalized storage or use locations, sharing ceiling, review cadence, and urgent human safety escalation path",
+        "Owned-product labels, category, manufacturer, model, batch, lot, date-code, partial serial, purchase, installation, registration, photo, manual, and inventory evidence through minimized controlled references",
+        "Official regulator, manufacturer, retailer, or qualified-provider campaign notices, revisions, affected-identity criteria, exclusions, hazard statements, remedy options, deadlines, and supersession state",
+        "Owner observations, decisions, actions already taken, independent lookup, submission, shipping, service, return, refund, replacement, repair, disposal, or correction receipts, failed attempts, and residual questions"
+      ],
+      "authorityBoundaries": [
+        "Do not determine that a product is safe, unsafe, defective, recalled, eligible, repaired, corrected, or fit for use beyond exact attributed official or qualified evidence",
+        "Do not give safety, repair, legal, consumer-rights, medical, engineering, disposal, transport, shipping, financial, or insurance advice",
+        "Do not contact regulators, manufacturers, retailers, carriers, providers, or other people; register products; submit recall or warranty requests; create labels; ship, transport, return, repair, disable, destroy, discard, donate, sell, replace, purchase, schedule, authorize work, accept terms, or pay",
+        "Minimize precise addresses, household identities, account and order data, full serial numbers, photos, credentials, payment details, and location-sensitive product information"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/consumer-product-recall-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

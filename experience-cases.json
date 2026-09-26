@@ -97,7 +97,8 @@
       "household-emergency-preparedness-coordinator",
       "identity-theft-recovery-coordinator",
       "property-insurance-claim-coordinator",
-      "rental-housing-coordinator"
+      "rental-housing-coordinator",
+      "consumer-product-recall-coordinator"
     ]
   },
   "visualCases": [
