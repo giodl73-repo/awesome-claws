@@ -108,6 +108,11 @@
         "difference": "Tax Document Organizer assembles a filing-period tax document packet and completeness checklist. This proposal maintains a continuing cross-institution identity-recovery case in which a tax notice is only one possible surface, with suspicion-versus-confirmation state, official recovery routes, owner attempts, independent receipts, disputes, institution decisions, and residual exposure."
       },
       {
+        "id": "medication-regimen-coordinator",
+        "overlap": "Both maintain private evidence-bound ledgers across authoritative source revisions, owner observations and actions, independent receipts, sensitive-data minimization, urgent escalation, contradictions, and unresolved exposure without taking external action.",
+        "difference": "Medication Regimen Coordinator owns patient-specific medication orders, regimen revisions, occurrence observations, supply, expiry, refill attempts, and dispensing receipts under clinical and pharmacy authority. Identity Theft Recovery Coordinator owns suspected misuse across identity, credit, credential, tax, benefits, insurance, and institution-account surfaces, preserving suspicion versus confirmation and official recovery routes without operating a medication workflow."
+      },
+      {
         "id": "household-emergency-preparedness-coordinator",
         "overlap": "Both maintain a private household-owned plan with authoritative sources, deadlines, blocked external actions, evidence receipts, contradictions, and accountable next owners.",
         "difference": "Household Emergency Preparedness Coordinator reconciles hazards, people, places, supplies, communications, drills, and event-time readiness. This proposal reconciles suspected identity misuse across redacted identity surfaces, official recovery routes, reports, disputes, alerts or freezes, institution decisions, and same-subject action receipts without declaring fraud or executing recovery actions."

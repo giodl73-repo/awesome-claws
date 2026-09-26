@@ -122,6 +122,11 @@
         "difference": "Learning Plan Coordinator sequences competencies, practice resources, and checkpoints for one learner. Civic Services Navigator resolves public-service jurisdiction and administering agency, then maps published program criteria, intake channels, and adjudication questions without operating a learning plan."
       },
       {
+        "id": "medication-regimen-coordinator",
+        "overlap": "Both reconcile sensitive owner-supplied facts against versioned authoritative sources, preserve criterion-level unknowns and conflicts, minimize private data, block external action, and route unresolved decisions to the responsible human authority.",
+        "difference": "Medication Regimen Coordinator owns patient-specific medication orders, regimen revisions, occurrence observations, supply, expiry, refill attempts, and dispensing receipts under clinical and pharmacy authority. Civic Services Navigator resolves public-service jurisdiction and administering agency, then maps published program criteria, access channels, accommodations, and agency questions without operating a medication or clinical workflow."
+      },
+      {
         "id": "restaurant-venue-scout",
         "overlap": "Both compare local options, preserve source freshness, accessibility details, location fit, uncertainty, and human choice.",
         "difference": "Restaurant Venue Scout ranks commercial venues against dining preferences and availability evidence. Civic Services Navigator reconciles government service-area claims, official program versions, criterion-level resident evidence, channel dependencies, and agency-owned adjudication."

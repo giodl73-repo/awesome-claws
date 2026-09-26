@@ -98,7 +98,8 @@
       "identity-theft-recovery-coordinator",
       "property-insurance-claim-coordinator",
       "rental-housing-coordinator",
-      "consumer-product-recall-coordinator"
+      "consumer-product-recall-coordinator",
+      "medication-regimen-coordinator"
     ]
   },
   "visualCases": [

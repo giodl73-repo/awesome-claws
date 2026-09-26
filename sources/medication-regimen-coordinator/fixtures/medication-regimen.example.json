@@ -1,0 +1,513 @@
+{
+  "schemaVersion": "awesomeClaws.medicationRegimen.v1",
+  "review": {
+    "id": "review-week-2026-09-25",
+    "patientAuthorityRef": "patient-owner",
+    "authorizedCaregiverRefs": ["caregiver-river"],
+    "periodStart": "2026-09-22T00:00:00-07:00",
+    "periodEnd": "2026-09-29T00:00:00-07:00",
+    "asOf": "2026-09-25T17:00:00-07:00",
+    "medicationRefs": ["medication-a", "medication-b"],
+    "orderRefs": ["order-a-r1", "order-a-r2", "order-b-r1"],
+    "occurrenceRefs": ["occurrence-a-1", "occurrence-a-2", "occurrence-b-1"],
+    "observationRefs": ["observation-a-1"],
+    "supplyRefs": ["supply-a", "supply-b"],
+    "actionRefs": ["action-refill-a", "action-refill-b"],
+    "questionRefs": ["question-a-warning", "question-b-hold"],
+    "openGapRefs": ["gap-a-observation", "gap-b-supply", "gap-b-hold"],
+    "unknownOccurrenceRefs": ["occurrence-a-2"],
+    "blockedActionRefs": ["action-refill-b"],
+    "urgentQuestionRefs": [],
+    "state": "blocked",
+    "diagnosisConclusion": false,
+    "safetyConclusion": false,
+    "effectivenessConclusion": false,
+    "interactionConclusion": false,
+    "adherenceConclusion": false,
+    "continuityConclusion": false,
+    "closureClaim": false
+  },
+  "authorities": [
+    {
+      "id": "patient-owner",
+      "name": "Patient owner",
+      "kind": "patient",
+      "scope": ["patient-owner", "medication-question"],
+      "authorizationSourceRef": "source-patient-authority"
+    },
+    {
+      "id": "caregiver-river",
+      "name": "Authorized caregiver River",
+      "kind": "caregiver",
+      "scope": ["caregiver-observe", "caregiver-review"],
+      "authorizationSourceRef": "source-caregiver-authorization"
+    },
+    {
+      "id": "prescriber-clinic",
+      "name": "Prescribing clinician",
+      "kind": "prescriber",
+      "scope": ["clinical-order", "medication-question"],
+      "authorizationSourceRef": null
+    },
+    {
+      "id": "pharmacist-clinic",
+      "name": "Reviewing pharmacist",
+      "kind": "pharmacist",
+      "scope": ["medication-question"],
+      "authorizationSourceRef": null
+    },
+    {
+      "id": "dispenser-pharmacy",
+      "name": "Dispensing pharmacy",
+      "kind": "dispenser",
+      "scope": ["dispensing-record", "medication-question"],
+      "authorizationSourceRef": null
+    },
+    {
+      "id": "emergency-professional",
+      "name": "Emergency professional route",
+      "kind": "emergency-professional",
+      "scope": ["emergency-guidance", "medication-question"],
+      "authorizationSourceRef": null
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-patient-authority",
+      "kind": "patient-authorization",
+      "subjectRef": "patient-owner",
+      "issuerAuthorityRef": "patient-owner",
+      "assertedAt": "2026-09-22T08:00:00-07:00",
+      "retrievedAt": "2026-09-22T08:00:00-07:00",
+      "controlledRef": "workspace://medication-review/patient-authority",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-caregiver-authorization",
+      "kind": "caregiver-authorization",
+      "subjectRef": "caregiver-river",
+      "issuerAuthorityRef": "patient-owner",
+      "assertedAt": "2026-09-22T08:05:00-07:00",
+      "retrievedAt": "2026-09-22T08:05:00-07:00",
+      "controlledRef": "workspace://medication-review/caregiver-authorization",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-order-a-r1",
+      "kind": "medication-order",
+      "subjectRef": "order-a-r1",
+      "issuerAuthorityRef": "prescriber-clinic",
+      "assertedAt": "2026-09-01T10:00:00-07:00",
+      "retrievedAt": "2026-09-22T08:10:00-07:00",
+      "controlledRef": "record://clinical/order-a-r1",
+      "freshness": "superseded",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-order-a-r2",
+      "kind": "order-change",
+      "subjectRef": "order-a-r2",
+      "issuerAuthorityRef": "prescriber-clinic",
+      "assertedAt": "2026-09-23T09:00:00-07:00",
+      "retrievedAt": "2026-09-23T09:10:00-07:00",
+      "controlledRef": "record://clinical/order-a-r2",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-label-a",
+      "kind": "pharmacy-label",
+      "subjectRef": "medication-a",
+      "issuerAuthorityRef": "dispenser-pharmacy",
+      "assertedAt": "2026-09-23T12:00:00-07:00",
+      "retrievedAt": "2026-09-23T12:05:00-07:00",
+      "controlledRef": "workspace://medication-review/label-a",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-warning-a",
+      "kind": "pharmacist-instruction",
+      "subjectRef": "order-a-r2",
+      "issuerAuthorityRef": "pharmacist-clinic",
+      "assertedAt": "2026-09-23T12:10:00-07:00",
+      "retrievedAt": "2026-09-23T12:10:00-07:00",
+      "controlledRef": "record://pharmacy/instruction-a",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-order-b-hold",
+      "kind": "order-hold",
+      "subjectRef": "order-b-r1",
+      "issuerAuthorityRef": "prescriber-clinic",
+      "assertedAt": "2026-09-24T14:00:00-07:00",
+      "retrievedAt": "2026-09-24T14:05:00-07:00",
+      "controlledRef": "record://clinical/order-b-hold",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-label-b",
+      "kind": "pharmacy-label",
+      "subjectRef": "medication-b",
+      "issuerAuthorityRef": "dispenser-pharmacy",
+      "assertedAt": "2026-09-20T11:00:00-07:00",
+      "retrievedAt": "2026-09-22T08:15:00-07:00",
+      "controlledRef": "workspace://medication-review/label-b",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-observation-a-1",
+      "kind": "owner-observation",
+      "subjectRef": "observation-a-1",
+      "issuerAuthorityRef": "patient-owner",
+      "assertedAt": "2026-09-24T08:05:00-07:00",
+      "retrievedAt": "2026-09-24T08:05:00-07:00",
+      "controlledRef": "workspace://medication-review/observation-a-1",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-supply-a",
+      "kind": "supply-count",
+      "subjectRef": "supply-a",
+      "issuerAuthorityRef": "patient-owner",
+      "assertedAt": "2026-09-25T09:00:00-07:00",
+      "retrievedAt": "2026-09-25T09:00:00-07:00",
+      "controlledRef": "workspace://medication-review/supply-a",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-supply-b",
+      "kind": "supply-count",
+      "subjectRef": "supply-b",
+      "issuerAuthorityRef": "patient-owner",
+      "assertedAt": "2026-09-25T09:05:00-07:00",
+      "retrievedAt": "2026-09-25T09:05:00-07:00",
+      "controlledRef": "workspace://medication-review/supply-b",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-refill-a-owner-note",
+      "kind": "owner-action-note",
+      "subjectRef": "action-refill-a",
+      "issuerAuthorityRef": "patient-owner",
+      "assertedAt": "2026-09-24T15:00:00-07:00",
+      "retrievedAt": "2026-09-24T15:00:00-07:00",
+      "controlledRef": "workspace://medication-review/action-refill-a",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-refill-a-receipt",
+      "kind": "dispensing-receipt",
+      "subjectRef": "action-refill-a",
+      "issuerAuthorityRef": "dispenser-pharmacy",
+      "assertedAt": "2026-09-24T15:30:00-07:00",
+      "retrievedAt": "2026-09-24T15:35:00-07:00",
+      "controlledRef": "record://pharmacy/dispensing-receipt-a",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    },
+    {
+      "id": "source-refill-b-attempt",
+      "kind": "refill-attempt",
+      "subjectRef": "action-refill-b",
+      "issuerAuthorityRef": "patient-owner",
+      "assertedAt": "2026-09-25T10:00:00-07:00",
+      "retrievedAt": "2026-09-25T10:00:00-07:00",
+      "controlledRef": "workspace://medication-review/action-refill-b",
+      "freshness": "current",
+      "minimized": true,
+      "containsSecrets": false
+    }
+  ],
+  "medications": [
+    {
+      "id": "medication-a",
+      "patientAuthorityRef": "patient-owner",
+      "label": "Medication A",
+      "identitySourceRefs": ["source-label-a"],
+      "orderRefs": ["order-a-r1", "order-a-r2"],
+      "supplyRefs": ["supply-a"],
+      "gapRefs": ["gap-a-observation"],
+      "diagnosisDetermination": false,
+      "safetyDetermination": false,
+      "effectivenessDetermination": false
+    },
+    {
+      "id": "medication-b",
+      "patientAuthorityRef": "patient-owner",
+      "label": "Medication B",
+      "identitySourceRefs": ["source-label-b"],
+      "orderRefs": ["order-b-r1"],
+      "supplyRefs": ["supply-b"],
+      "gapRefs": ["gap-b-supply", "gap-b-hold"],
+      "diagnosisDetermination": false,
+      "safetyDetermination": false,
+      "effectivenessDetermination": false
+    }
+  ],
+  "orders": [
+    {
+      "id": "order-a-r1",
+      "medicationRef": "medication-a",
+      "revision": 1,
+      "predecessorRef": null,
+      "successorRef": "order-a-r2",
+      "state": "superseded",
+      "effectiveAt": "2026-09-01T10:00:00-07:00",
+      "endedAt": "2026-09-23T09:00:00-07:00",
+      "orderedByAuthorityRef": "prescriber-clinic",
+      "sourceRef": "source-order-a-r1",
+      "directionText": "Exact prior supplied direction for Medication A",
+      "strengthText": "Supplied strength A",
+      "formText": "tablet",
+      "routeText": "supplied route A",
+      "frequencyText": "prior supplied frequency A",
+      "asNeededConditionText": null,
+      "warningSourceRefs": [],
+      "doseCalculatedByClaw": false,
+      "interactionDetermination": false,
+      "clinicalSelection": false
+    },
+    {
+      "id": "order-a-r2",
+      "medicationRef": "medication-a",
+      "revision": 2,
+      "predecessorRef": "order-a-r1",
+      "successorRef": null,
+      "state": "current",
+      "effectiveAt": "2026-09-23T09:00:00-07:00",
+      "endedAt": null,
+      "orderedByAuthorityRef": "prescriber-clinic",
+      "sourceRef": "source-order-a-r2",
+      "directionText": "Exact current supplied direction for Medication A",
+      "strengthText": "Supplied strength A",
+      "formText": "tablet",
+      "routeText": "supplied route A",
+      "frequencyText": "current supplied frequency A",
+      "asNeededConditionText": null,
+      "warningSourceRefs": ["source-warning-a"],
+      "doseCalculatedByClaw": false,
+      "interactionDetermination": false,
+      "clinicalSelection": false
+    },
+    {
+      "id": "order-b-r1",
+      "medicationRef": "medication-b",
+      "revision": 1,
+      "predecessorRef": null,
+      "successorRef": null,
+      "state": "held",
+      "effectiveAt": "2026-09-24T14:00:00-07:00",
+      "endedAt": null,
+      "orderedByAuthorityRef": "prescriber-clinic",
+      "sourceRef": "source-order-b-hold",
+      "directionText": "Exact supplied hold instruction for Medication B",
+      "strengthText": "Supplied strength B",
+      "formText": "capsule",
+      "routeText": "supplied route B",
+      "frequencyText": "held under supplied instruction",
+      "asNeededConditionText": null,
+      "warningSourceRefs": [],
+      "doseCalculatedByClaw": false,
+      "interactionDetermination": false,
+      "clinicalSelection": false
+    }
+  ],
+  "occurrences": [
+    {
+      "id": "occurrence-a-1",
+      "medicationRef": "medication-a",
+      "orderRef": "order-a-r2",
+      "plannedAt": "2026-09-24T08:00:00-07:00",
+      "state": "observed",
+      "observationRef": "observation-a-1"
+    },
+    {
+      "id": "occurrence-a-2",
+      "medicationRef": "medication-a",
+      "orderRef": "order-a-r2",
+      "plannedAt": "2026-09-25T08:00:00-07:00",
+      "state": "unknown",
+      "observationRef": null
+    },
+    {
+      "id": "occurrence-b-1",
+      "medicationRef": "medication-b",
+      "orderRef": "order-b-r1",
+      "plannedAt": "2026-09-25T09:00:00-07:00",
+      "state": "not-applicable",
+      "observationRef": null
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation-a-1",
+      "occurrenceRef": "occurrence-a-1",
+      "medicationRef": "medication-a",
+      "orderRef": "order-a-r2",
+      "observerAuthorityRef": "patient-owner",
+      "kind": "taken",
+      "observedAt": "2026-09-24T08:05:00-07:00",
+      "sourceRef": "source-observation-a-1",
+      "adherenceConclusion": false,
+      "clinicalInterpretation": false
+    }
+  ],
+  "supplies": [
+    {
+      "id": "supply-a",
+      "medicationRef": "medication-a",
+      "packageLabel": "Minimized package A",
+      "countedUnits": 10,
+      "countUnit": "tablet",
+      "countedAt": "2026-09-25T09:00:00-07:00",
+      "expiryDate": "2027-03-31",
+      "state": "low",
+      "sourceRef": "source-supply-a",
+      "availabilityDetermination": false
+    },
+    {
+      "id": "supply-b",
+      "medicationRef": "medication-b",
+      "packageLabel": "Minimized package B",
+      "countedUnits": 0,
+      "countUnit": "capsule",
+      "countedAt": "2026-09-25T09:05:00-07:00",
+      "expiryDate": null,
+      "state": "depleted",
+      "sourceRef": "source-supply-b",
+      "availabilityDetermination": false
+    }
+  ],
+  "actions": [
+    {
+      "id": "action-refill-a",
+      "medicationRef": "medication-a",
+      "kind": "dispensing",
+      "state": "owner-completed-receipted",
+      "ownerAuthorityRef": "patient-owner",
+      "attemptedAt": "2026-09-24T15:00:00-07:00",
+      "sourceRefs": ["source-refill-a-owner-note", "source-refill-a-receipt"],
+      "receiptSourceRef": "source-refill-a-receipt",
+      "agentExecuted": false,
+      "externalExecution": "owner-only",
+      "entitlementDetermination": false,
+      "availabilityDetermination": false,
+      "substitutionDetermination": false
+    },
+    {
+      "id": "action-refill-b",
+      "medicationRef": "medication-b",
+      "kind": "refill-request",
+      "state": "blocked",
+      "ownerAuthorityRef": "patient-owner",
+      "attemptedAt": "2026-09-25T10:00:00-07:00",
+      "sourceRefs": ["source-refill-b-attempt"],
+      "receiptSourceRef": null,
+      "agentExecuted": false,
+      "externalExecution": "owner-only",
+      "entitlementDetermination": false,
+      "availabilityDetermination": false,
+      "substitutionDetermination": false
+    }
+  ],
+  "questions": [
+    {
+      "id": "question-a-warning",
+      "medicationRef": "medication-a",
+      "orderRef": "order-a-r2",
+      "kind": "interaction",
+      "askedOfAuthorityRef": "pharmacist-clinic",
+      "state": "open",
+      "sourceRefs": ["source-warning-a"],
+      "answerSourceRef": null,
+      "ownerMarkedUrgent": false,
+      "interpretationByClaw": false
+    },
+    {
+      "id": "question-b-hold",
+      "medicationRef": "medication-b",
+      "orderRef": "order-b-r1",
+      "kind": "direction",
+      "askedOfAuthorityRef": "prescriber-clinic",
+      "state": "open",
+      "sourceRefs": ["source-order-b-hold"],
+      "answerSourceRef": null,
+      "ownerMarkedUrgent": false,
+      "interpretationByClaw": false
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-a-observation",
+      "kind": "observation",
+      "subjectRefs": ["occurrence-a-2"],
+      "state": "open",
+      "nextOwnerAuthorityRef": "patient-owner",
+      "sourceRefs": [],
+      "resolutionSourceRef": null
+    },
+    {
+      "id": "gap-b-supply",
+      "kind": "supply",
+      "subjectRefs": ["supply-b", "action-refill-b"],
+      "state": "open",
+      "nextOwnerAuthorityRef": "patient-owner",
+      "sourceRefs": ["source-supply-b", "source-refill-b-attempt"],
+      "resolutionSourceRef": null
+    },
+    {
+      "id": "gap-b-hold",
+      "kind": "order-revision",
+      "subjectRefs": ["order-b-r1", "question-b-hold"],
+      "state": "open",
+      "nextOwnerAuthorityRef": "prescriber-clinic",
+      "sourceRefs": ["source-order-b-hold"],
+      "resolutionSourceRef": null
+    }
+  ],
+  "prohibitedActions": {
+    "diagnosis": false,
+    "triage": false,
+    "treatmentRecommendation": false,
+    "doseCalculation": false,
+    "interactionIdentification": false,
+    "urgencyDecision": false,
+    "prescribing": false,
+    "dispensing": false,
+    "administration": false,
+    "medicationChange": false,
+    "providerOrPharmacyContact": false,
+    "refillOrRenewal": false,
+    "portalOrAccountChange": false,
+    "phiDisclosure": false,
+    "scheduling": false,
+    "insuranceAction": false,
+    "payment": false,
+    "adherenceClaim": false,
+    "clinicalContinuityClaim": false,
+    "closureClaim": false
+  }
+}

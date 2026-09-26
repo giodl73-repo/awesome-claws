@@ -2574,6 +2574,40 @@
       }
     },
     {
+      "id": "medication-regimen-coordinator",
+      "name": "Medication regimen coordinator",
+      "description": "Maintains a private, evidence-bound medication regimen ledger across supplied clinician or pharmacist orders, exact medication identity and directions, regimen revisions, owner-recorded administration observations, supply and expiry state, refill attempts, independent dispensing receipts, attributed warnings, discrepancies, and unresolved questions without diagnosing, interpreting, recommending, dispensing, administering, or changing medication.",
+      "audience": "Individuals, authorized caregivers, households, and care coordinators reconciling an owner-approved medication regimen from supplied clinician, pharmacist, pharmacy, package, and observation evidence while patients, guardians, prescribers, pharmacists, dispensers, and emergency professionals retain authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "meeting-intelligence",
       "name": "Meeting intelligence",
       "description": "Turns a consented meeting recording into a consent-bound transcript, decision, and action record with a reviewable document draft.",

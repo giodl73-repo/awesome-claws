@@ -9,6 +9,7 @@ import {
 import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.mjs";
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { consumerProductRecallFindings } from "./consumer-product-recall-coordinator.mjs";
+import { medicationRegimenFindings } from "./medication-regimen-coordinator.mjs";
 import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
 import { civicServiceAccessFindings } from "./civic-services-navigator.mjs";
 import { householdEmergencyPreparednessFindings } from "./household-emergency-preparedness-coordinator.mjs";
@@ -53291,6 +53292,7 @@ const validators = {
   "property-insurance-claim-coordinator": propertyInsuranceClaimFindings,
   "rental-housing-coordinator": rentalHousingFindings,
   "consumer-product-recall-coordinator": consumerProductRecallFindings,
+  "medication-regimen-coordinator": medicationRegimenFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,

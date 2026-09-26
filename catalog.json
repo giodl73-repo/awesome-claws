@@ -13738,6 +13738,101 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "medication-regimen-coordinator",
+      "name": "Medication regimen coordinator",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "description": "Maintains a private, evidence-bound medication regimen ledger across supplied clinician or pharmacist orders, exact medication identity and directions, regimen revisions, owner-recorded administration observations, supply and expiry state, refill attempts, independent dispensing receipts, attributed warnings, discrepancies, and unresolved questions without diagnosing, interpreting, recommending, dispensing, administering, or changing medication.",
+      "audience": "Individuals, authorized caregivers, households, and care coordinators reconciling an owner-approved medication regimen from supplied clinician, pharmacist, pharmacy, package, and observation evidence while patients, guardians, prescribers, pharmacists, dispensers, and emergency professionals retain authority.",
+      "principles": [
+        "Separate clinician or pharmacist orders, dispensing and package evidence, owner or caregiver observations, attributed instructions, and independent receipts",
+        "Bind every active, held, discontinued, superseded, scheduled, observed, missed, unknown, supplied, expiring, depleted, refill-pending, and discrepant state to exact dated evidence",
+        "Preserve conflicting directions, uncertain identity, missing observations, stale orders, supply gaps, and urgent questions without inferring adherence, safety, effectiveness, interaction, diagnosis, or clinical intent"
+      ],
+      "boundaries": [
+        "Do not diagnose, triage, interpret symptoms or results, recommend treatment, calculate or advise dosage, identify interactions, decide safety or urgency, or determine that a medication should be started, stopped, held, resumed, substituted, split, crushed, combined, administered, or discarded",
+        "Do not prescribe, dispense, administer, prepare, purchase, refill, renew, transfer, substitute, request, message, call, schedule, upload, share protected health information, change a portal or pharmacy account, accept terms, authorize care, or pay",
+        "Do not treat a checklist, reminder, owner note, package count, refill estimate, or missing observation as proof that medication was taken, omitted, effective, safe, available, or clinically appropriate",
+        "Minimize patient identity, diagnoses, prescriber and pharmacy contact data, prescription numbers, full package identifiers, portal data, insurance identifiers, payment details, precise location, and other protected health information"
+      ],
+      "intake": [
+        "Patient or guardian authority, explicitly authorized caregiver roles, privacy and sharing ceiling, generalized storage scope, review cadence, and clinician, pharmacist, poison-control, or emergency escalation route",
+        "Supplied prescriptions, medication orders, discharge instructions, pharmacy labels, medication lists, package and lot evidence, clinician or pharmacist changes, discontinuation records, and attributed warnings with source dates and revision identity",
+        "Owner-approved regimen schedule, exact supplied directions, medication identity, strength, form, route, frequency, as-needed conditions as written, start or stop boundaries, supply counts, refill windows, expiry, storage instructions, and device dependencies",
+        "Owner or authorized-caregiver administration observations, missed or unknown occurrences, adverse or unexpected observations without interpretation, refill attempts, dispensing or delivery receipts, rejected or partial fills, conflicts, gaps, and questions for qualified humans"
+      ],
+      "workflow": [
+        "Confirm patient or guardian authority, caregiver scope, privacy boundary, approved sources, review time, and emergency, poison, clinician, pharmacist, and disposal escalation limits",
+        "Version the supplied medication-order and regimen register, preserving exact order, label, package, change, hold, discontinuation, and supersession lineage without selecting a controlling clinical instruction when sources conflict",
+        "Reconcile each regimen item to exact medication identity, supplied directions, current source revision, attributed warnings, planned schedule, supply and expiry evidence, and any discrepancy or missing evidence",
+        "Map owner-approved planned occurrences into a review checklist while keeping taken, missed, skipped, held, refused, not-applicable, and unknown observations distinct and never inferring administration",
+        "Reconcile owner or caregiver observations only to same-person, same-medication, same-regimen-revision, same-occurrence evidence and route symptom, reaction, overdose, poison, interaction, and uncertainty questions to qualified humans without interpretation",
+        "Track supply estimates only from owner-supplied counts and exact arithmetic; reconcile refill, renewal, transfer, partial-fill, dispensing, delivery, and pickup attempts to independent same-subject receipts without deciding entitlement, availability, substitution, or clinical continuity",
+        "Version a private handoff of active regimen state, conflicts, stale or superseded instructions, missing observations, supply and expiry gaps, refill blockers, attributed warnings, urgent escalations, review questions, and exact next human owners"
+      ],
+      "deliverables": [
+        "Private patient or guardian authority, medication identity, order revision, source, and chronology register",
+        "Exact current, held, discontinued, and superseded regimen matrix with supplied directions and attributed warnings",
+        "Planned-occurrence and owner-recorded administration observation ledger with explicit unknown state",
+        "Supply, package, expiry, storage-instruction, refill-attempt, dispensing, delivery, pickup, and independent-receipt register",
+        "Privacy-minimized discrepancy, missing-evidence, urgent-escalation, qualified-human question, and next-owner handoff"
+      ],
+      "example": {
+        "request": "Reconcile the prescriptions, discharge instructions, pharmacy labels, current medication list, pill counts, refill receipts, and caregiver observations I supplied for this week. Preserve conflicting directions and unknown administrations, show current order revisions, supply and expiry gaps, refill blockers, attributed warnings, and questions for the clinician or pharmacist. Do not diagnose, interpret symptoms, identify interactions, recommend or change treatment, calculate doses, decide urgency, contact anyone, request or refill anything, administer medication, change an account, share PHI, schedule, authorize, or pay.",
+        "outcome": "A private versioned medication regimen ledger binds every regimen item, planned occurrence, administration observation, supply state, refill attempt, and dispensing receipt to exact supplied evidence, keeps conflicts and unknowns visible, and returns qualified-human questions and next owners without clinical interpretation, medication action, external contact, or adherence claim."
+      },
+      "doneWhen": [
+        "Every in-scope medication order, regimen revision, medication identity, supplied direction, warning, schedule occurrence, administration observation, supply record, expiry, refill attempt, receipt, discrepancy, question, gap, and next owner is represented once with provenance and chronology",
+        "Every current, held, discontinued, or superseded regimen state follows exact supplied clinician or pharmacist revision evidence; conflicts and missing evidence remain unresolved rather than becoming a selected clinical instruction",
+        "Every administration state is an attributed owner or authorized-caregiver observation for the exact occurrence and regimen revision, and every unobserved occurrence remains unknown rather than becoming taken, missed, or nonadherent",
+        "Every completed refill, dispensing, delivery, pickup, or other external action has an independent same-subject receipt, while planned, attempted, failed, blocked, partial, rejected, withdrawn, and unreceipted actions remain distinguishable",
+        "The handoff exposes every identity, direction, chronology, observation, supply, expiry, receipt, conflict, warning, urgent-escalation, privacy, and authority gap without claiming diagnosis, safety, effectiveness, interaction, adherence, availability, entitlement, clinical continuity, or closure"
+      ],
+      "capabilityGuidance": [
+        "The base starter reads only owner-supplied minimized medication and observation evidence and writes a private local ledger; it has no portal, pharmacy, prescribing, dispensing, administration, reminder, calendar, messaging, upload, sharing, insurance, payment, scheduling, account, or external-system capability.",
+        "Treat prescription directions, medication changes, holds, discontinuations, warnings, storage, expiry, and disposal instructions as exact dated attributed evidence; route symptoms, reactions, overdose, poison, interaction, missed-dose, and urgency questions to qualified humans or emergency services.",
+        "Keep every contact, message, refill, renewal, transfer, substitution, purchase, pickup, delivery, administration, preparation, disposal, scheduling, authorization, disclosure, account, insurance, and payment action draft-only and owner-controlled."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "fixtures/medication-regimen.example.json",
+          "path": "fixtures/medication-regimen.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "schemas/medication-regimen.schema.json",
+          "path": "schemas/medication-regimen.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "templates/medication-regimen.md",
+          "path": "templates/medication-regimen.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }
