@@ -3300,6 +3300,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "medication-regimen-coordinator",
+      "acceptedRequest": "Reconcile the prescriptions, discharge instructions, pharmacy labels, current medication list, pill counts, refill receipts, and caregiver observations I supplied for this week. Preserve conflicting directions and unknown administrations, show current order revisions, supply and expiry gaps, refill blockers, attributed warnings, and questions for the clinician or pharmacist. Do not diagnose, interpret symptoms, identify interactions, recommend or change treatment, calculate doses, decide urgency, contact anyone, request or refill anything, administer medication, change an account, share PHI, schedule, authorize, or pay.",
+      "requiredEvidence": [
+        "Patient or guardian authority, explicitly authorized caregiver roles, privacy and sharing ceiling, generalized storage scope, review cadence, and clinician, pharmacist, poison-control, or emergency escalation route",
+        "Supplied prescriptions, medication orders, discharge instructions, pharmacy labels, medication lists, package and lot evidence, clinician or pharmacist changes, discontinuation records, and attributed warnings with source dates and revision identity",
+        "Owner-approved regimen schedule, exact supplied directions, medication identity, strength, form, route, frequency, as-needed conditions as written, start or stop boundaries, supply counts, refill windows, expiry, storage instructions, and device dependencies",
+        "Owner or authorized-caregiver administration observations, missed or unknown occurrences, adverse or unexpected observations without interpretation, refill attempts, dispensing or delivery receipts, rejected or partial fills, conflicts, gaps, and questions for qualified humans"
+      ],
+      "authorityBoundaries": [
+        "Do not diagnose, triage, interpret symptoms or results, recommend treatment, calculate or advise dosage, identify interactions, decide safety or urgency, or determine that a medication should be started, stopped, held, resumed, substituted, split, crushed, combined, administered, or discarded",
+        "Do not prescribe, dispense, administer, prepare, purchase, refill, renew, transfer, substitute, request, message, call, schedule, upload, share protected health information, change a portal or pharmacy account, accept terms, authorize care, or pay",
+        "Do not treat a checklist, reminder, owner note, package count, refill estimate, or missing observation as proof that medication was taken, omitted, effective, safe, available, or clinically appropriate",
+        "Minimize patient identity, diagnoses, prescriber and pharmacy contact data, prescription numbers, full package identifiers, portal data, insurance identifiers, payment details, precise location, and other protected health information"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/medication-regimen-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

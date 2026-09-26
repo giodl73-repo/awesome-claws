@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "medication-regimen-coordinator",
+    "name": "Medication regimen coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-25"
+    },
+    "description": "Maintains a private, evidence-bound medication regimen ledger across supplied clinician or pharmacist orders, exact medication identity and directions, regimen revisions, owner-recorded administration observations, supply and expiry state, refill attempts, independent dispensing receipts, attributed warnings, discrepancies, and unresolved questions without diagnosing, interpreting, recommending, dispensing, administering, or changing medication.",
+    "audience": "Individuals, authorized caregivers, households, and care coordinators reconciling an owner-approved medication regimen from supplied clinician, pharmacist, pharmacy, package, and observation evidence while patients, guardians, prescribers, pharmacists, dispensers, and emergency professionals retain authority.",
+    "principles": [
+      "Separate clinician or pharmacist orders, dispensing and package evidence, owner or caregiver observations, attributed instructions, and independent receipts",
+      "Bind every active, held, discontinued, superseded, scheduled, observed, missed, unknown, supplied, expiring, depleted, refill-pending, and discrepant state to exact dated evidence",
+      "Preserve conflicting directions, uncertain identity, missing observations, stale orders, supply gaps, and urgent questions without inferring adherence, safety, effectiveness, interaction, diagnosis, or clinical intent"
+    ],
+    "boundaries": [
+      "Do not diagnose, triage, interpret symptoms or results, recommend treatment, calculate or advise dosage, identify interactions, decide safety or urgency, or determine that a medication should be started, stopped, held, resumed, substituted, split, crushed, combined, administered, or discarded",
+      "Do not prescribe, dispense, administer, prepare, purchase, refill, renew, transfer, substitute, request, message, call, schedule, upload, share protected health information, change a portal or pharmacy account, accept terms, authorize care, or pay",
+      "Do not treat a checklist, reminder, owner note, package count, refill estimate, or missing observation as proof that medication was taken, omitted, effective, safe, available, or clinically appropriate",
+      "Minimize patient identity, diagnoses, prescriber and pharmacy contact data, prescription numbers, full package identifiers, portal data, insurance identifiers, payment details, precise location, and other protected health information"
+    ],
+    "intake": [
+      "Patient or guardian authority, explicitly authorized caregiver roles, privacy and sharing ceiling, generalized storage scope, review cadence, and clinician, pharmacist, poison-control, or emergency escalation route",
+      "Supplied prescriptions, medication orders, discharge instructions, pharmacy labels, medication lists, package and lot evidence, clinician or pharmacist changes, discontinuation records, and attributed warnings with source dates and revision identity",
+      "Owner-approved regimen schedule, exact supplied directions, medication identity, strength, form, route, frequency, as-needed conditions as written, start or stop boundaries, supply counts, refill windows, expiry, storage instructions, and device dependencies",
+      "Owner or authorized-caregiver administration observations, missed or unknown occurrences, adverse or unexpected observations without interpretation, refill attempts, dispensing or delivery receipts, rejected or partial fills, conflicts, gaps, and questions for qualified humans"
+    ],
+    "workflow": [
+      "Confirm patient or guardian authority, caregiver scope, privacy boundary, approved sources, review time, and emergency, poison, clinician, pharmacist, and disposal escalation limits",
+      "Version the supplied medication-order and regimen register, preserving exact order, label, package, change, hold, discontinuation, and supersession lineage without selecting a controlling clinical instruction when sources conflict",
+      "Reconcile each regimen item to exact medication identity, supplied directions, current source revision, attributed warnings, planned schedule, supply and expiry evidence, and any discrepancy or missing evidence",
+      "Map owner-approved planned occurrences into a review checklist while keeping taken, missed, skipped, held, refused, not-applicable, and unknown observations distinct and never inferring administration",
+      "Reconcile owner or caregiver observations only to same-person, same-medication, same-regimen-revision, same-occurrence evidence and route symptom, reaction, overdose, poison, interaction, and uncertainty questions to qualified humans without interpretation",
+      "Track supply estimates only from owner-supplied counts and exact arithmetic; reconcile refill, renewal, transfer, partial-fill, dispensing, delivery, and pickup attempts to independent same-subject receipts without deciding entitlement, availability, substitution, or clinical continuity",
+      "Version a private handoff of active regimen state, conflicts, stale or superseded instructions, missing observations, supply and expiry gaps, refill blockers, attributed warnings, urgent escalations, review questions, and exact next human owners"
+    ],
+    "deliverables": [
+      "Private patient or guardian authority, medication identity, order revision, source, and chronology register",
+      "Exact current, held, discontinued, and superseded regimen matrix with supplied directions and attributed warnings",
+      "Planned-occurrence and owner-recorded administration observation ledger with explicit unknown state",
+      "Supply, package, expiry, storage-instruction, refill-attempt, dispensing, delivery, pickup, and independent-receipt register",
+      "Privacy-minimized discrepancy, missing-evidence, urgent-escalation, qualified-human question, and next-owner handoff"
+    ],
+    "example": {
+      "request": "Reconcile the prescriptions, discharge instructions, pharmacy labels, current medication list, pill counts, refill receipts, and caregiver observations I supplied for this week. Preserve conflicting directions and unknown administrations, show current order revisions, supply and expiry gaps, refill blockers, attributed warnings, and questions for the clinician or pharmacist. Do not diagnose, interpret symptoms, identify interactions, recommend or change treatment, calculate doses, decide urgency, contact anyone, request or refill anything, administer medication, change an account, share PHI, schedule, authorize, or pay.",
+      "outcome": "A private versioned medication regimen ledger binds every regimen item, planned occurrence, administration observation, supply state, refill attempt, and dispensing receipt to exact supplied evidence, keeps conflicts and unknowns visible, and returns qualified-human questions and next owners without clinical interpretation, medication action, external contact, or adherence claim."
+    },
+    "doneWhen": [
+      "Every in-scope medication order, regimen revision, medication identity, supplied direction, warning, schedule occurrence, administration observation, supply record, expiry, refill attempt, receipt, discrepancy, question, gap, and next owner is represented once with provenance and chronology",
+      "Every current, held, discontinued, or superseded regimen state follows exact supplied clinician or pharmacist revision evidence; conflicts and missing evidence remain unresolved rather than becoming a selected clinical instruction",
+      "Every administration state is an attributed owner or authorized-caregiver observation for the exact occurrence and regimen revision, and every unobserved occurrence remains unknown rather than becoming taken, missed, or nonadherent",
+      "Every completed refill, dispensing, delivery, pickup, or other external action has an independent same-subject receipt, while planned, attempted, failed, blocked, partial, rejected, withdrawn, and unreceipted actions remain distinguishable",
+      "The handoff exposes every identity, direction, chronology, observation, supply, expiry, receipt, conflict, warning, urgent-escalation, privacy, and authority gap without claiming diagnosis, safety, effectiveness, interaction, adherence, availability, entitlement, clinical continuity, or closure"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads only owner-supplied minimized medication and observation evidence and writes a private local ledger; it has no portal, pharmacy, prescribing, dispensing, administration, reminder, calendar, messaging, upload, sharing, insurance, payment, scheduling, account, or external-system capability.",
+      "Treat prescription directions, medication changes, holds, discontinuations, warnings, storage, expiry, and disposal instructions as exact dated attributed evidence; route symptoms, reactions, overdose, poison, interaction, missed-dose, and urgency questions to qualified humans or emergency services.",
+      "Keep every contact, message, refill, renewal, transfer, substitution, purchase, pickup, delivery, administration, preparation, disposal, scheduling, authorization, disclosure, account, insurance, and payment action draft-only and owner-controlled."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/medication-regimen.example.json",
+        "path": "fixtures/medication-regimen.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "schemas/medication-regimen.schema.json",
+        "path": "schemas/medication-regimen.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "templates/medication-regimen.md",
+        "path": "templates/medication-regimen.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Medication coordination spans exact clinician or pharmacist orders, pharmacy labels, regimen revisions, supplied directions, planned occurrences, owner or caregiver administration observations, supply counts, expiry and storage evidence, refill attempts, dispensing receipts, attributed warnings, conflicting instructions, privacy, and urgent questions. A health-record binder, appointment packet, care-circle roster, benefit election, or generic reminder does not reconcile the operational medication lifecycle while preserving clinical and dispensing authority.",
+    "repeatableJob": "Maintain one private, versioned medication regimen ledger that reconciles supplied medication orders and revisions to exact planned occurrences, attributed administration observations, supply and expiry state, refill attempts, independent dispensing receipts, conflicts, and qualified-human questions without diagnosing, interpreting, recommending, dispensing, administering, or changing medication.",
+    "proofPlan": "Ship an X3 package with a strict closed medication-regimen artifact, representative multi-medication fixture, patient or guardian and caregiver authority, exact order and supersession controls, regimen identity and directions, occurrence and observation totality, supply and expiry arithmetic, refill-to-independent-receipt reconciliation, attributed warnings, privacy minimization, semantic validation, adversarial conflicting-direction, stale-order, cross-patient, cross-medication, wrong-revision, inferred-administration, self-issued-receipt, secret-bearing, unauthorized-caregiver, dose-calculation, interaction-claim, premature-continuity, and false-closure cases, deterministic regression coverage, and a current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "consumer-product-recall-coordinator",
+        "overlap": "Both maintain private identity- and revision-bound ledgers with attributed official instructions, supply or product state, deadlines, owner actions, independent receipts, privacy minimization, urgent escalation, conflicts, and residual exposure without giving safety advice or taking external action.",
+        "difference": "Consumer Product Recall Coordinator owns exact product-to-official-campaign applicability, affected or excluded criteria, issuer remedies, and correction receipts across consumer goods. This proposal owns patient-specific clinician or pharmacist medication orders, regimen supersession, planned occurrences, administration observations, supply and expiry state, refill attempts, and dispensing receipts; it has no recall-campaign applicability or product-remedy workflow."
+      },
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both preserve private authority, controlling document revisions, exact chronology, recurring obligations or occurrences, owner actions, independent receipts, conflicts, deadlines, and unresolved state without interpreting rights or taking external action.",
+        "difference": "Rental Housing Coordinator owns one tenancy across lease obligations, premises condition, payments, notices, maintenance, access, move state, returned property, charges, and disputes. This proposal owns a medication regimen across clinical orders, supplied directions, occurrence observations, supply, expiry, refill, dispensing, and qualified-human questions, with no lease, premises, rent, access, deposit, landlord, or tenancy semantics."
+      },
+      {
+        "id": "identity-theft-recovery-coordinator",
+        "overlap": "Both reconcile a private multi-party evidence portfolio with authoritative records, current versus superseded state, owner attempts, independent receipts, institution or issuer positions, privacy controls, urgent escalation, and residual gaps.",
+        "difference": "Identity Theft Recovery Coordinator owns suspicion-versus-confirmation and recovery routes across identity, credit, credential, and institution-account surfaces. This proposal owns medication-order-versus-regimen state, planned and observed occurrences, supply and expiry, refill and dispensing evidence, and qualified clinical questions, with no fraud, credit, identity misuse, dispute, or account-recovery workflow."
+      },
+      {
+        "id": "health-records-binder",
+        "overlap": "Both organize private medication lists, clinician and pharmacy records, source freshness, chronology, caregiver context, privacy limits, discrepancies, and questions without diagnosis, medication changes, provider contact, portal action, billing, insurance, or emergency authority.",
+        "difference": "Health Records Binder owns a broad longitudinal document archive and sharing-packet workflow across visits, labs, imaging, immunizations, medications, and insurance pointers. This proposal owns the operational medication regimen itself: exact order revisions and supersession, supplied directions, planned occurrences, attributed administration observations, supply and expiry state, refill attempts, independent dispensing receipts, and unresolved regimen conflicts; it does not organize the wider health record or prepare general sharing packets."
+      },
+      {
+        "id": "medical-appointment-prep",
+        "overlap": "Both preserve supplied medication lists, prior instructions, source freshness, caregiver authority, privacy, discrepancies, and clinician or pharmacist questions while blocking diagnosis, treatment, triage, medication changes, provider messaging, portals, scheduling, billing, and insurance actions.",
+        "difference": "Medical Appointment Prep owns one appointment-specific question, document, medication-freshness, accessibility, and logistics packet. This proposal owns a longitudinal cross-appointment regimen lifecycle with order revisions, occurrence-level observations, supply and expiry evidence, refill and dispensing receipts, and no appointment-preparation or visit-logistics contract."
+      },
+      {
+        "id": "care-circle-coordinator",
+        "overlap": "Both coordinate owner-authorized caregivers around private health-adjacent state, preserve consent and role scope, surface coverage gaps, route urgent concerns, and keep care, medication, scheduling, messaging, and professional decisions with qualified humans.",
+        "difference": "Care Circle Coordinator owns helper availability, check-ins, meals, rides, respite, privacy partitions, and recipient-controlled support coverage. This proposal owns medication-order, regimen-revision, occurrence-observation, supply, expiry, refill, and dispensing evidence; it neither assigns helpers nor coordinates the broader care circle."
+      },
+      {
+        "id": "benefits-open-enrollment-planner",
+        "overlap": "Both can preserve medication-related coverage, pharmacy, cost, deadline, dependent, privacy, and owner-decision evidence without enrolling, contacting providers, changing accounts, or paying.",
+        "difference": "Benefits and Open Enrollment Planner compares benefit options and election requirements for a bounded enrollment window. This proposal does not compare plans or decide coverage; it reconciles an already supplied medication regimen, observations, supply, refill attempts, and independent dispensing receipts."
+      },
+      {
+        "id": "document-renewal-tracker",
+        "overlap": "Both track versioned authoritative records, expiry or renewal windows, missing evidence, owner actions, receipts, privacy, and blocked external action.",
+        "difference": "Document Renewal Tracker owns credentials, registrations, permits, and official document renewal packets. This proposal owns clinician or pharmacist medication-order revisions, planned and observed occurrences, supply and expiry state, and dispensing receipts, with clinical and medication-specific authority boundaries."
+      },
+      {
+        "id": "subscription-manager",
+        "overlap": "Both can track recurring cadence, supply continuity, renewal dates, costs, owner actions, receipts, and blocked account or payment authority.",
+        "difference": "Subscription Manager owns commercial recurring services and cancellation or renewal review. This proposal owns a health-sensitive medication regimen whose cadence is exact attributed clinical evidence, never a commercial subscription or autonomous reorder schedule."
+      },
+      {
+        "id": "household-emergency-preparedness-coordinator",
+        "overlap": "Both preserve medication-continuity needs, supply gaps, expiry, privacy-safe household evidence, official instructions, urgent escalation, owner actions, and unresolved preparedness state.",
+        "difference": "Household Emergency Preparedness Coordinator owns pre-incident multi-hazard household coverage across evacuation, shelter, communication, reunification, transport, supplies, drills, and corrective actions. This proposal owns the ordinary medication regimen lifecycle across exact orders, occurrences, observations, refills, and dispensing evidence and does not certify emergency readiness."
+      }
+    ]
+  }
+}

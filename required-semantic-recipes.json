@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 132,
-    "coveredCount": 132,
-    "recipeCount": 364,
-    "findingCodeCount": 489
+    "validatorCount": 133,
+    "coveredCount": 133,
+    "recipeCount": 367,
+    "findingCodeCount": 496
   },
   "entries": [
     {
@@ -5766,6 +5766,56 @@
           "replacement": "mock-plus-missing",
           "expectedCodes": [
             "invalid_source_jurisdiction"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "medication-regimen-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-invalid-action-owner-1",
+          "operator": "replace",
+          "path": [
+            "review",
+            "patientAuthorityRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_action_owner",
+            "invalid_caregiver_authorization",
+            "invalid_medication_patient",
+            "invalid_observer_authority",
+            "invalid_patient_authority",
+            "invalid_source_authority"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-caregiver-index-2",
+          "operator": "replace",
+          "path": [
+            "review",
+            "authorizedCaregiverRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_caregiver_index",
+            "invalid_caregiver_authorization"
+          ]
+        },
+        {
+          "id": "semantic-invalid-action-chronology-3",
+          "operator": "replace",
+          "path": [
+            "review",
+            "periodStart"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_action_chronology",
+            "invalid_occurrence_chronology",
+            "invalid_review_boundary"
           ]
         }
       ]

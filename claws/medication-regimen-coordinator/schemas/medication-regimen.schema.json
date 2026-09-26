@@ -1,0 +1,466 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/medication-regimen.schema.json",
+  "title": "Medication regimen ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "review",
+    "authorities",
+    "sources",
+    "medications",
+    "orders",
+    "occurrences",
+    "observations",
+    "supplies",
+    "actions",
+    "questions",
+    "gaps",
+    "prohibitedActions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.medicationRegimen.v1" },
+    "review": { "$ref": "#/$defs/review" },
+    "authorities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/authority" } },
+    "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } },
+    "medications": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/medication" } },
+    "orders": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/order" } },
+    "occurrences": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/occurrence" } },
+    "observations": { "type": "array", "items": { "$ref": "#/$defs/observation" } },
+    "supplies": { "type": "array", "items": { "$ref": "#/$defs/supply" } },
+    "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } },
+    "questions": { "type": "array", "items": { "$ref": "#/$defs/question" } },
+    "gaps": { "type": "array", "items": { "$ref": "#/$defs/gap" } },
+    "prohibitedActions": { "$ref": "#/$defs/prohibitedActions" }
+  },
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "maxLength": 120, "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "refArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "nonEmptyRefArray": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "exactDateTime": { "type": "string", "format": "date-time" },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "kind", "scope", "authorizationSourceRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "kind": {
+          "enum": ["patient", "guardian", "caregiver", "prescriber", "pharmacist", "dispenser", "emergency-professional"]
+        },
+        "scope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "patient-owner",
+              "caregiver-observe",
+              "caregiver-review",
+              "clinical-order",
+              "medication-question",
+              "dispensing-record",
+              "emergency-guidance"
+            ]
+          }
+        },
+        "authorizationSourceRef": {
+          "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "subjectRef",
+        "issuerAuthorityRef",
+        "assertedAt",
+        "retrievedAt",
+        "controlledRef",
+        "freshness",
+        "minimized",
+        "containsSecrets"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "patient-authorization",
+            "caregiver-authorization",
+            "medication-order",
+            "order-change",
+            "order-hold",
+            "order-discontinuation",
+            "pharmacy-label",
+            "package-record",
+            "owner-observation",
+            "caregiver-observation",
+            "supply-count",
+            "refill-attempt",
+            "owner-action-note",
+            "dispensing-receipt",
+            "delivery-receipt",
+            "pickup-receipt",
+            "clinician-instruction",
+            "pharmacist-instruction",
+            "emergency-guidance",
+            "gap-resolution"
+          ]
+        },
+        "subjectRef": { "$ref": "#/$defs/id" },
+        "issuerAuthorityRef": { "$ref": "#/$defs/id" },
+        "assertedAt": { "$ref": "#/$defs/exactDateTime" },
+        "retrievedAt": { "$ref": "#/$defs/exactDateTime" },
+        "controlledRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240,
+          "pattern": "^(?:workspace|record)://[A-Za-z0-9._~:/?#@!$&'()*+,;=%-]+$"
+        },
+        "freshness": { "enum": ["current", "stale", "superseded"] },
+        "minimized": { "const": true },
+        "containsSecrets": { "const": false }
+      }
+    },
+    "medication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "patientAuthorityRef",
+        "label",
+        "identitySourceRefs",
+        "orderRefs",
+        "supplyRefs",
+        "gapRefs",
+        "diagnosisDetermination",
+        "safetyDetermination",
+        "effectivenessDetermination"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "patientAuthorityRef": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "identitySourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "orderRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "supplyRefs": { "$ref": "#/$defs/refArray" },
+        "gapRefs": { "$ref": "#/$defs/refArray" },
+        "diagnosisDetermination": { "const": false },
+        "safetyDetermination": { "const": false },
+        "effectivenessDetermination": { "const": false }
+      }
+    },
+    "order": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "medicationRef",
+        "revision",
+        "predecessorRef",
+        "successorRef",
+        "state",
+        "effectiveAt",
+        "endedAt",
+        "orderedByAuthorityRef",
+        "sourceRef",
+        "directionText",
+        "strengthText",
+        "formText",
+        "routeText",
+        "frequencyText",
+        "asNeededConditionText",
+        "warningSourceRefs",
+        "doseCalculatedByClaw",
+        "interactionDetermination",
+        "clinicalSelection"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "medicationRef": { "$ref": "#/$defs/id" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "predecessorRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "successorRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "state": { "enum": ["current", "held", "discontinued", "superseded", "conflicted"] },
+        "effectiveAt": { "$ref": "#/$defs/exactDateTime" },
+        "endedAt": { "anyOf": [{ "$ref": "#/$defs/exactDateTime" }, { "type": "null" }] },
+        "orderedByAuthorityRef": { "$ref": "#/$defs/id" },
+        "sourceRef": { "$ref": "#/$defs/id" },
+        "directionText": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "strengthText": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "formText": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "routeText": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "frequencyText": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "asNeededConditionText": { "type": ["string", "null"], "minLength": 1, "maxLength": 160 },
+        "warningSourceRefs": { "$ref": "#/$defs/refArray" },
+        "doseCalculatedByClaw": { "const": false },
+        "interactionDetermination": { "const": false },
+        "clinicalSelection": { "const": false }
+      }
+    },
+    "occurrence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "medicationRef", "orderRef", "plannedAt", "state", "observationRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "medicationRef": { "$ref": "#/$defs/id" },
+        "orderRef": { "$ref": "#/$defs/id" },
+        "plannedAt": { "$ref": "#/$defs/exactDateTime" },
+        "state": { "enum": ["scheduled", "observed", "unknown", "not-applicable"] },
+        "observationRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "occurrenceRef",
+        "medicationRef",
+        "orderRef",
+        "observerAuthorityRef",
+        "kind",
+        "observedAt",
+        "sourceRef",
+        "adherenceConclusion",
+        "clinicalInterpretation"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "occurrenceRef": { "$ref": "#/$defs/id" },
+        "medicationRef": { "$ref": "#/$defs/id" },
+        "orderRef": { "$ref": "#/$defs/id" },
+        "observerAuthorityRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["taken", "not-taken", "held", "refused", "missed", "unknown"] },
+        "observedAt": { "$ref": "#/$defs/exactDateTime" },
+        "sourceRef": { "$ref": "#/$defs/id" },
+        "adherenceConclusion": { "const": false },
+        "clinicalInterpretation": { "const": false }
+      }
+    },
+    "supply": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "medicationRef",
+        "packageLabel",
+        "countedUnits",
+        "countUnit",
+        "countedAt",
+        "expiryDate",
+        "state",
+        "sourceRef",
+        "availabilityDetermination"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "medicationRef": { "$ref": "#/$defs/id" },
+        "packageLabel": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "countedUnits": { "type": "integer", "minimum": 0, "maximum": 100000 },
+        "countUnit": { "enum": ["tablet", "capsule", "milliliter", "dose", "patch", "device-unit", "package-unit", "other-owner-counted-unit"] },
+        "countedAt": { "$ref": "#/$defs/exactDateTime" },
+        "expiryDate": { "type": ["string", "null"], "format": "date" },
+        "state": { "enum": ["available", "low", "depleted", "expired", "unknown"] },
+        "sourceRef": { "$ref": "#/$defs/id" },
+        "availabilityDetermination": { "const": false }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "medicationRef",
+        "kind",
+        "state",
+        "ownerAuthorityRef",
+        "attemptedAt",
+        "sourceRefs",
+        "receiptSourceRef",
+        "agentExecuted",
+        "externalExecution",
+        "entitlementDetermination",
+        "availabilityDetermination",
+        "substitutionDetermination"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "medicationRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["refill-request", "renewal-request", "transfer-request", "dispensing", "delivery", "pickup", "disposal-review", "record-review"] },
+        "state": { "enum": ["planned", "attempted", "failed", "blocked", "partial", "rejected", "withdrawn", "owner-completed-receipted"] },
+        "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+        "attemptedAt": { "anyOf": [{ "$ref": "#/$defs/exactDateTime" }, { "type": "null" }] },
+        "sourceRefs": { "$ref": "#/$defs/refArray" },
+        "receiptSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "agentExecuted": { "const": false },
+        "externalExecution": { "const": "owner-only" },
+        "entitlementDetermination": { "const": false },
+        "availabilityDetermination": { "const": false },
+        "substitutionDetermination": { "const": false }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "medicationRef",
+        "orderRef",
+        "kind",
+        "askedOfAuthorityRef",
+        "state",
+        "sourceRefs",
+        "answerSourceRef",
+        "ownerMarkedUrgent",
+        "interpretationByClaw"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "medicationRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "orderRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "kind": { "enum": ["conflicting-direction", "medication-identity", "direction", "missed-dose", "reaction", "overdose-poison", "interaction", "expiry-storage", "refill-supply", "other-qualified-human"] },
+        "askedOfAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["open", "answered"] },
+        "sourceRefs": { "$ref": "#/$defs/refArray" },
+        "answerSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "ownerMarkedUrgent": { "type": "boolean" },
+        "interpretationByClaw": { "const": false }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "subjectRefs", "state", "nextOwnerAuthorityRef", "sourceRefs", "resolutionSourceRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["identity", "order-revision", "conflicting-direction", "observation", "supply", "expiry", "refill-receipt", "privacy-authority", "urgent-human-review", "other-evidence"] },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "state": { "enum": ["open", "resolved"] },
+        "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+        "sourceRefs": { "$ref": "#/$defs/refArray" },
+        "resolutionSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "patientAuthorityRef",
+        "authorizedCaregiverRefs",
+        "periodStart",
+        "periodEnd",
+        "asOf",
+        "medicationRefs",
+        "orderRefs",
+        "occurrenceRefs",
+        "observationRefs",
+        "supplyRefs",
+        "actionRefs",
+        "questionRefs",
+        "openGapRefs",
+        "unknownOccurrenceRefs",
+        "blockedActionRefs",
+        "urgentQuestionRefs",
+        "state",
+        "diagnosisConclusion",
+        "safetyConclusion",
+        "effectivenessConclusion",
+        "interactionConclusion",
+        "adherenceConclusion",
+        "continuityConclusion",
+        "closureClaim"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "patientAuthorityRef": { "$ref": "#/$defs/id" },
+        "authorizedCaregiverRefs": { "$ref": "#/$defs/refArray" },
+        "periodStart": { "$ref": "#/$defs/exactDateTime" },
+        "periodEnd": { "$ref": "#/$defs/exactDateTime" },
+        "asOf": { "$ref": "#/$defs/exactDateTime" },
+        "medicationRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "orderRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "occurrenceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "observationRefs": { "$ref": "#/$defs/refArray" },
+        "supplyRefs": { "$ref": "#/$defs/refArray" },
+        "actionRefs": { "$ref": "#/$defs/refArray" },
+        "questionRefs": { "$ref": "#/$defs/refArray" },
+        "openGapRefs": { "$ref": "#/$defs/refArray" },
+        "unknownOccurrenceRefs": { "$ref": "#/$defs/refArray" },
+        "blockedActionRefs": { "$ref": "#/$defs/refArray" },
+        "urgentQuestionRefs": { "$ref": "#/$defs/refArray" },
+        "state": { "const": "blocked" },
+        "diagnosisConclusion": { "const": false },
+        "safetyConclusion": { "const": false },
+        "effectivenessConclusion": { "const": false },
+        "interactionConclusion": { "const": false },
+        "adherenceConclusion": { "const": false },
+        "continuityConclusion": { "const": false },
+        "closureClaim": { "const": false }
+      }
+    },
+    "prohibitedActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "diagnosis",
+        "triage",
+        "treatmentRecommendation",
+        "doseCalculation",
+        "interactionIdentification",
+        "urgencyDecision",
+        "prescribing",
+        "dispensing",
+        "administration",
+        "medicationChange",
+        "providerOrPharmacyContact",
+        "refillOrRenewal",
+        "portalOrAccountChange",
+        "phiDisclosure",
+        "scheduling",
+        "insuranceAction",
+        "payment",
+        "adherenceClaim",
+        "clinicalContinuityClaim",
+        "closureClaim"
+      ],
+      "properties": {
+        "diagnosis": { "const": false },
+        "triage": { "const": false },
+        "treatmentRecommendation": { "const": false },
+        "doseCalculation": { "const": false },
+        "interactionIdentification": { "const": false },
+        "urgencyDecision": { "const": false },
+        "prescribing": { "const": false },
+        "dispensing": { "const": false },
+        "administration": { "const": false },
+        "medicationChange": { "const": false },
+        "providerOrPharmacyContact": { "const": false },
+        "refillOrRenewal": { "const": false },
+        "portalOrAccountChange": { "const": false },
+        "phiDisclosure": { "const": false },
+        "scheduling": { "const": false },
+        "insuranceAction": { "const": false },
+        "payment": { "const": false },
+        "adherenceClaim": { "const": false },
+        "clinicalContinuityClaim": { "const": false },
+        "closureClaim": { "const": false }
+      }
+    }
+  }
+}
