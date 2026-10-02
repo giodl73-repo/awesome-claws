@@ -1,0 +1,9 @@
+agent:
+  tools:
+    profile: minimal
+    allow:
+      - read
+      - write
+      - edit
+    fs:
+      workspaceOnly: true
