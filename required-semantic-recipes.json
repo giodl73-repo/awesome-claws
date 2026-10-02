@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 135,
-    "coveredCount": 135,
-    "recipeCount": 373,
-    "findingCodeCount": 507
+    "validatorCount": 136,
+    "coveredCount": 136,
+    "recipeCount": 376,
+    "findingCodeCount": 511
   },
   "entries": [
     {
@@ -5912,6 +5912,51 @@
             "invalid_action_chronology",
             "invalid_source_chronology",
             "invalid_transaction_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "medical-bill-reconciliation-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-cross-billing-scope-1",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "patientRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_billing_scope",
+            "invalid_billing_issuer",
+            "invalid_patient_authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-patient-authority-2",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "ownerRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "invalid_patient_authority",
+            "unsupported_owner_question"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-billing-index-3",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "documentRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_billing_index"
           ]
         }
       ]

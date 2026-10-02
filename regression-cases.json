@@ -3372,6 +3372,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "medical-bill-reconciliation-coordinator",
+      "acceptedRequest": "Compare the three provider bills, original and corrected EOBs, my payment receipt, and the refund notice I supplied for this service period. Show which lines are demonstrably linked, what changed in reprocessing, which payments have no provider posting evidence, and which items need a billing-office or insurer answer. Do not interpret coverage, decide what I owe, infer coding errors, contact anyone, disclose records, file an appeal, or pay anything.",
+      "requiredEvidence": [
+        "Patient owner, authorized helper scope, bounded service period, privacy ceiling, currency, controlled destination, and unresolved professional questions",
+        "Exact supplied provider statements and itemized bills, insurer explanations of benefits, claim corrections or reversals, correspondence, and redacted document identifiers",
+        "Supplied service-line links, service dates, statement dates, separately attributed amount fields, provider posting records, independent payment receipts, and refunds",
+        "Prior reconciliation, document supersession evidence, unmatched lines, disputed amounts, owner-recorded actions, and source-published deadlines with explicit uncertainty"
+      ],
+      "authorityBoundaries": [
+        "Do not decide coverage, benefits, medical necessity, diagnosis or procedure coding, patient liability, fraud, debt validity, appeal eligibility, or legal rights",
+        "Do not recommend whether or how much to pay, infer deductible or out-of-pocket accumulators, coordinate benefits, or apply coverage rules",
+        "Do not contact providers, insurers, employers, collectors, or advisers; submit claims, appeals, disputes, or records; negotiate, schedule, change accounts, authorize payments, request refunds, or move money",
+        "Use pseudonymous subjects and controlled document references; exclude direct identifiers, member numbers, full account numbers, clinical narratives, credentials, and unnecessary medical details"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/medical-bill-reconciliation-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

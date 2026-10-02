@@ -1,0 +1,558 @@
+{
+  "schemaVersion": "awesomeClaws.medicalBilling.v1",
+  "scope": {
+    "patientRef": "patient-a",
+    "ownerRef": "patient-a",
+    "helperRefs": [
+      "helper-a"
+    ],
+    "start": "2026-09-01",
+    "end": "2026-09-15",
+    "asOf": "2026-09-30",
+    "currency": "USD",
+    "destination": "private-owner-workspace",
+    "documentRefs": [
+      "bill-a",
+      "eob-a-original",
+      "eob-a-corrected",
+      "bill-b",
+      "eob-b-original",
+      "eob-b-reversal",
+      "bill-c",
+      "link-a",
+      "link-b",
+      "receipt-a",
+      "receipt-b",
+      "posting-b",
+      "refund-a",
+      "letter-a"
+    ],
+    "lineRefs": [
+      "line-bill-a",
+      "line-eob-a-original",
+      "line-eob-a-corrected",
+      "line-bill-b",
+      "line-eob-b-original",
+      "line-eob-b-reversal",
+      "line-bill-c"
+    ]
+  },
+  "documents": [
+    {
+      "id": "bill-a",
+      "kind": "bill",
+      "issuerRef": "provider-a",
+      "issuerKind": "provider",
+      "patientRef": "patient-a",
+      "providerRef": "provider-a",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-bill-a",
+      "seriesRef": "series-bill-a",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [
+        "line-bill-a"
+      ],
+      "relatedLineRefs": [],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": null
+    },
+    {
+      "id": "eob-a-original",
+      "kind": "eob",
+      "issuerRef": "insurer-a",
+      "issuerKind": "insurer",
+      "patientRef": "patient-a",
+      "providerRef": "provider-a",
+      "currency": "USD",
+      "issuedOn": "2026-09-15",
+      "controlledRef": "controlled://medical-billing/source-eob-a-original",
+      "seriesRef": "claim-a",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [
+        "line-eob-a-original"
+      ],
+      "relatedLineRefs": [],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": null
+    },
+    {
+      "id": "eob-a-corrected",
+      "kind": "eob",
+      "issuerRef": "insurer-a",
+      "issuerKind": "insurer",
+      "patientRef": "patient-a",
+      "providerRef": "provider-a",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-eob-a-corrected",
+      "seriesRef": "claim-a",
+      "supersedesRef": "eob-a-original",
+      "revision": "corrected",
+      "lineRefs": [
+        "line-eob-a-corrected"
+      ],
+      "relatedLineRefs": [],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": null
+    },
+    {
+      "id": "bill-b",
+      "kind": "bill",
+      "issuerRef": "provider-b",
+      "issuerKind": "provider",
+      "patientRef": "patient-a",
+      "providerRef": "provider-b",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-bill-b",
+      "seriesRef": "series-bill-b",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [
+        "line-bill-b"
+      ],
+      "relatedLineRefs": [],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": null
+    },
+    {
+      "id": "eob-b-original",
+      "kind": "eob",
+      "issuerRef": "insurer-a",
+      "issuerKind": "insurer",
+      "patientRef": "patient-a",
+      "providerRef": "provider-b",
+      "currency": "USD",
+      "issuedOn": "2026-09-15",
+      "controlledRef": "controlled://medical-billing/source-eob-b-original",
+      "seriesRef": "claim-b",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [
+        "line-eob-b-original"
+      ],
+      "relatedLineRefs": [],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": null
+    },
+    {
+      "id": "eob-b-reversal",
+      "kind": "eob",
+      "issuerRef": "insurer-a",
+      "issuerKind": "insurer",
+      "patientRef": "patient-a",
+      "providerRef": "provider-b",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-eob-b-reversal",
+      "seriesRef": "claim-b",
+      "supersedesRef": "eob-b-original",
+      "revision": "reversal",
+      "lineRefs": [
+        "line-eob-b-reversal"
+      ],
+      "relatedLineRefs": [],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": null
+    },
+    {
+      "id": "bill-c",
+      "kind": "bill",
+      "issuerRef": "provider-c",
+      "issuerKind": "provider",
+      "patientRef": "patient-a",
+      "providerRef": "provider-c",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-bill-c",
+      "seriesRef": "series-bill-c",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [
+        "line-bill-c"
+      ],
+      "relatedLineRefs": [],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": "2026-10-15"
+    },
+    {
+      "id": "link-a",
+      "kind": "link-record",
+      "issuerRef": "patient-a",
+      "issuerKind": "patient",
+      "patientRef": "patient-a",
+      "providerRef": "provider-a",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-link-a",
+      "seriesRef": "series-link-a",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [],
+      "relatedLineRefs": [
+        "line-bill-a",
+        "line-eob-a-corrected"
+      ],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": null
+    },
+    {
+      "id": "link-b",
+      "kind": "link-record",
+      "issuerRef": "patient-a",
+      "issuerKind": "patient",
+      "patientRef": "patient-a",
+      "providerRef": "provider-b",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-link-b",
+      "seriesRef": "series-link-b",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [],
+      "relatedLineRefs": [
+        "line-bill-b",
+        "line-eob-b-reversal"
+      ],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": null
+    },
+    {
+      "id": "receipt-a",
+      "kind": "payment-receipt",
+      "issuerRef": "processor-a",
+      "issuerKind": "payment-processor",
+      "patientRef": "patient-a",
+      "providerRef": "provider-a",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-receipt-a",
+      "seriesRef": "series-receipt-a",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [],
+      "relatedLineRefs": [
+        "line-bill-a"
+      ],
+      "transactionRef": "transaction-a",
+      "amountMinor": 2500,
+      "deadline": null
+    },
+    {
+      "id": "receipt-b",
+      "kind": "payment-receipt",
+      "issuerRef": "processor-a",
+      "issuerKind": "payment-processor",
+      "patientRef": "patient-a",
+      "providerRef": "provider-b",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-receipt-b",
+      "seriesRef": "series-receipt-b",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [],
+      "relatedLineRefs": [
+        "line-bill-b"
+      ],
+      "transactionRef": "transaction-b",
+      "amountMinor": 1000,
+      "deadline": null
+    },
+    {
+      "id": "posting-b",
+      "kind": "provider-posting",
+      "issuerRef": "provider-b",
+      "issuerKind": "provider",
+      "patientRef": "patient-a",
+      "providerRef": "provider-b",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-posting-b",
+      "seriesRef": "series-posting-b",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [],
+      "relatedLineRefs": [
+        "line-bill-b"
+      ],
+      "transactionRef": "transaction-b",
+      "amountMinor": 1000,
+      "deadline": null
+    },
+    {
+      "id": "refund-a",
+      "kind": "refund-notice",
+      "issuerRef": "provider-a",
+      "issuerKind": "provider",
+      "patientRef": "patient-a",
+      "providerRef": "provider-a",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-refund-a",
+      "seriesRef": "series-refund-a",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [],
+      "relatedLineRefs": [
+        "line-bill-a"
+      ],
+      "transactionRef": "transaction-refund-a",
+      "amountMinor": 500,
+      "deadline": null
+    },
+    {
+      "id": "letter-a",
+      "kind": "correspondence",
+      "issuerRef": "provider-a",
+      "issuerKind": "provider",
+      "patientRef": "patient-a",
+      "providerRef": "provider-a",
+      "currency": "USD",
+      "issuedOn": "2026-09-20",
+      "controlledRef": "controlled://medical-billing/source-letter-a",
+      "seriesRef": "series-letter-a",
+      "supersedesRef": null,
+      "revision": "original",
+      "lineRefs": [],
+      "relatedLineRefs": [
+        "line-bill-a"
+      ],
+      "transactionRef": null,
+      "amountMinor": null,
+      "deadline": null
+    }
+  ],
+  "lines": [
+    {
+      "id": "line-bill-a",
+      "documentRef": "bill-a",
+      "serviceDate": "2026-09-10",
+      "chargedMinor": 15000,
+      "allowedMinor": null,
+      "adjustmentMinor": null,
+      "reportedResponsibilityMinor": null
+    },
+    {
+      "id": "line-eob-a-original",
+      "documentRef": "eob-a-original",
+      "serviceDate": "2026-09-10",
+      "chargedMinor": 15000,
+      "allowedMinor": 11000,
+      "adjustmentMinor": null,
+      "reportedResponsibilityMinor": 3000
+    },
+    {
+      "id": "line-eob-a-corrected",
+      "documentRef": "eob-a-corrected",
+      "serviceDate": "2026-09-10",
+      "chargedMinor": 14000,
+      "allowedMinor": 10000,
+      "adjustmentMinor": 4000,
+      "reportedResponsibilityMinor": 2000
+    },
+    {
+      "id": "line-bill-b",
+      "documentRef": "bill-b",
+      "serviceDate": "2026-09-10",
+      "chargedMinor": 8000,
+      "allowedMinor": null,
+      "adjustmentMinor": null,
+      "reportedResponsibilityMinor": null
+    },
+    {
+      "id": "line-eob-b-original",
+      "documentRef": "eob-b-original",
+      "serviceDate": "2026-09-10",
+      "chargedMinor": 8000,
+      "allowedMinor": 6000,
+      "adjustmentMinor": null,
+      "reportedResponsibilityMinor": 1000
+    },
+    {
+      "id": "line-eob-b-reversal",
+      "documentRef": "eob-b-reversal",
+      "serviceDate": "2026-09-10",
+      "chargedMinor": 0,
+      "allowedMinor": 0,
+      "adjustmentMinor": null,
+      "reportedResponsibilityMinor": 0
+    },
+    {
+      "id": "line-bill-c",
+      "documentRef": "bill-c",
+      "serviceDate": "2026-09-10",
+      "chargedMinor": 4200,
+      "allowedMinor": null,
+      "adjustmentMinor": null,
+      "reportedResponsibilityMinor": null
+    }
+  ],
+  "associations": [
+    {
+      "id": "association-a",
+      "lineRefs": [
+        "line-bill-a",
+        "line-eob-a-corrected"
+      ],
+      "evidenceRef": "link-a",
+      "state": "documented-link"
+    },
+    {
+      "id": "association-b",
+      "lineRefs": [
+        "line-bill-b",
+        "line-eob-b-reversal"
+      ],
+      "evidenceRef": "link-b",
+      "state": "documented-link"
+    },
+    {
+      "id": "unmatched-a-original",
+      "lineRefs": [
+        "line-eob-a-original"
+      ],
+      "evidenceRef": null,
+      "state": "unmatched"
+    },
+    {
+      "id": "unmatched-b-original",
+      "lineRefs": [
+        "line-eob-b-original"
+      ],
+      "evidenceRef": null,
+      "state": "unmatched"
+    },
+    {
+      "id": "unmatched-c",
+      "lineRefs": [
+        "line-bill-c"
+      ],
+      "evidenceRef": null,
+      "state": "unmatched"
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "comparison-a",
+      "associationRef": "association-a",
+      "field": "provider-charge-minus-insurer-reported-charge",
+      "differenceMinor": 1000
+    }
+  ],
+  "transfers": [
+    {
+      "id": "payment-a",
+      "kind": "payment",
+      "evidenceRef": "receipt-a",
+      "counterpartRef": null,
+      "state": "posting-missing"
+    },
+    {
+      "id": "payment-b",
+      "kind": "payment",
+      "evidenceRef": "receipt-b",
+      "counterpartRef": "posting-b",
+      "state": "receipt-and-posting-observed"
+    },
+    {
+      "id": "refund-pending",
+      "kind": "refund",
+      "evidenceRef": "refund-a",
+      "counterpartRef": null,
+      "state": "refund-receipt-missing"
+    }
+  ],
+  "questions": [
+    {
+      "id": "question-deadline",
+      "targetRef": "bill-c",
+      "reason": "deadline-question",
+      "ownerRef": "patient-a",
+      "sourceRef": "bill-c",
+      "deadline": "2026-10-15"
+    },
+    {
+      "id": "question-letter",
+      "targetRef": "letter-a",
+      "reason": "correspondence-review",
+      "ownerRef": "patient-a",
+      "sourceRef": null,
+      "deadline": null
+    },
+    {
+      "id": "question-reversal",
+      "targetRef": "association-b",
+      "reason": "historical-or-reversed-link",
+      "ownerRef": "patient-a",
+      "sourceRef": null,
+      "deadline": null
+    },
+    {
+      "id": "question-old-a",
+      "targetRef": "unmatched-a-original",
+      "reason": "unmatched-line",
+      "ownerRef": "patient-a",
+      "sourceRef": null,
+      "deadline": null
+    },
+    {
+      "id": "question-old-b",
+      "targetRef": "unmatched-b-original",
+      "reason": "unmatched-line",
+      "ownerRef": "patient-a",
+      "sourceRef": null,
+      "deadline": null
+    },
+    {
+      "id": "question-unmatched",
+      "targetRef": "unmatched-c",
+      "reason": "unmatched-line",
+      "ownerRef": "patient-a",
+      "sourceRef": null,
+      "deadline": null
+    },
+    {
+      "id": "question-charge",
+      "targetRef": "comparison-a",
+      "reason": "charge-difference",
+      "ownerRef": "patient-a",
+      "sourceRef": null,
+      "deadline": null
+    },
+    {
+      "id": "question-posting",
+      "targetRef": "payment-a",
+      "reason": "transfer-evidence-gap",
+      "ownerRef": "patient-a",
+      "sourceRef": null,
+      "deadline": null
+    },
+    {
+      "id": "question-refund",
+      "targetRef": "refund-pending",
+      "reason": "transfer-evidence-gap",
+      "ownerRef": "patient-a",
+      "sourceRef": null,
+      "deadline": null
+    }
+  ],
+  "review": {
+    "ownerRef": "patient-a",
+    "state": "owner-review-required",
+    "externalActions": "none",
+    "liabilityDetermination": "not-made"
+  }
+}

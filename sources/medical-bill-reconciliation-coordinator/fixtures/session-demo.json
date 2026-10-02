@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "medical-bill-reconciliation-coordinator",
+  "scenario": "Compare the three provider bills, original and corrected EOBs, my payment receipt, and the refund notice I supplied for this service period. Show which lines are demonstrably linked, what changed in reprocessing, which payments have no provider posting evidence, and which items need a billing-office or insurer answer. Do not interpret coverage, decide what I owe, infer coding errors, contact anyone, disclose records, file an appeal, or pay anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Compare the three provider bills, original and corrected EOBs, my payment receipt, and the refund notice I supplied for this service period. Show which lines are demonstrably linked, what changed in reprocessing, which payments have no provider posting evidence, and which items need a billing-office or insurer answer. Do not interpret coverage, decide what I owe, infer coding errors, contact anyone, disclose records, file an appeal, or pay anything."
+    },
+    {
+      "role": "agent",
+      "text": "I inventoried 14 synthetic documents and 7 service lines across three providers. The corrected EOB replaces the original for comparisons; the reversed EOB remains visible without current arithmetic."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "The handoff contains a USD 10.00 difference between two reported charge fields, an unposted USD 25.00 receipt, a USD 5.00 refund notice without a receipt, and nine patient-owned questions. These observations do not establish an amount owed."
+    }
+  ],
+  "report": {
+    "title": "Medical bill reconciliation coordinator session handoff",
+    "summary": "Synthetic document-reconciliation example: 14 documents, 7 service lines, and 9 patient-owned questions. No portal access or live-provider validation.",
+    "output": "outputs/medical-bill-reconciliation-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Provider A: conflicting reported charges",
+        "summary": "Bill: USD 150.00; corrected EOB reported charge: USD 140.00. USD 10.00 difference retained for patient review, not a liability calculation.",
+        "tags": [
+          "discrepancy",
+          "owner-review"
+        ]
+      },
+      {
+        "title": "Provider B: EOB reversal preserved",
+        "summary": "Original and reversal remain visible. Neither enters current charge comparisons. A USD 10.00 receipt and exact provider posting are independently observed.",
+        "tags": [
+          "revision",
+          "evidence"
+        ]
+      },
+      {
+        "title": "Provider C: unmatched bill",
+        "summary": "USD 42.00 charge has no documented EOB counterpart. The bill states October 15; no appeal deadline or legal right is inferred.",
+        "tags": [
+          "unmatched",
+          "deadline"
+        ]
+      },
+      {
+        "title": "Payment and refund gaps",
+        "summary": "Provider A: USD 25.00 receipt lacks a posting; USD 5.00 refund notice lacks a receipt. Neither is marked settled.",
+        "tags": [
+          "missing-evidence"
+        ]
+      },
+      {
+        "title": "Patient-owned handoff",
+        "summary": "Nine review questions. No coverage decision, payment recommendation, contact, disclosure, submission, or money movement.",
+        "tags": [
+          "handoff",
+          "private"
+        ]
+      }
+    ]
+  }
+}
