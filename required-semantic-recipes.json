@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 135,
-    "coveredCount": 135,
-    "recipeCount": 373,
-    "findingCodeCount": 507
+    "validatorCount": 136,
+    "coveredCount": 136,
+    "recipeCount": 376,
+    "findingCodeCount": 511
   },
   "entries": [
     {
@@ -5912,6 +5912,49 @@
             "invalid_action_chronology",
             "invalid_source_chronology",
             "invalid_transaction_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "college-application-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-cross-portfolio-record-1",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_portfolio_record",
+            "invalid_applicant_authority",
+            "invalid_source_subject"
+          ]
+        },
+        {
+          "id": "semantic-cross-cycle-application-2",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "cycle"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "cross_cycle_application"
+          ]
+        },
+        {
+          "id": "semantic-invalid-portfolio-chronology-3",
+          "operator": "replace",
+          "path": [
+            "portfolio",
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "invalid_portfolio_chronology"
           ]
         }
       ]

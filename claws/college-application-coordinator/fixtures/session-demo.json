@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "college-application-coordinator",
+  "scenario": "Reconcile these two synthetic Fall 2027 college applications: Institution Red computing (early round) and Institution Blue design (regular round). Use the supplied program requirements, applicant drafts, transcript, test records, recommendations, fee waiver, submission evidence, portal observations, and decision. Show deadlines, current revisions, missing records, unreceipted submissions, conflicts, and next owners. Do not write my essays, contact anyone, submit, upload, pay, certify, predict outcomes, respond to offers, or commit enrollment.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile these two synthetic Fall 2027 college applications: Institution Red computing (early round) and Institution Blue design (regular round). Use the supplied program requirements, applicant drafts, transcript, test records, recommendations, fee waiver, submission evidence, portal observations, and decision. Show deadlines, current revisions, missing records, unreceipted submissions, conflicts, and next owners. Do not write my essays, contact anyone, submit, upload, pay, certify, predict outcomes, respond to offers, or commit enrollment."
+    },
+    {
+      "role": "agent",
+      "text": "Red has an independent submission receipt and an official admission decision. Blue remains incomplete: its recommendation and aid record are missing, submission has no receipt, and the portal conflict is unresolved."
+    },
+    {
+      "role": "user",
+      "text": "Keep the source revisions and deadlines visible, and leave the decisions and any contact to me."
+    },
+    {
+      "role": "agent",
+      "text": "Prepared outputs/college-application-coordinator-handoff.md. The portfolio stays blocked with four open gaps, one unreceipted submission, and two blocked external actions. You remain the next review owner."
+    }
+  ],
+  "report": {
+    "title": "Fall 2027 application review",
+    "summary": "Synthetic fixture as of September 26, 2026: 2 applications, 12 requirements, 4 open gaps. Portfolio blocked; applicant review is next.",
+    "output": "outputs/college-application-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Red / computing / early",
+        "summary": "Independent receipt recorded September 10; official admission decision September 24. Essay v2 replaces withdrawn v1. No offer response or enrollment commitment.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blue / design / regular",
+        "summary": "September 18 submission attempt has no independent receipt. Recommendation and aid records are missing; portal conflict remains open. A fee waiver is documented, not an aid award.",
+        "tags": [
+          "blocked",
+          "evidence"
+        ]
+      },
+      {
+        "title": "Source-stated deadlines",
+        "summary": "Red: November 1, 2026 at 23:59 -08:00. Blue: January 5, 2027 at 23:59 -08:00; aid: February 1 at 23:59 -08:00. All labeled America/Los_Angeles.",
+        "tags": [
+          "deadlines",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Four gaps / named owners",
+        "summary": "Blue recommendation: recommender. Submission receipt and portal conflict: Blue admissions. Aid record: Blue aid office. Applicant coordinates the private review; the Claw contacts nobody.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      },
+      {
+        "title": "Authority retained",
+        "summary": "Blue contact and deposit remain blocked. No essays written, submissions made, payments taken, admission or aid predictions, or offer decisions. Controlled references only; no real applicant data.",
+        "tags": [
+          "blocked",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
