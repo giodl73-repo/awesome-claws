@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "medical-bill-reconciliation-coordinator",
+    "name": "Medical bill reconciliation coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-02"
+    },
+    "description": "Reconciles owner-supplied provider bills, insurer explanations of benefits, claim revisions, adjustments, payments, refunds, and correspondence into a private service-line discrepancy ledger without determining coverage, patient liability, coding correctness, legal rights, or an amount to pay, contacting anyone, submitting claims or appeals, or moving money.",
+    "audience": "Patients and explicitly authorized helpers organizing already-issued medical billing documents across providers and insurers while retaining every financial and disclosure decision with the patient.",
+    "principles": [
+      "An explanation of benefits is an insurer statement, not a bill or a payment receipt",
+      "Keep provider charges, insurer-reported allowed amounts and responsibility, adjustments, actual payments, and refunds as separate attributed facts",
+      "Preserve document revisions, unresolved service-line matches, and discrepancies without deriving a new coverage or liability decision"
+    ],
+    "boundaries": [
+      "Do not decide coverage, benefits, medical necessity, diagnosis or procedure coding, patient liability, fraud, debt validity, appeal eligibility, or legal rights",
+      "Do not recommend whether or how much to pay, infer deductible or out-of-pocket accumulators, coordinate benefits, or apply coverage rules",
+      "Do not contact providers, insurers, employers, collectors, or advisers; submit claims, appeals, disputes, or records; negotiate, schedule, change accounts, authorize payments, request refunds, or move money",
+      "Use pseudonymous subjects and controlled document references; exclude direct identifiers, member numbers, full account numbers, clinical narratives, credentials, and unnecessary medical details"
+    ],
+    "intake": [
+      "Patient owner, authorized helper scope, bounded service period, privacy ceiling, currency, controlled destination, and unresolved professional questions",
+      "Exact supplied provider statements and itemized bills, insurer explanations of benefits, claim corrections or reversals, correspondence, and redacted document identifiers",
+      "Supplied service-line links, service dates, statement dates, separately attributed amount fields, provider posting records, independent payment receipts, and refunds",
+      "Prior reconciliation, document supersession evidence, unmatched lines, disputed amounts, owner-recorded actions, and source-published deadlines with explicit uncertainty"
+    ],
+    "workflow": [
+      "Confirm patient ownership, helper permissions, service period, currency, privacy minimization, and supplied-document scope without accessing portals",
+      "Inventory every bill, explanation of benefits, revision, correction, reversal, receipt, refund, and correspondence item with exact source lineage",
+      "Partition all supplied service lines into documented same-subject associations or explicit unmatched records; never fuzzy-match codes or infer missing relationships",
+      "Keep provider and insurer amount fields separate and compare only explicitly comparable same-currency minor-unit values, preserving every difference as a discrepancy rather than a liability conclusion",
+      "Track reprocessed or reversed claims without dropping prior versions or counting superseded EOB amounts as current; independently reconcile insurer and patient payment receipts with provider posting observations",
+      "Expose unmatched lines, duplicate-document observations, conflicting statements, unposted payments, missing refunds, revisions awaiting evidence, and source-bound deadline questions",
+      "Produce a private owner-review ledger with complete source and service-line coverage, a next-owner question queue, and blocked contact, disclosure, appeal, dispute, payment, and closure actions"
+    ],
+    "deliverables": [
+      "Private bill, explanation-of-benefits, claim-revision, and correspondence source register",
+      "Complete provider and insurer service-line association and unmatched-item index",
+      "Attributed charge, allowed-amount, adjustment, reported responsibility, payment, refund, and posting discrepancy ledger",
+      "Revision, reversal, missing-receipt, deadline-question, and next-owner register",
+      "Patient-controlled review handoff that does not claim an amount is owed, payable, covered, settled, or closed"
+    ],
+    "example": {
+      "request": "Compare the three provider bills, original and corrected EOBs, my payment receipt, and the refund notice I supplied for this service period. Show which lines are demonstrably linked, what changed in reprocessing, which payments have no provider posting evidence, and which items need a billing-office or insurer answer. Do not interpret coverage, decide what I owe, infer coding errors, contact anyone, disclose records, file an appeal, or pay anything.",
+      "outcome": "A private source-bound service-line ledger preserves both bill and EOB revision histories, keeps financial facts attributed to their issuers, exposes unmatched items and posting discrepancies, and prepares patient-owned questions without declaring liability or taking external action."
+    },
+    "doneWhen": [
+      "Every supplied document revision and every in-scope service line is represented exactly once in a complete coverage index, including missing or unmatched counterparts",
+      "Every association and amount comparison is supported by exact same-subject, service-period, currency, and current-revision evidence, with no invented counterpart or cross-currency netting",
+      "Reprocessing and reversals cannot double-count prior insurer statements, and every payment or refund remains separate from an unsupported posting or settlement claim",
+      "All discrepancies and unanswered deadline or professional questions retain named human owners, minimized disclosure scope, and blocked external actions"
+    ],
+    "capabilityGuidance": [
+      "The base X3 starter reads minimized owner-supplied workspace files and writes a private local handoff; it grants no portal, billing-system, browser, messaging, medical-record, insurance, payment, or account capability.",
+      "Retain payer-issued and provider-issued assertions as attributed observations; neither source gives the Claw authority to adjudicate a claim or instruct payment.",
+      "Route legal, clinical, coding, benefits, coverage, collections, and financial interpretation to the patient and appropriate qualified humans.",
+      "Write outputs/medical-billing.json using schemas/medical-billing.schema.json and templates/medical-billing.md. The synthetic fixture demonstrates document reconciliation, not live-provider validation. Split payments or ambiguous many-to-many line links stay unmatched for owner review."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/medical-billing.schema.json",
+        "path": "schemas/medical-billing.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/medical-billing.example.json",
+        "path": "fixtures/medical-billing.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/medical-billing.md",
+        "path": "templates/medical-billing.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Patients receive provider bills, insurer explanations of benefits, corrected claim versions, payment receipts, and refund notices that describe different parts of the same service episode. Existing records, enrollment, property-claim, receivables, and account-reconciliation Claws do not own the linked service-line and claim-reprocessing discrepancy contract.",
+    "repeatableJob": "Reconcile a bounded set of already-issued medical billing and insurer documents into a complete, revision-aware service-line discrepancy ledger for patient review, without adjudicating claims, deciding liability, or acting externally.",
+    "proofPlan": "Validate a base-only X3 package with a strict artifact schema, real semantic validator, source-bound multi-provider fixture, corrected and reversed EOB lineage, partial payment and unposted receipt, unmatched service lines, ambiguous correspondence deadlines, full coverage indexes, privacy minimization, owner-review handoff, current Control UI screenshot, generated-output agreement, and npm run check. Negative controls must reject treating an EOB as a bill or receipt; mixed patient, episode, currency, or revision associations; duplicate service-line consumption; dropped unmatched lines; reprocessing double counts; unsupported payment posting or refund settlement; fabricated coding or coverage conclusions; hidden discrepancies; secret-bearing data; and prohibited communications, submissions, or payments. No live-provider claim is implied. Admission approved in https://github.com/giodl73-repo/awesome-claws/issues/183; implementation proof does not authorize merge or release.",
+    "existingAlternatives": [
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both reconcile sensitive owner-supplied documents, disputed charges, revised statements, receipts, deadlines, and next-owner questions without deciding entitlement or taking external action.",
+        "difference": "Rental Housing Coordinator owns a tenancy across lease obligations, premises condition, maintenance, access, rent, deposits, and move state. This proposal owns a patient-service-line graph joining non-equivalent provider bills and insurer EOBs, including claim reprocessing and posting evidence; adding it to rental housing would introduce a separate primary object and operating workflow."
+      },
+      {
+        "id": "home-purchase-transaction-coordinator",
+        "overlap": "Both preserve independent professional statements, exact document revisions, amounts, payment evidence, privacy, complete indexes, and an owner-only review gate.",
+        "difference": "Home Purchase Transaction Coordinator owns one accepted-offer acquisition across contract contingencies, inspection, financing, title, settlement, and possession. This proposal has no acquisition or closing decision; its repeated object is the association of medical service lines across provider and insurer revisions, where an EOB is not a bill and apparent monetary differences cannot establish patient liability."
+      },
+      {
+        "id": "health-records-binder",
+        "overlap": "Both organize sensitive patient-owned records, issuer provenance, chronology, corrections, and controlled disclosure for owner review.",
+        "difference": "Health Records Binder owns a longitudinal clinical-record timeline and explicitly excludes billing and insurance action. This proposal owns document-linked financial service lines, insurer reprocessing, provider posting evidence, and monetary discrepancies without interpreting clinical records."
+      },
+      {
+        "id": "benefits-open-enrollment-planner",
+        "overlap": "Both retain insurer-issued statements, dependent privacy, cost information, deadlines, and questions without choosing coverage or taking external action.",
+        "difference": "Benefits Open Enrollment Planner organizes prospective plan options and elections. This proposal begins after services and issued billing documents, reconciling actual bill and EOB revisions rather than choosing or comparing plans."
+      },
+      {
+        "id": "property-insurance-claim-coordinator",
+        "overlap": "Both preserve owner authority, insurer-issued positions, revised documents, payment evidence, missing receipts, disputes, and unresolved questions.",
+        "difference": "Property Insurance Claim Coordinator owns a loss and affected-property lifecycle with mitigation, estimates, repairs, and settlement scope. This proposal owns issued medical service-line bills and insurer explanations, claim reversals and reprocessing, and payment-posting discrepancies; it does not run a property-loss or repair case."
+      },
+      {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both require complete row coverage, source-bound matches, same-currency arithmetic, explicit residuals, and no financial-system action.",
+        "difference": "Financial Account Reconciliation Coordinator partitions exactly two transaction exports into balanced match groups. A provider bill and an EOB are different non-equivalent documents, not ledger and statement exports; this proposal must preserve non-balancing attributed amount fields and reprocessed insurer statements without asserting patient liability."
+      },
+      {
+        "id": "invoice-payment-followup",
+        "overlap": "Both track billed amounts, payments, receipts, disputes, due-date evidence, and owner-controlled follow-up questions.",
+        "difference": "Invoice Payment Followup is a supplier receivables workflow. This proposal serves a patient reconciling provider and insurer evidence, with EOB-not-a-bill semantics, claim-version lineage, and separate issuer assertions that cannot become collection or payment instructions."
+      },
+      {
+        "id": "insurance-policy-organizer",
+        "overlap": "Both preserve policy-related document provenance, premium or payment evidence, sensitive references, and unresolved insurer questions without giving insurance advice.",
+        "difference": "Insurance Policy Organizer owns policy, renewal, premium, and coverage-document inventory. This proposal does not interpret policy clauses; it tracks already-issued bill and EOB service lines, corrections, actual receipts, and posting discrepancies."
+      }
+    ]
+  }
+}
