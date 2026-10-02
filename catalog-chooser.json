@@ -4006,6 +4006,40 @@
       }
     },
     {
+      "id": "rfp-response-producer",
+      "name": "RFP response producer",
+      "description": "Produces a source-backed commercial RFP or RFI response draft from a buyer's request, amendments, and authorized seller material, with complete question coverage, explicit capability gaps, attachment checks, and specialist review requests without submitting or making commitments.",
+      "audience": "Proposal managers, bid teams, sales engineers, and subject-matter contributors preparing one seller response to a commercial buyer's RFP or RFI.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "sales-operations",
       "name": "Sales operations",
       "description": "Improves pipeline decisions through clean definitions, evidence, and accountable follow-up.",

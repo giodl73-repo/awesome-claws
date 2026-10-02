@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 135,
-    "coveredCount": 135,
-    "recipeCount": 373,
-    "findingCodeCount": 507
+    "validatorCount": 136,
+    "coveredCount": 136,
+    "recipeCount": 376,
+    "findingCodeCount": 512
   },
   "entries": [
     {
@@ -5912,6 +5912,50 @@
             "invalid_action_chronology",
             "invalid_source_chronology",
             "invalid_transaction_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rfp-response-producer",
+      "recipes": [
+        {
+          "id": "semantic-rfp-evidence-scope-1",
+          "operator": "replace",
+          "path": [
+            "product"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "rfp_evidence_scope"
+          ]
+        },
+        {
+          "id": "semantic-rfp-amendment-reference-2",
+          "operator": "replace",
+          "path": [
+            "amendments",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "rfp_amendment_reference"
+          ]
+        },
+        {
+          "id": "semantic-rfp-question-coverage-3",
+          "operator": "replace",
+          "path": [
+            "questions",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "rfp_question_coverage",
+            "rfp_review_reference",
+            "rfp_source_scope"
           ]
         }
       ]
