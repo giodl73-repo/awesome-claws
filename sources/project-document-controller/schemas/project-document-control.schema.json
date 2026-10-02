@@ -1,0 +1,715 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/project-document-control.schema.json",
+  "title": "Private project document control package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "project",
+    "package",
+    "registerRevision",
+    "asOf",
+    "controller",
+    "engineeringOwner",
+    "accessOwner",
+    "recipient",
+    "intendedUse",
+    "policy",
+    "requiredDocs",
+    "revisions",
+    "useReviews",
+    "supersessions",
+    "useDirections",
+    "register",
+    "workItems",
+    "followUps",
+    "transmittals",
+    "authorizations",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "project": {
+      "$ref": "#/$defs/id"
+    },
+    "package": {
+      "$ref": "#/$defs/id"
+    },
+    "registerRevision": {
+      "$ref": "#/$defs/label"
+    },
+    "asOf": {
+      "$ref": "#/$defs/time"
+    },
+    "controller": {
+      "$ref": "#/$defs/text"
+    },
+    "engineeringOwner": {
+      "$ref": "#/$defs/text"
+    },
+    "accessOwner": {
+      "$ref": "#/$defs/text"
+    },
+    "recipient": {
+      "$ref": "#/$defs/text"
+    },
+    "intendedUse": {
+      "$ref": "#/$defs/purpose"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference",
+        "codes"
+      ],
+      "properties": {
+        "reference": {
+          "$ref": "#/$defs/id"
+        },
+        "codes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "meaning"
+            ],
+            "properties": {
+              "code": {
+                "$ref": "#/$defs/label"
+              },
+              "meaning": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        }
+      }
+    },
+    "requiredDocs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "title": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      }
+    },
+    "revisions": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "project",
+          "documentId",
+          "label",
+          "receivedAt",
+          "statusCode",
+          "fileRef",
+          "bytesSupplied"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "project": {
+            "$ref": "#/$defs/id"
+          },
+          "documentId": {
+            "$ref": "#/$defs/id"
+          },
+          "label": {
+            "$ref": "#/$defs/label"
+          },
+          "receivedAt": {
+            "$ref": "#/$defs/time"
+          },
+          "statusCode": {
+            "$ref": "#/$defs/label"
+          },
+          "fileRef": {
+            "$ref": "#/$defs/id"
+          },
+          "bytesSupplied": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "useReviews": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "project",
+          "documentId",
+          "revisionRef",
+          "purpose",
+          "decision",
+          "reviewer",
+          "decidedAt",
+          "reference"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "project": {
+            "$ref": "#/$defs/id"
+          },
+          "documentId": {
+            "$ref": "#/$defs/id"
+          },
+          "revisionRef": {
+            "$ref": "#/$defs/id"
+          },
+          "purpose": {
+            "$ref": "#/$defs/purpose"
+          },
+          "decision": {
+            "enum": [
+              "approved",
+              "rejected"
+            ]
+          },
+          "reviewer": {
+            "$ref": "#/$defs/text"
+          },
+          "decidedAt": {
+            "$ref": "#/$defs/time"
+          },
+          "reference": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "supersessions": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "project",
+          "fromRef",
+          "toRef",
+          "effect",
+          "owner",
+          "decidedAt",
+          "reference"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "project": {
+            "$ref": "#/$defs/id"
+          },
+          "fromRef": {
+            "$ref": "#/$defs/id"
+          },
+          "toRef": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "effect": {
+            "enum": [
+              "replaced",
+              "withdrawn",
+              "continues"
+            ]
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "decidedAt": {
+            "$ref": "#/$defs/time"
+          },
+          "reference": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "useDirections": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "project",
+          "documentId",
+          "baselineRef",
+          "revisionRef",
+          "purpose",
+          "owner",
+          "decidedAt",
+          "reference"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "project": {
+            "$ref": "#/$defs/id"
+          },
+          "documentId": {
+            "$ref": "#/$defs/id"
+          },
+          "baselineRef": {
+            "$ref": "#/$defs/id"
+          },
+          "revisionRef": {
+            "$ref": "#/$defs/id"
+          },
+          "purpose": {
+            "$ref": "#/$defs/purpose"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "decidedAt": {
+            "$ref": "#/$defs/time"
+          },
+          "reference": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "register": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "documentId",
+          "latestReceivedRef",
+          "lastApprovedRef",
+          "currentUseRef",
+          "unknownStatusCodes",
+          "state",
+          "question"
+        ],
+        "properties": {
+          "documentId": {
+            "$ref": "#/$defs/id"
+          },
+          "latestReceivedRef": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lastApprovedRef": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "currentUseRef": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "unknownStatusCodes": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/$defs/label"
+            },
+            "uniqueItems": true
+          },
+          "state": {
+            "enum": [
+              "missing",
+              "review-required",
+              "usable"
+            ]
+          },
+          "question": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/text"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "workItems": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "revisionRefs",
+          "owner",
+          "deadline",
+          "response"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "kind": {
+            "enum": [
+              "rfi",
+              "submittal"
+            ]
+          },
+          "revisionRefs": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/$defs/id"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "deadline": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "response": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "reference",
+                  "respondedAt",
+                  "revisionRefs",
+                  "summary"
+                ],
+                "properties": {
+                  "reference": {
+                    "$ref": "#/$defs/id"
+                  },
+                  "respondedAt": {
+                    "$ref": "#/$defs/time"
+                  },
+                  "revisionRefs": {
+                    "type": "array",
+                    "maxItems": 200,
+                    "items": {
+                      "$ref": "#/$defs/id"
+                    },
+                    "uniqueItems": true,
+                    "minItems": 1
+                  },
+                  "summary": {
+                    "$ref": "#/$defs/text"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "followUps": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "itemId",
+          "state",
+          "question"
+        ],
+        "properties": {
+          "itemId": {
+            "$ref": "#/$defs/id"
+          },
+          "state": {
+            "enum": [
+              "open",
+              "overdue",
+              "answered"
+            ]
+          },
+          "question": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/text"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "transmittals": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "revision",
+          "project",
+          "recipient",
+          "purpose",
+          "revisionRefs",
+          "state",
+          "holdReasons"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "revision": {
+            "$ref": "#/$defs/label"
+          },
+          "project": {
+            "$ref": "#/$defs/id"
+          },
+          "recipient": {
+            "$ref": "#/$defs/text"
+          },
+          "purpose": {
+            "$ref": "#/$defs/purpose"
+          },
+          "revisionRefs": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/$defs/id"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "state": {
+            "enum": [
+              "held",
+              "ready-for-owner-issue"
+            ]
+          },
+          "holdReasons": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "enum": [
+                "unknown-revision",
+                "missing-file",
+                "unknown-status",
+                "use-unresolved",
+                "recipient-permission-missing",
+                "issue-authorization-missing"
+              ]
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "authorizations": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "project",
+          "transmittalId",
+          "transmittalRevision",
+          "recipient",
+          "purpose",
+          "revisionRefs",
+          "owner",
+          "decidedAt",
+          "validUntil",
+          "reference"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "kind": {
+            "enum": [
+              "recipient-access",
+              "issue"
+            ]
+          },
+          "project": {
+            "$ref": "#/$defs/id"
+          },
+          "transmittalId": {
+            "$ref": "#/$defs/id"
+          },
+          "transmittalRevision": {
+            "$ref": "#/$defs/label"
+          },
+          "recipient": {
+            "$ref": "#/$defs/text"
+          },
+          "purpose": {
+            "$ref": "#/$defs/purpose"
+          },
+          "revisionRefs": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/$defs/id"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "decidedAt": {
+            "$ref": "#/$defs/time"
+          },
+          "validUntil": {
+            "$ref": "#/$defs/time"
+          },
+          "reference": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "issued",
+        "engineeringApproval",
+        "edmsChanges",
+        "contacts",
+        "unresolvedRefs"
+      ],
+      "properties": {
+        "state": {
+          "const": "private-review-draft"
+        },
+        "issued": {
+          "const": "not-performed"
+        },
+        "engineeringApproval": {
+          "const": "not-granted"
+        },
+        "edmsChanges": {
+          "const": "not-performed"
+        },
+        "contacts": {
+          "const": "not-performed"
+        },
+        "unresolvedRefs": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2500,
+      "pattern": "\\S"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "purpose": {
+      "enum": [
+        "review",
+        "construction",
+        "information"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "\\S"
+    }
+  }
+}
