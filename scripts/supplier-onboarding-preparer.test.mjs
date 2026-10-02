@@ -6,6 +6,7 @@ import addFormats from "ajv-formats";
 import { supplierOnboardingFindings, renderSupplierOnboarding } from "./supplier-onboarding-preparer.mjs";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { ARTIFACT_SCHEMA_NAMES } from "./artifact-validator-registry.mjs";
+import { validateOpenClawProfile } from "./catalog-contract.mjs";
 
 const root = new URL("../sources/supplier-onboarding-preparer/", import.meta.url);
 const fixture = JSON.parse(await readFile(new URL("fixtures/supplier-onboarding.example.json", root), "utf8"));
@@ -15,6 +16,20 @@ addFormats(ajv);
 const validate = ajv.compile(schema);
 const clone = () => structuredClone(fixture);
 const findings = supplierOnboardingFindings;
+
+test("supplier catalog and contribution preserve the workspace-only v1 profile", async () => {
+  const catalog = JSON.parse(await readFile(new URL("../catalog.json", import.meta.url), "utf8"));
+  const contribution = JSON.parse(await readFile(new URL("../contributions/supplier-onboarding-preparer.json", import.meta.url), "utf8"));
+  const entry = catalog.entries.find((item) => item.id === "supplier-onboarding-preparer");
+  const expected = {
+    schemaVersion: 1,
+    agent: { tools: { profile: "minimal", alsoAllow: ["read", "write", "edit"], fs: { workspaceOnly: true } } },
+  };
+  for (const profile of [entry.openclawProfile, contribution.entry.openclawProfile]) {
+    assert.doesNotThrow(() => validateOpenClawProfile(profile));
+    assert.deepEqual(profile, expected);
+  }
+});
 
 function resolvedExample() {
   const value = clone();

@@ -14,7 +14,7 @@ Prepares one selected supplier's setup packet from authorized intake and owner-s
 
 - `CLAW.md` defines the agent and provides its portable `SOUL.md` content.
 - `workspace/AGENTS.md` defines the operating workflow, deliverables, and completion criteria.
-- Declared capability: OpenClaw tool profile `minimal` bounded to `read`, `write`, `edit` with workspace-only filesystem access.
+- Declared capability: OpenClaw tool profile `minimal` plus `read`, `write`, `edit` with workspace-only filesystem access.
 - Capability boundary: X3 base only: supplied workspace evidence and private Markdown artifacts; no portal, CRM, bank, network, messaging, execution, or integration access
 - Capability boundary: Consume selected-supplier and diligence outputs without duplicating Procurement Evaluator's comparison or Recurring Third-Party Review's periodic evidence workflow
 - Capability boundary: Where confidential originals are required, record controlled references and missing owner verification; never request raw financial identifiers in chat

@@ -14127,10 +14127,11 @@
         }
       ],
       "openclawProfile": {
+        "schemaVersion": 1,
         "agent": {
           "tools": {
             "profile": "minimal",
-            "allow": [
+            "alsoAllow": [
               "read",
               "write",
               "edit"
