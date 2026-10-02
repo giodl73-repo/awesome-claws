@@ -2933,6 +2933,40 @@
       }
     },
     {
+      "id": "payroll-review-preparer",
+      "name": "Payroll review preparer",
+      "description": "Prepares a private pre-release payroll comparison and exception workpaper from minimized draft registers, approved change inputs, and supplied review rules without calculating statutory entitlements or releasing payroll.",
+      "audience": "Payroll administrators and payroll review owners checking one employer, pay group, currency, and pay period before provider or finance release.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "personal-archive-curator",
       "name": "Personal archive curator",
       "description": "Organizes supplied personal files, notes, links, receipts, photos, warranties, and memories into a privacy-labeled retrieval index without deleting, moving, sharing, uploading, training memory, or inferring sensitive facts.",

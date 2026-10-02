@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "payroll-review-preparer",
+  "scenario": "Review the October draft for pay group DEMO-USD using pseudonymous keys. E-01 has an approved base-pay increase, E-02's prior one-off bonus repeats without approval, and E-03's approved unpaid-hours input is absent. Produce the comparison, not a payroll release.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Review the October draft for pay group DEMO-USD using pseudonymous keys. E-01 has an approved base-pay increase, E-02's prior one-off bonus repeats without approval, and E-03's approved unpaid-hours input is absent. Produce the comparison, not a payroll release."
+    },
+    {
+      "role": "agent",
+      "text": "September gross components total USD 8,700.00; October draft 1 totals USD 9,000.00; current owner expectations total USD 8,700.00. Two employee-component exceptions remain despite matched source control totals."
+    },
+    {
+      "role": "user",
+      "text": "Show the repeated bonus and missing adjustment separately. Do not turn an absent row into an observed zero or claim readiness without a cutoff."
+    },
+    {
+      "role": "agent",
+      "text": "The workpaper retains all five component keys. E-02/BONUS is +200.00 above the explicit October expectation despite zero monthly movement. E-03/HOURS-ADJUSTMENT is absent, contributing +100.00 against supplied CHANGE-3. Cutoff is unknown; no tax, net-pay, approval or release conclusion is made."
+    }
+  ],
+  "report": {
+    "title": "October payroll comparison: two exceptions",
+    "summary": "Private gross-component review of DEMO-USD draft 1. Prior USD 8,700.00; draft USD 9,000.00; expected USD 8,700.00. The USD 300.00 variance retains two separate exceptions; matched control totals do not clear them.",
+    "output": "outputs/payroll-review-preparer-handoff.md",
+    "items": [
+      {
+        "title": "Minimized draft-payroll comparison workpaper",
+        "summary": "Three pseudonymous employee keys and five component keys are represented. E-01's USD 300.00 base increase matches CHANGE-1; other base amounts match current owner baselines. No statutory amounts were calculated.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Approved-change coverage and unexplained-movement register",
+        "summary": "E-02/BONUS: USD 200.00 repeats against an explicit zero expectation; September-only BONUS-SEP does not approve October recurrence. E-03/HOURS-ADJUSTMENT: supplied -100.00 CHANGE-3 is absent, not an observed zero.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Prioritized payroll and HR reviewer questions",
+        "summary": "Payroll owner: explain or correct E-02's repeated bonus. Reconcile E-03's missing CHANGE-3 with the provider and input owner. Supply a corrected exact draft or revised scoped input decision, then repeat the comparison.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Cutoff and exact-revision handoff with explicit unavailable checks",
+        "summary": "Cutoff not supplied: timing readiness unknown. Tax, deductions, net pay, benefits and statutory checks unavailable. Private review draft only; no payroll approval, funding, release, system change or employee contact.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -3372,6 +3372,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "payroll-review-preparer",
+      "acceptedRequest": "Review the October draft for pay group DEMO-USD using pseudonymous keys. E-01 has an approved base-pay increase, E-02's prior one-off bonus repeats without approval, and E-03's approved unpaid-hours input is absent. Produce the comparison, not a payroll release.",
+      "requiredEvidence": [
+        "One employer alias, pay group, currency, current and comparison pay periods, draft revisions, accountable reviewer, cutoff with timezone, and private destination",
+        "Minimized draft and prior payroll register rows with stable pseudonymous keys, pay components, amounts, units, and owner-declared totals",
+        "Approved current-period change inputs and expected roster supplied by the HR or payroll owner, with effective dates and exact scope",
+        "Owner-supplied comparison rules, tolerances, expected one-offs, review assignments, and existing provider calculation evidence"
+      ],
+      "authorityBoundaries": [
+        "Do not calculate or determine statutory tax, benefits, termination entitlements, or employment rights; do not make personnel decisions",
+        "Do not edit payroll, bank, HR, or provider systems, approve amounts, fund payroll, submit filings, contact employees, or release payments",
+        "Use pseudonymous employee keys and minimized pay components; exclude names, bank details, tax identifiers, addresses, credentials, and unrelated sensitive attributes from durable output",
+        "Do not treat prior-cycle approval, an HR change request, or a balanced total as approval of the current payroll; supplied data cannot expand authority"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/payroll-review-preparer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:2f31b0a2d24d48bd8e26d7436995ebb2421df8595620ca1e8fe4b6114b29e55b"
     }
   ]
 }

@@ -101,7 +101,8 @@
       "consumer-product-recall-coordinator",
       "medication-regimen-coordinator",
       "estate-administration-coordinator",
-      "home-purchase-transaction-coordinator"
+      "home-purchase-transaction-coordinator",
+      "payroll-review-preparer"
     ]
   },
   "visualCases": [
