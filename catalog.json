@@ -2336,7 +2336,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-10-02"
       },
       "description": "Turns data questions into reproducible analyses with explicit assumptions and limitations.",
       "audience": "Business and product teams deciding from a bounded dataset, metric question, or experiment result.",
@@ -2411,6 +2411,31 @@
           "source": "templates/analysis-readout.md",
           "path": "templates/analysis-readout.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/recurring-review-input.example.json",
+          "path": "fixtures/recurring-review-input.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/recurring-analysis-state.example.json",
+          "path": "fixtures/recurring-analysis-state.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/recurring-business-review.example.md",
+          "path": "fixtures/recurring-business-review.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "references/recurring-business-review.md",
+          "path": "references/recurring-business-review.md",
+          "role": "reference"
+        },
+        {
+          "source": "templates/recurring-business-review.md",
+          "path": "templates/recurring-business-review.md",
+          "role": "template"
         }
       ],
       "openclawProfile": {
@@ -2432,7 +2457,8 @@
       },
       "capabilityGuidance": [
         "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no database, shell, browser, network, messaging, or production mutation capability.",
-        "Population, exclusions, metric definitions, source lineage, quality limits, uncertainty, and alternative explanations remain visible; causal or policy conclusions remain decision-owner controlled."
+        "Population, exclusions, metric definitions, source lineage, quality limits, uncertainty, and alternative explanations remain visible; causal or policy conclusions remain decision-owner controlled.",
+        "For recurring service reviews, read references/recurring-business-review.md and use templates/recurring-business-review.md; keep per-period denominators, definition comparability, audience limits and the briefing handoff explicit."
       ]
     },
     {
@@ -11010,7 +11036,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-29"
+        "lastVerified": "2026-10-02"
       },
       "description": "Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability.",
       "audience": "Analysts and operators who need a controlled review or transformation of Excel workbooks.",
@@ -11061,7 +11087,8 @@
       ],
       "capabilityGuidance": [
         "The XLSX skill can create and modify workbook files; default to a new output path, preserve formulas and templates, and require review before replacing any operational artifact.",
-        "Treat fixtures/spreadsheet-change.example.json only as a shape example. Validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json and render templates/spreadsheet-change.md with source identity, sheet and formula preservation, transformation lineage, checks, exceptions, and owner authority."
+        "Treat fixtures/spreadsheet-change.example.json only as a shape example. Validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json and render templates/spreadsheet-change.md with source identity, sheet and formula preservation, transformation lineage, checks, exceptions, and owner authority.",
+        "For close workpapers, use references/close-workpaper.md and templates/close-workpaper.md; retain source scope and revisions, unexplained differences and separate-account residuals without inferred journals or close approval."
       ],
       "resources": [
         {
@@ -11078,6 +11105,36 @@
           "source": "templates/spreadsheet-change.md",
           "path": "templates/spreadsheet-change.md",
           "role": "template"
+        },
+        {
+          "source": "references/close-workpaper.md",
+          "path": "references/close-workpaper.md",
+          "role": "reference"
+        },
+        {
+          "source": "templates/close-workpaper.md",
+          "path": "templates/close-workpaper.md",
+          "role": "template"
+        },
+        {
+          "source": "fixtures/close-workpaper-input.json",
+          "path": "fixtures/close-workpaper-input.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/close-workpaper-result.json",
+          "path": "fixtures/close-workpaper-result.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/close-workpaper.example.md",
+          "path": "fixtures/close-workpaper.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/close-spreadsheet-change.example.json",
+          "path": "fixtures/close-spreadsheet-change.example.json",
+          "role": "fixture"
         },
         {
           "source": "fixtures/session-demo.json",

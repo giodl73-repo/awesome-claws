@@ -1,0 +1,61 @@
+{
+  "engine": "@oai/artifact-tool",
+  "sourceSha256": "8a03ecf5e1a1d27ccb63679ed1a2fc879f79df1fa5ed8b003d7f9f39d3e2ce89",
+  "outputSha256": "d24261b7bb0c2988dee7902719abbdc4d3c21aeedefa980f566174a277393325",
+  "scopeSnapshot": "3c96c184585d49e837f57a91f90624b17fa8181b1063c98af401ea5d9890bb1a",
+  "reconciliationSnapshot": "c78514f75fd1dd3ba94ff7a20f3441312bd946ec599d48ba6da4562bfedfa426",
+  "recalculationCases": [
+    {
+      "name": "changed closing balance",
+      "status": "passed"
+    },
+    {
+      "name": "missing schedule",
+      "status": "passed"
+    },
+    {
+      "name": "real zero schedule",
+      "status": "passed"
+    },
+    {
+      "name": "wrong entity",
+      "status": "passed"
+    },
+    {
+      "name": "wrong period",
+      "status": "passed"
+    },
+    {
+      "name": "wrong currency",
+      "status": "passed"
+    },
+    {
+      "name": "wrong basis",
+      "status": "passed"
+    },
+    {
+      "name": "stale source revision",
+      "status": "passed"
+    },
+    {
+      "name": "missing source reference",
+      "status": "passed"
+    },
+    {
+      "name": "incomplete source",
+      "status": "passed"
+    },
+    {
+      "name": "wrong global entity",
+      "status": "passed"
+    },
+    {
+      "name": "main schedule ties but separate residuals remain",
+      "status": "passed"
+    }
+  ],
+  "reopened": true,
+  "sourceValuesAndFormulasPreserved": true,
+  "nativeExcel": "not-tested",
+  "formulaErrorScan": "{\"kind\":\"notice\",\"message\":\"Cell search matched 0 entries.\"}"
+}

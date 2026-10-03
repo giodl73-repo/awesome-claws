@@ -1,0 +1,191 @@
+{
+  "question": "What changed between 2026-08 and 2026-09 for Service A, for Operations leadership?",
+  "population": {
+    "included": [
+      "Service A: All completed eligible requests for the service in the UTC calendar month"
+    ],
+    "excluded": [
+      "Adjacent service not combined or ranked. Metric definitions differ or are incomplete; reconcile population, numerator, denominator, target, unit and revision before comparison."
+    ]
+  },
+  "comparison": "2026-09 versus 2026-08; raw full-period request totals and the same target-hit definition TARGET-v1; no cross-service ranking",
+  "timeWindow": {
+    "start": "2026-08-01",
+    "end": "2026-09-30"
+  },
+  "sources": [
+    {
+      "reference": "SERVICE-A-AUG",
+      "source": "Service A 2026-08 authorized aggregate export",
+      "observedAt": "2026-09-01T09:00:00Z",
+      "state": "verified",
+      "fields": [
+        "total",
+        "met",
+        "definition",
+        "period",
+        "audiences"
+      ]
+    },
+    {
+      "reference": "SERVICE-A-SEP",
+      "source": "Service A 2026-09 authorized aggregate export",
+      "observedAt": "2026-10-01T09:00:00Z",
+      "state": "verified",
+      "fields": [
+        "total",
+        "met",
+        "definition",
+        "period",
+        "audiences"
+      ]
+    }
+  ],
+  "transformations": [
+    {
+      "step": "Retain 2026-08 denominator and definition",
+      "inputRef": "SERVICE-A-AUG",
+      "outputField": "prior_counts",
+      "logic": "Use supplied total=100, met=90; Eligible requests completed within the supplied target / All completed eligible requests; target=Within 2 business days under supplied service rules; population=All completed eligible requests for the service in the UTC calendar month; unit=requests; no pooled teams or inferred missing rows"
+    },
+    {
+      "step": "Retain 2026-09 denominator and definition",
+      "inputRef": "SERVICE-A-SEP",
+      "outputField": "current_counts",
+      "logic": "Use supplied total=120, met=108; Eligible requests completed within the supplied target / All completed eligible requests; target=Within 2 business days under supplied service rules; population=All completed eligible requests for the service in the UTC calendar month; unit=requests; no pooled teams or inferred missing rows"
+    }
+  ],
+  "metrics": [
+    {
+      "name": "Prior request volume",
+      "formula": "prior.total",
+      "value": 100,
+      "unit": "requests",
+      "uncertainty": "Descriptive totals from owner-supplied complete-period exports; no causal or statistical significance claim.",
+      "lineageRefs": [
+        "SERVICE-A-AUG",
+        "prior_counts"
+      ]
+    },
+    {
+      "name": "Current request volume",
+      "formula": "current.total",
+      "value": 120,
+      "unit": "requests",
+      "uncertainty": "Descriptive totals from owner-supplied complete-period exports; no causal or statistical significance claim.",
+      "lineageRefs": [
+        "SERVICE-A-SEP",
+        "current_counts"
+      ]
+    },
+    {
+      "name": "Prior requests meeting target",
+      "formula": "prior.met",
+      "value": 90,
+      "unit": "requests",
+      "uncertainty": "Descriptive totals from owner-supplied complete-period exports; no causal or statistical significance claim.",
+      "lineageRefs": [
+        "SERVICE-A-AUG",
+        "prior_counts"
+      ]
+    },
+    {
+      "name": "Current requests meeting target",
+      "formula": "current.met",
+      "value": 108,
+      "unit": "requests",
+      "uncertainty": "Descriptive totals from owner-supplied complete-period exports; no causal or statistical significance claim.",
+      "lineageRefs": [
+        "SERVICE-A-SEP",
+        "current_counts"
+      ]
+    },
+    {
+      "name": "Prior target-hit rate",
+      "formula": "100 * prior.met / prior.total",
+      "value": 90,
+      "unit": "percent",
+      "uncertainty": "Descriptive totals from owner-supplied complete-period exports; no causal or statistical significance claim.",
+      "lineageRefs": [
+        "SERVICE-A-AUG",
+        "prior_counts"
+      ]
+    },
+    {
+      "name": "Current target-hit rate",
+      "formula": "100 * current.met / current.total",
+      "value": 90,
+      "unit": "percent",
+      "uncertainty": "Descriptive totals from owner-supplied complete-period exports; no causal or statistical significance claim.",
+      "lineageRefs": [
+        "SERVICE-A-SEP",
+        "current_counts"
+      ]
+    },
+    {
+      "name": "Request volume change",
+      "formula": "100 * (current.total - prior.total) / prior.total",
+      "value": 20,
+      "unit": "percent",
+      "uncertainty": "Descriptive totals from owner-supplied complete-period exports; no causal or statistical significance claim.",
+      "lineageRefs": [
+        "SERVICE-A-AUG",
+        "SERVICE-A-SEP"
+      ]
+    },
+    {
+      "name": "Target-hit rate change",
+      "formula": "100 * (current.met / current.total - prior.met / prior.total)",
+      "value": 0,
+      "unit": "percentage points",
+      "uncertainty": "Descriptive totals from owner-supplied complete-period exports; no causal or statistical significance claim.",
+      "lineageRefs": [
+        "SERVICE-A-AUG",
+        "SERVICE-A-SEP"
+      ]
+    }
+  ],
+  "qualityFindings": [
+    {
+      "issue": "Adjacent service not combined or ranked. Metric definitions differ or are incomplete; reconcile population, numerator, denominator, target, unit and revision before comparison.",
+      "severity": "medium",
+      "affectedRows": 0,
+      "disposition": "Excluded entire adjacent aggregate comparison; zero affected primary-service rows is not a claim about adjacent row counts."
+    },
+    {
+      "issue": "Raw period counts are not normalized per business day and two aggregate periods do not identify causes.",
+      "severity": "medium",
+      "affectedRows": 0,
+      "disposition": "Report dates and full-period totals; obtain authorized request-mix and capacity evidence before attribution."
+    }
+  ],
+  "findings": [
+    {
+      "statement": "Service A: request volume changed from 100 in 2026-08 to 120 in 2026-09 (20% relative change). Requests meeting target changed from 90 to 108, while target-hit rate changed from 90% to 90% (0 percentage points). The count change does not by itself establish improved service quality.",
+      "evidenceState": "supported",
+      "metricRefs": [
+        "Prior request volume",
+        "Current request volume",
+        "Prior target-hit rate",
+        "Current target-hit rate",
+        "Request volume change",
+        "Target-hit rate change"
+      ],
+      "alternativeExplanations": [
+        "Changes in request mix, capacity or calendar exposure are hypotheses, not established causes."
+      ]
+    },
+    {
+      "statement": "Adjacent service not combined or ranked. Metric definitions differ or are incomplete; reconcile population, numerator, denominator, target, unit and revision before comparison. No cause is established by these two aggregate periods. The metric owner should reconcile definitions before any broader comparison, and the operations owner should request permitted request-mix and capacity evidence before attributing the movement. These are proposed follow-ups, not assigned or approved actions.",
+      "evidenceState": "inconclusive",
+      "metricRefs": [
+        "Target-hit rate change"
+      ],
+      "alternativeExplanations": [
+        "Metric-definition changes prevent an adjacent-team trend or ranking conclusion."
+      ]
+    }
+  ],
+  "decisionOwner": "Operations lead",
+  "decisionState": "ready-for-review"
+}
