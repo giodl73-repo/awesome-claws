@@ -6,6 +6,7 @@ import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { root } from "./catalog-source.mjs";
 
 export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
+  "project-document-controller": "project-document-control.schema.json",
   "access-entitlement-review-coordinator": "access-entitlement-review.schema.json",
   "accessibility-review-coordinator": "accessibility-finding.schema.json",
   "api-integration-engineer": "integration-readiness.schema.json",

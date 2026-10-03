@@ -102,6 +102,7 @@
       "medication-regimen-coordinator",
       "estate-administration-coordinator",
       "home-purchase-transaction-coordinator",
+      "project-document-controller",
       "supplier-onboarding-preparer",
       "rfp-response-producer"
     ]

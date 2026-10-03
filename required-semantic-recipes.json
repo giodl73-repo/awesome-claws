@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 137,
-    "coveredCount": 137,
-    "recipeCount": 379,
-    "findingCodeCount": 515
+    "validatorCount": 138,
+    "coveredCount": 138,
+    "recipeCount": 382,
+    "findingCodeCount": 519
   },
   "entries": [
     {
@@ -5912,6 +5912,46 @@
             "invalid_action_chronology",
             "invalid_source_chronology",
             "invalid_transaction_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "project-document-controller",
+      "recipes": [
+        {
+          "id": "semantic-document-review-scope-1",
+          "operator": "replace",
+          "path": [
+            "project"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "document_review_scope",
+            "document_scope"
+          ]
+        },
+        {
+          "id": "semantic-document-followup-state-2",
+          "operator": "replace",
+          "path": [
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "document_followup_state"
+          ]
+        },
+        {
+          "id": "semantic-document-chronology-3",
+          "operator": "replace",
+          "path": [
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "document_chronology",
+            "document_followup_state"
           ]
         }
       ]

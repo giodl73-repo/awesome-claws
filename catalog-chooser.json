@@ -3303,6 +3303,40 @@
       }
     },
     {
+      "id": "project-document-controller",
+      "name": "Project document controller",
+      "description": "Produces an exact-revision project document register, submittal and RFI follow-up package, and draft transmittal manifest from supplied project records without issuing documents or authorizing construction.",
+      "audience": "Project document controllers and engineering or construction teams reviewing a bounded project's drawings, specifications, submittals, RFIs, and transmittals.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "project-manager",
       "name": "Project manager",
       "description": "Keeps projects aligned through milestones, dependencies, decisions, and accountable execution.",
