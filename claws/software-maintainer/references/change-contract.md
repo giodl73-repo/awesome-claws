@@ -1,5 +1,8 @@
 # Change contract
 
+For documentation-only work, also read `references/documentation-change.md` and
+the versioned guide, reference and patch in `fixtures/documentation-change/`.
+
 Settle this contract before changing code. Everything below becomes a field of
 `outputs/change-delivery-record.json`, so an unanswered item is a question for
 the requester rather than an assumption to make.

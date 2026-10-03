@@ -1,0 +1,29 @@
+{
+  "provenance": "Synthetic owner-supplied specifications for a fictional API; no live service evidence.",
+  "specifications": {
+    "v1": {
+      "type": "object",
+      "required": ["project", "name"],
+      "properties": {
+        "project": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "v2": {
+      "type": "object",
+      "required": ["workspace", "name"],
+      "properties": {
+        "workspace": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "before": {
+    "guide.md": "# Create a job\n\n## Version 2\n\nUse POST /v2/jobs with project and name.\n\n```json\n{\"project\":\"project-demo\",\"name\":\"monthly-review\"}\n```\n\n## Version 1\n\nUse POST /v1/jobs with project and name.\n\n```json\n{\"project\":\"project-demo\",\"name\":\"monthly-review\"}\n```\n",
+    "reference.md": "# Jobs API request fields\n\n| Version | Endpoint | Required fields |\n| --- | --- | --- |\n| v1 | POST /v1/jobs | project, name |\n| v2 | POST /v2/jobs | project, name |\n",
+    "request-v1.json": "{\n  \"project\": \"project-demo\",\n  \"name\": \"monthly-review\"\n}\n",
+    "request-v2.json": "{\n  \"project\": \"project-demo\",\n  \"name\": \"monthly-review\"\n}\n"
+  }
+}

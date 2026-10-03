@@ -19,6 +19,12 @@ workspace:
       path: templates/publication-readiness-record.md
     - source: references/publication-readiness-contract.md
       path: references/publication-readiness-contract.md
+    - source: references/technical-guide.md
+      path: references/technical-guide.md
+    - source: fixtures/technical-guide.example.md
+      path: fixtures/technical-guide.example.md
+    - source: fixtures/technical-guide-specifications.json
+      path: fixtures/technical-guide-specifications.json
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
     - source: templates/session-report.template.json
