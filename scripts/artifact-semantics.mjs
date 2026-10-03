@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { payrollReviewFindings } from "./payroll-review-preparer.mjs";
 import { documentControlFindings } from "./project-document-controller.mjs";
 import { supplierOnboardingFindings } from "./supplier-onboarding-preparer.mjs";
 import { rfpResponseFindings } from "./rfp-response-producer.mjs";
@@ -53335,6 +53336,7 @@ const validators = {
   "research-scout": researchEvidenceDeltaFindings,
   "resume-portfolio-curator": resumePortfolioFindings,
   "project-manager": projectFindings,
+  "payroll-review-preparer": payrollReviewFindings,
   "project-document-controller": documentControlFindings,
   "product-manager": productFindings,
   "presentation-producer": presentationEvidenceManifestFindings,
