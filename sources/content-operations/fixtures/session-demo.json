@@ -1,60 +1,68 @@
 {
   "schemaVersion": "awesomeClaws.sessionDemo.v1",
   "claw": "content-operations",
-  "scenario": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners.",
+  "scenario": "Write an operations-buyer campaign brief, email and web paragraph for FlowDesk using supplied product notes. Withhold unapproved savings and the customer quote. Define the demo-request metric; do not publish or send.",
   "messages": [
     {
       "role": "user",
-      "text": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners."
+      "text": "Write an operations-buyer campaign brief, email and web paragraph for FlowDesk using supplied product notes. Withhold unapproved savings and the customer quote. Define the demo-request metric; do not publish or send."
     },
     {
       "role": "agent",
-      "text": "I identified the content decision, the evidence needed, and the boundary that must stay human-owned."
+      "text": "I drafted the brief, email and web copy using the permitted FlowDesk 2.4 forms and sequential-approval facts. The unapproved savings assertion and customer quote are excluded."
     },
     {
       "role": "user",
-      "text": "Make it useful in a normal chat client and leave a durable handoff."
+      "text": "Keep the missing approvals clear and make the measurement handoff usable."
     },
     {
       "role": "agent",
-      "text": "I produced outputs/content-operations-handoff.md, with facts, assumptions, open questions, and the next accountable owner separated."
+      "text": "The brief defines the proposed email-to-demo-request rate, eligibility, seven-day window, event sources and unknown-data treatment. Analytics and Marketing still need to agree it. Each v1 asset awaits factual, brand, legal and channel-owner review; no link, audience or publication has been activated."
     }
   ],
   "report": {
-    "title": "Content operations session handoff",
-    "summary": "An audience-specific brief, source-backed draft and channel assets, claim and approval ledger, and measurement plan, all marked publication-ready only after named approvals.",
+    "title": "FlowDesk campaign drafts",
+    "summary": "Private v1 brief, email and web copy are ready for owner review. The package remains blocked for external use: exact reviews, destination and measurement agreement are missing.",
     "output": "outputs/content-operations-handoff.md",
     "items": [
       {
-        "title": "Content brief",
-        "summary": "Every material claim has a source and every required approval has an explicit state",
+        "title": "Campaign brief v1",
+        "summary": "Operations managers handling procurement intake. Proposed demonstration invitation and product walkthrough; no savings promise. Draft: outputs/campaign-brief.md.",
         "tags": [
-          "fact-based",
-          "reviewable"
+          "private draft",
+          "owner review"
         ]
       },
       {
-        "title": "Versioned content draft and channel assets",
-        "summary": "The asset matches the named audience, channel, action, voice, and acceptance criteria",
+        "title": "Email v1",
+        "summary": "Subject: Review procurement requests with FlowDesk. Bring procurement requests into a configurable form and route them through sequential approval steps with FlowDesk. CTA: Request a demo; destination pending.",
         "tags": [
-          "evidence",
-          "owner-visible"
+          "source-backed",
+          "not sent"
         ]
       },
       {
-        "title": "Editorial checklist",
-        "summary": "Never publish, schedule, or distribute content without the named channel owner and required factual, brand, legal, or executive approvals",
+        "title": "Web paragraph v1",
+        "summary": "Bring procurement requests into a configurable form and route them through sequential approval steps with FlowDesk. Operations managers can request a demonstration of the request form and approval sequence.",
         "tags": [
-          "approval-gated",
-          "safe fallback"
+          "source-backed",
+          "not published"
         ]
       },
       {
-        "title": "Approval record",
-        "summary": "The final answer names the accountable next owner and preserves the reusable artifact path.",
+        "title": "Measurement proposal",
+        "summary": "Eligible delivered-email recipients requesting a demo within seven days / eligible delivered-email recipients. Deduplicate, exclude tests and bounces, report unmatched identities as unknown; zero denominator is undefined. Analytics owns the event join. No observations supplied.",
         "tags": [
-          "handoff",
-          "durable"
+          "proposed",
+          "no results"
+        ]
+      },
+      {
+        "title": "Owner decisions",
+        "summary": "Campaign lead receives all three drafts and the readiness record. Product lead, Brand team, Product counsel and Marketing team review exact v1 assets. Quote and savings remain withheld. No sending, publishing, spending or activation.",
+        "tags": [
+          "blocked",
+          "human decisions"
         ]
       }
     ]

@@ -1,0 +1,316 @@
+{
+  "schemaVersion": "awesomeClaws.integrationReadiness.v1",
+  "integration": {
+    "id": "integration-service-desk-read",
+    "repository": "example/service-desk-adapter",
+    "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+    "contractVersion": "new-desk@2",
+    "specVersion": "synthetic-service-desk-v2",
+    "environment": "synthetic-ci",
+    "snapshotRef": "desk-source-r1",
+    "requestedAt": "2026-09-05T09:00:00Z"
+  },
+  "principals": [
+    {
+      "id": "principal-integration-owner-alex",
+      "name": "Alex Rivera",
+      "scopes": [
+        "integration-implementation"
+      ]
+    },
+    {
+      "id": "principal-test-owner-priya",
+      "name": "Priya Desai",
+      "scopes": [
+        "contract-test-execution"
+      ]
+    },
+    {
+      "id": "principal-integration-reviewer-jordan",
+      "name": "Jordan Blake",
+      "scopes": [
+        "independent-integration-review"
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "id": "endpoint-inventory-items",
+      "method": "GET",
+      "path": "/tickets",
+      "operationRefs": [
+        "operation-list-items"
+      ],
+      "authenticationClassification": "oauth2-client-credentials-reference-only",
+      "dataClassification": "synthetic-internal"
+    }
+  ],
+  "operations": [
+    {
+      "id": "operation-list-items",
+      "operationId": "listTickets",
+      "endpointRef": "endpoint-inventory-items",
+      "method": "GET",
+      "path": "/tickets",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "requiredTestKinds": [
+        "contract",
+        "negative-auth",
+        "negative-rate-limit",
+        "idempotency",
+        "error-handling"
+      ],
+      "testRefs": [
+        "test-list-items-contract",
+        "test-list-items-auth",
+        "test-list-items-rate-limit",
+        "test-list-items-idempotency",
+        "test-list-items-errors"
+      ]
+    }
+  ],
+  "contractTests": [
+    {
+      "id": "test-list-items-contract",
+      "operationRef": "operation-list-items",
+      "kind": "contract",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "ownerId": "principal-test-owner-priya"
+    },
+    {
+      "id": "test-list-items-auth",
+      "operationRef": "operation-list-items",
+      "kind": "negative-auth",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "ownerId": "principal-test-owner-priya"
+    },
+    {
+      "id": "test-list-items-rate-limit",
+      "operationRef": "operation-list-items",
+      "kind": "negative-rate-limit",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "ownerId": "principal-test-owner-priya"
+    },
+    {
+      "id": "test-list-items-idempotency",
+      "operationRef": "operation-list-items",
+      "kind": "idempotency",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "ownerId": "principal-test-owner-priya"
+    },
+    {
+      "id": "test-list-items-errors",
+      "operationRef": "operation-list-items",
+      "kind": "error-handling",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "ownerId": "principal-test-owner-priya"
+    }
+  ],
+  "executionResults": [
+    {
+      "id": "result-list-items-contract",
+      "testRef": "test-list-items-contract",
+      "operationRef": "operation-list-items",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "outcome": "passed",
+      "evidenceRef": "evidence-result-contract",
+      "executedAt": "2026-09-05T10:00:00Z",
+      "executedById": "principal-test-owner-priya"
+    },
+    {
+      "id": "result-list-items-auth",
+      "testRef": "test-list-items-auth",
+      "operationRef": "operation-list-items",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "outcome": "passed",
+      "evidenceRef": "evidence-result-auth",
+      "executedAt": "2026-09-05T10:02:00Z",
+      "executedById": "principal-test-owner-priya"
+    },
+    {
+      "id": "result-list-items-rate-limit",
+      "testRef": "test-list-items-rate-limit",
+      "operationRef": "operation-list-items",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "outcome": "passed",
+      "evidenceRef": "evidence-result-rate-limit",
+      "executedAt": "2026-09-05T10:04:00Z",
+      "executedById": "principal-test-owner-priya"
+    },
+    {
+      "id": "result-list-items-idempotency",
+      "testRef": "test-list-items-idempotency",
+      "operationRef": "operation-list-items",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "outcome": "passed",
+      "evidenceRef": "evidence-result-idempotency",
+      "executedAt": "2026-09-05T10:06:00Z",
+      "executedById": "principal-test-owner-priya"
+    },
+    {
+      "id": "result-list-items-errors",
+      "testRef": "test-list-items-errors",
+      "operationRef": "operation-list-items",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "outcome": "passed",
+      "evidenceRef": "evidence-result-errors",
+      "executedAt": "2026-09-05T10:08:00Z",
+      "executedById": "principal-test-owner-priya"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-result-contract",
+      "kind": "execution-result",
+      "integrationRef": "integration-service-desk-read",
+      "operationRef": "operation-list-items",
+      "testRef": "test-list-items-contract",
+      "resultRef": "result-list-items-contract",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/evidence-result-contract",
+      "assertedAt": "2026-09-05T10:01:00Z",
+      "containsSecrets": false
+    },
+    {
+      "id": "evidence-result-auth",
+      "kind": "execution-result",
+      "integrationRef": "integration-service-desk-read",
+      "operationRef": "operation-list-items",
+      "testRef": "test-list-items-auth",
+      "resultRef": "result-list-items-auth",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/evidence-result-auth",
+      "assertedAt": "2026-09-05T10:03:00Z",
+      "containsSecrets": false
+    },
+    {
+      "id": "evidence-result-rate-limit",
+      "kind": "execution-result",
+      "integrationRef": "integration-service-desk-read",
+      "operationRef": "operation-list-items",
+      "testRef": "test-list-items-rate-limit",
+      "resultRef": "result-list-items-rate-limit",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/evidence-result-rate-limit",
+      "assertedAt": "2026-09-05T10:05:00Z",
+      "containsSecrets": false
+    },
+    {
+      "id": "evidence-result-idempotency",
+      "kind": "execution-result",
+      "integrationRef": "integration-service-desk-read",
+      "operationRef": "operation-list-items",
+      "testRef": "test-list-items-idempotency",
+      "resultRef": "result-list-items-idempotency",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/evidence-result-idempotency",
+      "assertedAt": "2026-09-05T10:07:00Z",
+      "containsSecrets": false
+    },
+    {
+      "id": "evidence-result-errors",
+      "kind": "execution-result",
+      "integrationRef": "integration-service-desk-read",
+      "operationRef": "operation-list-items",
+      "testRef": "test-list-items-errors",
+      "resultRef": "result-list-items-errors",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/evidence-result-errors",
+      "assertedAt": "2026-09-05T10:09:00Z",
+      "containsSecrets": false
+    },
+    {
+      "id": "evidence-rollout-readiness",
+      "kind": "rollout-readiness",
+      "integrationRef": "integration-service-desk-read",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/evidence-rollout-readiness",
+      "assertedAt": "2026-09-05T10:14:00Z",
+      "containsSecrets": false
+    },
+    {
+      "id": "evidence-rollback-readiness",
+      "kind": "rollback-readiness",
+      "integrationRef": "integration-service-desk-read",
+      "targetCommit": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "snapshotRef": "desk-source-r1",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/evidence-rollback-readiness",
+      "assertedAt": "2026-09-05T10:16:00Z",
+      "containsSecrets": false
+    }
+  ],
+  "incompatibilities": [],
+  "readiness": {
+    "rollout": {
+      "state": "ready-for-owner-review",
+      "plan": "Operator reviews the ordered intake.json cutover draft; no deployment permission is conferred.",
+      "ownerId": "principal-integration-owner-alex",
+      "evidenceRef": "evidence-rollout-readiness"
+    },
+    "rollback": {
+      "state": "ready-for-owner-review",
+      "plan": "Stop routing and pause writes under operator authority. Restore the verified pre-cutover target snapshot and prior adapter/routing. Reconcile restored counts and sample IDs before asking the owner to resume service.",
+      "ownerId": "principal-integration-owner-alex",
+      "evidenceRef": "evidence-rollback-readiness"
+    }
+  },
+  "limitations": [
+    "Illustrative supplied contract/auth/rate-limit/idempotency/error evidence only; no HTTP server or live integration was exercised. Local mapping assertions are separate in receipt.json."
+  ],
+  "recommendation": {
+    "state": "ready-for-owner-review",
+    "reviewerId": "principal-integration-reviewer-jordan",
+    "reviewedAt": "2026-09-05T10:20:00Z",
+    "rationale": "Illustrative contract rows are internally bound to the synthetic target. Local assertions cover mapping and in-memory restoration only."
+  },
+  "owner": "Alex Rivera",
+  "ownerId": "principal-integration-owner-alex",
+  "handoff": {
+    "state": "ready",
+    "owner": "Alex Rivera",
+    "summary": "Synthetic supplied contract evidence for owner review only; no live integration or deployment proof.",
+    "prohibitedActions": [
+      "create-credentials",
+      "rotate-credentials",
+      "mutate-production",
+      "deploy-integration",
+      "approve-integration",
+      "send-communication"
+    ]
+  }
+}

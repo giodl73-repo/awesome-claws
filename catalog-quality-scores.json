@@ -727,7 +727,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 32
+        "maintenanceAgeDays": 0
       },
       "recommendations": [],
       "rank": 16
@@ -874,7 +874,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 44
+        "maintenanceAgeDays": 0
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
@@ -3902,7 +3902,7 @@
         "capabilityClasses": [
           "clawhub-skill"
         ],
-        "maintenanceAgeDays": 34
+        "maintenanceAgeDays": 0
       },
       "recommendations": [],
       "rank": 127

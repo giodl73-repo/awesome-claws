@@ -1878,9 +1878,9 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-31"
+        "lastVerified": "2026-10-02"
       },
-      "description": "Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it.",
+      "description": "Produces source-backed briefs and versioned editorial drafts with an evidence- and approval-bound readiness record, without publishing them.",
       "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update who need exact claim, review, and handoff state.",
       "principles": [
         "Keep audience and intended action explicit",
@@ -1901,7 +1901,7 @@
       ],
       "workflow": [
         "Record the brief, supplied source inventory, acceptance criteria, named owners, and authority boundaries",
-        "Build source-backed claims and versioned draft assets with bidirectional claim and criterion coverage",
+        "Write the complete source-backed draft and requested channel variants, with bidirectional claim and criterion coverage; the readiness record must accompany usable copy, not replace it",
         "Record factual, brand, legal, executive, and channel-owner decisions against exact asset versions and evidence",
         "Validate outputs/publication-readiness-record.json, enumerate every blocker or open question, and prepare the private publication and measurement handoff"
       ],
@@ -1913,10 +1913,11 @@
         "Private publication-readiness record"
       ],
       "example": {
-        "request": "Prepare the launch package for a beta analytics dashboard aimed at operations managers and current design partners.",
-        "outcome": "A private publication-readiness record with the request intact, current source-backed claims, versioned web, email, and documentation assets, exact review scope, a defined measurement handoff, and the missing customer-quote and channel-owner approvals preserved as blockers."
+        "request": "Write an operations-buyer campaign brief, email and web paragraph for FlowDesk using supplied product notes. Withhold unapproved savings and the customer quote. Define the demo-request metric; do not publish or send.",
+        "outcome": "A complete private campaign brief, email and web paragraph grounded in configurable forms and sequential approvals. Unapproved savings and customer attribution are withheld; the proposed demo-request metric, missing destination and exact-version reviews remain owner decisions. Nothing is sent or published."
       },
       "doneWhen": [
+        "The requested brief and complete channel copy exist as versioned assets; unsupported claims and unpermitted quotes are withheld without blocking supported writing",
         "Every material claim has current appropriate evidence, channel restrictions, and an explicit support state",
         "Every versioned asset and acceptance criterion has bidirectional coverage and every required review has an exact-version decision",
         "Every metric is defined from supplied measurement guidance and owned by a named human or team without claiming results",
@@ -1927,7 +1928,8 @@
         "This starter uses only briefs, source material, approval evidence, and measurement context supplied in the authorized workspace; it declares no CMS, asset library, analytics, publishing, messaging, network, package, MCP, or scheduled-job access.",
         "No external setup is required. Adding content, publishing, or analytics integrations later is a separate operator action that must disclose and obtain consent for the exact sources and mutation authority.",
         "When source, approval, publishing, or measurement systems are unavailable, identify the missing evidence and prepare drafts plus a publication handoff; never infer approval, publish, schedule, distribute, or claim measured results.",
-        "Treat fixtures/publication-readiness-record.example.json only as a shape example. Validate outputs/publication-readiness-record.json against schemas/publication-readiness-record.schema.json, then render templates/publication-readiness-record.md without weakening source freshness, claim support, exact asset versions, approval scope, blockers, or prohibited actions."
+        "Treat fixtures/publication-readiness-record.example.json only as a shape example. Validate outputs/publication-readiness-record.json against schemas/publication-readiness-record.schema.json, then render templates/publication-readiness-record.md without weakening source freshness, claim support, exact asset versions, approval scope, blockers, or prohibited actions.",
+        "For a commercial campaign, use templates/commercial-campaign.md and the complete worked example in fixtures/commercial-campaign.example.json with its separate brief, email and web drafts. Define numerator, denominator, event sources, exclusions, deduplication, attribution window and missing-data treatment; distinguish proposed measurements from observations. Do not spend, activate audiences or expand access."
       ],
       "resources": [
         {
@@ -1963,6 +1965,35 @@
           "source": "templates/session-handoff.md",
           "path": "templates/session-handoff.md",
           "role": "template"
+        },
+        {
+          "source": "references/commercial-campaign-source-pack.md",
+          "path": "references/commercial-campaign-source-pack.md"
+        },
+        {
+          "source": "fixtures/campaign-brief.example.md",
+          "path": "fixtures/campaign-brief.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/campaign-email.example.md",
+          "path": "fixtures/campaign-email.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/campaign-web.example.md",
+          "path": "fixtures/campaign-web.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/commercial-campaign.md",
+          "path": "templates/commercial-campaign.md",
+          "role": "template"
+        },
+        {
+          "source": "fixtures/commercial-campaign.example.json",
+          "path": "fixtures/commercial-campaign.example.json",
+          "role": "fixture"
         }
       ]
     },
@@ -2305,7 +2336,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-10-02"
       },
       "description": "Turns data questions into reproducible analyses with explicit assumptions and limitations.",
       "audience": "Business and product teams deciding from a bounded dataset, metric question, or experiment result.",
@@ -2380,6 +2411,31 @@
           "source": "templates/analysis-readout.md",
           "path": "templates/analysis-readout.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/recurring-review-input.example.json",
+          "path": "fixtures/recurring-review-input.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/recurring-analysis-state.example.json",
+          "path": "fixtures/recurring-analysis-state.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/recurring-business-review.example.md",
+          "path": "fixtures/recurring-business-review.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "references/recurring-business-review.md",
+          "path": "references/recurring-business-review.md",
+          "role": "reference"
+        },
+        {
+          "source": "templates/recurring-business-review.md",
+          "path": "templates/recurring-business-review.md",
+          "role": "template"
         }
       ],
       "openclawProfile": {
@@ -2401,7 +2457,8 @@
       },
       "capabilityGuidance": [
         "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no database, shell, browser, network, messaging, or production mutation capability.",
-        "Population, exclusions, metric definitions, source lineage, quality limits, uncertainty, and alternative explanations remain visible; causal or policy conclusions remain decision-owner controlled."
+        "Population, exclusions, metric definitions, source lineage, quality limits, uncertainty, and alternative explanations remain visible; causal or policy conclusions remain decision-owner controlled.",
+        "For recurring service reviews, read references/recurring-business-review.md and use templates/recurring-business-review.md; keep per-period denominators, definition comparability, audience limits and the briefing handoff explicit."
       ]
     },
     {
@@ -10979,7 +11036,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-29"
+        "lastVerified": "2026-10-02"
       },
       "description": "Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability.",
       "audience": "Analysts and operators who need a controlled review or transformation of Excel workbooks.",
@@ -11030,7 +11087,8 @@
       ],
       "capabilityGuidance": [
         "The XLSX skill can create and modify workbook files; default to a new output path, preserve formulas and templates, and require review before replacing any operational artifact.",
-        "Treat fixtures/spreadsheet-change.example.json only as a shape example. Validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json and render templates/spreadsheet-change.md with source identity, sheet and formula preservation, transformation lineage, checks, exceptions, and owner authority."
+        "Treat fixtures/spreadsheet-change.example.json only as a shape example. Validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json and render templates/spreadsheet-change.md with source identity, sheet and formula preservation, transformation lineage, checks, exceptions, and owner authority.",
+        "For close workpapers, use references/close-workpaper.md and templates/close-workpaper.md; retain source scope and revisions, unexplained differences and separate-account residuals without inferred journals or close approval."
       ],
       "resources": [
         {
@@ -11047,6 +11105,36 @@
           "source": "templates/spreadsheet-change.md",
           "path": "templates/spreadsheet-change.md",
           "role": "template"
+        },
+        {
+          "source": "references/close-workpaper.md",
+          "path": "references/close-workpaper.md",
+          "role": "reference"
+        },
+        {
+          "source": "templates/close-workpaper.md",
+          "path": "templates/close-workpaper.md",
+          "role": "template"
+        },
+        {
+          "source": "fixtures/close-workpaper-input.json",
+          "path": "fixtures/close-workpaper-input.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/close-workpaper-result.json",
+          "path": "fixtures/close-workpaper-result.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/close-workpaper.example.md",
+          "path": "fixtures/close-workpaper.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/close-spreadsheet-change.example.json",
+          "path": "fixtures/close-spreadsheet-change.example.json",
+          "role": "fixture"
         },
         {
           "source": "fixtures/session-demo.json",

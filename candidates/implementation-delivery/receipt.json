@@ -1,0 +1,35 @@
+{
+  "evidenceKind": "actual-local-assertions-plus-illustrative-owner-fixtures",
+  "startedAt": "2026-10-03T00:47:46.988Z",
+  "finishedAt": "2026-10-03T00:47:47.095Z",
+  "baseRevision": "44be021929233cda6beeafc534cf17e8b4ec6afb",
+  "adapterRevision": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+  "adapterSourceDigest": "b7beda497ba65a43d5de928d1aab2ddb031f55361813f3e45fd229f62b62d2ff",
+  "baselineFailed": true,
+  "revisionKind": "isolated-fixture-git-commit",
+  "intakeDigest": "4e347fb7ab949e216fc7cf8999d9c65b2339c3d62465994e393b059b4478a11c",
+  "ownerDigests": {
+    "project": "d899ffd12f32013d58119ba15da029f317243f89f96e2b85ee2445cf8e8d1f5c",
+    "integration": "72df770ea4fc8bc310575af21dab5a36c6d309a6d84bf82ed137bd53a603ecca",
+    "migration": "74eae6c1d9a2fc1182585069097211d82a73208b0835fe7f33e8a4971aaba186",
+    "maintainer": "7c42c8680813ee2d269e9419d26ab8d5dd9b3684a39c80f9cbf89ef1c259aa70",
+    "qa": "9604cc76c7374ee7b5217b52f375b1c01a831d6790fa748dcd0128cfef6a288b"
+  },
+  "acceptance": [
+    {
+      "requirementId": "req-user-id",
+      "result": "passed",
+      "kind": "local-in-memory-assertions"
+    },
+    {
+      "requirementId": "req-ticket-status",
+      "result": "passed",
+      "kind": "local-in-memory-assertions"
+    },
+    {
+      "requirementId": "req-rollback",
+      "result": "passed",
+      "kind": "local-in-memory-assertions"
+    }
+  ]
+}
