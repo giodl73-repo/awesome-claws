@@ -118,6 +118,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
     "recurring-third-party-review-evidence-reconciler.schema.json",
   "restaurant-venue-scout": "venue-shortlist.schema.json",
   "research-briefing": "research-brief.schema.json",
+  "rfp-response-producer": "rfp-response.schema.json",
   "sales-operations": "pipeline-review.schema.json",
   "supplier-onboarding-preparer": "supplier-onboarding.schema.json",
   "school-coordinator": "school-logistics.schema.json",

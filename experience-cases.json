@@ -102,7 +102,8 @@
       "medication-regimen-coordinator",
       "estate-administration-coordinator",
       "home-purchase-transaction-coordinator",
-      "supplier-onboarding-preparer"
+      "supplier-onboarding-preparer",
+      "rfp-response-producer"
     ]
   },
   "visualCases": [

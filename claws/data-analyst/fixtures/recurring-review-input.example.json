@@ -1,0 +1,102 @@
+{
+  "synthetic": true,
+  "audience": "Operations leadership",
+  "decisionOwner": "Operations lead",
+  "asOf": "2026-10-02T12:00:00Z",
+  "primary": {
+    "prior": {
+      "reference": "SERVICE-A-AUG",
+      "service": "Service A",
+      "period": "2026-08",
+      "start": "2026-08-01",
+      "end": "2026-08-31",
+      "observedAt": "2026-09-01T09:00:00Z",
+      "state": "verified",
+      "complete": true,
+      "audiences": [
+        "Operations leadership"
+      ],
+      "total": 100,
+      "met": 90,
+      "definition": {
+        "revision": "TARGET-v1",
+        "population": "All completed eligible requests for the service in the UTC calendar month",
+        "numerator": "Eligible requests completed within the supplied target",
+        "denominator": "All completed eligible requests",
+        "target": "Within 2 business days under supplied service rules",
+        "unit": "requests"
+      }
+    },
+    "current": {
+      "reference": "SERVICE-A-SEP",
+      "service": "Service A",
+      "period": "2026-09",
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "observedAt": "2026-10-01T09:00:00Z",
+      "state": "verified",
+      "complete": true,
+      "audiences": [
+        "Operations leadership"
+      ],
+      "total": 120,
+      "met": 108,
+      "definition": {
+        "revision": "TARGET-v1",
+        "population": "All completed eligible requests for the service in the UTC calendar month",
+        "numerator": "Eligible requests completed within the supplied target",
+        "denominator": "All completed eligible requests",
+        "target": "Within 2 business days under supplied service rules",
+        "unit": "requests"
+      }
+    }
+  },
+  "adjacent": {
+    "prior": {
+      "reference": "SERVICE-B-AUG",
+      "service": "Service B",
+      "period": "2026-08",
+      "start": "2026-08-01",
+      "end": "2026-08-31",
+      "observedAt": "2026-09-01T09:00:00Z",
+      "state": "verified",
+      "complete": true,
+      "audiences": [
+        "Operations leadership"
+      ],
+      "total": 100,
+      "met": 80,
+      "definition": {
+        "revision": "B-TARGET-v1",
+        "population": "All completed eligible requests for the service in the UTC calendar month",
+        "numerator": "Eligible requests completed within the supplied target",
+        "denominator": "All completed eligible requests",
+        "target": "Within 1 business day under supplied service rules",
+        "unit": "requests"
+      }
+    },
+    "current": {
+      "reference": "SERVICE-B-SEP",
+      "service": "Service B",
+      "period": "2026-09",
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "observedAt": "2026-10-01T09:00:00Z",
+      "state": "verified",
+      "complete": true,
+      "audiences": [
+        "Operations leadership"
+      ],
+      "total": 120,
+      "met": 115,
+      "definition": {
+        "revision": "B-TARGET-v2",
+        "population": "All completed eligible requests for the service in the UTC calendar month",
+        "numerator": "Eligible requests completed within the supplied target",
+        "denominator": "All completed eligible requests",
+        "target": "Within 2 business days under supplied service rules",
+        "unit": "requests"
+      }
+    }
+  }
+}

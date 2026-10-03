@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { supplierOnboardingFindings } from "./supplier-onboarding-preparer.mjs";
+import { rfpResponseFindings } from "./rfp-response-producer.mjs";
 import { accessEntitlementReviewFindings } from "./access-entitlement-review-coordinator.mjs";
 import { backupRestoreVerificationFindings } from "./backup-restore-verification-coordinator.mjs";
 import { businessContinuityProgramFindings } from "./business-continuity-program-manager.mjs";
@@ -19078,7 +19079,7 @@ function publicationReadinessRecordFindings(value) {
     ...value.reviewQuestions.map((item) => item.question),
   ];
   const prohibitedNarrative =
-    /\b(?:(?:i|we|the (?:agent|assistant|claw)|content operations)\s+(?:have\s+)?(?:published|scheduled|distributed|sent|messaged|updated the cms|mutated the cms|approved)|(?:results|analytics|conversion|engagement|open rate|click rate)\s+(?:show|showed|prove|proved|increased|decreased|improved))\b/giu;
+    /\b(?:(?:claim\s+)?(?:i|we|the (?:agent|assistant|claw)|content operations)\s+(?:have\s+)?(?:published|scheduled|distributed|sent|messaged|updated the cms|mutated the cms|approved|(?:measured|observed|achieved)\s+(?:a\s+|an\s+)?(?:\d+(?:\.\d+)?\s*(?:percent|%)\s+)?(?:conversion|uplift|open rate|click rate|engagement))|(?:results|analytics|conversion|engagement|open rate|click rate)\s+(?:show|showed|prove|proved|increased|decreased|improved))\b/giu;
   if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
     findings.push(
       finding(
@@ -53263,6 +53264,7 @@ const validators = {
   "compliance-reviewer": complianceAssessmentFindings,
   "data-migration-planner": dataMigrationReadinessFindings,
   "content-operations": publicationReadinessRecordFindings,
+  "rfp-response-producer": rfpResponseFindings,
   "customer-support": customerSupportCaseFindings,
   "customer-success-program-manager": customerSuccessReviewFindings,
   "data-analyst": dataAnalysisFindings,

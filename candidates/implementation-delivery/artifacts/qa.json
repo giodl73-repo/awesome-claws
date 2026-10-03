@@ -1,0 +1,174 @@
+{
+  "schemaVersion": "awesomeClaws.testEvidence.v1",
+  "release": {
+    "id": "release-service-desk-example",
+    "buildId": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+    "environment": "synthetic-ci",
+    "scope": "Synthetic service-desk migration",
+    "requestedAt": "2026-08-28T00:00:00Z"
+  },
+  "owner": "Jordan Blake, Engineering Release Owner",
+  "ownerId": "principal-jordan-blake",
+  "principals": [
+    {
+      "id": "principal-jordan-blake",
+      "name": "Jordan Blake",
+      "roles": [
+        "engineering-lead"
+      ],
+      "scopes": [
+        "release-owner"
+      ]
+    },
+    {
+      "id": "principal-qa-engineer-alex",
+      "name": "Alex Rivera",
+      "roles": [
+        "qa-engineer"
+      ],
+      "scopes": [
+        "test-execution"
+      ]
+    },
+    {
+      "id": "principal-qa-engineer-priya",
+      "name": "Priya Desai",
+      "roles": [
+        "qa-engineer"
+      ],
+      "scopes": [
+        "test-execution",
+        "defect-verification"
+      ]
+    },
+    {
+      "id": "principal-qa-lead-morgan",
+      "name": "Morgan Ellis",
+      "roles": [
+        "qa-lead"
+      ],
+      "scopes": [
+        "qa-release-authority"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "req-user-id",
+      "description": "Every ticket user ID resolves through the supplied identity table; unknown or blank identities block.",
+      "priority": "critical"
+    },
+    {
+      "id": "req-ticket-status",
+      "description": "NEW maps to open, WAITING to pending and DONE to closed; unknown states block.",
+      "priority": "critical"
+    },
+    {
+      "id": "req-rollback",
+      "description": "Restore the exact pre-run target snapshot in memory without mutating the source or snapshot.",
+      "priority": "critical"
+    }
+  ],
+  "testCases": [
+    {
+      "id": "tc-req-user-id",
+      "requirementRef": "req-user-id",
+      "description": "Every ticket user ID resolves through the supplied identity table; unknown or blank identities block. See acceptance.mjs."
+    },
+    {
+      "id": "tc-req-ticket-status",
+      "requirementRef": "req-ticket-status",
+      "description": "NEW maps to open, WAITING to pending and DONE to closed; unknown states block. See acceptance.mjs."
+    },
+    {
+      "id": "tc-req-rollback",
+      "requirementRef": "req-rollback",
+      "description": "Restore the exact pre-run target snapshot in memory without mutating the source or snapshot. See acceptance.mjs."
+    }
+  ],
+  "testRuns": [
+    {
+      "id": "run-req-user-id",
+      "testCaseRef": "tc-req-user-id",
+      "buildId": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "executedAt": "2026-09-05T10:00:00Z",
+      "executedById": "principal-qa-engineer-alex",
+      "result": "passed",
+      "evidenceRef": "evidence-req-user-id"
+    },
+    {
+      "id": "run-req-ticket-status",
+      "testCaseRef": "tc-req-ticket-status",
+      "buildId": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "executedAt": "2026-09-05T10:00:00Z",
+      "executedById": "principal-qa-engineer-alex",
+      "result": "passed",
+      "evidenceRef": "evidence-req-ticket-status"
+    },
+    {
+      "id": "run-req-rollback",
+      "testCaseRef": "tc-req-rollback",
+      "buildId": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "environment": "synthetic-ci",
+      "executedAt": "2026-09-05T10:00:00Z",
+      "executedById": "principal-qa-engineer-alex",
+      "result": "passed",
+      "evidenceRef": "evidence-req-rollback"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-req-user-id",
+      "kind": "execution-result",
+      "testRunRef": "run-req-user-id",
+      "buildId": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "outcome": "passed",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/req-user-id",
+      "assertedAt": "2026-09-05T10:05:00Z"
+    },
+    {
+      "id": "evidence-req-ticket-status",
+      "kind": "execution-result",
+      "testRunRef": "run-req-ticket-status",
+      "buildId": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "outcome": "passed",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/req-ticket-status",
+      "assertedAt": "2026-09-05T10:05:00Z"
+    },
+    {
+      "id": "evidence-req-rollback",
+      "kind": "execution-result",
+      "testRunRef": "run-req-rollback",
+      "buildId": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "outcome": "passed",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/req-rollback",
+      "assertedAt": "2026-09-05T10:05:00Z"
+    }
+  ],
+  "defects": [],
+  "limitations": [
+    "Illustrative supplied QA owner rows, not historical real execution. Actual current local assertions are recorded in receipt.json. No live service, load, permissions or production rollback proof."
+  ],
+  "recommendation": {
+    "state": "recommend-release",
+    "rationale": "Synthetic local-example coverage only; this is not a production release recommendation.",
+    "reviewerId": "principal-qa-lead-morgan",
+    "reviewedAt": "2026-09-05T11:00:00Z"
+  },
+  "handoff": {
+    "owner": "Jordan Blake, Engineering Release Owner",
+    "prohibitedActions": [
+      "deploy-release",
+      "merge-release",
+      "publish-release",
+      "alter-environment",
+      "close-defect",
+      "waive-failure",
+      "approve-release"
+    ],
+    "state": "ready",
+    "summary": "Illustrative QA recommendation is limited to the synthetic local example. No release approval or production action occurred."
+  }
+}

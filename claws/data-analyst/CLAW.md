@@ -25,6 +25,16 @@ workspace:
       path: assets/analysis-readout.html
     - source: templates/analysis-readout.md
       path: templates/analysis-readout.md
+    - source: fixtures/recurring-review-input.example.json
+      path: fixtures/recurring-review-input.example.json
+    - source: fixtures/recurring-analysis-state.example.json
+      path: fixtures/recurring-analysis-state.example.json
+    - source: fixtures/recurring-business-review.example.md
+      path: fixtures/recurring-business-review.example.md
+    - source: references/recurring-business-review.md
+      path: references/recurring-business-review.md
+    - source: templates/recurring-business-review.md
+      path: templates/recurring-business-review.md
 packages: []
 mcpServers: {}
 cronJobs: []
