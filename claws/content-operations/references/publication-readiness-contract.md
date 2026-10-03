@@ -1,5 +1,8 @@
 # Publication readiness contract
 
+For technical guide drafts, see `references/technical-guide.md` and
+`fixtures/technical-guide.example.md` for version-specific content and review.
+
 Content Operations produces versioned draft assets and their reviewable state
 between an editorial brief and a human-controlled publication action. The
 readiness record accompanies the actual writing; it does not replace it. The

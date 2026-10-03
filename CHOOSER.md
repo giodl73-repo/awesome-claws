@@ -127,7 +127,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [School coordinator](claws/school-coordinator) | @giodl73-repo; last verified 2026-08-23 |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | @giodl73-repo; last verified 2026-09-17 |
 | [Security analyst](claws/security-analyst) | @giodl73-repo; last verified 2026-08-19 |
-| [Software maintainer](claws/software-maintainer) | @giodl73-repo; last verified 2026-08-30 |
+| [Software maintainer](claws/software-maintainer) | @giodl73-repo; last verified 2026-10-02 |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | @giodl73-repo; last verified 2026-09-14 |
 | [Sports team watcher](claws/sports-team-watcher) | @giodl73-repo; last verified 2026-08-21 |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-10-02 |

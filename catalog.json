@@ -1952,6 +1952,21 @@
           "path": "references/publication-readiness-contract.md"
         },
         {
+          "source": "references/technical-guide.md",
+          "path": "references/technical-guide.md",
+          "role": "reference"
+        },
+        {
+          "source": "fixtures/technical-guide.example.md",
+          "path": "fixtures/technical-guide.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/technical-guide-specifications.json",
+          "path": "fixtures/technical-guide-specifications.json",
+          "role": "fixture"
+        },
+        {
           "source": "fixtures/session-demo.json",
           "path": "fixtures/session-demo.json",
           "role": "fixture"
@@ -10698,7 +10713,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-30"
+        "lastVerified": "2026-10-02"
       },
       "description": "Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority.",
       "audience": "Maintainers making a bounded bug fix or feature change in an unfamiliar or actively developed repository who need the delivered diff to be reviewable rather than merely plausible.",
@@ -10810,6 +10825,46 @@
         {
           "source": "references/change-contract.md",
           "path": "references/change-contract.md"
+        },
+        {
+          "source": "references/documentation-change.md",
+          "path": "references/documentation-change.md",
+          "role": "reference"
+        },
+        {
+          "source": "fixtures/documentation-change/input.json",
+          "path": "fixtures/documentation-change/input.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/documentation-change/guide.md",
+          "path": "fixtures/documentation-change/guide.md",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/documentation-change/reference.md",
+          "path": "fixtures/documentation-change/reference.md",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/documentation-change/request-v1.json",
+          "path": "fixtures/documentation-change/request-v1.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/documentation-change/request-v2.json",
+          "path": "fixtures/documentation-change/request-v2.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/documentation-change/documentation.patch",
+          "path": "fixtures/documentation-change/documentation.patch",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/documentation-change/handoff.md",
+          "path": "fixtures/documentation-change/handoff.md",
+          "role": "fixture"
         },
         {
           "source": "templates/reviewer-handoff.md",
