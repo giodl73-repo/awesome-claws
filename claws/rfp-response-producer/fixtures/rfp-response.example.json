@@ -1,0 +1,659 @@
+{
+  "schemaVersion": 1,
+  "opportunity": "WORKFLOW-DEMO",
+  "product": "ExampleFlow Enterprise 4.2",
+  "baseline": "RFP revision 1 plus Amendments 1 and 2",
+  "revision": "1",
+  "owner": "Proposal owner",
+  "asOf": "2026-10-02T09:00:00-07:00",
+  "deadline": "2026-10-09T17:00:00+02:00",
+  "deliveryFormat": "Buyer DOCX template not supplied; Markdown is a private review format only",
+  "formatComplete": false,
+  "amendments": [
+    {
+      "id": "A1",
+      "changes": "Q8 requires Security Overview revision 3, replacing revision 2."
+    },
+    {
+      "id": "A2",
+      "changes": "Q3 EU-only hosting is now mandatory, not preferred, for application data, backups and logs. Prior preference review cannot carry forward."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "prompt": "Describe intake, approval routing, and visibility for procurement requests.",
+      "parts": [
+        "intake",
+        "routing",
+        "visibility"
+      ],
+      "mandatory": false,
+      "maxWords": 80,
+      "values": [],
+      "amendmentIds": [],
+      "attachmentIds": []
+    },
+    {
+      "id": "Q2",
+      "prompt": "Do you support SAML 2.0 SSO? State edition and setup owner.",
+      "parts": [
+        "support",
+        "edition",
+        "setup-owner"
+      ],
+      "mandatory": true,
+      "maxWords": 50,
+      "values": [
+        "Yes",
+        "No",
+        "Partial"
+      ],
+      "amendmentIds": [],
+      "attachmentIds": []
+    },
+    {
+      "id": "Q3",
+      "prompt": "Can application data, backups, and logs remain exclusively in the EU? Explain regions.",
+      "parts": [
+        "application-data",
+        "backups",
+        "logs",
+        "regions"
+      ],
+      "mandatory": true,
+      "maxWords": 60,
+      "values": [
+        "Yes",
+        "No",
+        "Partial"
+      ],
+      "amendmentIds": [
+        "A2"
+      ],
+      "attachmentIds": []
+    },
+    {
+      "id": "Q4",
+      "prompt": "Describe export formats, who can export, and whether uploaded attachments are included.",
+      "parts": [
+        "formats",
+        "roles",
+        "attachments"
+      ],
+      "mandatory": false,
+      "maxWords": 60,
+      "values": [],
+      "amendmentIds": [],
+      "attachmentIds": []
+    },
+    {
+      "id": "Q5",
+      "prompt": "Will you commit to 99.9% monthly availability and service credits? Give approved terms or state pending review.",
+      "parts": [
+        "availability",
+        "credits"
+      ],
+      "mandatory": true,
+      "maxWords": 50,
+      "values": [],
+      "amendmentIds": [],
+      "attachmentIds": []
+    },
+    {
+      "id": "Q6",
+      "prompt": "Provide one named reference customer and permission to contact them, or state none is authorized.",
+      "parts": [
+        "customer",
+        "contact-permission"
+      ],
+      "mandatory": false,
+      "maxWords": 40,
+      "values": [],
+      "amendmentIds": [],
+      "attachmentIds": []
+    },
+    {
+      "id": "Q7",
+      "prompt": "Describe implementation activities and commit to a go-live date, or state the date is unconfirmed.",
+      "parts": [
+        "activities",
+        "date"
+      ],
+      "mandatory": false,
+      "maxWords": 70,
+      "values": [],
+      "amendmentIds": [],
+      "attachmentIds": []
+    },
+    {
+      "id": "Q8",
+      "prompt": "List Security Overview revision 3 and data-processing agreement revision 5 attachments, or identify each as not supplied.",
+      "parts": [
+        "security-overview",
+        "data-processing-agreement"
+      ],
+      "mandatory": true,
+      "maxWords": 50,
+      "values": [],
+      "amendmentIds": [
+        "A1"
+      ],
+      "attachmentIds": [
+        "SECURITY",
+        "DPA"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "PRODUCT-4.2",
+      "version": "4.2",
+      "product": "ExampleFlow Enterprise 4.2",
+      "audience": "buyer-permitted",
+      "current": true,
+      "claims": [
+        {
+          "id": "forms",
+          "text": "Configurable request forms are supported.",
+          "questionIds": [
+            "Q1"
+          ]
+        },
+        {
+          "id": "routing",
+          "text": "Sequential approval routing is supported.",
+          "questionIds": [
+            "Q1"
+          ]
+        },
+        {
+          "id": "visibility",
+          "text": "Status view shows current step and assigned approver.",
+          "questionIds": [
+            "Q1"
+          ]
+        },
+        {
+          "id": "sso",
+          "text": "Enterprise 4.2 supports SAML 2.0 SSO.",
+          "questionIds": [
+            "Q2"
+          ]
+        },
+        {
+          "id": "sso-owners",
+          "text": "Customer identity administrator configures the identity provider; workspace administrator configures ExampleFlow.",
+          "questionIds": [
+            "Q2"
+          ]
+        },
+        {
+          "id": "exports",
+          "text": "Workspace administrators can export request records as CSV; uploaded attachments are excluded.",
+          "questionIds": [
+            "Q4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REGIONS-2026-10",
+      "version": "2026-10",
+      "product": "ExampleFlow Enterprise 4.2",
+      "audience": "buyer-permitted",
+      "current": true,
+      "claims": [
+        {
+          "id": "regions",
+          "text": "Application data, backups and logs are hosted only in the US. EU hosting is unavailable; no approved EU release date.",
+          "questionIds": [
+            "Q3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DELIVERY-2",
+      "version": "2",
+      "product": "ExampleFlow Enterprise 4.2",
+      "audience": "buyer-permitted",
+      "current": true,
+      "claims": [
+        {
+          "id": "activities",
+          "text": "Implementation includes discovery, form configuration, SSO setup, user acceptance testing and administrator training. Timing depends on scope, identity-provider access and capacity. No date is approved for this opportunity.",
+          "questionIds": [
+            "Q7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "LIBRARY-2025",
+      "version": "2025-06",
+      "product": "Unspecified historical product",
+      "audience": "internal-only",
+      "current": false,
+      "claims": [
+        {
+          "id": "old-region",
+          "text": "Historical answer says EU hosting available; not current evidence.",
+          "questionIds": [
+            "Q3"
+          ]
+        },
+        {
+          "id": "old-sla",
+          "text": "Historical 99.9% and service-credit text; no scoped approval supplied.",
+          "questionIds": [
+            "Q5"
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "text": "ExampleFlow Enterprise 4.2 supports configurable procurement request forms, sequential approvals, SAML 2.0 SSO, and administrator CSV export of request records. It does not meet the mandatory EU-only hosting requirement: application data, backups and logs are hosted in the US only. Availability and service credits remain pending review. No reference is authorized, no go-live date is committed, and both requested attachments are absent. This is a complete question-by-question working draft, not a submission-ready bid.",
+    "evidence": [
+      {
+        "sourceId": "PRODUCT-4.2",
+        "claimId": "forms"
+      },
+      {
+        "sourceId": "PRODUCT-4.2",
+        "claimId": "routing"
+      },
+      {
+        "sourceId": "PRODUCT-4.2",
+        "claimId": "sso"
+      },
+      {
+        "sourceId": "PRODUCT-4.2",
+        "claimId": "exports"
+      },
+      {
+        "sourceId": "REGIONS-2026-10",
+        "claimId": "regions"
+      }
+    ]
+  },
+  "summaryMaxWords": 100,
+  "answers": [
+    {
+      "questionId": "Q1",
+      "responseValue": null,
+      "parts": [
+        {
+          "id": "intake",
+          "text": "Procurement requests can be collected through configurable forms.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "PRODUCT-4.2",
+              "claimId": "forms"
+            }
+          ]
+        },
+        {
+          "id": "routing",
+          "text": "Requests can follow sequential approval steps.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "PRODUCT-4.2",
+              "claimId": "routing"
+            }
+          ]
+        },
+        {
+          "id": "visibility",
+          "text": "A status view shows the current step and assigned approver.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "PRODUCT-4.2",
+              "claimId": "visibility"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "questionId": "Q2",
+      "responseValue": "Yes",
+      "parts": [
+        {
+          "id": "support",
+          "text": "SAML 2.0 SSO is supported.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "PRODUCT-4.2",
+              "claimId": "sso"
+            }
+          ]
+        },
+        {
+          "id": "edition",
+          "text": "This answer applies to Enterprise 4.2.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "PRODUCT-4.2",
+              "claimId": "sso"
+            }
+          ]
+        },
+        {
+          "id": "setup-owner",
+          "text": "Your identity administrator configures the identity provider; a workspace administrator configures ExampleFlow.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "PRODUCT-4.2",
+              "claimId": "sso-owners"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "questionId": "Q3",
+      "responseValue": "No",
+      "parts": [
+        {
+          "id": "application-data",
+          "text": "Application data is hosted in the US only.",
+          "state": "gap",
+          "evidence": [
+            {
+              "sourceId": "REGIONS-2026-10",
+              "claimId": "regions"
+            }
+          ]
+        },
+        {
+          "id": "backups",
+          "text": "Backups are hosted in the US only.",
+          "state": "gap",
+          "evidence": [
+            {
+              "sourceId": "REGIONS-2026-10",
+              "claimId": "regions"
+            }
+          ]
+        },
+        {
+          "id": "logs",
+          "text": "Logs are hosted in the US only.",
+          "state": "gap",
+          "evidence": [
+            {
+              "sourceId": "REGIONS-2026-10",
+              "claimId": "regions"
+            }
+          ]
+        },
+        {
+          "id": "regions",
+          "text": "EU hosting is unavailable. We do not meet Amendment 2's mandatory EU-only requirement; no EU release date is committed.",
+          "state": "gap",
+          "evidence": [
+            {
+              "sourceId": "REGIONS-2026-10",
+              "claimId": "regions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "questionId": "Q4",
+      "responseValue": null,
+      "parts": [
+        {
+          "id": "formats",
+          "text": "Request records can be exported as CSV.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "PRODUCT-4.2",
+              "claimId": "exports"
+            }
+          ]
+        },
+        {
+          "id": "roles",
+          "text": "Workspace administrators can perform this export.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "PRODUCT-4.2",
+              "claimId": "exports"
+            }
+          ]
+        },
+        {
+          "id": "attachments",
+          "text": "Uploaded attachments are not included in CSV exports.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "PRODUCT-4.2",
+              "claimId": "exports"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "questionId": "Q5",
+      "responseValue": null,
+      "parts": [
+        {
+          "id": "availability",
+          "text": "Pending review: no approved commitment to 99.9% monthly availability is provided.",
+          "state": "gap",
+          "evidence": []
+        },
+        {
+          "id": "credits",
+          "text": "Service credits also remain pending commercial and legal review; this draft creates no commitment.",
+          "state": "gap",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "questionId": "Q6",
+      "responseValue": null,
+      "parts": [
+        {
+          "id": "customer",
+          "text": "No reference customer is authorized for disclosure in this response.",
+          "state": "gap",
+          "evidence": []
+        },
+        {
+          "id": "contact-permission",
+          "text": "No reference contact permission is supplied; no contact details are provided.",
+          "state": "gap",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "questionId": "Q7",
+      "responseValue": null,
+      "parts": [
+        {
+          "id": "activities",
+          "text": "Implementation includes discovery, request-form configuration, SSO setup, user acceptance testing and administrator training. Timing depends on scope, customer identity-provider access and delivery capacity.",
+          "state": "supported",
+          "evidence": [
+            {
+              "sourceId": "DELIVERY-2",
+              "claimId": "activities"
+            }
+          ]
+        },
+        {
+          "id": "date",
+          "text": "A go-live date is unconfirmed and is not committed by this response.",
+          "state": "gap",
+          "evidence": [
+            {
+              "sourceId": "DELIVERY-2",
+              "claimId": "activities"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "questionId": "Q8",
+      "responseValue": null,
+      "parts": [
+        {
+          "id": "security-overview",
+          "text": "Security Overview revision 3: not supplied.",
+          "state": "gap",
+          "evidence": []
+        },
+        {
+          "id": "data-processing-agreement",
+          "text": "Data-processing agreement revision 5: not supplied. Both documents must be obtained and checked before inclusion; neither is represented as attached or accepted.",
+          "state": "gap",
+          "evidence": []
+        }
+      ]
+    }
+  ],
+  "attachments": [
+    {
+      "id": "SECURITY",
+      "questionId": "Q8",
+      "name": "Security Overview",
+      "requiredRevision": "3",
+      "availableRevision": "2",
+      "buyerPermitted": false,
+      "bytesSupplied": false,
+      "state": "wrong-version"
+    },
+    {
+      "id": "DPA",
+      "questionId": "Q8",
+      "name": "Data-processing agreement",
+      "requiredRevision": "5",
+      "availableRevision": "5",
+      "buyerPermitted": true,
+      "bytesSupplied": false,
+      "state": "missing"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "REVIEW-Q3-R1",
+      "questionId": "Q3",
+      "baseline": "RFP revision 1: EU hosting preferred",
+      "answerRevision": "0",
+      "owner": "Product reviewer",
+      "state": "superseded"
+    }
+  ],
+  "reviewRequests": [
+    {
+      "id": "EU-GAP",
+      "questionIds": [
+        "Q3"
+      ],
+      "owner": "Product and bid owner",
+      "priority": "P0",
+      "question": "Review A2, current region evidence, summary and Q3 revision 1. Confirm the mandatory capability gap and decide whether to continue the bid; no exception or roadmap promise is assumed."
+    },
+    {
+      "id": "SLA",
+      "questionIds": [
+        "Q5"
+      ],
+      "owner": "Commercial and Legal",
+      "priority": "P0",
+      "question": "Provide opportunity-specific availability and service-credit terms or retain both unresolved answers. Historical boilerplate is not current approval."
+    },
+    {
+      "id": "SECURITY-DOC",
+      "questionIds": [
+        "Q8"
+      ],
+      "owner": "Security",
+      "priority": "P0",
+      "question": "Supply Security Overview revision 3 and intended-buyer disclosure permission. Do not substitute the internal-only revision 2."
+    },
+    {
+      "id": "DPA-DOC",
+      "questionIds": [
+        "Q8"
+      ],
+      "owner": "Legal",
+      "priority": "P0",
+      "question": "Supply the actual revision 5 DPA bytes and verify identity and disclosure scope. Sharing an unexecuted form does not accept terms."
+    },
+    {
+      "id": "REFERENCE",
+      "questionIds": [
+        "Q6"
+      ],
+      "owner": "Account owner",
+      "priority": "P1",
+      "question": "Supply separate naming and contact permissions or retain the no-authorized-reference answer. No customer outreach is authorized."
+    },
+    {
+      "id": "DATE",
+      "questionIds": [
+        "Q7"
+      ],
+      "owner": "Delivery",
+      "priority": "P1",
+      "question": "Review exact scope, customer dependencies and capacity before providing any authorized date."
+    },
+    {
+      "id": "FORMAT",
+      "questionIds": [
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4",
+        "Q5",
+        "Q6",
+        "Q7",
+        "Q8"
+      ],
+      "owner": "Bid owner",
+      "priority": "P1",
+      "question": "Obtain the buyer DOCX template, coordinate conversion and exact-version final review before the deadline. The mandatory gap is not resolved by a complete draft."
+    }
+  ],
+  "privateNotes": [
+    "Synthetic worked example only; source assertions and permissions are supplied, not independently authenticated.",
+    "The prior Q3 preference review is superseded for this baseline, not approval of the amended mandatory condition.",
+    "Rejected historical LIBRARY-2025 EU and SLA claims. All supported answers use current product-specific claims.",
+    "REFERENCE-NOTE names Cedar Sample Ltd and reference@example.invalid; naming and contact permissions are absent. Keep both out of buyer copy.",
+    "Mandatory Q3 is not met; Q5 and Q8 remain unresolved. No final-format conversion or submission readiness is claimed.",
+    "Review the summary against all answer and attachment changes; structural citation checks do not prove prose entailment."
+  ],
+  "restrictedStrings": [
+    "Cedar Sample Ltd",
+    "reference@example.invalid",
+    "LIBRARY-2025",
+    "REFERENCE-NOTE",
+    "REVIEW-Q3-R1"
+  ],
+  "handoff": {
+    "state": "private-review-draft",
+    "submission": "not-performed",
+    "commitments": "not-authorized",
+    "approvals": "not-granted",
+    "recipient": "Proposal owner in private workspace"
+  }
+}

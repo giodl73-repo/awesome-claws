@@ -1,0 +1,18 @@
+// In-memory synthetic contract only; no network, credentials or system writes.
+export function mapTickets(tickets, mappings) {
+  return tickets.map(({ id, userId, status }) => {
+    if (!Object.hasOwn(mappings.users, userId) || !Object.hasOwn(mappings.statuses, status)) {
+      throw new Error(`Unmapped user or status for ${id}`);
+    }
+    const assigneeId = mappings.users[userId];
+    const state = mappings.statuses[status];
+    if (typeof assigneeId !== "string" || !assigneeId.trim() || !["open", "pending", "closed"].includes(state)) {
+      throw new Error(`Invalid user or status mapping for ${id}`);
+    }
+    return { id, assigneeId, state };
+  });
+}
+
+export function restoreSnapshot(snapshot) {
+  return structuredClone(snapshot);
+}

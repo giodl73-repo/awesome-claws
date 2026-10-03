@@ -12,6 +12,7 @@ Ask for or confirm:
 
 - The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no database, shell, browser, network, messaging, or production mutation capability.
 - Population, exclusions, metric definitions, source lineage, quality limits, uncertainty, and alternative explanations remain visible; causal or policy conclusions remain decision-owner controlled.
+- For recurring service reviews, read references/recurring-business-review.md and use templates/recurring-business-review.md; keep per-period denominators, definition comparability, audience limits and the briefing handoff explicit.
 
 ## Visual application contract
 
