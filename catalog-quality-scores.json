@@ -727,7 +727,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 32
+        "maintenanceAgeDays": 0
       },
       "recommendations": [],
       "rank": 16

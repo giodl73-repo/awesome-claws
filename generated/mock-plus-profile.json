@@ -12,7 +12,7 @@
   "profiles": [
     {
       "name": "vertical",
-      "canonicalDigest": "sha256:b1b982a6d711e29b7d139d37754417d9802287ed87eb6a2c6f3a0bd6ce99efec",
+      "canonicalDigest": "sha256:34d831ecb5a03411ac5911368ac5e8ca88f0a604be086dea235a7e5b32e74bf3",
       "clawCount": 3,
       "caseCount": 53,
       "controlsPassed": 21,
@@ -26,7 +26,7 @@
     },
     {
       "name": "schema-portfolio",
-      "canonicalDigest": "sha256:232dfef72cc6305a6d0ddbfa2c07b440f959af8d7ab4125bcc1cccbd69af717d",
+      "canonicalDigest": "sha256:5c290509926715359f2abbc73413897c3493eba003552003d7dfcb3a677fc8df",
       "clawCount": 135,
       "caseCount": 50799,
       "controlsPassed": 945,
@@ -40,7 +40,7 @@
     },
     {
       "name": "semantic-portfolio",
-      "canonicalDigest": "sha256:752197ebc99d5d253b515d8000022f7754d745fd63705946aaaef8d1c69ac73c",
+      "canonicalDigest": "sha256:19e5c3fffe28b2507964ef46be6acb762bec26d9bd627d3cc0f4fb0e063f1741",
       "clawCount": 135,
       "caseCount": 2128,
       "controlsPassed": 945,
@@ -54,7 +54,7 @@
     },
     {
       "name": "lifecycle-portfolio",
-      "canonicalDigest": "sha256:612b448cee9c5165bc85c7234f8b54d81bdc38262eab7183059e6173abcc6955",
+      "canonicalDigest": "sha256:57c7827dc75373a7fcde0b59219e7b048bbfde94720e104c346d2fcea5b88560",
       "clawCount": 135,
       "caseCount": 2523,
       "controlsPassed": 945,
@@ -75,5 +75,5 @@
     "mutantsSurvived": 0,
     "safetyBlockers": 0
   },
-  "profileDigest": "sha256:d4c660b2b636aaecd3da456b62941dec2d03001095cc093329dab14bce957c0f"
+  "profileDigest": "sha256:c03fc769be0b4aaccf833d0e21d94e2f1a3b57a858d01dee522ec88c47b7cf83"
 }
