@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 136 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 139 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -9,7 +9,7 @@ show how Claws compose into larger managed workflows.
 | Category | Count | Current emphasis |
 | --- | ---: | --- |
 | Productivity | 55 | Personal operating systems, personal media, fantasy sports, household planning, civic services, documents, travel, meetings, and knowledge work |
-| Operations | 31 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
+| Operations | 34 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
 | Analysis | 16 | Research, evidence collection, financial monitoring, public/company watching, data work, and model evaluation |
 | Engineering | 11 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
 | Governance | 20 | Compliance, privacy requests, accessibility review, data governance, legal-matter preservation, estate administration, records retention and disposition, and vulnerability exposure disposition |
@@ -39,15 +39,15 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 ## Quality Uplift
 
 The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
-post-100 prioritization tool. The current baseline has 136 of 136 Claws passing
+post-100 prioritization tool. The current baseline has 139 of 139 Claws passing
 the non-negotiable package, regression, resource, and Experience gates. The
 highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 125 of 136 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 136 of 136 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 136 of 136 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 128 of 139 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 139 of 139 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 139 of 139 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates

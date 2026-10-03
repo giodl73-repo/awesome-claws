@@ -1,0 +1,504 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/supplier-onboarding.schema.json",
+  "title": "Private selected-supplier setup packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "supplier",
+    "buyingEntity",
+    "packetRevision",
+    "asOf",
+    "owner",
+    "recipient",
+    "policy",
+    "scope",
+    "selection",
+    "identities",
+    "entityDecision",
+    "setup",
+    "requirements",
+    "reviews",
+    "coverage",
+    "requests",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "supplier": {
+      "$ref": "#/$defs/id"
+    },
+    "buyingEntity": {
+      "$ref": "#/$defs/id"
+    },
+    "packetRevision": {
+      "$ref": "#/$defs/id"
+    },
+    "asOf": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "owner": {
+      "$ref": "#/$defs/text"
+    },
+    "recipient": {
+      "$ref": "#/$defs/text"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "reference",
+        "owner"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/id"
+        },
+        "reference": {
+          "$ref": "#/$defs/id"
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "reference",
+        "description",
+        "personalData"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/id"
+        },
+        "reference": {
+          "$ref": "#/$defs/id"
+        },
+        "description": {
+          "$ref": "#/$defs/text"
+        },
+        "personalData": {
+          "type": "boolean"
+        }
+      }
+    },
+    "selection": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "reference",
+            "supplier",
+            "buyingEntity",
+            "selectedBy"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "reference": {
+              "$ref": "#/$defs/id"
+            },
+            "supplier": {
+              "$ref": "#/$defs/id"
+            },
+            "buyingEntity": {
+              "$ref": "#/$defs/id"
+            },
+            "selectedBy": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "identities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "legalEntity",
+          "revision",
+          "reference"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "kind": {
+            "enum": [
+              "intake",
+              "contract",
+              "master-observation"
+            ]
+          },
+          "legalEntity": {
+            "$ref": "#/$defs/text"
+          },
+          "revision": {
+            "$ref": "#/$defs/id"
+          },
+          "reference": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "entityDecision": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "reference",
+            "legalEntity",
+            "identityRefs",
+            "scopeRevision",
+            "decidedBy",
+            "decidedAt"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "reference": {
+              "$ref": "#/$defs/id"
+            },
+            "legalEntity": {
+              "$ref": "#/$defs/text"
+            },
+            "identityRefs": {
+              "type": "array",
+              "maxItems": 200,
+              "items": {
+                "$ref": "#/$defs/id"
+              },
+              "uniqueItems": true,
+              "minItems": 1
+            },
+            "scopeRevision": {
+              "$ref": "#/$defs/id"
+            },
+            "decidedBy": {
+              "$ref": "#/$defs/text"
+            },
+            "decidedAt": {
+              "$ref": "#/$defs/timestamp"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "setup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legalEntity",
+        "entityState",
+        "service",
+        "personalData"
+      ],
+      "properties": {
+        "legalEntity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/text"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entityState": {
+          "enum": [
+            "consistent",
+            "resolved-by-owner",
+            "unresolved"
+          ]
+        },
+        "service": {
+          "$ref": "#/$defs/text"
+        },
+        "personalData": {
+          "type": "boolean"
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "kind",
+          "owner",
+          "applicability"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "label": {
+            "$ref": "#/$defs/text"
+          },
+          "kind": {
+            "enum": [
+              "entity",
+              "scope",
+              "selection",
+              "privacy",
+              "payment",
+              "other"
+            ]
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "applicability": {
+            "enum": [
+              "required",
+              "owner-not-applicable"
+            ]
+          }
+        }
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "requirementId",
+          "kind",
+          "reference",
+          "supplier",
+          "buyingEntity",
+          "legalEntity",
+          "scopeRevision",
+          "policyRevision",
+          "reviewer",
+          "decidedAt",
+          "validUntil",
+          "result"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "requirementId": {
+            "$ref": "#/$defs/id"
+          },
+          "kind": {
+            "enum": [
+              "privacy",
+              "payment",
+              "other",
+              "not-applicable"
+            ]
+          },
+          "reference": {
+            "$ref": "#/$defs/id"
+          },
+          "supplier": {
+            "$ref": "#/$defs/id"
+          },
+          "buyingEntity": {
+            "$ref": "#/$defs/id"
+          },
+          "legalEntity": {
+            "$ref": "#/$defs/text"
+          },
+          "scopeRevision": {
+            "$ref": "#/$defs/id"
+          },
+          "policyRevision": {
+            "$ref": "#/$defs/id"
+          },
+          "reviewer": {
+            "$ref": "#/$defs/text"
+          },
+          "decidedAt": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "validUntil": {
+            "$ref": "#/$defs/timestamp"
+          },
+          "result": {
+            "enum": [
+              "satisfied",
+              "not-applicable",
+              "changes-needed"
+            ]
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "requirementId",
+          "state",
+          "evidenceRefs",
+          "requestId"
+        ],
+        "properties": {
+          "requirementId": {
+            "$ref": "#/$defs/id"
+          },
+          "state": {
+            "enum": [
+              "satisfied",
+              "gap",
+              "reopened",
+              "not-applicable"
+            ]
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/$defs/id"
+            },
+            "uniqueItems": true
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "requests": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "requirementId",
+          "owner",
+          "question"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "requirementId": {
+            "$ref": "#/$defs/id"
+          },
+          "owner": {
+            "$ref": "#/$defs/text"
+          },
+          "question": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "activation",
+        "paymentVerification",
+        "contact",
+        "specialistApproval",
+        "blockingRequirementIds"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "blocked",
+            "review-draft"
+          ]
+        },
+        "activation": {
+          "const": "not-performed"
+        },
+        "paymentVerification": {
+          "const": "not-performed"
+        },
+        "contact": {
+          "const": "not-performed"
+        },
+        "specialistApproval": {
+          "const": "not-granted"
+        },
+        "blockingRequirementIds": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,79}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

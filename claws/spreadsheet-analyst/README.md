@@ -17,6 +17,7 @@ Audits and transforms spreadsheets while preserving formulas, lineage, and revie
 - Declared capability: skill `@ivangdavila/excel-xlsx@1.0.2`.
 - Capability boundary: The XLSX skill can create and modify workbook files; default to a new output path, preserve formulas and templates, and require review before replacing any operational artifact.
 - Capability boundary: Treat fixtures/spreadsheet-change.example.json only as a shape example. Validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json and render templates/spreadsheet-change.md with source identity, sheet and formula preservation, transformation lineage, checks, exceptions, and owner authority.
+- Capability boundary: For close workpapers, use references/close-workpaper.md and templates/close-workpaper.md; retain source scope and revisions, unexplained differences and separate-account residuals without inferred journals or close approval.
 
 Review the package before applying it. Claws can create agents and may declare
 additional capabilities. Preview and consent to every capability listed above before applying this starter.

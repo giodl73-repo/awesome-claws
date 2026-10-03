@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "project": "DEMO",
+  "package": "PKG-4",
+  "registerRevision": "R1",
+  "asOf": "2026-10-02T12:00:00+01:00",
+  "controller": "Document controller",
+  "engineeringOwner": "Project engineer",
+  "accessOwner": "Information owner",
+  "recipient": "Document controller private review",
+  "intendedUse": "construction",
+  "policy": {
+    "reference": "PROJECT-RULES-1",
+    "codes": [
+      {
+        "code": "FR",
+        "meaning": "For review; not authorization for construction"
+      },
+      {
+        "code": "AFC",
+        "meaning": "Approved for construction status; receipt alone is not engineering approval or authority to issue"
+      }
+    ]
+  },
+  "requiredDocs": [
+    {
+      "id": "D-101",
+      "title": "Service installation drawing"
+    },
+    {
+      "id": "D-102",
+      "title": "Required connection drawing"
+    }
+  ],
+  "revisions": [
+    {
+      "id": "D101-A",
+      "project": "DEMO",
+      "documentId": "D-101",
+      "label": "A",
+      "receivedAt": "2026-09-01T09:00:00+01:00",
+      "statusCode": "FR",
+      "fileRef": "FILE-D101-A",
+      "bytesSupplied": true
+    },
+    {
+      "id": "D101-B",
+      "project": "DEMO",
+      "documentId": "D-101",
+      "label": "B",
+      "receivedAt": "2026-09-10T09:00:00+01:00",
+      "statusCode": "FR",
+      "fileRef": "FILE-D101-B",
+      "bytesSupplied": true
+    },
+    {
+      "id": "D101-C",
+      "project": "DEMO",
+      "documentId": "D-101",
+      "label": "C",
+      "receivedAt": "2026-10-01T09:00:00+01:00",
+      "statusCode": "FR",
+      "fileRef": "FILE-D101-C",
+      "bytesSupplied": true
+    }
+  ],
+  "useReviews": [
+    {
+      "id": "ENG-7",
+      "project": "DEMO",
+      "documentId": "D-101",
+      "revisionRef": "D101-B",
+      "purpose": "construction",
+      "decision": "approved",
+      "reviewer": "Project engineer",
+      "decidedAt": "2026-09-12T10:00:00+01:00",
+      "reference": "ENGINEER-DECISION-7"
+    }
+  ],
+  "supersessions": [],
+  "useDirections": [],
+  "register": [
+    {
+      "documentId": "D-101",
+      "latestReceivedRef": "D101-C",
+      "lastApprovedRef": "D101-B",
+      "currentUseRef": null,
+      "unknownStatusCodes": [],
+      "state": "review-required",
+      "question": "Does B remain authorized for construction after receipt of C? Review C and state its effect on B; ENG-7 is not approval of C."
+    },
+    {
+      "documentId": "D-102",
+      "latestReceivedRef": null,
+      "lastApprovedRef": null,
+      "currentUseRef": null,
+      "unknownStatusCodes": [],
+      "state": "missing",
+      "question": "Supply D-102 with exact revision, receipt and review-purpose evidence; no file is present."
+    }
+  ],
+  "workItems": [
+    {
+      "id": "S-4",
+      "kind": "submittal",
+      "revisionRefs": [
+        "D101-C"
+      ],
+      "owner": "Project engineer",
+      "deadline": "2026-10-05T17:00:00+01:00",
+      "response": null
+    },
+    {
+      "id": "RFI-8",
+      "kind": "rfi",
+      "revisionRefs": [
+        "D101-A"
+      ],
+      "owner": "RFI owner",
+      "deadline": "2026-10-01T17:00:00+01:00",
+      "response": null
+    }
+  ],
+  "followUps": [
+    {
+      "itemId": "S-4",
+      "state": "open",
+      "question": "Please provide an exact-revision decision for C and clarify its effect on the prior approval of B."
+    },
+    {
+      "itemId": "RFI-8",
+      "state": "overdue",
+      "question": "The supplied deadline passed without a response. Does the question against A remain applicable to B or C? Supply a revision-specific answer without rewriting the original reference."
+    }
+  ],
+  "transmittals": [
+    {
+      "id": "T-9",
+      "revision": "T1",
+      "project": "DEMO",
+      "recipient": "Site team",
+      "purpose": "construction",
+      "revisionRefs": [
+        "D101-B"
+      ],
+      "state": "held",
+      "holdReasons": [
+        "use-unresolved",
+        "recipient-permission-missing",
+        "issue-authorization-missing"
+      ]
+    }
+  ],
+  "authorizations": [],
+  "handoff": {
+    "state": "private-review-draft",
+    "issued": "not-performed",
+    "engineeringApproval": "not-granted",
+    "edmsChanges": "not-performed",
+    "contacts": "not-performed",
+    "unresolvedRefs": [
+      "D-101",
+      "D-102",
+      "S-4",
+      "RFI-8",
+      "T-9"
+    ]
+  }
+}

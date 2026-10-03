@@ -1,0 +1,628 @@
+{
+  "schemaVersion": "awesomeClaws.publicationReadinessRecord.v1",
+  "package": {
+    "id": "package-flowdesk-commercial-campaign",
+    "request": "Write an operations-buyer campaign brief, email and web paragraph for FlowDesk using supplied product notes. Withhold unapproved savings and the customer quote. Define the demo-request metric; do not publish or send.",
+    "owner": "Campaign lead",
+    "ownerType": "human",
+    "channelOwner": "Marketing team",
+    "channelOwnerType": "team",
+    "asOf": "2026-10-02T12:00:00-07:00",
+    "deadline": "2026-10-05T17:00:00-07:00",
+    "timeZone": "America/Los_Angeles",
+    "state": "blocked"
+  },
+  "brief": {
+    "audience": "Operations managers handling procurement intake",
+    "channels": [
+      "internal",
+      "email",
+      "web"
+    ],
+    "intendedAction": "Request a FlowDesk demonstration through a destination still to be confirmed by Marketing.",
+    "successMeasure": "Proposed email-to-demo-request rate, pending measurement agreement; no observed result.",
+    "voice": "Direct, specific and capability-led.",
+    "restrictedTopics": [
+      "No quantified savings",
+      "No customer quote or attribution without permission",
+      "No invented results, integrations or approvals"
+    ],
+    "acceptanceCriteria": [
+      {
+        "id": "criterion-supported-copy",
+        "statement": "Deliver an actual brief, email and web paragraph using only the two permitted product capabilities.",
+        "state": "met",
+        "assetRefs": [
+          "asset-campaign-brief",
+          "asset-campaign-email",
+          "asset-campaign-web"
+        ]
+      },
+      {
+        "id": "criterion-no-restricted-copy",
+        "statement": "External-facing drafts omit unapproved savings, quote and attribution.",
+        "state": "met",
+        "assetRefs": [
+          "asset-campaign-email",
+          "asset-campaign-web"
+        ]
+      },
+      {
+        "id": "criterion-measurement",
+        "statement": "The brief defines the proposed metric and its owner without results.",
+        "state": "met",
+        "assetRefs": [
+          "asset-campaign-brief"
+        ]
+      }
+    ]
+  },
+  "sources": [
+    {
+      "id": "source-product",
+      "kind": "product-brief",
+      "label": "FlowDesk 2.4 permitted capability brief",
+      "reference": "references/commercial-campaign-source-pack.md",
+      "observedAt": "2026-10-02T09:00:00-07:00",
+      "freshness": "current",
+      "classification": "internal"
+    },
+    {
+      "id": "source-brand",
+      "kind": "brand-guidance",
+      "label": "Campaign voice guidance",
+      "reference": "references/commercial-campaign-source-pack.md",
+      "observedAt": "2026-10-02T09:00:00-07:00",
+      "freshness": "current",
+      "classification": "internal"
+    },
+    {
+      "id": "source-channel",
+      "kind": "channel-guidance",
+      "label": "Channel and owner brief",
+      "reference": "references/commercial-campaign-source-pack.md",
+      "observedAt": "2026-10-02T09:00:00-07:00",
+      "freshness": "current",
+      "classification": "internal"
+    },
+    {
+      "id": "source-legal",
+      "kind": "legal-guidance",
+      "label": "Legal review request; no decision",
+      "reference": "references/commercial-campaign-source-pack.md",
+      "observedAt": "2026-10-02T09:00:00-07:00",
+      "freshness": "missing",
+      "classification": "internal"
+    },
+    {
+      "id": "source-sales",
+      "kind": "asset",
+      "label": "Unapproved sales assertion; not evidence for a performance claim",
+      "reference": "references/commercial-campaign-source-pack.md",
+      "observedAt": "2026-10-02T09:00:00-07:00",
+      "freshness": "current",
+      "classification": "restricted"
+    },
+    {
+      "id": "source-quote",
+      "kind": "customer-quote-consent",
+      "label": "Quote permission not supplied",
+      "reference": "references/commercial-campaign-source-pack.md",
+      "observedAt": "2026-10-02T09:00:00-07:00",
+      "freshness": "missing",
+      "classification": "restricted"
+    },
+    {
+      "id": "source-measurement",
+      "kind": "measurement-plan",
+      "label": "Proposed measurement definition awaiting owner agreement",
+      "reference": "references/commercial-campaign-source-pack.md",
+      "observedAt": "2026-10-02T09:00:00-07:00",
+      "freshness": "current",
+      "classification": "internal"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-forms",
+      "kind": "product-capability",
+      "statement": "FlowDesk 2.4 supports configurable procurement request forms.",
+      "sourceRefs": [
+        "source-product"
+      ],
+      "allowedChannels": [
+        "internal",
+        "email",
+        "web"
+      ],
+      "requiredApprovalKinds": [
+        "factual",
+        "brand",
+        "legal",
+        "channel-owner"
+      ],
+      "restrictions": [
+        "No measured savings or outcomes are established."
+      ],
+      "state": "supported"
+    },
+    {
+      "id": "claim-sequential-approvals",
+      "kind": "product-capability",
+      "statement": "FlowDesk 2.4 supports sequential approval steps.",
+      "sourceRefs": [
+        "source-product"
+      ],
+      "allowedChannels": [
+        "internal",
+        "email",
+        "web"
+      ],
+      "requiredApprovalKinds": [
+        "factual",
+        "brand",
+        "legal",
+        "channel-owner"
+      ],
+      "restrictions": [
+        "No measured savings or outcomes are established."
+      ],
+      "state": "supported"
+    },
+    {
+      "id": "claim-savings",
+      "kind": "performance",
+      "statement": "Unapproved sales assertion of a quantified cost reduction, withheld from all draft copy.",
+      "sourceRefs": [
+        "source-sales"
+      ],
+      "allowedChannels": [
+        "internal"
+      ],
+      "requiredApprovalKinds": [
+        "factual",
+        "brand",
+        "legal",
+        "channel-owner"
+      ],
+      "restrictions": [
+        "No approved measurement supports this assertion; do not include it."
+      ],
+      "state": "blocked"
+    },
+    {
+      "id": "claim-quote",
+      "kind": "customer-quote",
+      "statement": "Proposed customer quote and attribution withheld because permission is absent.",
+      "sourceRefs": [
+        "source-quote"
+      ],
+      "allowedChannels": [
+        "internal"
+      ],
+      "requiredApprovalKinds": [
+        "factual",
+        "brand",
+        "legal",
+        "channel-owner"
+      ],
+      "restrictions": [
+        "No exact wording or attribution permission; do not include either."
+      ],
+      "state": "blocked"
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-campaign-brief",
+      "kind": "internal-brief",
+      "title": "FlowDesk campaign brief",
+      "path": "outputs/campaign-brief.md",
+      "channel": "internal",
+      "version": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "criterionRefs": [
+        "criterion-supported-copy",
+        "criterion-measurement"
+      ],
+      "state": "ready-for-owner-review",
+      "publicationState": "not-published"
+    },
+    {
+      "id": "asset-campaign-email",
+      "kind": "email",
+      "title": "FlowDesk demo invitation",
+      "path": "outputs/campaign-email.md",
+      "channel": "email",
+      "version": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "criterionRefs": [
+        "criterion-supported-copy",
+        "criterion-no-restricted-copy"
+      ],
+      "state": "ready-for-owner-review",
+      "publicationState": "not-published"
+    },
+    {
+      "id": "asset-campaign-web",
+      "kind": "article",
+      "title": "FlowDesk web paragraph",
+      "path": "outputs/campaign-web.md",
+      "channel": "web",
+      "version": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "criterionRefs": [
+        "criterion-supported-copy",
+        "criterion-no-restricted-copy"
+      ],
+      "state": "ready-for-owner-review",
+      "publicationState": "not-published"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-campaign-brief-factual",
+      "kind": "factual",
+      "reviewer": "Product lead",
+      "reviewerType": "human",
+      "assetRef": "asset-campaign-brief",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-product"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-brief-brand",
+      "kind": "brand",
+      "reviewer": "Brand team",
+      "reviewerType": "team",
+      "assetRef": "asset-campaign-brief",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-brand"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-brief-legal",
+      "kind": "legal",
+      "reviewer": "Product counsel",
+      "reviewerType": "human",
+      "assetRef": "asset-campaign-brief",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-legal"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-brief-channel-owner",
+      "kind": "channel-owner",
+      "reviewer": "Marketing team",
+      "reviewerType": "team",
+      "assetRef": "asset-campaign-brief",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-channel"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-email-factual",
+      "kind": "factual",
+      "reviewer": "Product lead",
+      "reviewerType": "human",
+      "assetRef": "asset-campaign-email",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-product"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-email-brand",
+      "kind": "brand",
+      "reviewer": "Brand team",
+      "reviewerType": "team",
+      "assetRef": "asset-campaign-email",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-brand"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-email-legal",
+      "kind": "legal",
+      "reviewer": "Product counsel",
+      "reviewerType": "human",
+      "assetRef": "asset-campaign-email",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-legal"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-email-channel-owner",
+      "kind": "channel-owner",
+      "reviewer": "Marketing team",
+      "reviewerType": "team",
+      "assetRef": "asset-campaign-email",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-channel"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-web-factual",
+      "kind": "factual",
+      "reviewer": "Product lead",
+      "reviewerType": "human",
+      "assetRef": "asset-campaign-web",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-product"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-web-brand",
+      "kind": "brand",
+      "reviewer": "Brand team",
+      "reviewerType": "team",
+      "assetRef": "asset-campaign-web",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-brand"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-web-legal",
+      "kind": "legal",
+      "reviewer": "Product counsel",
+      "reviewerType": "human",
+      "assetRef": "asset-campaign-web",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-legal"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    },
+    {
+      "id": "approval-campaign-web-channel-owner",
+      "kind": "channel-owner",
+      "reviewer": "Marketing team",
+      "reviewerType": "team",
+      "assetRef": "asset-campaign-web",
+      "assetVersion": "v1",
+      "claimRefs": [
+        "claim-forms",
+        "claim-sequential-approvals"
+      ],
+      "evidenceSourceRefs": [
+        "source-channel"
+      ],
+      "decision": "pending",
+      "decidedAt": null
+    }
+  ],
+  "metrics": [
+    {
+      "id": "metric-demo-request-rate",
+      "label": "Proposed email-to-demo-request rate",
+      "definition": "Unique eligible delivered-email recipients completing a valid demo request within seven days of first delivery / unique eligible delivered-email recipients. Exclude tests, internal recipients, suppression and bounces; deduplicate both sides, use UTC timestamps, report unmatched event identities as unknown, treat a zero denominator as undefined, and wait for every window to mature. Analytics and Marketing agreement is pending; no observations or uplift claim.",
+      "owner": "Analytics team",
+      "ownerType": "team",
+      "sourceRefs": [
+        "source-measurement"
+      ],
+      "state": "review-needed"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-permission",
+      "question": "Can the Customer program owner supply exact quote, attribution and channel permission for a later version? Keep both out of the current copy.",
+      "owner": "Customer program owner",
+      "ownerType": "human",
+      "refs": [
+        "source-quote",
+        "claim-quote"
+      ]
+    },
+    {
+      "id": "question-savings",
+      "question": "Is there approved measurement supporting any performance assertion? Until supplied, retain capability-only copy.",
+      "owner": "Product lead",
+      "ownerType": "human",
+      "refs": [
+        "source-sales",
+        "claim-savings"
+      ]
+    },
+    {
+      "id": "question-measurement",
+      "question": "Do Analytics and Marketing agree the proposed seven-day window, eligibility, event join and missing-data treatment?",
+      "owner": "Analytics team",
+      "ownerType": "team",
+      "refs": [
+        "metric-demo-request-rate",
+        "source-measurement"
+      ]
+    },
+    {
+      "id": "question-destination",
+      "question": "What owner-controlled demo destination and eligible audience are authorized for a later version? Current drafts contain no live link or recipient list.",
+      "owner": "Marketing team",
+      "ownerType": "team",
+      "refs": [
+        "asset-campaign-email",
+        "asset-campaign-web"
+      ]
+    }
+  ],
+  "prohibitedActions": [
+    "publish-content",
+    "schedule-content",
+    "distribute-content",
+    "mutate-cms",
+    "message-audience",
+    "represent-approval",
+    "claim-measured-results"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Campaign lead",
+    "ownerType": "human",
+    "channelOwner": "Marketing team",
+    "channelOwnerType": "team",
+    "sourceRefs": [
+      "source-product",
+      "source-brand",
+      "source-channel",
+      "source-legal",
+      "source-sales",
+      "source-quote",
+      "source-measurement"
+    ],
+    "claimRefs": [
+      "claim-forms",
+      "claim-sequential-approvals",
+      "claim-savings",
+      "claim-quote"
+    ],
+    "assetRefs": [
+      "asset-campaign-brief",
+      "asset-campaign-email",
+      "asset-campaign-web"
+    ],
+    "approvalRefs": [
+      "approval-campaign-brief-factual",
+      "approval-campaign-brief-brand",
+      "approval-campaign-brief-legal",
+      "approval-campaign-brief-channel-owner",
+      "approval-campaign-email-factual",
+      "approval-campaign-email-brand",
+      "approval-campaign-email-legal",
+      "approval-campaign-email-channel-owner",
+      "approval-campaign-web-factual",
+      "approval-campaign-web-brand",
+      "approval-campaign-web-legal",
+      "approval-campaign-web-channel-owner"
+    ],
+    "metricRefs": [
+      "metric-demo-request-rate"
+    ],
+    "criterionRefs": [
+      "criterion-supported-copy",
+      "criterion-no-restricted-copy",
+      "criterion-measurement"
+    ],
+    "reviewQuestionRefs": [
+      "question-permission",
+      "question-savings",
+      "question-measurement",
+      "question-destination"
+    ],
+    "blockingRefs": [
+      "source-legal",
+      "source-quote",
+      "claim-savings",
+      "claim-quote",
+      "approval-campaign-brief-factual",
+      "approval-campaign-brief-brand",
+      "approval-campaign-brief-legal",
+      "approval-campaign-brief-channel-owner",
+      "approval-campaign-email-factual",
+      "approval-campaign-email-brand",
+      "approval-campaign-email-legal",
+      "approval-campaign-email-channel-owner",
+      "approval-campaign-web-factual",
+      "approval-campaign-web-brand",
+      "approval-campaign-web-legal",
+      "approval-campaign-web-channel-owner",
+      "metric-demo-request-rate",
+      "question-permission",
+      "question-savings",
+      "question-measurement",
+      "question-destination"
+    ],
+    "prohibitedActions": [
+      "publish-content",
+      "schedule-content",
+      "distribute-content",
+      "mutate-cms",
+      "message-audience",
+      "represent-approval",
+      "claim-measured-results"
+    ]
+  }
+}
