@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { supplierOnboardingFindings } from "./supplier-onboarding-preparer.mjs";
 import { rfpResponseFindings } from "./rfp-response-producer.mjs";
 import { accessEntitlementReviewFindings } from "./access-entitlement-review-coordinator.mjs";
 import { backupRestoreVerificationFindings } from "./backup-restore-verification-coordinator.mjs";
@@ -53354,6 +53355,7 @@ const validators = {
   "restaurant-venue-scout": restaurantVenueFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
+  "supplier-onboarding-preparer": supplierOnboardingFindings,
   "school-coordinator": schoolCoordinatorFindings,
   "security-analyst": securityAssessmentFindings,
   "software-maintainer": changeDeliveryRecordFindings,
