@@ -1,0 +1,82 @@
+{
+  "project": "Synthetic service-desk migration",
+  "sponsor": "Neil Prakash",
+  "outcome": "Review a synthetic service-desk handover; no production operation authorized.",
+  "targetDate": "2026-10-09",
+  "scope": {
+    "in": [
+      "Local adapter",
+      "Mapping",
+      "Acceptance tests",
+      "Cutover and support drafts"
+    ],
+    "out": [
+      "Production execution",
+      "Support acceptance"
+    ],
+    "acceptanceCriteria": [
+      "req-user-id: Every ticket user ID resolves through the supplied identity table; unknown or blank identities block.",
+      "req-ticket-status: NEW maps to open, WAITING to pending and DONE to closed; unknown states block.",
+      "req-rollback: Restore the exact pre-run target snapshot in memory without mutating the source or snapshot."
+    ]
+  },
+  "milestones": [
+    {
+      "id": "M1",
+      "name": "req-user-id",
+      "owner": "Dana Ruiz",
+      "dueDate": "2026-10-02",
+      "state": "accepted",
+      "dependencies": [],
+      "evidenceRefs": [
+        "artifacts/qa.json#req-user-id"
+      ]
+    },
+    {
+      "id": "M2",
+      "name": "req-ticket-status",
+      "owner": "Dana Ruiz",
+      "dueDate": "2026-10-02",
+      "state": "accepted",
+      "dependencies": [
+        "M1"
+      ],
+      "evidenceRefs": [
+        "artifacts/qa.json#req-ticket-status"
+      ]
+    },
+    {
+      "id": "M3",
+      "name": "req-rollback",
+      "owner": "Dana Ruiz",
+      "dueDate": "2026-10-02",
+      "state": "accepted",
+      "dependencies": [
+        "M2"
+      ],
+      "evidenceRefs": [
+        "artifacts/qa.json#req-rollback"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Local tests do not exercise live recovery or permissions",
+      "likelihood": "medium",
+      "impact": "high",
+      "owner": "Neil Prakash",
+      "trigger": "Any failed acceptance test or source drift",
+      "response": "Stop; obtain scoped evidence and owner review"
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Authorize cutover and obtain support acceptance",
+      "owner": "Neil Prakash",
+      "state": "needed",
+      "rationale": "Local evidence is not live authorization",
+      "downstreamImpact": "No production transition yet"
+    }
+  ],
+  "statusState": "blocked"
+}

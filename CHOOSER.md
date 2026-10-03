@@ -127,7 +127,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Software maintainer](claws/software-maintainer) | @giodl73-repo; last verified 2026-08-30 |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | @giodl73-repo; last verified 2026-09-14 |
 | [Sports team watcher](claws/sports-team-watcher) | @giodl73-repo; last verified 2026-08-21 |
-| [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-08-29 |
+| [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-10-02 |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | @giodl73-repo; last verified 2026-08-21 |
 | [Subscription manager](claws/subscription-manager) | @giodl73-repo; last verified 2026-08-21 |
 | [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | @giodl73-repo; last verified 2026-09-14 |

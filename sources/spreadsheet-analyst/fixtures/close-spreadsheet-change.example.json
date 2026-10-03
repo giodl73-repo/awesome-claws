@@ -1,0 +1,215 @@
+{
+  "schemaVersion": "awesomeClaws.spreadsheetChange.v1",
+  "workbook": {
+    "id": "workbook-august-close",
+    "owner": "Morgan Lee, Controller",
+    "asOf": "2026-09-02T00:00:00Z",
+    "sourcePath": "inputs/close-source.xlsx",
+    "sourceSha256": "8a03ecf5e1a1d27ccb63679ed1a2fc879f79df1fa5ed8b003d7f9f39d3e2ce89",
+    "outputPath": "outputs/close-review.xlsx",
+    "recalculationEngine": "Artifact Tool; native Excel not tested",
+    "sensitivity": "internal",
+    "state": "blocked"
+  },
+  "sheets": [
+    {
+      "id": "sheet-sources",
+      "name": "Sources",
+      "role": "source",
+      "sourcePreserved": true,
+      "formulaCountBefore": 0,
+      "formulaCountAfter": 0
+    },
+    {
+      "id": "sheet-workpaper",
+      "name": "Workpaper",
+      "role": "output",
+      "sourcePreserved": true,
+      "formulaCountBefore": 0,
+      "formulaCountAfter": 24
+    }
+  ],
+  "transformations": [
+    {
+      "id": "transform-close-workpaper",
+      "kind": "add-sheet",
+      "targetSheetRef": "sheet-workpaper",
+      "inputRefs": [
+        "sheet-sources"
+      ],
+      "outputRange": "Workpaper!A1:E28",
+      "logic": "Add source-bound balance change and supporting schedules, retain an explicit unexplained amount, and carry separate-account residuals without netting or inferred journals.",
+      "formulaPolicy": "add-only",
+      "state": "verified"
+    }
+  ],
+  "checks": [
+    {
+      "id": "check-source-hash",
+      "kind": "source-hash",
+      "refs": [
+        "workbook-august-close"
+      ],
+      "status": "passed",
+      "details": "Source file SHA-256 recorded from actual bytes; the source path is distinct from the review output."
+    },
+    {
+      "id": "check-formula-preservation",
+      "kind": "formula-preservation",
+      "refs": [
+        "workbook-august-close"
+      ],
+      "status": "passed",
+      "details": "Source values and zero source formulas preserved; 24 formulas added on Workpaper."
+    },
+    {
+      "id": "check-recalculation",
+      "kind": "recalculation",
+      "refs": [
+        "workbook-august-close"
+      ],
+      "status": "passed",
+      "details": "Artifact Tool recalculation passed 12 changed-input cases. Native Microsoft Excel was not tested."
+    },
+    {
+      "id": "check-formatting",
+      "kind": "formatting",
+      "refs": [
+        "workbook-august-close"
+      ],
+      "status": "passed",
+      "details": "Known source styles retained, explicit currency formats and fitted columns applied, and both sheet previews captured."
+    },
+    {
+      "id": "check-links",
+      "kind": "links",
+      "refs": [
+        "workbook-august-close"
+      ],
+      "status": "not-applicable",
+      "details": "No external workbook links were created; cross-sheet formulas link only to preserved Sources."
+    },
+    {
+      "id": "check-charts",
+      "kind": "charts",
+      "refs": [
+        "workbook-august-close"
+      ],
+      "status": "not-applicable",
+      "details": "No charts are required or present in this focused workpaper."
+    },
+    {
+      "id": "check-macros",
+      "kind": "macros",
+      "refs": [
+        "workbook-august-close"
+      ],
+      "status": "not-applicable",
+      "details": "Both generated XLSX files are macro-free; no macro execution occurred."
+    },
+    {
+      "id": "check-validation",
+      "kind": "validation",
+      "refs": [
+        "workbook-august-close"
+      ],
+      "status": "passed",
+      "details": "Required amounts, source references, scope, completeness and prepared revisions are checked before dependent totals."
+    },
+    {
+      "id": "check-output-open",
+      "kind": "output-open",
+      "refs": [
+        "workbook-august-close"
+      ],
+      "status": "passed",
+      "details": "Export reimported in Artifact Tool and recalculated to 3500 change, 3000 explained and 500 unexplained; source values unchanged."
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-unexplained",
+      "severity": "high",
+      "refs": [
+        "sheet-workpaper"
+      ],
+      "description": "USD 500 remains unexplained. The accountant must supply attributable support; no plug or accrual is inferred.",
+      "state": "open"
+    },
+    {
+      "id": "exception-reconciliation",
+      "severity": "high",
+      "refs": [
+        "sheet-sources"
+      ],
+      "description": "Operating-001 still has a USD 1.25 ledger residual and a USD -0.90 statement residual. Their owner must resolve each separately.",
+      "state": "open"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-unexplained",
+      "question": "Which permitted source supports the remaining USD 500?",
+      "reason": "Schedules explain only 3000 of the 3500 balance change.",
+      "refs": [
+        "exception-unexplained"
+      ]
+    },
+    {
+      "id": "question-residuals",
+      "question": "What evidence resolves each operating-account residual?",
+      "reason": "A balanced aggregate does not resolve individual unmatched rows.",
+      "refs": [
+        "exception-reconciliation"
+      ]
+    }
+  ],
+  "blockedActions": [
+    "overwrite-source",
+    "replace-formulas-with-values",
+    "execute-macros",
+    "upload-workbook",
+    "disclose-sensitive-data",
+    "infer-missing-facts",
+    "accept-output"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Morgan Lee, Controller",
+    "transformationRefs": [
+      "transform-close-workpaper"
+    ],
+    "checkRefs": [
+      "check-source-hash",
+      "check-formula-preservation",
+      "check-recalculation",
+      "check-formatting",
+      "check-links",
+      "check-charts",
+      "check-macros",
+      "check-validation",
+      "check-output-open"
+    ],
+    "exceptionRefs": [
+      "exception-unexplained",
+      "exception-reconciliation"
+    ],
+    "reviewQuestionRefs": [
+      "question-unexplained",
+      "question-residuals"
+    ],
+    "blockingRefs": [
+      "exception-unexplained",
+      "exception-reconciliation"
+    ],
+    "prohibitedActions": [
+      "overwrite-source",
+      "replace-formulas-with-values",
+      "execute-macros",
+      "upload-workbook",
+      "disclose-sensitive-data",
+      "infer-missing-facts",
+      "accept-output"
+    ]
+  }
+}

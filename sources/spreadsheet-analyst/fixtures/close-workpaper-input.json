@@ -1,0 +1,27 @@
+{
+  "entity": "Northwind Example Co",
+  "accountId": "accruals-2100",
+  "period": "2026-08",
+  "currency": "USD",
+  "basis": "owner-supplied accrual basis",
+  "owner": "Morgan Lee, Controller",
+  "asOf": "2026-09-02T00:00:00Z",
+  "expectedSources": ["TB-OPEN", "TB-CLOSE", "SCHED-SUPPLIER", "SCHED-PAYROLL"],
+  "rows": [
+    {"label":"Opening balance", "reference":"TB-OPEN", "revision":"r1", "cents":1200000, "entity":"Northwind Example Co", "accountId":"accruals-2100", "period":"2026-08", "currency":"USD", "basis":"owner-supplied accrual basis", "state":"supplied-complete"},
+    {"label":"Closing balance", "reference":"TB-CLOSE", "revision":"r2", "cents":1550000, "entity":"Northwind Example Co", "accountId":"accruals-2100", "period":"2026-08", "currency":"USD", "basis":"owner-supplied accrual basis", "state":"supplied-complete"},
+    {"label":"Supplier schedule change", "reference":"SCHED-SUPPLIER", "revision":"r1", "cents":210000, "entity":"Northwind Example Co", "accountId":"accruals-2100", "period":"2026-08", "currency":"USD", "basis":"owner-supplied accrual basis", "state":"supplied-complete"},
+    {"label":"Payroll schedule change", "reference":"SCHED-PAYROLL", "revision":"r1", "cents":90000, "entity":"Northwind Example Co", "accountId":"accruals-2100", "period":"2026-08", "currency":"USD", "basis":"owner-supplied accrual basis", "state":"supplied-complete"}
+  ],
+  "reconciliationBinding": {
+    "entity": "Northwind Example Co",
+    "basis": "owner-supplied accrual basis",
+    "accountId": "operating-001",
+    "currency": "USD",
+    "period": "2026-08",
+    "roundId": "round-operating-2026-08",
+    "roundRootDigest": "sha256:4edbff51e82aa98e260fd4204506fdeb51b4223f838c11833b015f4830e87b96",
+    "provenance": "Synthetic owner-supplied entity/basis binding. The reconciliation schema itself does not attest entity or basis."
+  },
+  "provenance": "Synthetic owner-supplied August trial-balance balances and approved supporting-schedule changes. Opening is July 31 close; closing is August 31 close. No journal, accounting-policy judgment or source authenticity is established."
+}

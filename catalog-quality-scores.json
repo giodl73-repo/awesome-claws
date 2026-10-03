@@ -3902,7 +3902,7 @@
         "capabilityClasses": [
           "clawhub-skill"
         ],
-        "maintenanceAgeDays": 34
+        "maintenanceAgeDays": 0
       },
       "recommendations": [],
       "rank": 126
