@@ -1,0 +1,53 @@
+{
+  "project": "Synthetic service-desk migration",
+  "repository": "example/service-desk-adapter",
+  "environment": "synthetic-ci",
+  "sourceSystem": "legacy-desk",
+  "targetSystem": "new-desk",
+  "sourceSnapshot": "desk-source-r1",
+  "targetSnapshot": "desk-target-r1",
+  "sourceVersion": "legacy-desk@1",
+  "targetVersion": "new-desk@2",
+  "requirements": [
+    { "id": "req-user-id", "description": "Every ticket user ID resolves through the supplied identity table; unknown or blank identities block." },
+    { "id": "req-ticket-status", "description": "NEW maps to open, WAITING to pending and DONE to closed; unknown states block." },
+    { "id": "req-rollback", "description": "Restore the exact pre-run target snapshot in memory without mutating the source or snapshot." }
+  ],
+  "mappings": {
+    "users": { "u-01": "person-101", "u-02": "person-102" },
+    "statuses": { "NEW": "open", "WAITING": "pending", "DONE": "closed" }
+  },
+  "tickets": [
+    { "id": "ticket-1", "userId": "u-01", "status": "NEW" },
+    { "id": "ticket-2", "userId": "u-02", "status": "WAITING" },
+    { "id": "ticket-3", "userId": "u-01", "status": "DONE" }
+  ],
+  "targetBefore": [{ "id": "retained-ticket", "assigneeId": "person-100", "state": "closed" }],
+  "cutover": {
+    "state": "draft-not-executed",
+    "owner": "Neil Prakash",
+    "steps": [
+      { "id": "authorize", "action": "Obtain separate cutover authorization and support acceptance; stop while either is missing." },
+      { "id": "freeze", "action": "Operator freezes writes only within the approved window." },
+      { "id": "snapshot", "action": "Operator captures and verifies source and target snapshots; changed identities require fresh evidence." },
+      { "id": "rehearse", "action": "Run exact-revision acceptance tests and reconciliation against isolated copies; stop on any unmapped value." },
+      { "id": "switch", "action": "Only the authorized operator may apply the bounded batch and switch routing after every gate clears." },
+      { "id": "observe", "action": "Verify counts, identities, status mappings and error rates; apply rollback on any mismatch." },
+      { "id": "handover", "action": "Request the named support owner's acknowledgement with results, limitations and escalation contacts." }
+    ],
+    "rollback": {
+      "trigger": "Any unmapped identity/status, count mismatch, failed acceptance test or error rate above 1%.",
+      "owner": "Neil Prakash",
+      "steps": ["Stop routing and pause writes under operator authority.", "Restore the verified pre-cutover target snapshot and prior adapter/routing.", "Reconcile restored counts and sample IDs before asking the owner to resume service."],
+      "productionProof": "not-executed"
+    }
+  },
+  "support": {
+    "owner": "Sam Lee",
+    "state": "acceptance-pending",
+    "acceptanceEvidence": null,
+    "queue": "service-desk-migration",
+    "escalation": "Neil Prakash for cutover; Dana Ruiz for mapping; Alex Rivera for adapter.",
+    "knownLimits": "Synthetic local assertions only; live permissions, load, retention, write recovery and staffing are unverified."
+  }
+}

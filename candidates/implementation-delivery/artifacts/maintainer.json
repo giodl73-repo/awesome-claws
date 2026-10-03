@@ -1,0 +1,231 @@
+{
+  "schemaVersion": "awesomeClaws.changeDeliveryRecord.v1",
+  "request": {
+    "id": "request-service-desk-example",
+    "runId": "run-service-desk-example",
+    "statement": "Implement and test the bounded in-memory service-desk mapping example; no production authority.",
+    "statementVerbatim": true,
+    "requestedBy": "Priya Raman",
+    "receivedAt": "2026-10-03T00:47:46.988Z",
+    "asOf": "2026-10-03T00:47:47.095Z",
+    "owner": "Priya Raman",
+    "reviewer": "Dana Whitfield",
+    "outcome": "changes-delivered",
+    "state": "draft"
+  },
+  "repository": {
+    "identity": "example/service-desk-adapter",
+    "worktreePath": "synthetic-service-desk-repo",
+    "targetBranch": "example/service-desk",
+    "baseRevision": "44be021929233cda6beeafc534cf17e8b4ec6afb",
+    "headRevision": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+    "baseIsAncestorOfHead": true,
+    "dirtyStateAtStart": {
+      "state": "clean",
+      "entries": []
+    }
+  },
+  "scope": {
+    "authorizedPaths": [
+      "adapter.mjs"
+    ],
+    "protectedPaths": [
+      "production"
+    ],
+    "authorizationSourceRef": "source-owner-delivery-authority",
+    "publicBehaviorChangeAuthorized": false,
+    "dependencyChangeAuthorized": false
+  },
+  "sources": [
+    {
+      "id": "source-owner-delivery-authority",
+      "kind": "owner-instruction",
+      "label": "Synthetic example scope: local-only mapping implementation; no external delivery",
+      "path": null,
+      "reference": null,
+      "revision": null,
+      "capturedAt": "2026-10-03T00:47:46.988Z",
+      "provenance": "user-supplied",
+      "integrity": "verified"
+    },
+    {
+      "id": "source-adapter",
+      "kind": "repository-file",
+      "label": "adapter.mjs in the actual isolated fixture repository at head",
+      "path": "adapter.mjs",
+      "reference": null,
+      "revision": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "capturedAt": "2026-10-03T00:47:46.988Z",
+      "provenance": "workspace-read",
+      "integrity": "verified"
+    },
+    {
+      "id": "source-local-test-output",
+      "kind": "test-output",
+      "label": "Actual node run.mjs assertions in the isolated fixture repository; see receipt.json",
+      "path": null,
+      "reference": null,
+      "revision": null,
+      "capturedAt": "2026-10-03T00:47:47.095Z",
+      "provenance": "command-output",
+      "integrity": "verified"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "criterion-user-id",
+      "statement": "Every ticket user ID resolves through the supplied identity table; unknown or blank identities block.",
+      "kind": "feature-behavior",
+      "origin": "stated-by-requester",
+      "state": "met",
+      "changeRefs": [
+        "change-adapter"
+      ],
+      "verificationRefs": [
+        "verification-local-acceptance"
+      ],
+      "notMetReason": null
+    },
+    {
+      "id": "criterion-ticket-status",
+      "statement": "NEW maps to open, WAITING to pending and DONE to closed; unknown states block.",
+      "kind": "feature-behavior",
+      "origin": "stated-by-requester",
+      "state": "met",
+      "changeRefs": [
+        "change-adapter"
+      ],
+      "verificationRefs": [
+        "verification-local-acceptance"
+      ],
+      "notMetReason": null
+    },
+    {
+      "id": "criterion-rollback",
+      "statement": "Restore the exact pre-run target snapshot in memory without mutating the source or snapshot.",
+      "kind": "feature-behavior",
+      "origin": "stated-by-requester",
+      "state": "met",
+      "changeRefs": [
+        "change-adapter"
+      ],
+      "verificationRefs": [
+        "verification-local-acceptance"
+      ],
+      "notMetReason": null
+    }
+  ],
+  "changes": [
+    {
+      "id": "change-adapter",
+      "path": "adapter.mjs",
+      "previousPath": null,
+      "changeKind": "modified",
+      "rationale": "Implement pure mapping with missing-value rejection and independent snapshot restoration; actual diff saved as adapter.patch.",
+      "criterionRefs": [
+        "criterion-user-id",
+        "criterion-ticket-status",
+        "criterion-rollback"
+      ],
+      "sourceRefs": [
+        "source-adapter"
+      ],
+      "linesAdded": 15,
+      "linesRemoved": 4,
+      "publicBehaviorChange": false
+    }
+  ],
+  "verifications": [
+    {
+      "id": "verification-local-acceptance",
+      "command": "node run.mjs",
+      "kind": "focused-test",
+      "scope": "changed-behavior",
+      "baselineResult": "failed-before-change",
+      "revision": "8fc6bc78561f375dd91f0496d3220a02545e0cea",
+      "startedAt": "2026-10-03T00:47:46.988Z",
+      "finishedAt": "2026-10-03T00:47:47.095Z",
+      "result": "passed",
+      "criterionRefs": [
+        "criterion-user-id",
+        "criterion-ticket-status",
+        "criterion-rollback"
+      ],
+      "evidenceSourceRef": "source-local-test-output",
+      "failureSummary": null
+    }
+  ],
+  "reviews": [],
+  "findings": [],
+  "risks": [],
+  "delivery": {
+    "authority": "local-only",
+    "authorizedBy": "Priya Raman",
+    "authoritySourceRef": "source-owner-delivery-authority",
+    "performed": "local-commit",
+    "publishedAt": null,
+    "forcePushed": false,
+    "historyRewritten": false
+  },
+  "blockedActions": [
+    "push-or-publish-without-authorization",
+    "open-or-merge-a-pull-request-without-authorization",
+    "force-push-or-rewrite-history",
+    "revert-or-reformat-unrelated-changes",
+    "modify-protected-paths",
+    "change-public-behavior-beyond-scope",
+    "weaken-skip-or-delete-failing-tests",
+    "fabricate-verification-results",
+    "claim-untested-behavior-as-verified",
+    "close-review-findings-without-a-change",
+    "accept-residual-risk-on-behalf-of-the-owner",
+    "install-or-upgrade-dependencies-without-authorization",
+    "copy-secrets-or-credentials-into-durable-output",
+    "comment-on-or-close-issues-and-pull-requests"
+  ],
+  "handoff": {
+    "state": "draft",
+    "owner": "Priya Raman",
+    "reviewer": "Dana Whitfield",
+    "destination": "outputs/software-maintainer-handoff.md",
+    "residualRiskSummary": "Actual isolated fixture commit and local tests only; no complete repository or human review, live-system verification or external delivery claimed.",
+    "criterionRefs": [
+      "criterion-user-id",
+      "criterion-ticket-status",
+      "criterion-rollback"
+    ],
+    "changeRefs": [
+      "change-adapter"
+    ],
+    "verificationRefs": [
+      "verification-local-acceptance"
+    ],
+    "reviewRefs": [],
+    "findingRefs": [],
+    "riskRefs": [],
+    "blockingRefs": [],
+    "prohibitedActions": [
+      "push-or-publish-without-authorization",
+      "open-or-merge-a-pull-request-without-authorization",
+      "force-push-or-rewrite-history",
+      "revert-or-reformat-unrelated-changes",
+      "modify-protected-paths",
+      "change-public-behavior-beyond-scope",
+      "weaken-skip-or-delete-failing-tests",
+      "fabricate-verification-results",
+      "claim-untested-behavior-as-verified",
+      "close-review-findings-without-a-change",
+      "accept-residual-risk-on-behalf-of-the-owner",
+      "install-or-upgrade-dependencies-without-authorization",
+      "copy-secrets-or-credentials-into-durable-output",
+      "comment-on-or-close-issues-and-pull-requests"
+    ]
+  },
+  "ownerDecision": {
+    "state": "pending",
+    "decidedBy": null,
+    "decidedAt": null,
+    "resolution": null,
+    "approvedDelivery": null
+  }
+}
