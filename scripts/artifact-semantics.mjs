@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { rfpResponseFindings } from "./rfp-response-producer.mjs";
 import { accessEntitlementReviewFindings } from "./access-entitlement-review-coordinator.mjs";
 import { backupRestoreVerificationFindings } from "./backup-restore-verification-coordinator.mjs";
 import { businessContinuityProgramFindings } from "./business-continuity-program-manager.mjs";
@@ -53262,6 +53263,7 @@ const validators = {
   "compliance-reviewer": complianceAssessmentFindings,
   "data-migration-planner": dataMigrationReadinessFindings,
   "content-operations": publicationReadinessRecordFindings,
+  "rfp-response-producer": rfpResponseFindings,
   "customer-support": customerSupportCaseFindings,
   "customer-success-program-manager": customerSuccessReviewFindings,
   "data-analyst": dataAnalysisFindings,
