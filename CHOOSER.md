@@ -36,7 +36,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | @giodl73; last verified 2026-09-09 |
 | [Customer success program manager](claws/customer-success-program-manager) | @giodl73-repo; last verified 2026-09-14 |
 | [Customer support](claws/customer-support) | @giodl73-repo; last verified 2026-08-19 |
-| [Data analyst](claws/data-analyst) | @giodl73-repo; last verified 2026-08-19 |
+| [Data analyst](claws/data-analyst) | @giodl73-repo; last verified 2026-10-02 |
 | [Data governance steward](claws/data-governance-steward) | @giodl73-repo; last verified 2026-08-19 |
 | [Data migration planner](claws/data-migration-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [Delegation coordinator](claws/delegation-coordinator) | @giodl73-repo; last verified 2026-08-19 |

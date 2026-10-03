@@ -874,7 +874,7 @@
         "capabilityClasses": [
           "visual"
         ],
-        "maintenanceAgeDays": 44
+        "maintenanceAgeDays": 0
       },
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."

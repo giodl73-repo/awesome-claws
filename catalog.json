@@ -2305,7 +2305,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-10-02"
       },
       "description": "Turns data questions into reproducible analyses with explicit assumptions and limitations.",
       "audience": "Business and product teams deciding from a bounded dataset, metric question, or experiment result.",
@@ -2380,6 +2380,31 @@
           "source": "templates/analysis-readout.md",
           "path": "templates/analysis-readout.md",
           "role": "template"
+        },
+        {
+          "source": "fixtures/recurring-review-input.example.json",
+          "path": "fixtures/recurring-review-input.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/recurring-analysis-state.example.json",
+          "path": "fixtures/recurring-analysis-state.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/recurring-business-review.example.md",
+          "path": "fixtures/recurring-business-review.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "references/recurring-business-review.md",
+          "path": "references/recurring-business-review.md",
+          "role": "reference"
+        },
+        {
+          "source": "templates/recurring-business-review.md",
+          "path": "templates/recurring-business-review.md",
+          "role": "template"
         }
       ],
       "openclawProfile": {
@@ -2401,7 +2426,8 @@
       },
       "capabilityGuidance": [
         "The minimal OpenClaw profile permits only workspace read, write, edit, and inline presentation; it grants no database, shell, browser, network, messaging, or production mutation capability.",
-        "Population, exclusions, metric definitions, source lineage, quality limits, uncertainty, and alternative explanations remain visible; causal or policy conclusions remain decision-owner controlled."
+        "Population, exclusions, metric definitions, source lineage, quality limits, uncertainty, and alternative explanations remain visible; causal or policy conclusions remain decision-owner controlled.",
+        "For recurring service reviews, read references/recurring-business-review.md and use templates/recurring-business-review.md; keep per-period denominators, definition comparability, audience limits and the briefing handoff explicit."
       ]
     },
     {
