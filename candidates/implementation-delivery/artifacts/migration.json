@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "awesomeClaws.migrationMapping.v1",
+  "sourceVersion": "legacy-desk@1",
+  "targetVersion": "new-desk@2",
+  "owner": "Dana Ruiz, Migration Lead",
+  "ownerId": "principal-migration-lead-dana",
+  "systems": {
+    "source": {
+      "id": "legacy-desk",
+      "name": "Legacy service desk",
+      "snapshotId": "desk-source-r1",
+      "asOf": "2026-08-30"
+    },
+    "target": {
+      "id": "new-desk",
+      "name": "New service desk",
+      "snapshotId": "desk-target-r1",
+      "asOf": "2026-08-30"
+    }
+  },
+  "requiredFields": [
+    "userId",
+    "status"
+  ],
+  "mappings": [
+    {
+      "id": "map-user-id",
+      "sourceField": "userId",
+      "targetField": "assigneeId",
+      "transform": "lookup; unknown or blank blocks",
+      "required": true,
+      "lookup": {
+        "u-01": "person-101",
+        "u-02": "person-102"
+      }
+    },
+    {
+      "id": "map-status",
+      "sourceField": "status",
+      "targetField": "state",
+      "transform": "lookup; unknown blocks",
+      "required": true,
+      "lookup": {
+        "NEW": "open",
+        "WAITING": "pending",
+        "DONE": "closed"
+      }
+    }
+  ],
+  "principals": [
+    {
+      "id": "principal-migration-lead-dana",
+      "name": "Dana Ruiz",
+      "roles": [
+        "migration-lead"
+      ],
+      "scopes": [
+        "migration-owner"
+      ]
+    },
+    {
+      "id": "principal-cutover-authority-neil",
+      "name": "Neil Prakash",
+      "roles": [
+        "cutover-authority"
+      ],
+      "scopes": [
+        "cutover-approval-authority"
+      ]
+    },
+    {
+      "id": "principal-data-steward-omar",
+      "name": "Omar Haddad",
+      "roles": [
+        "data-steward"
+      ],
+      "scopes": [
+        "data-quality-owner"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-rehearsal-1",
+      "kind": "rehearsal-run",
+      "batchRef": "batch-rehearsal-1",
+      "sourceSnapshotId": "desk-source-r1",
+      "targetSnapshotId": "desk-target-r1",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/evidence-rehearsal-1",
+      "assertedAt": "2026-08-31T10:00:00Z"
+    },
+    {
+      "id": "evidence-rollback-drill",
+      "kind": "rollback-drill",
+      "batchRef": "batch-rehearsal-1",
+      "sourceSnapshotId": "desk-source-r1",
+      "targetSnapshotId": "desk-target-r1",
+      "sourceRef": "controlled://synthetic-supplied/service-desk/evidence-rollback-drill",
+      "assertedAt": "2026-09-01T12:00:00Z"
+    }
+  ],
+  "reconciliation": [
+    {
+      "id": "batch-rehearsal-1",
+      "kind": "rehearsal",
+      "sourceCount": 3,
+      "migratedCount": 3,
+      "rejectedCount": 0,
+      "heldCount": 0,
+      "sourceChecksum": "synthetic-ticket-count-3",
+      "targetChecksum": "synthetic-ticket-count-3",
+      "evidenceRef": "evidence-rehearsal-1"
+    }
+  ],
+  "exceptions": [],
+  "dataQualityFindings": [],
+  "rollback": {
+    "plan": "Synthetic supplied in-memory snapshot restoration only; production recovery remains unverified. Stop routing and pause writes under operator authority. Restore the verified pre-cutover target snapshot and prior adapter/routing. Reconcile restored counts and sample IDs before asking the owner to resume service.",
+    "evidenceRef": "evidence-rollback-drill",
+    "verified": true
+  },
+  "cutoverApproval": {
+    "state": "pending"
+  },
+  "handoff": {
+    "owner": "Dana Ruiz, Migration Lead",
+    "prohibitedActions": [
+      "execute-migration",
+      "execute-cutover",
+      "write-source",
+      "write-target",
+      "waive-defect",
+      "delete-data",
+      "represent-business-approval",
+      "represent-security-approval"
+    ],
+    "state": "blocked",
+    "summary": "Synthetic supplied mapping/rehearsal record; independent cutover permission is pending. No live-system operation occurred."
+  }
+}

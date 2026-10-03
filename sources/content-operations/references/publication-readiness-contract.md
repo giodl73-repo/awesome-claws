@@ -3,9 +3,11 @@
 For technical guide drafts, see `references/technical-guide.md` and
 `fixtures/technical-guide.example.md` for version-specific content and review.
 
-Content Operations owns the reviewable state between an editorial brief and a
-human-controlled publication action. It does not own the source documents, the
-draft text, a CMS, distribution lists, or analytics results.
+Content Operations produces versioned draft assets and their reviewable state
+between an editorial brief and a human-controlled publication action. The
+readiness record accompanies the actual writing; it does not replace it. The
+Claw does not control source systems, a CMS, distribution lists, or analytics
+results.
 
 The record keeps the request, audience, intended action, acceptance criteria,
 sources, claims, exact asset versions, reviews, measurement definitions, gaps,

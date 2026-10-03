@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (135)
+### Active (139)
 
 | Claw | Detail |
 | --- | --- |
@@ -36,7 +36,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | @giodl73; last verified 2026-09-09 |
 | [Customer success program manager](claws/customer-success-program-manager) | @giodl73-repo; last verified 2026-09-14 |
 | [Customer support](claws/customer-support) | @giodl73-repo; last verified 2026-08-19 |
-| [Data analyst](claws/data-analyst) | @giodl73-repo; last verified 2026-08-19 |
+| [Data analyst](claws/data-analyst) | @giodl73-repo; last verified 2026-10-02 |
 | [Data governance steward](claws/data-governance-steward) | @giodl73-repo; last verified 2026-08-19 |
 | [Data migration planner](claws/data-migration-planner) | @giodl73-repo; last verified 2026-08-19 |
 | [Delegation coordinator](claws/delegation-coordinator) | @giodl73-repo; last verified 2026-08-19 |
@@ -92,6 +92,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Music organizer](claws/music-organizer) | @giodl73-repo; last verified 2026-08-22 |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | @giodl73-repo; last verified 2026-08-27 |
 | [Partner business manager](claws/partner-business-manager) | @giodl73; last verified 2026-09-14 |
+| [Payroll review preparer](claws/payroll-review-preparer) | @giodl73-repo; last verified 2026-10-02 |
 | [Personal archive curator](claws/personal-archive-curator) | @giodl73-repo; last verified 2026-08-22 |
 | [Pet care coordinator](claws/pet-care-coordinator) | @giodl73-repo; last verified 2026-08-20 |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | @giodl73-repo; last verified 2026-08-21 |
@@ -102,6 +103,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Procurement evaluator](claws/procurement-evaluator) | @giodl73-repo; last verified 2026-08-19 |
 | [Product manager](claws/product-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Professional networking follow-up](claws/professional-networking-followup) | @giodl73-repo; last verified 2026-08-28 |
+| [Project document controller](claws/project-document-controller) | @giodl73-repo; last verified 2026-10-02 |
 | [Project manager](claws/project-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | @giodl73-repo; last verified 2026-09-25 |
 | [Public company watcher](claws/public-company-watcher) | @giodl73-repo; last verified 2026-08-30 |
@@ -120,6 +122,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Research scout](claws/research-scout) | @giodl73-repo; last verified 2026-08-29 |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | @giodl73-repo; last verified 2026-08-23 |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | @giodl73; last verified 2026-08-28 |
+| [RFP response producer](claws/rfp-response-producer) | @giodl73-repo; last verified 2026-10-02 |
 | [Sales operations](claws/sales-operations) | @giodl73-repo; last verified 2026-08-19 |
 | [School coordinator](claws/school-coordinator) | @giodl73-repo; last verified 2026-08-23 |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | @giodl73-repo; last verified 2026-09-17 |
@@ -127,10 +130,11 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Software maintainer](claws/software-maintainer) | @giodl73-repo; last verified 2026-10-02 |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | @giodl73-repo; last verified 2026-09-14 |
 | [Sports team watcher](claws/sports-team-watcher) | @giodl73-repo; last verified 2026-08-21 |
-| [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-08-29 |
+| [Spreadsheet analyst](claws/spreadsheet-analyst) | @giodl73-repo; last verified 2026-10-02 |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | @giodl73-repo; last verified 2026-08-21 |
 | [Subscription manager](claws/subscription-manager) | @giodl73-repo; last verified 2026-08-21 |
 | [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | @giodl73-repo; last verified 2026-09-14 |
+| [Supplier onboarding preparer](claws/supplier-onboarding-preparer) | @giodl73-repo; last verified 2026-10-02 |
 | [Tax document organizer](claws/tax-document-organizer) | @giodl73-repo; last verified 2026-08-26 |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | @giodl73; last verified 2026-09-10 |
 | [Travel concierge](claws/travel-concierge) | @giodl73-repo; last verified 2026-08-29 |
@@ -162,7 +166,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (103)
+### Low setup (107)
 
 | Claw | Detail |
 | --- | --- |
@@ -230,6 +234,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Music organizer](claws/music-organizer) | no bootstrap, external dependency, or schedule |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | no bootstrap, external dependency, or schedule |
 | [Partner business manager](claws/partner-business-manager) | no bootstrap, external dependency, or schedule |
+| [Payroll review preparer](claws/payroll-review-preparer) | no bootstrap, external dependency, or schedule |
 | [Personal archive curator](claws/personal-archive-curator) | no bootstrap, external dependency, or schedule |
 | [Pet care coordinator](claws/pet-care-coordinator) | no bootstrap, external dependency, or schedule |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | no bootstrap, external dependency, or schedule |
@@ -238,6 +243,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | no bootstrap, external dependency, or schedule |
 | [Product manager](claws/product-manager) | no bootstrap, external dependency, or schedule |
 | [Professional networking follow-up](claws/professional-networking-followup) | no bootstrap, external dependency, or schedule |
+| [Project document controller](claws/project-document-controller) | no bootstrap, external dependency, or schedule |
 | [Project manager](claws/project-manager) | no bootstrap, external dependency, or schedule |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | no bootstrap, external dependency, or schedule |
 | [Purchase researcher](claws/purchase-researcher) | no bootstrap, external dependency, or schedule |
@@ -250,6 +256,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Research briefing](claws/research-briefing) | no bootstrap, external dependency, or schedule |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | no bootstrap, external dependency, or schedule |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | no bootstrap, external dependency, or schedule |
+| [RFP response producer](claws/rfp-response-producer) | no bootstrap, external dependency, or schedule |
 | [Sales operations](claws/sales-operations) | no bootstrap, external dependency, or schedule |
 | [School coordinator](claws/school-coordinator) | no bootstrap, external dependency, or schedule |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | no bootstrap, external dependency, or schedule |
@@ -259,6 +266,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | no bootstrap, external dependency, or schedule |
 | [Subscription manager](claws/subscription-manager) | no bootstrap, external dependency, or schedule |
 | [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | no bootstrap, external dependency, or schedule |
+| [Supplier onboarding preparer](claws/supplier-onboarding-preparer) | no bootstrap, external dependency, or schedule |
 | [Tax document organizer](claws/tax-document-organizer) | no bootstrap, external dependency, or schedule |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | no bootstrap, external dependency, or schedule |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | no bootstrap, external dependency, or schedule |
@@ -316,7 +324,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (112)
+### No external dependencies (116)
 
 | Claw | Detail |
 | --- | --- |
@@ -392,6 +400,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Music organizer](claws/music-organizer) | None |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | None |
 | [Partner business manager](claws/partner-business-manager) | None |
+| [Payroll review preparer](claws/payroll-review-preparer) | None |
 | [Personal archive curator](claws/personal-archive-curator) | None |
 | [Pet care coordinator](claws/pet-care-coordinator) | None |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | None |
@@ -401,6 +410,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Procurement evaluator](claws/procurement-evaluator) | None |
 | [Product manager](claws/product-manager) | None |
 | [Professional networking follow-up](claws/professional-networking-followup) | None |
+| [Project document controller](claws/project-document-controller) | None |
 | [Project manager](claws/project-manager) | None |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | None |
 | [Purchase researcher](claws/purchase-researcher) | None |
@@ -413,6 +423,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Research briefing](claws/research-briefing) | None |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | None |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | None |
+| [RFP response producer](claws/rfp-response-producer) | None |
 | [Sales operations](claws/sales-operations) | None |
 | [School coordinator](claws/school-coordinator) | None |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | None |
@@ -422,6 +433,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | None |
 | [Subscription manager](claws/subscription-manager) | None |
 | [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | None |
+| [Supplier onboarding preparer](claws/supplier-onboarding-preparer) | None |
 | [Tax document organizer](claws/tax-document-organizer) | None |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | None |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | None |
@@ -465,7 +477,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (96)
+### X3 (100)
 
 | Claw | Detail |
 | --- | --- |
@@ -482,7 +494,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Civic services navigator](claws/civic-services-navigator) | Translates one resident-stated need into a jurisdiction-resolved map of official public-service routes, preserving program-version provenance, criterion-level unknowns, channel accommodations, and an agency-question docket while leaving adjudication and case initiation outside the workspace. |
 | [Conference opportunity scout](claws/conference-opportunity-scout) | Tracks conferences, calls for proposals, speaking or attendance fit, deadlines, and submission drafts without applying, publishing, booking, or contacting organizers. |
 | [Consumer product recall coordinator](claws/consumer-product-recall-coordinator) | Maintains a private, evidence-bound consumer-product recall ledger across supplied owned-item identity, official campaign revisions, exact applicability evidence, issuer instructions, remedy options, owner-executed actions, independent receipts, replacement or return state, and unresolved exposure without diagnosing hazards, deciding eligibility, or taking external action. |
-| [Content operations](claws/content-operations) | Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it. |
+| [Content operations](claws/content-operations) | Produces source-backed briefs and versioned editorial drafts with an evidence- and approval-bound readiness record, without publishing them. |
 | [Contract Obligation Tracker](claws/contract-obligation-tracker) | Tracks one exact owner-confirmed obligation-register version for a bounded review round, proving every registered obligation appears exactly once and receives one current evidence-bound observation or one exact blocker, while contract owners retain all interpretation, acceptance, notice, payment, amendment, renewal, termination, dispute, and system authority. |
 | [Delegation coordinator](claws/delegation-coordinator) | Coordinates bounded parallel agent work while preserving task provenance, conflict visibility, and one accountable human decision owner. |
 | [Document intake analyst](claws/document-intake-analyst) | Normalizes authorized documents into traceable Markdown for review without erasing source structure, provenance, or conversion uncertainty. |
@@ -527,11 +539,13 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
 | [Music organizer](claws/music-organizer) | Organizes a personal or household music library, playlists, listening history, favorites, and source-backed streaming availability without account mutation, purchases, public sharing, playlist publishing, or rights bypassing. |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | Tracks neighborhood-impacting trash and recycling schedules, road closures, permit notices, utility work, local meetings, school board items, and public notices from approved sources without filing complaints, calling agencies, posting publicly, changing accounts, or claiming safety certainty. |
+| [Payroll review preparer](claws/payroll-review-preparer) | Prepares a private pre-release payroll comparison and exception workpaper from minimized draft registers, approved change inputs, and supplied review rules without calculating statutory entitlements or releasing payroll. |
 | [Personal archive curator](claws/personal-archive-curator) | Organizes supplied personal files, notes, links, receipts, photos, warranties, and memories into a privacy-labeled retrieval index without deleting, moving, sharing, uploading, training memory, or inferring sensitive facts. |
 | [Pet care coordinator](claws/pet-care-coordinator) | Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
 | [Presentation producer](claws/presentation-producer) | Produces a template-faithful review-copy PPTX plus an exact-version evidence manifest whose canonical digests bind authority, source-use review, every material slide text item and claim, visual provenance, render, QA record, control, and human review without distributing the deck. |
 | [Professional networking follow-up](claws/professional-networking-followup) | Organizes owner-supplied professional contacts, meeting notes, event context, introduction requests, follow-up drafts, relationship tags, and reminder questions into a private networking ledger without sending messages, making introductions, scheduling meetings, changing accounts, scraping contacts, committing referrals, or giving career, legal, financial, recruiting, or sales advice. |
+| [Project document controller](claws/project-document-controller) | Produces an exact-revision project document register, submittal and RFI follow-up package, and draft transmittal manifest from supplied project records without issuing documents or authorizing construction. |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | Maintains a private, evidence-bound property-insurance claim ledger across owner-reported loss, affected property, official claim requirements, deadlines, owner-executed actions, independent receipts, estimates, carrier-issued positions, payments, repairs, and unresolved scope without deciding coverage, cause, value, liability, or settlement or taking external action. |
 | [Public company watcher](claws/public-company-watcher) | Reconciles filed public-company disclosures against a declared issuer baseline and produces a private, owner-materiality delta ledger without holdings, quotes, portfolio analysis, advice, trading, issuer contact, or publication. |
 | [Public safety monitor](claws/public-safety-monitor) | Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
@@ -545,6 +559,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Research scout](claws/research-scout) | Maintains a private, protocol-bound scholarly evidence delta ledger that reconciles canonical public records, publication lifecycle changes, evidence quality, and contradictions against a declared baseline without inferring consensus or changing decisions. |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | Compares restaurants and venues from approved sources with dietary, accessibility, hours, reservation, price, distance, and group-preference evidence without reserving, ordering, paying, messaging, or posting reviews. |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | Maintains a candidate-owned resume, portfolio, and proof ledger for role-specific review without submitting applications or inventing credentials. |
+| [RFP response producer](claws/rfp-response-producer) | Produces a source-backed commercial RFP or RFI response draft from a buyer's request, amendments, and authorized seller material, with complete question coverage, explicit capability gaps, attachment checks, and specialist review requests without submitting or making commitments. |
 | [Sales operations](claws/sales-operations) | Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
 | [School coordinator](claws/school-coordinator) | Tracks assignments, forms, teacher notes, school calendars, supply lists, events, accommodations, and parent review questions from approved sources without submitting forms, messaging teachers, changing enrollment, or making education, medical, legal, or payment decisions. |
 | [Software maintainer](claws/software-maintainer) | Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
@@ -552,6 +567,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability. |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | Monitors a user-supplied stock portfolio or watchlist with sourced prices, holdings, allocation drift, issuer events, and review questions without investment advice or trade execution. |
 | [Subscription manager](claws/subscription-manager) | Tracks user-supplied recurring subscriptions, renewals, price changes, usage evidence, overlap, and owner review questions without banking access, cancellation, subscription changes, negotiation, or financial advice. |
+| [Supplier onboarding preparer](claws/supplier-onboarding-preparer) | Prepares one selected supplier's setup packet from authorized intake and owner-supplied onboarding rules, reconciling identity, required evidence, specialist routes, and outstanding questions without activating the supplier. |
 | [Tax document organizer](claws/tax-document-organizer) | Organizes supplied tax-season documents, income forms, deduction evidence, deadlines, missing-item questions, and preparer handoff packets without preparing returns, giving tax or legal advice, filing, contacting institutions, changing accounts, or moving money. |
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Travel loyalty and points organizer](claws/travel-loyalty-points-organizer) | Organizes owner-supplied airline, hotel, credit-card points, certificates, loyalty benefits, expiration notices, and trip goals into a private travel-rewards ledger without booking travel, transferring points, buying miles, changing accounts, paying fees, redeeming awards, or giving travel, tax, legal, or financial advice. |
@@ -681,7 +697,7 @@ Categories come directly from the catalog entry.
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
-### Operations (30)
+### Operations (34)
 
 | Claw | Detail |
 | --- | --- |
@@ -690,7 +706,7 @@ Categories come directly from the catalog entry.
 | [Case continuity coordinator](claws/case-continuity-coordinator) | X3; Maintains a resumable, evidence-fresh case checkpoint across sessions without silently closing or rewriting owner decisions. |
 | [Commercial Deal Desk Coordinator](claws/commercial-deal-desk-coordinator) | X4; Reconciles one exact immutable seller quote revision across approved configuration, pricing, discount, margin, licensing, legal deviations, dependencies, validity, approvals, and order-readiness handoff. |
 | [Consumer product recall coordinator](claws/consumer-product-recall-coordinator) | X3; Maintains a private, evidence-bound consumer-product recall ledger across supplied owned-item identity, official campaign revisions, exact applicability evidence, issuer instructions, remedy options, owner-executed actions, independent receipts, replacement or return state, and unresolved exposure without diagnosing hazards, deciding eligibility, or taking external action. |
-| [Content operations](claws/content-operations) | X3; Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it. |
+| [Content operations](claws/content-operations) | X3; Produces source-backed briefs and versioned editorial drafts with an evidence- and approval-bound readiness record, without publishing them. |
 | [Customer success program manager](claws/customer-success-program-manager) | X4; Reconciles one customer's approved success-plan revision into an evidence-bound owner handoff without contacting the customer or changing customer, service, support, or commercial state. |
 | [Customer support](claws/customer-support) | X4; Resolves customer cases accurately while preserving context, ownership, and privacy. |
 | [Event operations director](claws/event-operations-director) | X5; Turns an approved event plan into a controlled run of show, readiness view, decision queue, and accountable handoff. |
@@ -703,14 +719,18 @@ Categories come directly from the catalog entry.
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | X5; Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence. |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | X3; Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
 | [Partner business manager](claws/partner-business-manager) | X4; Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority. |
+| [Payroll review preparer](claws/payroll-review-preparer) | X3; Prepares a private pre-release payroll comparison and exception workpaper from minimized draft registers, approved change inputs, and supplied review rules without calculating statutory entitlements or releasing payroll. |
 | [Pet care coordinator](claws/pet-care-coordinator) | X3; Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | X3; Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
 | [Procurement evaluator](claws/procurement-evaluator) | X5; Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions. |
+| [Project document controller](claws/project-document-controller) | X3; Produces an exact-revision project document register, submittal and RFI follow-up package, and draft transmittal manifest from supplied project records without issuing documents or authorizing construction. |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | X3; Maintains a private, evidence-bound property-insurance claim ledger across owner-reported loss, affected property, official claim requirements, deadlines, owner-executed actions, independent receipts, estimates, carrier-issued positions, payments, repairs, and unresolved scope without deciding coverage, cause, value, liability, or settlement or taking external action. |
 | [Public safety monitor](claws/public-safety-monitor) | X3; Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
 | [Recruiting coordinator](claws/recruiting-coordinator) | X3; Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
+| [RFP response producer](claws/rfp-response-producer) | X3; Produces a source-backed commercial RFP or RFI response draft from a buyer's request, amendments, and authorized seller material, with complete question coverage, explicit capability gaps, attachment checks, and specialist review requests without submitting or making commitments. |
 | [Sales operations](claws/sales-operations) | X3; Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
 | [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | X4; Reconciles an exact approved demand-plan revision against supplier commits, qualified capacity, inventory, quality, and inbound logistics evidence to prepare shortage and recovery decisions. |
+| [Supplier onboarding preparer](claws/supplier-onboarding-preparer) | X3; Prepares one selected supplier's setup packet from authorized intake and owner-supplied onboarding rules, reconciling identity, required evidence, specialist routes, and outstanding questions without activating the supplier. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | X3; Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
 | [Work chief of staff](claws/work-chief-of-staff) | X3; Coordinates a multi-leader operating portfolio across specialist-Claw artifacts, shared resources, decision forums, and explicitly authorized commitments without becoming the executive or functional decision-maker. |
 | [Workflow operator](claws/workflow-operator) | X3; Reconciles one exact bounded Lobster run against its reviewed workflow, typed input, exposed tool envelopes, human approval gate, independently observed effects, retry lineage, and private resume-or-abort handoff without duplicating Lobster state or claiming transactionality. |
@@ -861,7 +881,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Wardrobe organizer](claws/wardrobe-organizer) | portable workspace artifacts only |
 | [Warranty and returns manager](claws/warranty-returns-manager) | portable workspace artifacts only |
 
-### Guarded attention (51)
+### Guarded attention (55)
 
 | Claw | Detail |
 | --- | --- |
@@ -896,22 +916,26 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Media evidence reviewer](claws/media-evidence-reviewer) | pinned skill |
 | [Meeting intelligence](claws/meeting-intelligence) | pinned skill; explicit tool policy |
 | [Partner business manager](claws/partner-business-manager) | explicit tool policy |
+| [Payroll review preparer](claws/payroll-review-preparer) | explicit tool policy |
 | [Presentation producer](claws/presentation-producer) | pinned skill |
 | [Privacy request coordinator](claws/privacy-request-coordinator) | explicit tool policy; persistent dashboard |
 | [Problem and known-error coordinator](claws/problem-known-error-coordinator) | explicit tool policy |
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | explicit tool policy |
 | [Procurement evaluator](claws/procurement-evaluator) | guided local setup; explicit tool policy; persistent dashboard |
 | [Product manager](claws/product-manager) | explicit tool policy |
+| [Project document controller](claws/project-document-controller) | explicit tool policy |
 | [Project manager](claws/project-manager) | explicit tool policy |
 | [Quality assurance lead](claws/quality-assurance-lead) | explicit tool policy |
 | [Recurring Third-Party Review Evidence Reconciler](claws/recurring-third-party-review-evidence-reconciler) | explicit tool policy |
 | [Release coordinator](claws/release-coordinator) | pinned skill; explicit tool policy |
 | [Research briefing](claws/research-briefing) | explicit tool policy |
+| [RFP response producer](claws/rfp-response-producer) | explicit tool policy |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | explicit tool policy |
 | [Security analyst](claws/security-analyst) | explicit tool policy |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | explicit tool policy |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | pinned skill |
 | [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | explicit tool policy |
+| [Supplier onboarding preparer](claws/supplier-onboarding-preparer) | explicit tool policy |
 | [Travel planner](claws/travel-planner) | pinned skill |
 | [UX research synthesizer](claws/ux-research-synthesizer) | explicit tool policy |
 | [Work chief of staff](claws/work-chief-of-staff) | explicit tool policy |

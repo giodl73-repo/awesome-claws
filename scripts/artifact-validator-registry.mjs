@@ -6,6 +6,8 @@ import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { root } from "./catalog-source.mjs";
 
 export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
+  "payroll-review-preparer": "payroll-review.schema.json",
+  "project-document-controller": "project-document-control.schema.json",
   "access-entitlement-review-coordinator": "access-entitlement-review.schema.json",
   "accessibility-review-coordinator": "accessibility-finding.schema.json",
   "api-integration-engineer": "integration-readiness.schema.json",
@@ -118,7 +120,9 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
     "recurring-third-party-review-evidence-reconciler.schema.json",
   "restaurant-venue-scout": "venue-shortlist.schema.json",
   "research-briefing": "research-brief.schema.json",
+  "rfp-response-producer": "rfp-response.schema.json",
   "sales-operations": "pipeline-review.schema.json",
+  "supplier-onboarding-preparer": "supplier-onboarding.schema.json",
   "school-coordinator": "school-logistics.schema.json",
   "security-analyst": "threat-assessment.schema.json",
   "security-alert-review-reconciler": "security-alert-review.schema.json",

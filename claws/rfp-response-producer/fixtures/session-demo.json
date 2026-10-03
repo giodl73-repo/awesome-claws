@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "rfp-response-producer",
+  "scenario": "Draft our response to the eight-question workflow-platform RFP using the supplied product notes and answer library. Amendment 2 makes EU-only hosting mandatory. Our current region matrix supports US hosting only; an old reusable answer says EU hosting is available. We also lack an approved SLA and permission to name a reference customer. Answer what we can, preserve the buyer's word limits, and give me the exact gaps and review requests. Do not submit or promise anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Draft our response to the eight-question workflow-platform RFP using the supplied product notes and answer library. Amendment 2 makes EU-only hosting mandatory. Our current region matrix supports US hosting only; an old reusable answer says EU hosting is available. We also lack an approved SLA and permission to name a reference customer. Answer what we can, preserve the buyer's word limits, and give me the exact gaps and review requests. Do not submit or promise anything."
+    },
+    {
+      "role": "agent",
+      "text": "Amendment 2 makes EU-only hosting mandatory. The current region matrix supports US hosting only, so I will draft No for Q3 and keep that gap visible in the executive summary. The old answer library cannot establish current capability or SLA approval."
+    },
+    {
+      "role": "user",
+      "text": "Give me the actual eight answers and the owner questions. Keep the internal source notes and reference contact out of buyer copy."
+    },
+    {
+      "role": "agent",
+      "text": "I prepared outputs/rfp-response-draft.md and outputs/rfp-response-producer-handoff.md with the private structured record. Q1 covers forms, sequential approvals and status visibility. Q2 supports SAML 2.0 in Enterprise 4.2. Q3 states No: application data, backups and logs are US-only. Q4 covers administrator CSV export and excludes uploaded attachments. Q5 leaves SLA and credits pending. Q6 discloses no reference. Q7 lists delivery activities without a date commitment. Q8 marks both requested attachments not supplied. All 21 subquestions are covered; the mandatory hosting gap prevents any submission-readiness claim."
+    }
+  ],
+  "report": {
+    "title": "RFP response: complete draft, mandatory hosting gap",
+    "summary": "Synthetic review example: eight answers and 21 subquestions, buyer copy separated from private evidence. No submission or commitments.",
+    "output": "outputs/rfp-response-producer-handoff.md",
+    "items": [
+      {
+        "title": "Buyer response draft",
+        "summary": "Forms, sequential approvals, SAML 2.0 and CSV export are supported in Enterprise 4.2. All answers follow buyer order and word limits.",
+        "tags": [
+          "draft",
+          "8-answers"
+        ]
+      },
+      {
+        "title": "Q3: EU-only hosting not met",
+        "summary": "Application data, backups and logs are US-only. Amendment 2 supersedes the preference review; stale EU boilerplate is rejected.",
+        "tags": [
+          "mandatory-gap",
+          "product-review"
+        ]
+      },
+      {
+        "title": "Q5 and Q6: no invented commitments",
+        "summary": "Availability and credits await Commercial/Legal. No customer reference name or contact permission is supplied.",
+        "tags": [
+          "unresolved",
+          "private"
+        ]
+      },
+      {
+        "title": "Q8: attachment gaps",
+        "summary": "Security Overview revision 2 cannot replace requested revision 3. DPA revision 5 is inventory metadata only; document bytes are absent.",
+        "tags": [
+          "attachments",
+          "not-supplied"
+        ]
+      },
+      {
+        "title": "Bid-owner handoff",
+        "summary": "Review the mandatory gap, unresolved terms and exact attachment versions. Final DOCX conversion is incomplete. Nothing sent, signed or approved.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

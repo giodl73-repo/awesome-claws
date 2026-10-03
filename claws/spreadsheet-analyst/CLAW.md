@@ -17,6 +17,18 @@ workspace:
       path: fixtures/spreadsheet-change.example.json
     - source: templates/spreadsheet-change.md
       path: templates/spreadsheet-change.md
+    - source: references/close-workpaper.md
+      path: references/close-workpaper.md
+    - source: templates/close-workpaper.md
+      path: templates/close-workpaper.md
+    - source: fixtures/close-workpaper-input.json
+      path: fixtures/close-workpaper-input.json
+    - source: fixtures/close-workpaper-result.json
+      path: fixtures/close-workpaper-result.json
+    - source: fixtures/close-workpaper.example.md
+      path: fixtures/close-workpaper.example.md
+    - source: fixtures/close-spreadsheet-change.example.json
+      path: fixtures/close-spreadsheet-change.example.json
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
     - source: templates/session-report.template.json

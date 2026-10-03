@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 135,
-    "coveredCount": 135,
-    "recipeCount": 373,
-    "findingCodeCount": 507
+    "validatorCount": 139,
+    "coveredCount": 139,
+    "recipeCount": 385,
+    "findingCodeCount": 527
   },
   "entries": [
     {
@@ -5912,6 +5912,186 @@
             "invalid_action_chronology",
             "invalid_source_chronology",
             "invalid_transaction_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "payroll-review-preparer",
+      "recipes": [
+        {
+          "id": "semantic-payroll-comparison-1",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "employer"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "payroll_comparison",
+            "payroll_handoff",
+            "payroll_question",
+            "payroll_scope",
+            "payroll_source_question",
+            "payroll_totals"
+          ]
+        },
+        {
+          "id": "semantic-payroll-chronology-2",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "payroll_chronology",
+            "payroll_comparison",
+            "payroll_handoff",
+            "payroll_question",
+            "payroll_source_question",
+            "payroll_totals"
+          ]
+        },
+        {
+          "id": "semantic-payroll-comparison-3",
+          "operator": "replace",
+          "path": [
+            "expectedComponents",
+            "0",
+            "component"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "payroll_comparison",
+            "payroll_coverage",
+            "payroll_handoff",
+            "payroll_question",
+            "payroll_source_question",
+            "payroll_totals"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "project-document-controller",
+      "recipes": [
+        {
+          "id": "semantic-document-review-scope-1",
+          "operator": "replace",
+          "path": [
+            "project"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "document_review_scope",
+            "document_scope"
+          ]
+        },
+        {
+          "id": "semantic-document-followup-state-2",
+          "operator": "replace",
+          "path": [
+            "asOf"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "document_followup_state"
+          ]
+        },
+        {
+          "id": "semantic-document-chronology-3",
+          "operator": "replace",
+          "path": [
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "document_chronology",
+            "document_followup_state"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "supplier-onboarding-preparer",
+      "recipes": [
+        {
+          "id": "semantic-supplier-selection-1",
+          "operator": "replace",
+          "path": [
+            "supplier"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "supplier_selection"
+          ]
+        },
+        {
+          "id": "semantic-supplier-review-time-2",
+          "operator": "replace",
+          "path": [
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "supplier_review_time"
+          ]
+        },
+        {
+          "id": "semantic-supplier-evidence-coverage-3",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "supplier_evidence_coverage"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rfp-response-producer",
+      "recipes": [
+        {
+          "id": "semantic-rfp-evidence-scope-1",
+          "operator": "replace",
+          "path": [
+            "product"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "rfp_evidence_scope"
+          ]
+        },
+        {
+          "id": "semantic-rfp-amendment-reference-2",
+          "operator": "replace",
+          "path": [
+            "amendments",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "rfp_amendment_reference"
+          ]
+        },
+        {
+          "id": "semantic-rfp-question-coverage-3",
+          "operator": "replace",
+          "path": [
+            "questions",
+            "0",
+            "id"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "rfp_question_coverage",
+            "rfp_review_reference",
+            "rfp_source_scope"
           ]
         }
       ]
