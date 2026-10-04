@@ -43,6 +43,23 @@ test("invoice: explicit deferral permits owner review, never issuance", () => {
   assert.match(renderInvoiceDraft(value).draft, /DRAFT - NOT ISSUED/);
 });
 
+test("invoice: a missing required PO stays visibly unresolved in the customer draft", () => {
+  const value = clone();
+  Object.assign(value.items[4], { decision: "defer", decisionRef: "OWNER-DEFERRAL-102" });
+  value.scope.purchaseOrder = null;
+  value.rules.poRequired = true;
+  refresh(value);
+  assert.equal(validate(value), true, JSON.stringify(validate.errors));
+  assert.equal(value.result.state, "blocked");
+  assert(value.result.blockers.some((item) => item.reason === "Supply the required customer PO."));
+  assert.match(renderInvoiceDraft(value).draft, /Customer PO: Required - pending owner input/);
+  assert(!renderInvoiceDraft(value).draft.includes("Not required under supplied rules"));
+  value.rules.poRequired = false;
+  refresh(value);
+  assert.equal(value.result.state, "ready-for-owner-review");
+  assert.match(renderInvoiceDraft(value).draft, /Customer PO: Not required under supplied rules/);
+});
+
 const mutations = [
   ["wrong total", (x) => x.result.totals.total++],
   ["wrong due date", (x) => { x.result.dueDate = "2026-10-17"; }],

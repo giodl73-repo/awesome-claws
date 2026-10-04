@@ -176,7 +176,7 @@ export function renderInvoiceDraft(record) {
     r.state === "blocked" ? "**BLOCKED WORKING DRAFT - incomplete; not a request for payment.**" : "Ready for owner review only; not a request for payment.",
     `Seller: ${escape(s.sellerBilling)}`, `Bill to: ${escape(s.customerBilling)}`,
     `Proposed date: ${s.invoiceDate}. Service period: ${s.periodStart} through ${s.periodEnd}.`,
-    `Customer PO: ${escape(s.purchaseOrder ?? "Not required under supplied rules")}.`,
+    `Customer PO: ${escape(text(s.purchaseOrder) ? s.purchaseOrder : record.rules.poRequired ? "Required - pending owner input" : "Not required under supplied rules")}.`,
     `Terms: Net ${record.rules.netDays} calendar days. Proposed due date: ${r.dueDate}.`,
     "| Description | Quantity/unit | Rate | Gross | Discount | Net | Tax rate | Tax | Total |\n| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n"
       + r.lines.map((line) => `| ${escape(line.description)} | ${line.quantity} ${escape(line.unit)} | ${money(line.rateMinor)} | ${money(line.gross)} | ${money(line.discount)} | ${money(line.net)} | ${line.taxBps / 100}% | ${money(line.tax)} | ${money(line.total)} |`).join("\n"),
