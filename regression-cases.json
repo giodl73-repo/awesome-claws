@@ -3468,6 +3468,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:2f31b0a2d24d48bd8e26d7436995ebb2421df8595620ca1e8fe4b6114b29e55b"
+    },
+    {
+      "id": "job-estimate-producer",
+      "acceptedRequest": "Price an approved job with eight labor hours at USD 50 cost/hour, USD 300 materials, USD 100 equipment, and owner policy of 25 percent markup on direct cost. Keep tax pending because no treatment was supplied.",
+      "requiredEvidence": [
+        "One job and scope revision, customer-facing scope description, owner-reviewed quantities or takeoff, units, inclusions, exclusions, and accountable estimator",
+        "Dated supplier and subcontractor quotes, labor hours and cost rates, equipment and expense allowances, currencies, quote validity, and evidence references",
+        "Owner-defined pricing method, markup versus target-margin basis, overhead and contingency treatment, tax instructions, rounding, alternatives, and review limits",
+        "Intended customer audience, private destination, target date, assumptions, dependencies, and unresolved scope questions"
+      ],
+      "authorityBoundaries": [
+        "Do not submit a bid, issue a binding quote, select subcontractors, purchase materials, contact customers, or approve a price",
+        "Do not derive safety-critical quantities or designs from drawings, certify constructability, determine building-code compliance, or infer tax obligations",
+        "Do not invent supplier prices, labor productivity, waste allowances, scope acceptance, or approval; stale quotes and missing quantities remain unresolved",
+        "Keep internal labor costs, margins, and supplier terms out of customer copy unless specifically approved for disclosure"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/job-estimate-producer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

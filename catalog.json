@@ -14663,6 +14663,123 @@
           }
         }
       }
+    },
+    {
+      "id": "job-estimate-producer",
+      "name": "Job estimate producer",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "description": "Builds a source-backed job cost estimate and customer quote draft from an owner-defined scope, checked quantities, labor allowances, and current supplier prices without bidding, committing prices, or making engineering judgments.",
+      "audience": "Small and midsize contractors and service businesses pricing a defined customer job before owner approval.",
+      "principles": [
+        "Produce both the cost build-up and a usable quote draft",
+        "Keep scope exclusions and unknown costs visible",
+        "Distinguish cost, markup, margin, allowance, and committed price",
+        "Use supplied technical quantities without inventing engineering conclusions"
+      ],
+      "boundaries": [
+        "Do not submit a bid, issue a binding quote, select subcontractors, purchase materials, contact customers, or approve a price",
+        "Do not derive safety-critical quantities or designs from drawings, certify constructability, determine building-code compliance, or infer tax obligations",
+        "Do not invent supplier prices, labor productivity, waste allowances, scope acceptance, or approval; stale quotes and missing quantities remain unresolved",
+        "Keep internal labor costs, margins, and supplier terms out of customer copy unless specifically approved for disclosure"
+      ],
+      "intake": [
+        "One job and scope revision, customer-facing scope description, owner-reviewed quantities or takeoff, units, inclusions, exclusions, and accountable estimator",
+        "Dated supplier and subcontractor quotes, labor hours and cost rates, equipment and expense allowances, currencies, quote validity, and evidence references",
+        "Owner-defined pricing method, markup versus target-margin basis, overhead and contingency treatment, tax instructions, rounding, alternatives, and review limits",
+        "Intended customer audience, private destination, target date, assumptions, dependencies, and unresolved scope questions"
+      ],
+      "workflow": [
+        "Confirm the exact job scope, unit basis, approved quantities, currency, source dates, and pricing policy",
+        "Build a complete scope-to-cost-line map; distinguish priced work, explicit allowances, exclusions, and missing costs without treating an unknown as zero",
+        "Calculate material, labor, subcontractor, equipment, overhead, and contingency costs and apply the supplied markup or margin method without confusing them",
+        "Compare owner-requested alternatives on equivalent scope and expose changed quantities, supplier validity, assumptions, and sensitivities",
+        "Write an itemized customer quote draft with scope, exclusions, validity and supplied terms; retain the detailed cost build-up and commercial risks in a private workpaper",
+        "Reconcile both artifacts, reopen affected lines after scope or price changes, and hand the exact revision to the owner without submitting or committing"
+      ],
+      "deliverables": [
+        "Scope-linked job cost estimate",
+        "Customer quote draft",
+        "Allowance, exclusion, and missing-price register",
+        "Pricing-method and sensitivity workpaper with owner review questions"
+      ],
+      "doneWhen": [
+        "Every scope item is priced, explicitly allowed, excluded, or blocked",
+        "Cost and sell-price calculations recompute under the stated policy and currency",
+        "Quote and internal estimate agree without disclosing restricted costs",
+        "Unknown scope, missing prices, and expired evidence remain visible and no binding price or submitted bid is claimed"
+      ],
+      "example": {
+        "request": "Price an approved job with eight labor hours at USD 50 cost/hour, USD 300 materials, USD 100 equipment, and owner policy of 25 percent markup on direct cost. Keep tax pending because no treatment was supplied.",
+        "outcome": "The estimate shows USD 800 direct cost and USD 1,000 proposed pre-tax price, with 20 percent gross margin, not 25 percent. Customer copy describes the approved scope while the workpaper retains internal costs; missing tax treatment blocks a complete quote total."
+      },
+      "capabilityGuidance": [
+        "X3 supplied-evidence artifact starter; no CAD, external supplier, accounting, or dispatch capability",
+        "Use an existing estimating or calculation library for any executable calculation support added during implementation; specialist-reviewed quantities remain authoritative"
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/job-estimate.md",
+          "path": "templates/job-estimate.md",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "references/estimating-contract.md",
+          "path": "references/estimating-contract.md",
+          "role": "reference"
+        },
+        {
+          "source": "references/example-source-pack.md",
+          "path": "references/example-source-pack.md",
+          "role": "reference"
+        },
+        {
+          "source": "templates/customer-quote.md",
+          "path": "templates/customer-quote.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/job-estimate.schema.json",
+          "path": "schemas/job-estimate.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/job-estimate.example.json",
+          "path": "fixtures/job-estimate.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/quote.example.md",
+          "path": "fixtures/quote.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/workpaper.example.md",
+          "path": "fixtures/workpaper.example.md",
+          "role": "fixture"
+        }
+      ]
     }
   ]
 }
