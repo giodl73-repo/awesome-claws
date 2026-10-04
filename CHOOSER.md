@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (139)
+### Active (140)
 
 | Claw | Detail |
 | --- | --- |
@@ -71,6 +71,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | @giodl73; last verified 2026-09-07 |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | @giodl73-repo; last verified 2026-08-25 |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | @giodl73; last verified 2026-08-29 |
+| [Invoice draft producer](claws/invoice-draft-producer) | @giodl73-repo; last verified 2026-10-02 |
 | [Job application tracker](claws/job-application-tracker) | @giodl73-repo; last verified 2026-08-28 |
 | [Knowledge curator](claws/knowledge-curator) | @giodl73-repo; last verified 2026-08-31 |
 | [Knowledge gardener](claws/knowledge-gardener) | @giodl73-repo; last verified 2026-08-31 |
@@ -166,7 +167,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (107)
+### Low setup (108)
 
 | Claw | Detail |
 | --- | --- |
@@ -216,6 +217,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | no bootstrap, external dependency, or schedule |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | no bootstrap, external dependency, or schedule |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | no bootstrap, external dependency, or schedule |
+| [Invoice draft producer](claws/invoice-draft-producer) | no bootstrap, external dependency, or schedule |
 | [Job application tracker](claws/job-application-tracker) | no bootstrap, external dependency, or schedule |
 | [Knowledge curator](claws/knowledge-curator) | no bootstrap, external dependency, or schedule |
 | [Knowledge gardener](claws/knowledge-gardener) | no bootstrap, external dependency, or schedule |
@@ -324,7 +326,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (116)
+### No external dependencies (117)
 
 | Claw | Detail |
 | --- | --- |
@@ -381,6 +383,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | None |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | None |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | None |
+| [Invoice draft producer](claws/invoice-draft-producer) | None |
 | [Job application tracker](claws/job-application-tracker) | None |
 | [Knowledge curator](claws/knowledge-curator) | None |
 | [Knowledge gardener](claws/knowledge-gardener) | None |
@@ -477,7 +480,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (100)
+### X3 (101)
 
 | Claw | Detail |
 | --- | --- |
@@ -522,6 +525,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | Reconciles owner-supplied desired-state and observed-state infrastructure snapshots into one exact symmetric resource universe, with one evidence-backed converged, drifted, missing, or unmanaged disposition per resolved identity and fail-closed deviation authority, without accessing or changing infrastructure. |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | Organizes insurance policies, declarations pages, premiums, deductibles, coverage evidence, renewal dates, claim-readiness evidence, and owner-review questions without giving insurance or legal advice, filing claims, changing coverage, contacting carriers, or paying premiums. |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money. |
+| [Invoice draft producer](claws/invoice-draft-producer) | Turns approved billable work, rates, expenses, and billing terms into an itemized invoice draft with checked calculations and a source-linked billing workpaper, without issuing invoices or posting to accounting systems. |
 | [Job application tracker](claws/job-application-tracker) | Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice. |
 | [Knowledge curator](claws/knowledge-curator) | Maintains one bounded, durable, normalized, source-linked collection index of topics, claims, human-owned decisions, duplicates, disputes, gaps, freshness, retention, and review state without owning or mutating source systems. |
 | [Knowledge gardener](claws/knowledge-gardener) | Maintains a private, digest-bound, exact-version change plan from one operator-supplied, versioned, secret-free read-only Notion observation export and authorization/scope receipt, without Notion, network, or source-mutation access. |
@@ -697,7 +701,7 @@ Categories come directly from the catalog entry.
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
-### Operations (34)
+### Operations (35)
 
 | Claw | Detail |
 | --- | --- |
@@ -716,6 +720,7 @@ Categories come directly from the catalog entry.
 | [Green Thumb coordinator](claws/green-thumb-coordinator) | X3; Coordinates evidence-bound seasonal garden planning, plant-health triage, low-risk care, and explicitly approved landscaper appointments. |
 | [Home repair coordinator](claws/home-repair-coordinator) | X3; Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments. |
 | [Household steward](claws/household-steward) | X3; Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker. |
+| [Invoice draft producer](claws/invoice-draft-producer) | X3; Turns approved billable work, rates, expenses, and billing terms into an itemized invoice draft with checked calculations and a source-linked billing workpaper, without issuing invoices or posting to accounting systems. |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | X5; Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence. |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | X3; Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
 | [Partner business manager](claws/partner-business-manager) | X4; Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority. |
@@ -808,7 +813,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (68)
+### Standard attention (69)
 
 | Claw | Detail |
 | --- | --- |
@@ -842,6 +847,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Infrastructure drift reconciliation coordinator](claws/infrastructure-drift-reconciliation-coordinator) | portable workspace artifacts only |
 | [Insurance policy organizer](claws/insurance-policy-organizer) | portable workspace artifacts only |
 | [Invoice and payment follow-up](claws/invoice-payment-followup) | portable workspace artifacts only |
+| [Invoice draft producer](claws/invoice-draft-producer) | portable workspace artifacts only |
 | [Job application tracker](claws/job-application-tracker) | portable workspace artifacts only |
 | [Knowledge curator](claws/knowledge-curator) | portable workspace artifacts only |
 | [Learning plan coordinator](claws/learning-plan-coordinator) | portable workspace artifacts only |

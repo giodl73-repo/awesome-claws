@@ -129,6 +129,11 @@
     "proofPlan": "Use three synthetic employees in one currency with an approved base change, repeated unapproved bonus and omitted hours input. Require actual per-component amounts and totals with specific questions. Test duplicate and missing employees, wrong periods or units, offsetting unexplained deltas, expired approvals, sensitive identifiers and false release. After admission require X3 session, current Control UI screenshot, generated agreement, focused arithmetic and semantic regressions and npm run check. No live payroll-engine or compliance proof claimed.",
     "existingAlternatives": [
       {
+        "id": "invoice-draft-producer",
+        "overlap": "Both bind financial drafts to current source evidence, exact revisions, checked amounts and a private owner workpaper without issuing or posting anything.",
+        "difference": "Invoice Draft Producer constructs customer billing lines from approved unbilled work, prior billing and supplied commercial rules. Payroll Review instead reconciles provider-calculated employee pay components against prior registers and approved effective-dated changes; it does not calculate customer charges or create invoices."
+      },
+      {
         "id": "partner-business-manager",
         "overlap": "Both bind changes, commitments and evidence to an exact period and revision and preserve independent owner decisions.",
         "difference": "Partner Business Manager reconciles a partner business plan; this candidate quantifies pseudonymous employee pay-component movements against approved effective-dated changes in a pre-release payroll draft, without owning commercial relationships."

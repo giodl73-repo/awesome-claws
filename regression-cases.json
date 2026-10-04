@@ -3468,6 +3468,31 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:2f31b0a2d24d48bd8e26d7436995ebb2421df8595620ca1e8fe4b6114b29e55b"
+    },
+    {
+      "id": "invoice-draft-producer",
+      "acceptedRequest": "Draft the October 2 service invoice from six approved labor hours at USD 125/hour, USD 180 materials, USD 45 reimbursable travel, and a USD 75 labor discount. Apply the owner's explicit 8 percent materials-only tax rule, USD 200 unapplied deposit, and USD 50 approved credit. Exclude a previously billed two-hour record and flag one unapproved extra hour.",
+      "requiredEvidence": [
+        "Seller and customer billing identities, private destination, draft reference, currency, invoice date, billing period, and accountable reviewer",
+        "Current customer agreement, purchase order where required, approved rates and discounts, billing frequency, payment terms, and explicit tax and rounding instructions including an explicit no-tax decision when applicable",
+        "Approved billable time, delivered items, completed service records, reimbursable expenses, and required customer acceptance, each with a stable source identifier and revision",
+        "Owner-declared complete prior-billing history for the same work, unapplied deposit and credit balances with customer and currency scope, and authorization for any proposed application"
+      ],
+      "authorityBoundaries": [
+        "Do not issue or send invoices, reserve official invoice numbers, post receivables, charge customers, move money, contact clients, or change source systems",
+        "Do not invent customer identities, completion evidence, rates, payment instructions, tax treatment, tax identifiers, exemptions, or approval",
+        "Do not decide legal enforceability, tax compliance, revenue recognition, disputed charges, or credit entitlement",
+        "Keep unapproved work, unsupported credits, ambiguous prior billing, and conflicting revisions out of a ready-for-owner-review invoice; preserve them in the workpaper",
+        "Exclude progress-payment certification, statutory e-invoicing, complex retainage, trust accounting, and mixed-currency conversion from this base contract"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/invoice-draft-producer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

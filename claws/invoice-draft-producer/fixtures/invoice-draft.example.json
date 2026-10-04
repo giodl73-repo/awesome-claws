@@ -1,0 +1,330 @@
+{
+  "schemaVersion": "awesomeClaws.invoiceDraft.v1",
+  "scope": {
+    "seller": "DEMO-FIELD",
+    "sellerBilling": "Demo Field Services, 10 Example Street",
+    "customer": "DEMO-STUDIO",
+    "customerBilling": "Demo Studio, 20 Example Street",
+    "currency": "USD",
+    "minorDigits": 2,
+    "draftRef": "DEMO-INV-01",
+    "revision": "1",
+    "reviewer": "Demo billing owner",
+    "privateDestination": "Owner-only billing workspace",
+    "invoiceDate": "2026-10-02",
+    "periodStart": "2026-10-01",
+    "periodEnd": "2026-10-01",
+    "purchaseOrder": "DEMO-PO-17"
+  },
+  "rules": {
+    "sourceRef": "BILL-RULE-3",
+    "revision": "3",
+    "confirmed": true,
+    "rounding": "half-up-per-line",
+    "netDays": 14,
+    "poRequired": true
+  },
+  "history": {
+    "sourceRef": "BILLING-HISTORY-5",
+    "revision": "5",
+    "complete": true,
+    "rows": [
+      {
+        "sourceId": "WORK-099",
+        "quantity": "2",
+        "unit": "hours",
+        "invoiceRef": "OWNER-ISSUED-09",
+        "customer": "DEMO-STUDIO",
+        "currency": "USD"
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "WORK-101",
+      "revision": "2",
+      "sourceRef": "WORK-101-R2",
+      "customer": "DEMO-STUDIO",
+      "currency": "USD",
+      "periodStart": "2026-10-01",
+      "periodEnd": "2026-10-01",
+      "current": true,
+      "approved": true,
+      "approvalRef": "AGREEMENT-3",
+      "completed": true,
+      "completionRef": "ACCEPTANCE-101",
+      "disclosureApproved": true,
+      "description": "Completed service labor",
+      "unit": "hours",
+      "quantity": "6",
+      "rateMinor": 12500,
+      "discountMinor": 7500,
+      "taxBps": 0,
+      "decision": "bill",
+      "decisionRef": null
+    },
+    {
+      "id": "MATERIAL-4",
+      "revision": "1",
+      "sourceRef": "MATERIAL-4-R1",
+      "customer": "DEMO-STUDIO",
+      "currency": "USD",
+      "periodStart": "2026-10-01",
+      "periodEnd": "2026-10-01",
+      "current": true,
+      "approved": true,
+      "approvalRef": "AGREEMENT-3",
+      "completed": true,
+      "completionRef": "DELIVERY-4",
+      "disclosureApproved": true,
+      "description": "Approved replacement materials",
+      "unit": "lot",
+      "quantity": "1",
+      "rateMinor": 18000,
+      "discountMinor": 0,
+      "taxBps": 800,
+      "decision": "bill",
+      "decisionRef": null
+    },
+    {
+      "id": "EXPENSE-7",
+      "revision": "1",
+      "sourceRef": "EXPENSE-7-R1",
+      "customer": "DEMO-STUDIO",
+      "currency": "USD",
+      "periodStart": "2026-10-01",
+      "periodEnd": "2026-10-01",
+      "current": true,
+      "approved": true,
+      "approvalRef": "AGREEMENT-3",
+      "completed": true,
+      "completionRef": "RECEIPT-7",
+      "disclosureApproved": true,
+      "description": "Approved travel reimbursement",
+      "unit": "expense",
+      "quantity": "1",
+      "rateMinor": 4500,
+      "discountMinor": 0,
+      "taxBps": 0,
+      "decision": "bill",
+      "decisionRef": null
+    },
+    {
+      "id": "WORK-099",
+      "revision": "1",
+      "sourceRef": "WORK-099-R1",
+      "customer": "DEMO-STUDIO",
+      "currency": "USD",
+      "periodStart": "2026-10-01",
+      "periodEnd": "2026-10-01",
+      "current": true,
+      "approved": true,
+      "approvalRef": "AGREEMENT-3",
+      "completed": true,
+      "completionRef": "ACCEPTANCE-099",
+      "disclosureApproved": true,
+      "description": "Earlier completed labor",
+      "unit": "hours",
+      "quantity": "2",
+      "rateMinor": 12500,
+      "discountMinor": 0,
+      "taxBps": 0,
+      "decision": "bill",
+      "decisionRef": null
+    },
+    {
+      "id": "WORK-102",
+      "revision": "1",
+      "sourceRef": "WORK-102-R1",
+      "customer": "DEMO-STUDIO",
+      "currency": "USD",
+      "periodStart": "2026-10-01",
+      "periodEnd": "2026-10-01",
+      "current": true,
+      "approved": false,
+      "approvalRef": null,
+      "completed": true,
+      "completionRef": "TECH-NOTE-102",
+      "disclosureApproved": false,
+      "description": "Unapproved extra service hour",
+      "unit": "hours",
+      "quantity": "1",
+      "rateMinor": 12500,
+      "discountMinor": 0,
+      "taxBps": 0,
+      "decision": "bill",
+      "decisionRef": null
+    }
+  ],
+  "balances": [
+    {
+      "id": "DEPOSIT-8",
+      "revision": "1",
+      "sourceRef": "DEPOSIT-8-R1",
+      "kind": "deposit",
+      "customer": "DEMO-STUDIO",
+      "currency": "USD",
+      "remaining": 20000,
+      "proposed": 20000,
+      "current": true,
+      "authorized": true,
+      "authorizationRef": "OWNER-APPLICATION-1",
+      "draftRef": "DEMO-INV-01",
+      "draftRevision": "1"
+    },
+    {
+      "id": "CREDIT-2",
+      "revision": "1",
+      "sourceRef": "CREDIT-2-R1",
+      "kind": "credit",
+      "customer": "DEMO-STUDIO",
+      "currency": "USD",
+      "remaining": 5000,
+      "proposed": 5000,
+      "current": true,
+      "authorized": true,
+      "authorizationRef": "OWNER-APPLICATION-1",
+      "draftRef": "DEMO-INV-01",
+      "draftRevision": "1"
+    }
+  ],
+  "result": {
+    "inputDigest": "sha256:4d84d60adc8db25408f37cd067419c68f1f43a334ac2f2215368b5c72ab061f3",
+    "state": "blocked",
+    "draftRevision": "1",
+    "dueDate": "2026-10-16",
+    "rulesRevision": "3",
+    "historyRevision": "5",
+    "lines": [
+      {
+        "sourceId": "WORK-101",
+        "revision": "2",
+        "description": "Completed service labor",
+        "unit": "hours",
+        "quantity": "6",
+        "rateMinor": 12500,
+        "gross": 75000,
+        "discount": 7500,
+        "net": 67500,
+        "taxBps": 0,
+        "tax": 0,
+        "total": 67500
+      },
+      {
+        "sourceId": "MATERIAL-4",
+        "revision": "1",
+        "description": "Approved replacement materials",
+        "unit": "lot",
+        "quantity": "1",
+        "rateMinor": 18000,
+        "gross": 18000,
+        "discount": 0,
+        "net": 18000,
+        "taxBps": 800,
+        "tax": 1440,
+        "total": 19440
+      },
+      {
+        "sourceId": "EXPENSE-7",
+        "revision": "1",
+        "description": "Approved travel reimbursement",
+        "unit": "expense",
+        "quantity": "1",
+        "rateMinor": 4500,
+        "gross": 4500,
+        "discount": 0,
+        "net": 4500,
+        "taxBps": 0,
+        "tax": 0,
+        "total": 4500
+      }
+    ],
+    "coverage": [
+      {
+        "sourceId": "WORK-101",
+        "revision": "2",
+        "totalQuantity": "6",
+        "billedQuantity": "0",
+        "proposedQuantity": "6",
+        "disposition": "included"
+      },
+      {
+        "sourceId": "MATERIAL-4",
+        "revision": "1",
+        "totalQuantity": "1",
+        "billedQuantity": "0",
+        "proposedQuantity": "1",
+        "disposition": "included"
+      },
+      {
+        "sourceId": "EXPENSE-7",
+        "revision": "1",
+        "totalQuantity": "1",
+        "billedQuantity": "0",
+        "proposedQuantity": "1",
+        "disposition": "included"
+      },
+      {
+        "sourceId": "WORK-099",
+        "revision": "1",
+        "totalQuantity": "2",
+        "billedQuantity": "2",
+        "proposedQuantity": "0",
+        "disposition": "already-billed"
+      },
+      {
+        "sourceId": "WORK-102",
+        "revision": "1",
+        "totalQuantity": "1",
+        "billedQuantity": "0",
+        "proposedQuantity": "0",
+        "disposition": "blocked"
+      }
+    ],
+    "applications": [
+      {
+        "id": "DEPOSIT-8",
+        "revision": "1",
+        "kind": "deposit",
+        "proposed": 20000,
+        "included": 20000,
+        "state": "proposed"
+      },
+      {
+        "id": "CREDIT-2",
+        "revision": "1",
+        "kind": "credit",
+        "proposed": 5000,
+        "included": 5000,
+        "state": "proposed"
+      }
+    ],
+    "totals": {
+      "gross": 97500,
+      "discount": 7500,
+      "net": 90000,
+      "tax": 1440,
+      "total": 91440,
+      "applications": 25000,
+      "due": 66440
+    },
+    "blockers": [
+      {
+        "id": "WORK-102",
+        "reason": "Supply billing approval and the current agreement/rate reference."
+      },
+      {
+        "id": "WORK-102",
+        "reason": "Supply a disclosure-approved billing description."
+      }
+    ]
+  },
+  "authority": {
+    "invoice": "draft-not-issued",
+    "sending": "not-performed",
+    "numbering": "not-reserved",
+    "ledger": "not-changed",
+    "payment": "not-collected",
+    "balances": "not-applied"
+  }
+}
