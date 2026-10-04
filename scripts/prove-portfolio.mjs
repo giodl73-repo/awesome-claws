@@ -1417,9 +1417,9 @@ for (const entry of entries) {
     }
 
     if (!gateway) {
-      gateway = await recordAsyncPhase(phases, "remove-gateway-start", () =>
-        startGateway(openClawEntry, env, entry.id, evidenceRoot),
-      );
+      gateway = await recordAsyncPhase(phases, "remove-gateway-start", async () => ({
+        payload: await startGateway(openClawEntry, env, entry.id, evidenceRoot),
+      }));
       env = gateway.env;
       result.gateway = {
         mode: "local",
