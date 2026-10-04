@@ -20,6 +20,7 @@ import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
 import { requiresPortfolioGateway } from "./portfolio-proof-policy.mjs";
 import { selectApplicationRequest } from "./portfolio-application-request.mjs";
+import { assertWidgetToolResult } from "./visual-runtime-tool-proof.mjs";
 
 const { cliEntry, openClawEntry } = resolveProofConfig();
 const openClawRoot = dirname(openClawEntry);
@@ -774,17 +775,7 @@ async function assertVisualRuntime({ entry, env, requestLog, turn }) {
     .split("\n")
     .filter(Boolean)
     .map((line) => JSON.parse(line));
-  const showWidgetRecord = requestRecords.find((record) => record.emittedTool === "show_widget");
-  const postWidgetRecord = requestRecords.find((record) => record.step > showWidgetRecord?.step);
-  if (!showWidgetRecord || !postWidgetRecord) {
-    throw new Error(`${entry.id} did not execute show_widget.`);
-  }
-  const postWidgetRequest = JSON.parse(postWidgetRecord.body);
-  if (
-    !(postWidgetRequest.input ?? []).some((item) => item?.type === "function_call_output")
-  ) {
-    throw new Error(`${entry.id} show_widget did not return an executed tool result.`);
-  }
+  assertWidgetToolResult(requestRecords);
   const config = JSON.parse(await readFile(env.OPENCLAW_CONFIG_PATH, "utf8"));
   const agentEntries = config.agents?.entries;
   const installed = Array.isArray(agentEntries)
