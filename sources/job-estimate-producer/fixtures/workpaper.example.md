@@ -36,7 +36,7 @@ Tax instruction: Pending owner input; rounding policy: half-up-per-line.
 
 Calculated tax: Pending owner input; final quote total: Pending owner input.
 
-- Owner question PRICING-2: Supply explicit tax treatment; final quote total remains unknown.
+- Owner question PRICING-2 [tax-treatment]: Supply explicit tax treatment; final quote total remains unknown.
 
 ## Equivalent-scope alternatives
 

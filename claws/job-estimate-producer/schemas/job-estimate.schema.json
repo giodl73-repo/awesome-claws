@@ -86,8 +86,11 @@
             "preTax": { "$ref": "#/$defs/nullableAmount" }, "tax": { "$ref": "#/$defs/nullableAmount" }, "total": { "$ref": "#/$defs/nullableAmount" },
             "grossMarginBps": { "type": ["integer", "null"], "minimum": 0, "maximum": 10000 },
             "blockers": { "type": "array", "items": {
-              "type": "object", "additionalProperties": false, "required": ["id", "reason"],
-              "properties": { "id": { "$ref": "#/$defs/text" }, "reason": { "$ref": "#/$defs/text" } }
+              "type": "object", "additionalProperties": false, "required": ["id", "code", "reason"],
+              "properties": {
+                "id": { "$ref": "#/$defs/text" }, "reason": { "$ref": "#/$defs/text" },
+                "code": { "enum": ["scenario-scope", "scope-review", "quote-validity", "pricing-policy", "scope-line-conflict", "cost-evidence", "cost-scope", "cost-validity", "quantity", "rate", "conversion", "allowance-decision", "allowance-classification", "cost-slot-coverage", "scope-decision", "blocked-scope", "missing-costs", "scope-disclosure", "empty-scope", "overhead-contingency", "tax-treatment", "price-limit"] }
+              }
             } }
           }
         } },

@@ -17,6 +17,33 @@ const clone = () => structuredClone(fixture);
 const refresh = (value) => { value.result = deriveJobEstimate(value); return value; };
 const output = (value) => value.result.scenarios[0];
 
+test("estimate: blocker explanations and order may vary without changing evidence", () => {
+  const value = clone(); value.scenarios[0].pricing.taxBps = null; value.scenarios[0].pricing.confirmed = false; refresh(value);
+  const blockers = output(value).blockers;
+  assert(blockers.length > 1);
+  blockers.find((blocker) => blocker.code === "tax-treatment").reason = "Owner: please provide the whole-quote tax rate.";
+  blockers.reverse();
+  assert.equal(validate(value), true, JSON.stringify(validate.errors));
+  assert.deepEqual(jobEstimateFindings(value), []);
+  assert.deepEqual(validateArtifactSemantics("job-estimate-producer", value), []);
+  assert.match(renderJobEstimate(value).workpaper, /Owner: please provide the whole-quote tax rate/);
+});
+
+for (const [name, mutate] of [
+  ["missing code", (rows) => { delete rows[0].code; }],
+  ["wrong code", (rows) => { rows[0].code = rows[0].code === "tax-treatment" ? "rate" : "tax-treatment"; }],
+  ["wrong id", (rows) => { rows[0].id = "UNRELATED"; }],
+  ["hidden blocker", (rows) => { rows.pop(); }],
+  ["duplicate blocker", (rows) => { rows.push({ ...rows[0] }); }],
+  ["blank explanation", (rows) => { rows[0].reason = " \t"; }],
+  ["extra assertion", (rows) => { rows[0].approved = true; }],
+]) test(`estimate: rejects blocker mutation: ${name}`, () => {
+  const value = clone(); value.scenarios[0].pricing.taxBps = null; refresh(value);
+  mutate(output(value).blockers);
+  assert(jobEstimateFindings(value).length > 0);
+  assert.throws(() => renderJobEstimate(value));
+});
+
 test("estimate: packaged digest recipe computes the exact current input fingerprint", async () => {
   const reference = await readFile(new URL("references/estimating-contract.md", root), "utf8");
   const code = reference.match(/```js\r?\n([\s\S]*?)\r?\n```/)[1];
