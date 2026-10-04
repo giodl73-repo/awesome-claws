@@ -1,4 +1,4 @@
-function isActivityRecap(body) {
+export function isActivityRecap(body) {
   if (body.tools !== undefined || !Array.isArray(body.input) || body.input.length !== 2) {
     return false;
   }
