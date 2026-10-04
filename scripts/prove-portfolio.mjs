@@ -18,11 +18,8 @@ import {
 } from "./openclaw-proof-lib.mjs";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
-<<<<<<< HEAD
 import { requiresPortfolioGateway } from "./portfolio-proof-policy.mjs";
-=======
 import { selectApplicationRequest } from "./portfolio-application-request.mjs";
->>>>>>> f9ad9a3 (fix(proof): distinguish activity recaps from application requests)
 
 const { cliEntry, openClawEntry } = resolveProofConfig();
 const openClawRoot = dirname(openClawEntry);
