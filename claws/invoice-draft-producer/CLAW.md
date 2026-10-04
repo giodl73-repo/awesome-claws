@@ -23,6 +23,8 @@ workspace:
       path: references/example-source-pack.md
     - source: templates/invoice-draft.md
       path: templates/invoice-draft.md
+    - source: templates/customer-invoice.md
+      path: templates/customer-invoice.md
     - source: schemas/invoice-draft.schema.json
       path: schemas/invoice-draft.schema.json
     - source: fixtures/invoice-draft.example.json

@@ -16,6 +16,26 @@ const validate = ajv.compile(schema);
 const clone = () => structuredClone(fixture);
 const refresh = (record) => { record.result = deriveInvoiceDraft(record); return record; };
 
+test("invoice: packaged digest recipe computes the exact current input fingerprint", async () => {
+  const reference = await readFile(new URL("references/billing-contract.md", root), "utf8");
+  const code = reference.match(/```js\r?\n([\s\S]*?)\r?\n```/)[1];
+  const { computeInvoiceInputDigest } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
+  for (const change of [() => {}, (value) => { value.items[0].sourceRef = "SOURCE-CHANGED"; }, (value) => { value.scope.reviewer = "\u00c9lodie"; }, (value) => { value.scope = Object.fromEntries(Object.entries(value.scope).reverse()); }]) {
+    const value = clone(); change(value);
+    assert.equal(computeInvoiceInputDigest(value), deriveInvoiceDraft(value).inputDigest);
+  }
+});
+
+test("invoice: normalized agent identities cannot stand in for the human reviewer", () => {
+  for (const reviewer of ["Invoice draft producer", " invoice-draft-producer ", "invoice_draft_producer", "INVOICE   DRAFT PRODUCER", " assistant ", "\uff41ssistant"]) {
+    const value = clone(); value.scope.reviewer = reviewer;
+    assert.throws(() => deriveInvoiceDraft(value), /human reviewer/);
+    assert(invoiceDraftFindings(value).some((finding) => finding.code === "invoice_input"));
+  }
+  const value = clone(); value.scope.reviewer = "Assistant manager Maya"; refresh(value);
+  assert.deepEqual(invoiceDraftFindings(value), []);
+});
+
 test("invoice: accepted example produces the actual invoice and separate blocked workpaper", async () => {
   assert.equal(validate(fixture), true, JSON.stringify(validate.errors));
   assert.deepEqual(invoiceDraftFindings(fixture), []);
@@ -58,6 +78,59 @@ test("invoice: a missing required PO stays visibly unresolved in the customer dr
   refresh(value);
   assert.equal(value.result.state, "ready-for-owner-review");
   assert.match(renderInvoiceDraft(value).draft, /Customer PO: Not required under supplied rules/);
+});
+
+test("invoice: generated handoff selects the private workpaper, not the customer invoice", async () => {
+  const agents = await readFile(new URL("../claws/invoice-draft-producer/workspace/AGENTS.md", import.meta.url), "utf8");
+  assert(agents.includes("Render the reviewable handoff with `templates/invoice-draft.md` at `outputs/invoice-draft-producer-handoff.md`"));
+  const workpaper = await readFile(new URL("templates/invoice-draft.md", root), "utf8");
+  assert.match(workpaper, /^# Private billing workpaper/);
+  assert.match(workpaper, /## Work coverage/);
+  assert.match(workpaper, /Unresolved items and specific owner questions/);
+  assert(workpaper.includes("`templates/customer-invoice.md`"));
+  const customer = await readFile(new URL("templates/customer-invoice.md", root), "utf8");
+  assert.match(customer, /^# DRAFT - NOT ISSUED/);
+  assert(!customer.includes("## Work coverage"));
+});
+
+test("invoice: a billing period can include multiple shorter service intervals", () => {
+  const value = clone();
+  value.scope.periodStart = "2026-09-30";
+  value.items[1].periodStart = "2026-09-30";
+  value.items[1].periodEnd = "2026-09-30";
+  Object.assign(value.items[4], { decision: "defer", decisionRef: "OWNER-DEFERRAL-102" });
+  refresh(value);
+  assert.equal(validate(value), true, JSON.stringify(validate.errors));
+  assert.deepEqual(invoiceDraftFindings(value), []);
+  assert.equal(value.result.state, "ready-for-owner-review");
+  assert.deepEqual(value.result.totals, fixture.result.totals);
+});
+
+test("invoice: out-of-period and reversed service intervals remain blocked", () => {
+  for (const [start, end] of [["2026-09-30", "2026-10-01"], ["2026-10-01", "2026-10-02"], ["2026-10-02", "2026-10-01"]]) {
+    const value = clone();
+    value.items[0].periodStart = start; value.items[0].periodEnd = end;
+    refresh(value);
+    assert.equal(value.result.coverage[0].disposition, "blocked");
+    assert(!value.result.lines.some((line) => line.sourceId === value.items[0].id));
+    assert(value.result.blockers.some((item) => item.reason === "Resolve source service-period mismatch."));
+  }
+});
+
+test("invoice: blocked foreign balances retain their currency and raw source units", () => {
+  for (const currency of ["EUR", "JPY"]) {
+    const value = clone(); value.balances[0].currency = currency;
+    refresh(value);
+    assert.equal(validate(value), true, JSON.stringify(validate.errors));
+    assert.deepEqual(invoiceDraftFindings(value), []);
+    assert.equal(value.result.applications[0].state, "blocked");
+    assert.equal(value.result.applications[0].included, 0);
+    const row = renderInvoiceDraft(value).workpaper.split("\n").find((line) => line.startsWith(`- ${value.balances[0].id}/`));
+    assert(row.includes(`remaining ${currency} ${value.balances[0].remaining} minor units`));
+    assert(row.includes(`proposed ${currency} ${value.balances[0].proposed} minor units`));
+    assert(row.includes("source precision not supplied; not converted"));
+    assert(!row.includes("USD"));
+  }
 });
 
 const mutations = [

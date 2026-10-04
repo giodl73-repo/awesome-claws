@@ -48,7 +48,8 @@ export function deriveInvoiceDraft(record) {
     require(text(scope[key]), `Missing scope ${key}`);
   }
   require(/^[A-Z]{3}$/.test(scope.currency) && integer(scope.minorDigits) && scope.minorDigits <= 4, "Invalid currency precision");
-  require(!/^(agent|assistant|invoice-draft-producer)$/i.test(scope.reviewer), "A human reviewer is required");
+  const reviewer = scope.reviewer.normalize("NFKC").trim().toLowerCase().replace(/[\s_-]+/gu, " ");
+  require(!/^(agent|assistant|invoice draft producer)$/.test(reviewer), "A human reviewer is required");
   date(scope.invoiceDate);
   require(date(scope.periodStart) <= date(scope.periodEnd), "Reversed service period");
   require(date(scope.periodEnd) <= date(scope.invoiceDate), "Completion period is after invoice date");
@@ -89,7 +90,8 @@ export function deriveInvoiceDraft(record) {
     const reasons = [];
     if (total === 0n && item.decision === "bill") reasons.push("Supply a positive billable quantity or an explicit owner deferral/rejection; zero work is not already billed.");
     if (item.customer !== scope.customer || item.currency !== scope.currency) reasons.push("Resolve customer or currency mismatch.");
-    if (item.periodStart !== scope.periodStart || item.periodEnd !== scope.periodEnd) reasons.push("Resolve source service-period mismatch.");
+    if (date(item.periodStart) > date(item.periodEnd) || date(item.periodStart) < date(scope.periodStart)
+      || date(item.periodEnd) > date(scope.periodEnd)) reasons.push("Resolve source service-period mismatch.");
     if (!item.current) reasons.push("Supply the current source revision.");
     if (!history.complete) reasons.push("Confirm complete prior billing before calculating unbilled work.");
     if (item.decision !== "bill") {
@@ -172,6 +174,8 @@ export function renderInvoiceDraft(record) {
     const amount = BigInt(value);
     return `${s.currency} ${amount / scale}${s.minorDigits ? `.${(amount % scale).toString().padStart(s.minorDigits, "0")}` : ""}`;
   };
+  const balanceMoney = (value, currency) => currency === s.currency ? money(value)
+    : `${escape(currency)} ${value} minor units (source precision not supplied; not converted)`;
   const draft = ["# DRAFT - NOT ISSUED", `Draft: ${escape(s.draftRef)} revision ${escape(s.revision)}`,
     r.state === "blocked" ? "**BLOCKED WORKING DRAFT - incomplete; not a request for payment.**" : "Ready for owner review only; not a request for payment.",
     `Seller: ${escape(s.sellerBilling)}`, `Bill to: ${escape(s.customerBilling)}`,
@@ -192,7 +196,7 @@ export function renderInvoiceDraft(record) {
       + r.coverage.map((row) => `| ${escape(row.sourceId)}/${escape(row.revision)} | ${row.totalQuantity} | ${row.billedQuantity} | ${row.proposedQuantity} | ${row.disposition} |`).join("\n"),
     "## Source evidence", ...record.items.map((item) => `- ${escape(item.id)}: ${escape(item.sourceRef)}; approval ${escape(item.approvalRef ?? "missing")}; completion ${escape(item.completionRef ?? "missing")}; disposition ${escape(item.decisionRef ?? "bill if supported")}.`),
     "## Prior invoices", ...record.history.rows.map((row) => `- ${escape(row.sourceId)}: ${row.quantity} ${escape(row.unit)} on ${escape(row.invoiceRef)}.`),
-    "## Proposed balances", ...record.balances.map((balance) => `- ${escape(balance.id)}/${escape(balance.revision)}: ${escape(balance.sourceRef)}; remaining ${money(balance.remaining)}; proposed ${money(balance.proposed)}; authorization ${escape(balance.authorizationRef ?? "missing")} for ${escape(balance.draftRef)}/${escape(balance.draftRevision)}.`),
+    "## Proposed balances", ...record.balances.map((balance) => `- ${escape(balance.id)}/${escape(balance.revision)}: ${escape(balance.sourceRef)}; remaining ${balanceMoney(balance.remaining, balance.currency)}; proposed ${balanceMoney(balance.proposed, balance.currency)}; authorization ${escape(balance.authorizationRef ?? "missing")} for ${escape(balance.draftRef)}/${escape(balance.draftRevision)}.`),
     "## Calculations", ...r.lines.map((line) => `- ${escape(line.sourceId)}: ${line.quantity} x ${money(line.rateMinor)} = ${money(line.gross)}; discount ${money(line.discount)}; net ${money(line.net)}; ${line.taxBps / 100}% tax ${money(line.tax)}; total ${money(line.total)}.`),
     `Invoice total ${money(r.totals.total)}; proposed applications ${money(r.totals.applications)}; proposed due ${money(r.totals.due)}.`,
     "## Owner questions", ...(r.blockers.length ? r.blockers.map((blocker) => `- ${escape(blocker.id)}: ${escape(blocker.reason)}`) : ["No input blockers remain; the owner must review this exact draft revision."]),
