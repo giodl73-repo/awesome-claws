@@ -108,7 +108,8 @@
       "rfp-response-producer",
       "invoice-draft-producer",
       "job-estimate-producer",
-      "service-dispatch-planner"
+      "service-dispatch-planner",
+      "order-fulfillment-reconciler"
     ]
   },
   "visualCases": [

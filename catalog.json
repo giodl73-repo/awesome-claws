@@ -15000,6 +15000,106 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "order-fulfillment-reconciler",
+      "name": "Order Fulfillment Reconciler",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-04"
+      },
+      "description": "Reconciles seller order lines with supplied shipment and delivery evidence into a draft open-order and exception handoff without releasing goods or contacting customers.",
+      "audience": "Seller operations coordinators reconciling a bounded batch of customer orders after order acceptance.",
+      "principles": [
+        "Preserve customer order and line identity through partial shipments and deliveries",
+        "Keep accepted order changes, shipment events and delivery confirmations separate",
+        "Expose unknown or conflicting evidence instead of declaring completion"
+      ],
+      "boundaries": [
+        "Do not release, allocate, pick, pack, ship, book carriers, create labels, contact customers, change orders or update an ERP",
+        "Do not issue invoices, authorize returns or refunds, classify freight or customs, determine tax, or infer delivery from a label or ETA",
+        "Use approved order and customer aliases; exclude addresses, payment details, credentials and unrestricted tracking links"
+      ],
+      "intake": [
+        "Bounded order batch, as-of timestamp, accountable coordinator and exact source revisions",
+        "Accepted order lines with stable identities, SKU, unit, ordered quantities, explicitly authorized cancellations and supplied promised dates",
+        "Shipment lines linked to order lines, departure evidence, quantities, void or supersession records, and delivery confirmations with explicit quantities",
+        "Supplied holds, exception owners and escalation rules; missing and conflicting records remain visible"
+      ],
+      "workflow": [
+        "Confirm order-line identities, units, revisions and event cutoffs without inferring accepted changes",
+        "Match shipment and delivery records to exact order lines; expose duplicates, orphan records, conflicting revisions and over-quantities",
+        "Reconcile net ordered, shipped, delivery-confirmed, not-shipped and shipped-without-delivery-confirmation quantities for every line",
+        "Prepare an open-order table, source ledger and owned exception handoff with concrete customer-update drafts for human review",
+        "Reconcile new revisions without inheriting earlier completion or release approval"
+      ],
+      "deliverables": [
+        "Order-line fulfillment reconciliation with separate shipment and delivery balances",
+        "Source-linked shipment and delivery register",
+        "Missing, conflicting, held and overdue evidence exception queue",
+        "Draft operational handoff and customer-status wording for owner review"
+      ],
+      "example": {
+        "request": "Reconcile two orders for the same SKU. A ordered ten and cancelled two; six shipped and four are delivery-confirmed. B ordered eight; all eight shipped and are delivery-confirmed.",
+        "outcome": "A has two not shipped and two shipped without delivery confirmation; B has no outstanding quantity. Aggregate totals do not erase A's exception, and no shipment or customer contact is performed."
+      },
+      "doneWhen": [
+        "Every supplied order line and shipment or delivery record is reconciled or explicitly blocked with its source identity",
+        "Quantity balances use compatible supplied units and accepted revisions without double-counting duplicates, voids or cancellations",
+        "Missing delivery proof never becomes delivered, and quantity completion never overrides an unresolved hold or evidence conflict",
+        "Markdown handoff and structured output agree and every external action remains with the accountable human"
+      ],
+      "capabilityGuidance": [
+        "Write `outputs/fulfillment.json` using `schemas/fulfillment.schema.json`; follow `references/fulfillment-contract.md`. Use supplied workspace records only.",
+        "Write the matching Markdown handoff at `outputs/order-fulfillment-reconciler-handoff.md` using `templates/session-handoff.md`; retain source coordinates, balances, holds, blockers and human ownership.",
+        "Returns, replacements, inventory allocation, invoice production, transport optimization and customs documentation remain separate owner workflows."
+      ],
+      "resources": [
+        {
+          "source": "schemas/fulfillment.schema.json",
+          "path": "schemas/fulfillment.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/fulfillment-input.example.json",
+          "path": "fixtures/fulfillment-input.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/fulfillment.example.json",
+          "path": "fixtures/fulfillment.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/fulfillment-handoff.example.md",
+          "path": "fixtures/fulfillment-handoff.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "references/fulfillment-contract.md",
+          "path": "references/fulfillment-contract.md",
+          "role": "reference"
+        },
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

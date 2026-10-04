@@ -3541,6 +3541,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "order-fulfillment-reconciler",
+      "acceptedRequest": "Reconcile two orders for the same SKU. A ordered ten and cancelled two; six shipped and four are delivery-confirmed. B ordered eight; all eight shipped and are delivery-confirmed.",
+      "requiredEvidence": [
+        "Bounded order batch, as-of timestamp, accountable coordinator and exact source revisions",
+        "Accepted order lines with stable identities, SKU, unit, ordered quantities, explicitly authorized cancellations and supplied promised dates",
+        "Shipment lines linked to order lines, departure evidence, quantities, void or supersession records, and delivery confirmations with explicit quantities",
+        "Supplied holds, exception owners and escalation rules; missing and conflicting records remain visible"
+      ],
+      "authorityBoundaries": [
+        "Do not release, allocate, pick, pack, ship, book carriers, create labels, contact customers, change orders or update an ERP",
+        "Do not issue invoices, authorize returns or refunds, classify freight or customs, determine tax, or infer delivery from a label or ETA",
+        "Use approved order and customer aliases; exclude addresses, payment details, credentials and unrestricted tracking links"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/order-fulfillment-reconciler-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
