@@ -203,6 +203,7 @@
         "blockers": [
           {
             "id": "PRICING-2",
+            "code": "tax-treatment",
             "reason": "Supply explicit tax treatment; final quote total remains unknown."
           }
         ]

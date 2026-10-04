@@ -92,6 +92,39 @@ can later go to Deal Desk for the separate commercial approval job. Completed,
 approved work can later support an invoice; an estimate alone is not billable
 delivery or permission to collect payment.
 
+## Structured blockers
+
+For each scenario, report every applicable blocker using the affected `id`
+and stable `code` below. Keep a nonempty, human-readable `reason` explaining
+the missing evidence or owner decision. Wording and blocker order may vary;
+the `(id, code)` pairs and their multiplicity must match the current inputs.
+Explanations do not grant authority or replace evidence. Keep them private.
+
+| Code | Affected id | Condition |
+| --- | --- | --- |
+| `scenario-scope` | Scenario | Scope revision or equivalent-scope owner decision is unconfirmed. |
+| `scope-review` | Job | Owner scope review or customer-scope disclosure approval is missing. |
+| `quote-validity` | Quote | Proposed validity ends before the as-of date. |
+| `pricing-policy` | Pricing source | Policy is unconfirmed or rounding is not half-up per line. |
+| `scope-line-conflict` | Cost line | Line maps to excluded or blocked scope. |
+| `cost-evidence` | Cost line | Current, approved evidence or approval reference is missing. |
+| `cost-scope` | Cost line | Job, customer, currency or scope revision differs. |
+| `cost-validity` | Cost line | Observation/expiry dates do not support the as-of date through quote validity. |
+| `quantity` | Cost line | Quantity is missing or not positive. |
+| `rate` | Cost line | Rate is missing. |
+| `conversion` | Cost line | Positive conversion, same-unit factor one, or different-unit reference is missing. |
+| `allowance-decision` | Cost line | Allowance scope lacks an allowance line or owner decision. |
+| `allowance-classification` | Cost line | Priced scope is backed by an allowance line. |
+| `cost-slot-coverage` | Scope item | Mapped cost-line IDs differ from the owner's required IDs. |
+| `scope-decision` | Scope item | Explicit owner decision is missing. |
+| `blocked-scope` | Scope item | Scope disposition is blocked. |
+| `missing-costs` | Scope item | Priced or allowance scope has no cost lines. |
+| `scope-disclosure` | Scope item | Customer wording is not disclosure-approved. |
+| `empty-scope` | Job | Every scope item is excluded. |
+| `overhead-contingency` | Pricing source | Either supplied amount is missing. |
+| `tax-treatment` | Pricing source | Whole-quote tax rate is missing. |
+| `price-limit` | Pricing source | Computed pre-tax price exceeds the supplied review limit. |
+
 ## Structured input digest
 
 `result.inputDigest` checks freshness, not source authenticity or approval.
