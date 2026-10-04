@@ -54,6 +54,44 @@ test("estimate: explicit zero tax allows owner review but never a binding offer"
   assert.match(renderJobEstimate(value).quote, /QUOTE DRAFT - NOT A BINDING OFFER/);
 });
 
+test("estimate: customer option headings never disclose private scenario labels", () => {
+  const value = clone();
+  value.scenarios[0].label = "Internal labor USD 50/hour; supplier MATERIAL-6; 25% markup";
+  for (const approved of [false, true]) {
+    value.scope.disclosureApproved = approved; refresh(value);
+    const rendered = renderJobEstimate(value);
+    assert.match(rendered.quote, /## Proposed option 1/);
+    for (const secret of ["Internal labor", "MATERIAL-6", "25% markup"]) assert(!rendered.quote.includes(secret));
+    assert(rendered.workpaper.includes(value.scenarios[0].label));
+    assert.match(rendered.workpaper, /## Option 1:/);
+  }
+});
+
+test("estimate: workpaper reconciles supplied tax policy and complete quote totals", () => {
+  const value = clone();
+  value.scenarios[0].pricing.taxBps = 0; refresh(value);
+  const zero = renderJobEstimate(value);
+  assert.match(zero.workpaper, /Tax instruction: 0% of whole-job pre-tax price/);
+  assert.match(zero.workpaper, /Calculated tax: USD 0\.00; final quote total: USD 1000\.00/);
+  value.scenarios[0].pricing.taxBps = 1000; refresh(value);
+  const taxed = renderJobEstimate(value);
+  assert.notEqual(taxed.workpaper, zero.workpaper);
+  assert.match(taxed.workpaper, /Tax instruction: 10% of whole-job pre-tax price; rounding policy: half-up-per-line/);
+  assert.match(taxed.workpaper, /Calculated tax: USD 100\.00; final quote total: USD 1100\.00/);
+  assert.match(taxed.quote, /Final total: USD 1100\.00/);
+  value.scenarios[0].pricing.taxBps = null; refresh(value);
+  assert.match(renderJobEstimate(value).workpaper, /Calculated tax: Pending owner input; final quote total: Pending owner input/);
+});
+
+test("estimate: blocked foreign cost rates retain their actual currency and source units", () => {
+  const value = clone(); value.scenarios[0].lines[0].currency = "JPY"; refresh(value);
+  assert.equal(output(value).costs[0].state, "blocked");
+  assert.equal(output(value).costs[0].cost, null);
+  const row = renderJobEstimate(value).workpaper.split("\n").find((line) => line.startsWith(`| ${value.scenarios[0].lines[0].sourceRef}/`));
+  assert(row.includes("JPY 5000 minor units (source precision not supplied; not converted)"));
+  assert(!row.includes("USD 50.00"));
+});
+
 const mutations = [
   ["wrong cost", (x) => output(x).costs[0].cost++],
   ["wrong price", (x) => output(x).preTax++],

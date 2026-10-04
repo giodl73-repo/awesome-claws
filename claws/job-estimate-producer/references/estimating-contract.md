@@ -70,6 +70,12 @@ Internal line costs, rates, margins, supplier terms, source IDs and owner
 questions belong only in the private workpaper unless explicitly approved for
 disclosure. Do not put the internal workpaper into customer copy. Customer
 scope and exclusion wording must both be disclosure-approved.
+Use neutral numbered option headings in customer copy; scenario labels stay
+private because they may contain internal pricing details. Keep the same option
+numbers in the workpaper, with each supplied tax basis/rate, rounding policy,
+calculated tax and final quote total so both artifacts can be reconciled.
+For blocked foreign-currency cost rates without supplied precision, preserve
+the actual currency and raw minor units; never relabel them as quote currency.
 
 ## Completion and authority
 

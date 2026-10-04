@@ -1,5 +1,9 @@
 # QUOTE DRAFT - NOT A BINDING OFFER
 
+Use neutral numbered option headings, not private scenario labels. Reconcile
+each option's pre-tax price, supplied tax and final total with the private
+workpaper before owner review.
+
 Quote reference/revision: <draft identity>
 
 Customer/job/scope revision: <supplied identities>
