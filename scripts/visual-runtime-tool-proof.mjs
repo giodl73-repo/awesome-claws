@@ -22,6 +22,24 @@ export function assertWidgetToolResult(records) {
     try { output = JSON.parse(result.output); } catch {
       throw new Error("show_widget returned no structured canvas result.");
     }
+    const envelope = output;
+    if (emitted.emittedFunction === "tool_call") {
+      if (output?.tool?.name !== "show_widget" || output.tool.source !== "openclaw") {
+        throw new Error("Deferred widget result has the wrong tool identity.");
+      }
+      output = output.result?.details;
+    }
+    // A canvas-shaped payload must not hide a failed outer or nested execution.
+    for (const value of [envelope, envelope?.result, output]) {
+      if (value && (
+        value.isError === true || value.ok === false || value.success === false ||
+        value.error || value.timedOut === true ||
+        (value.exitCode !== undefined && value.exitCode !== 0) ||
+        (value.status !== undefined && !["ok", "success", "completed"].includes(value.status))
+      )) {
+        throw new Error("show_widget returned a failed tool result.");
+      }
+    }
     if (
       output?.kind !== "canvas" || output?.presentation?.target !== "assistant_message" ||
       typeof output?.view?.id !== "string" || !output.view.id ||
