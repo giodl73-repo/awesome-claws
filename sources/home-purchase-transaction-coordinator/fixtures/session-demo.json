@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "home-purchase-transaction-coordinator",
+  "scenario": "Reconcile the accepted offer, amendments, disclosures, inspection report, repair response, appraisal, lender conditions, title commitment, insurance binder request, estimated settlement statement, earnest-money receipt, and closing checklist I supplied for purchase HP-2026-09. Show exact source revisions, deadline conflicts, unmet conditions, missing independent receipts, wire-safety questions, and who must decide next. Do not interpret documents, advise me, contact anyone, negotiate, submit, order, schedule, sign, waive, pay, transfer funds, or say we are cleared to close.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the accepted offer, amendments, disclosures, inspection report, repair response, appraisal, lender conditions, title commitment, insurance binder request, estimated settlement statement, earnest-money receipt, and closing checklist I supplied for purchase HP-2026-09. Show exact source revisions, deadline conflicts, unmet conditions, missing independent receipts, wire-safety questions, and who must decide next. Do not interpret documents, advise me, contact anyone, negotiate, submit, order, schedule, sign, waive, pay, transfer funds, or say we are cleared to close."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/home-purchase-transaction-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Home purchase transaction coordinator session handoff",
+    "summary": "A private source- and subject-bound transaction ledger reconciles contract milestones, contingencies, professional workstreams, funds, owner actions, independent receipts, and unresolved conditions into an exact buyer-review handoff without transaction action or legal, financial, professional, readiness, or ownership conclusions.",
+    "output": "outputs/home-purchase-transaction-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Private transaction, authority, professional-role, source-revision, and chronology register",
+        "summary": "Every in-scope authority record, source revision, milestone, contingency, condition, amount, deadline candidate, workstream item, action, decision, receipt, conflict, gap, blocker, and next owner is represented exactly once with complete reciprocal provenance and chronology",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Contract milestone, contingency, condition, deadline, dependency, and amount ledger",
+        "summary": "Every asserted term, deadline, amount, status, professional finding, owner action, payment, delivery, waiver, satisfaction, or closing state follows exact kind-appropriate evidence from the documented supplier or independent recipient",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Inspection, appraisal, financing, title, insurance, tax, funds, closing, and possession workstream register",
+        "summary": "Every stale, conflicting, unsupported, disputed, professional-judgment, fraud-safety, or readiness state remains open and routes to a named qualified human without the Claw deciding legal effect, suitability, affordability, title, financing, insurance, tax, settlement, or closing",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-controlled action, decision, independent-receipt, conflict, gap, blocker, and next-owner register",
+        "summary": "Every external action remains proposed or owner-controlled, every claimed completion has an independent same-subject receipt where applicable, and the handoff exactly mirrors all unresolved state without exposing unapproved sensitive data or claiming clearance, closing, or ownership",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked or ready-for-buyer-review home-purchase handoff",
+        "summary": "Every in-scope authority record, source revision, milestone, contingency, condition, amount, deadline candidate, workstream item, action, decision, receipt, conflict, gap, blocker, and next owner is represented exactly once with complete reciprocal provenance and chronology",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -12,6 +12,7 @@ Ask for or confirm:
 
 - The XLSX skill can create and modify workbook files; default to a new output path, preserve formulas and templates, and require review before replacing any operational artifact.
 - Treat fixtures/spreadsheet-change.example.json only as a shape example. Validate outputs/spreadsheet-change.json against schemas/spreadsheet-change.schema.json and render templates/spreadsheet-change.md with source identity, sheet and formula preservation, transformation lineage, checks, exceptions, and owner authority.
+- For close workpapers, use references/close-workpaper.md and templates/close-workpaper.md; retain source scope and revisions, unexplained differences and separate-account residuals without inferred journals or close approval.
 
 ## Structured decision artifact contract
 

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Customer success program manager session report",
+  "output": "outputs/customer-success-review.md",
+  "sections": [
+    "exact_customer_tenant_account_and_plan_revision",
+    "workload_adoption_and_service_health",
+    "milestone_acceptance_receipts",
+    "risks_blockers_actions_and_receipts",
+    "decisions_and_review_cadence",
+    "renewal_and_escalation_handoff",
+    "blocked_authority"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+}

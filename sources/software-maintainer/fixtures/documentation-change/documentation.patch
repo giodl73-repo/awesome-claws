@@ -1,0 +1,85 @@
+diff --git a/guide.md b/guide.md
+--- a/guide.md
++++ b/guide.md
+@@ -1,17 +1,30 @@
+-# Create a job
+-
+-## Version 2
+-
+-Use POST /v2/jobs with project and name.
+-
+-```json
+-{"project":"project-demo","name":"monthly-review"}
+-```
+-
+-## Version 1
+-
+-Use POST /v1/jobs with project and name.
+-
+-```json
+-{"project":"project-demo","name":"monthly-review"}
+-```
++# Create a job
++
++Audience: developers preparing a request for the fictional Jobs API.
++
++## Version 2
++
++Use the v2 endpoint `POST /v2/jobs`. Supply the required `workspace` identifier
++and a nonempty `name`; `project` is not accepted by this version.
++
++1. Obtain a workspace identifier you are authorized to use.
++2. Prepare [the v2 request](request-v2.json), replacing the example values.
++3. Review the [versioned field reference](reference.md) before submitting through
++   your authorized client. This draft does not submit a request.
++
++```json
++{"workspace":"ws-demo","name":"monthly-review"}
++```
++
++## Version 1
++
++Version 1 remains documented separately: `POST /v1/jobs` requires `project` and
++`name`. Use [the v1 request](request-v1.json); do not send `workspace` to v1.
++
++```json
++{"project":"project-demo","name":"monthly-review"}
++```
++
++The supplied specifications do not define authentication, response payloads,
++server-side migration, or aliases. Ask the API owner for those details rather
++than assuming compatibility between versions.
+diff --git a/reference.md b/reference.md
+--- a/reference.md
++++ b/reference.md
+@@ -1,6 +1,12 @@
+-# Jobs API request fields
+-
+-| Version | Endpoint | Required fields |
+-| --- | --- | --- |
+-| v1 | POST /v1/jobs | project, name |
+-| v2 | POST /v2/jobs | project, name |
++# Jobs API request fields
++
++| Version | Endpoint | Required fields | Rejected legacy or future field |
++| --- | --- | --- | --- |
++| v1 | POST /v1/jobs | project, name | workspace |
++| v2 | POST /v2/jobs | workspace, name | project |
++
++All required fields are nonempty strings. Additional request fields are not
++accepted under the supplied specifications. No backward-compatible alias is
++specified. This reference describes request shape, not a successful server call.
++
++Return to [Create a job](guide.md).
+diff --git a/request-v2.json b/request-v2.json
+--- a/request-v2.json
++++ b/request-v2.json
+@@ -1,4 +1,4 @@
+-{
+-  "project": "project-demo",
+-  "name": "monthly-review"
+-}
++{
++  "workspace": "ws-demo",
++  "name": "monthly-review"
++}

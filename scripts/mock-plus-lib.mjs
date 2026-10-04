@@ -27,6 +27,7 @@ import {
   artifactSchemaName,
 } from "./artifact-validator-registry.mjs";
 import {
+  artifactSemanticValidationOptions,
   hasArtifactSemanticValidator,
   validateArtifactSemantics,
 } from "./artifact-semantics.mjs";
@@ -149,6 +150,10 @@ const semanticMutations = Object.freeze({
     },
   },
 });
+
+export function mockSemanticValidationOptions(clawId) {
+  return artifactSemanticValidationOptions(clawId);
+}
 
 export async function runBoundedMockPlusCaseGroup(
   label,
@@ -1207,7 +1212,11 @@ function artifactControls(
     const schema = schemaResult(validate, candidate);
     const findings =
       schema.valid && semanticValidator
-        ? validateArtifactSemantics(clawId, candidate)
+        ? validateArtifactSemantics(
+            clawId,
+            candidate,
+            mockSemanticValidationOptions(clawId),
+          )
         : [];
     return controlResult({
       clawId,
@@ -1344,7 +1353,11 @@ function semanticMutant(clawId, validate, fixture) {
   recipe.mutate(candidate);
   const schema = schemaResult(validate, candidate);
   const findings = schema.valid
-    ? validateArtifactSemantics(clawId, candidate)
+    ? validateArtifactSemantics(
+        clawId,
+        candidate,
+        mockSemanticValidationOptions(clawId),
+      )
     : [];
   return mutantResult({
     clawId,
@@ -1406,7 +1419,11 @@ function semanticPortfolioMutants(clawId, validate, fixture, recipes) {
     }
     let findings;
     try {
-      findings = validateArtifactSemantics(clawId, candidate);
+      findings = validateArtifactSemantics(
+        clawId,
+        candidate,
+        mockSemanticValidationOptions(clawId),
+      );
     } catch (error) {
       return {
         ...baseResult({

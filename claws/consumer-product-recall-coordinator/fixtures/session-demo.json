@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "consumer-product-recall-coordinator",
+  "scenario": "Organize the official recall notices I supplied for our portable power banks, countertop appliance, child product, and office charger. Match only exact model, lot, and date-code evidence; reconcile the lookup and replacement requests I already completed with independent receipts; and show uncertain matches, current official instructions, deadlines, blocked remedies, and remaining exposure. Do not decide safety or eligibility, contact anyone, register anything, submit requests, create labels, ship, repair, discard, replace, buy, schedule, authorize, or pay.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize the official recall notices I supplied for our portable power banks, countertop appliance, child product, and office charger. Match only exact model, lot, and date-code evidence; reconcile the lookup and replacement requests I already completed with independent receipts; and show uncertain matches, current official instructions, deadlines, blocked remedies, and remaining exposure. Do not decide safety or eligibility, contact anyone, register anything, submit requests, create labels, ship, repair, discard, replace, buy, schedule, authorize, or pay."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/consumer-product-recall-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Consumer product recall coordinator session handoff",
+    "summary": "A private versioned recall ledger separates official campaign claims from owner observations, binds each product-campaign match to minimized identity evidence, confirms completed owner actions only through independent receipts, and returns exact unresolved matches, instructions, deadlines, and next owners without diagnosis, advice, eligibility decisions, external action, or closure claims.",
+    "output": "outputs/consumer-product-recall-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Private product authority, identity, source, and chronology register",
+        "summary": "Every in-scope product, identity claim, source, campaign revision, affected criterion, instruction, remedy option, deadline, match state, owner action, receipt, outcome, gap, and next owner is represented once with provenance and chronology",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Official campaign revision, affected-identity criterion, instruction, remedy, deadline, and supersession register",
+        "summary": "Every product-campaign match is supported by exact identity and official campaign evidence or remains explicitly possible or unresolved; model similarity and narrative claims never become confirmed applicability",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact product-to-campaign match and unresolved-applicability matrix",
+        "summary": "Every owner-completed external action has an independent same-subject receipt, while planned, attempted, failed, blocked, withdrawn, superseded, and unreceipted actions remain distinguishable",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-action, attempt, independent-receipt, replacement, return, repair, refund, disposal, and residual-state ledger",
+        "summary": "The handoff exposes every missing identifier, stale or superseded campaign, conflict, urgent escalation, blocked remedy, missing receipt, deadline, and residual product state without claiming safety, defect, eligibility, entitlement, correction sufficiency, or closure",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Sensitive-data minimization, missing-evidence, urgent-escalation, and next-owner handoff",
+        "summary": "Every in-scope product, identity claim, source, campaign revision, affected criterion, instruction, remedy option, deadline, match state, owner action, receipt, outcome, gap, and next owner is represented once with provenance and chronology",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

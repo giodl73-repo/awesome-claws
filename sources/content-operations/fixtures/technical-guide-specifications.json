@@ -1,0 +1,25 @@
+{
+  "reference": "JOBS-API-SPECS-1",
+  "revision": "synthetic-2026-10-02",
+  "provenance": "Synthetic owner-supplied request specifications; no live service evidence.",
+  "specifications": {
+    "v1": {
+      "type": "object",
+      "required": ["project", "name"],
+      "properties": {
+        "project": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "v2": {
+      "type": "object",
+      "required": ["workspace", "name"],
+      "properties": {
+        "workspace": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

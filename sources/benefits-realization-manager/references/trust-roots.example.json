@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "awesomeClaws.testTrustStore.v1",
+  "authorities": {
+    "principal-finance-owner-erin": {
+      "benefits-authority-fixture-2026": {
+        "publicKeyDerBase64": "MCowBQYDK2VwAyEAr7iYsrmokYS/kq2ogB/KOOgVl5qSu4Ja76m9cgsj/f4="
+      }
+    },
+    "principal-finance-owner-mara": {
+      "benefits-authority-fixture-2026": {
+        "publicKeyDerBase64": "MCowBQYDK2VwAyEAr7iYsrmokYS/kq2ogB/KOOgVl5qSu4Ja76m9cgsj/f4="
+      }
+    }
+  }
+}

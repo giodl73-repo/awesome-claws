@@ -1,0 +1,12 @@
+schemaVersion: 1
+agent:
+  tools:
+    profile: full
+    allow:
+      - read
+      - write
+      - edit
+      - issue_tracker__create_issue
+      - issue_tracker__update_issue
+    fs:
+      workspaceOnly: true

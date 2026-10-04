@@ -1,0 +1,993 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/problem-known-error-candidate.schema.json",
+  "title": "IT Problem Evidence and Known-Error Coordinator candidate artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "problem",
+    "principals",
+    "evidence",
+    "incidentMemberships",
+    "incidentManifest",
+    "hypotheses",
+    "tests",
+    "workarounds",
+    "knownErrors",
+    "changeReceipts",
+    "recurrences",
+    "proseAttestation",
+    "coverage",
+    "authority",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.problemKnownErrorCandidate.v1"
+    },
+    "problem": {
+      "$ref": "#/$defs/problem"
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 19,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "incidentMemberships": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/incidentMembership"
+      }
+    },
+    "incidentManifest": {
+      "$ref": "#/$defs/incidentManifest"
+    },
+    "hypotheses": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/hypothesis"
+      }
+    },
+    "tests": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/test"
+      }
+    },
+    "workarounds": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/workaround"
+      }
+    },
+    "knownErrors": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/knownError"
+      }
+    },
+    "changeReceipts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/changeReceipt"
+      }
+    },
+    "recurrences": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/recurrence"
+      }
+    },
+    "proseAttestation": {
+      "$ref": "#/$defs/proseAttestation"
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "idList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "digestList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/digest"
+      }
+    },
+    "problem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "predecessorArtifactDigest",
+        "predecessorRevisionRef",
+        "declarationEvidenceRef",
+        "title",
+        "serviceRefs",
+        "declaredByRef",
+        "declaredAt",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "predecessorArtifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "predecessorRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "declarationEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "serviceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "declaredByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "declaredAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "const": "open"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "displayName",
+        "identityCredentialRef",
+        "scopes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "named-human",
+            "external-system",
+            "claw"
+          ]
+        },
+        "displayName": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "identityCredentialRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "problem-owner",
+              "incident-membership-declarer",
+              "hypothesis-owner",
+              "test-executor",
+              "workaround-approver",
+              "known-error-authority",
+              "root-cause-declarer",
+              "change-executor",
+              "incident-record-authority",
+              "public-source",
+              "problem-closure-authority",
+              "evidence-coordinator"
+            ]
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "trust",
+        "subjectRef",
+        "subjectRevision",
+        "producedByRef",
+        "sourceRef",
+        "recordDigest",
+        "observedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "incident-membership-declaration",
+            "incident-membership-manifest-signature",
+            "problem-revision-declaration",
+            "owner-prose-receipt",
+            "incident-record",
+            "public-observation",
+            "hypothesis-observation",
+            "test-result",
+            "workaround-approval",
+            "known-error-declaration",
+            "change-execution-receipt",
+            "change-verification",
+            "problem-change-link",
+            "recurrence-observation"
+          ]
+        },
+        "trust": {
+          "enum": [
+            "controlled-owner",
+            "public"
+          ]
+        },
+        "subjectRef": {
+          "$ref": "#/$defs/id"
+        },
+        "subjectRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "producedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceRef": {
+          "type": "string",
+          "format": "uri"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "incidentMembership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "problemRevision",
+        "incidentRef",
+        "incidentRevision",
+        "followUpRef",
+        "followUpIdentityKey",
+        "ownerArtifactDigest",
+        "ownerSchemaDigest",
+        "declaredByRef",
+        "declarationEvidenceRef",
+        "incidentRecordEvidenceRef",
+        "declaredAt",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "problemRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "incidentRef": {
+          "$ref": "#/$defs/id"
+        },
+        "incidentRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "followUpRef": {
+          "$ref": "#/$defs/id"
+        },
+        "followUpIdentityKey": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerArtifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerSchemaDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "declaredByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "declarationEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "incidentRecordEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "declaredAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "const": "declared-by-owner"
+        }
+      }
+    },
+    "incidentManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "problemRevision",
+        "membershipRevisionRefs",
+        "signedByRef",
+        "signatureEvidenceRef",
+        "signedAt",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "problemRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "membershipRevisionRefs": {
+          "$ref": "#/$defs/digestList"
+        },
+        "signedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signatureEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "const": "owner-signed"
+        }
+      }
+    },
+    "hypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "dispositionRevision",
+        "problemRevision",
+        "statement",
+        "ownerRef",
+        "state",
+        "competesWithRef",
+        "testRefs",
+        "testRevisionRefs",
+        "observationEvidenceRefs",
+        "proposedAt",
+        "revisedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "dispositionRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "problemRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "statement": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "supported",
+            "refuted"
+          ]
+        },
+        "competesWithRef": {
+          "$ref": "#/$defs/id"
+        },
+        "testRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "testRevisionRefs": {
+          "$ref": "#/$defs/digestList"
+        },
+        "observationEvidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "proposedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "revisedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "test": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "problemRevision",
+        "hypothesisRef",
+        "hypothesisRevisionRef",
+        "ownerArtifactDigest",
+        "ownerSchemaDigest",
+        "qaArtifactRef",
+        "testRunRef",
+        "buildId",
+        "environment",
+        "outcome",
+        "executedByRef",
+        "evidenceRef",
+        "executedAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "problemRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "hypothesisRef": {
+          "$ref": "#/$defs/id"
+        },
+        "hypothesisRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerArtifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerSchemaDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "qaArtifactRef": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "testRunRef": {
+          "$ref": "#/$defs/id"
+        },
+        "buildId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "environment": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "outcome": {
+          "enum": [
+            "supports",
+            "refutes"
+          ]
+        },
+        "executedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "executedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "workaround": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "problemRevision",
+        "hypothesisRef",
+        "hypothesisDispositionRevisionRef",
+        "instructions",
+        "state",
+        "approvedByRef",
+        "approvalEvidenceRef",
+        "approvedAt",
+        "expiresAt",
+        "publicationState",
+        "executionState"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "problemRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "hypothesisRef": {
+          "$ref": "#/$defs/id"
+        },
+        "hypothesisDispositionRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "instructions": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "state": {
+          "const": "owner-approved-active"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvalEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "publicationState": {
+          "const": "not-published"
+        },
+        "executionState": {
+          "const": "not-executed-by-claw"
+        }
+      }
+    },
+    "knownError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "problemRevision",
+        "causeHypothesisRef",
+        "causeHypothesisDispositionRevisionRef",
+        "workaroundRef",
+        "workaroundRevisionRef",
+        "causeState",
+        "declaredByRef",
+        "declarationEvidenceRef",
+        "declaredAt",
+        "publicationState"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "problemRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "causeHypothesisRef": {
+          "$ref": "#/$defs/id"
+        },
+        "causeHypothesisDispositionRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "workaroundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "workaroundRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "causeState": {
+          "const": "declared-by-owner"
+        },
+        "declaredByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "declarationEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "declaredAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "publicationState": {
+          "const": "not-published"
+        }
+      }
+    },
+    "changeReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "problemRevision",
+        "changePlanRef",
+        "planDigest",
+        "ownerArtifactDigest",
+        "ownerSchemaDigest",
+        "ownerPlanDigest",
+        "executionReceiptRef",
+        "linkEvidenceRef",
+        "executedByRef",
+        "executedAt",
+        "linkedAt",
+        "state",
+        "targetRefs",
+        "verificationEvidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "problemRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "changePlanRef": {
+          "$ref": "#/$defs/id"
+        },
+        "planDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerArtifactDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerSchemaDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerPlanDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "executionReceiptRef": {
+          "$ref": "#/$defs/id"
+        },
+        "linkEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "executedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "executedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "linkedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "const": "owner-executed"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "verificationEvidenceRefs": {
+          "$ref": "#/$defs/idList"
+        }
+      }
+    },
+    "recurrence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "problemRevision",
+        "incidentMembershipRef",
+        "incidentMembershipRevisionRef",
+        "changeReceiptRef",
+        "changeReceiptRevisionRef",
+        "evidenceRef",
+        "observedByRef",
+        "observedAt",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "problemRevision": {
+          "$ref": "#/$defs/digest"
+        },
+        "incidentMembershipRef": {
+          "$ref": "#/$defs/id"
+        },
+        "incidentMembershipRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "changeReceiptRef": {
+          "$ref": "#/$defs/id"
+        },
+        "changeReceiptRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "const": "observed-after-change"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "principalRefs",
+        "evidenceRefs",
+        "incidentMembershipRefs",
+        "incidentManifestRevisionRef",
+        "hypothesisRevisionRefs",
+        "hypothesisDispositionRevisionRefs",
+        "testRefs",
+        "workaroundRevisionRefs",
+        "knownErrorRevisionRefs",
+        "changeReceiptRefs",
+        "recurrenceRefs",
+        "proseAttestationRevisionRef",
+        "publicTrustEvidenceRefs"
+      ],
+      "properties": {
+        "state": {
+          "const": "exact-closed"
+        },
+        "principalRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "incidentMembershipRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "incidentManifestRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "hypothesisRevisionRefs": {
+          "$ref": "#/$defs/digestList"
+        },
+        "hypothesisDispositionRevisionRefs": {
+          "$ref": "#/$defs/digestList"
+        },
+        "testRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "workaroundRevisionRefs": {
+          "$ref": "#/$defs/digestList"
+        },
+        "knownErrorRevisionRefs": {
+          "$ref": "#/$defs/digestList"
+        },
+        "changeReceiptRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "recurrenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "proseAttestationRevisionRef": {
+          "$ref": "#/$defs/digest"
+        },
+        "publicTrustEvidenceRefs": {
+          "$ref": "#/$defs/idList"
+        }
+      }
+    },
+    "proseAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "ownerRef",
+        "surfaceDigest",
+        "receiptEvidenceRef",
+        "signedAt",
+        "policy"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "surfaceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "receiptEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "signedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "policy": {
+          "const": "owner-authored-non-authoritative"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "incidentCorrelation",
+        "rootCause",
+        "workaroundApproval",
+        "workaroundPublication",
+        "workaroundExecution",
+        "productionChange",
+        "incidentClosure",
+        "problemClosure",
+        "ticketMutation",
+        "riskAcceptance"
+      ],
+      "properties": {
+        "incidentCorrelation": {
+          "const": "owner-declared-only"
+        },
+        "rootCause": {
+          "const": "owner-declared-only"
+        },
+        "workaroundApproval": {
+          "const": "external-owner-evidence-only"
+        },
+        "workaroundPublication": {
+          "const": "not-claimed"
+        },
+        "workaroundExecution": {
+          "const": "not-claimed"
+        },
+        "productionChange": {
+          "const": "not-claimed"
+        },
+        "incidentClosure": {
+          "const": "not-claimed"
+        },
+        "problemClosure": {
+          "const": "not-claimed"
+        },
+        "ticketMutation": {
+          "const": "not-claimed"
+        },
+        "riskAcceptance": {
+          "const": "not-claimed"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "ownerRef",
+        "coordinatorRef",
+        "observedThrough",
+        "private",
+        "summary",
+        "nextDecision"
+      ],
+      "properties": {
+        "state": {
+          "const": "owner-review-ready"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "coordinatorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedThrough": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "private": {
+          "const": true
+        },
+        "summary": {
+          "const": "Three owner-declared incidents share one current problem revision; one hypothesis is supported, one is refuted, an owner-executed change was followed by recurrence, and the current workaround and known error remain owner-controlled."
+        },
+        "nextDecision": {
+          "const": "Escalate any known-error revision or publication, workaround renewal, production change, or problem closure to its existing owner-controlled process; the Claw makes none of those decisions."
+        }
+      }
+    }
+  }
+}

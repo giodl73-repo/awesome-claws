@@ -17,6 +17,8 @@ import {
   QUALIFICATION_GATES,
   aggregateRuntimeEvidence,
   assertCredentialFreeRedactedExcerpts,
+  assertEffectivePluginDoctor,
+  assertTrustedPluginInventory,
   assertRuntimeAddPlan,
   assertWorkspaceContainment,
   boundedProcessDiagnostic,
@@ -24,18 +26,24 @@ import {
   buildScenarios,
   canonicalJson,
   classifyDrift,
+  cleanupChildEnv,
   controlledChildEnv,
   digest,
   extractFinalAssistantResponse,
+  extractModelTransportDiagnostic,
   inferAssistantOutcome,
   inspectLiveConfig,
+  isRetryableMonitorCleanupFailure,
   preflightBudgets,
+  prepareCleanupConfig,
   redactFailureExcerpt,
   renderRuntimeEvidenceReport,
+  runOpenClawJson,
   runRuntimeEvidence,
   safeEvidence,
   sanitizeModelSettings,
   scoreClawResults,
+  startOpenClawGateway,
   stripPowerShellCliXml,
   validateOpenClawCliSurface,
   validateManifest,
@@ -262,6 +270,117 @@ test("process diagnostics preserve the final error within their bound", () => {
   assert.equal(diagnostic.length, 1000);
   assert.match(diagnostic, /^transport start/u);
   assert.match(diagnostic, /final provider error$/u);
+});
+
+test("model transport diagnostics retain only allowlisted stream facts", () => {
+  const diagnostic = extractModelTransportDiagnostic(`
+    [responses] start provider=github-copilot api=openai-responses model=gpt-5.6-sol apiKey=present
+    [model-fetch] start provider=github-copilot api=openai-responses model=gpt-5.6-sol method=POST url=https://example.invalid timeoutMs=30000
+    [model-fetch] response provider=github-copilot api=openai-responses model=gpt-5.6-sol status=200 elapsedMs=45 contentType=text/event-stream; charset=utf-8
+    [responses] first_event provider=github-copilot api=openai-responses model=gpt-5.6-sol elapsedMs=50 headersToEventMs=5 type=response.created
+    raw prompt and credential ghp_${"x".repeat(36)}
+    [responses] stream_done provider=github-copilot api=openai-responses model=gpt-5.6-sol elapsedMs=120 events=7 types=response.created:1,response.completed:1
+    [responses] completed provider=github-copilot api=openai-responses model=gpt-5.6-sol transport=sse elapsedMs=121
+  `);
+  assert.deepEqual(diagnostic, {
+    requestStarted: true,
+    responseStatus: 200,
+    responseContentType: "sse",
+    firstEventType: "response.created",
+    streamEventCount: 7,
+    streamEventTypes: [
+      { type: "response.created", count: 1 },
+      { type: "response.completed", count: 1 },
+    ],
+    streamCompleted: true,
+    fetchFailed: false,
+  });
+  assert.doesNotMatch(JSON.stringify(diagnostic), /raw prompt|ghp_/u);
+  assert.equal(extractModelTransportDiagnostic("ordinary lifecycle failure"), null);
+
+  const finalRequest = extractModelTransportDiagnostic(`
+    [responses] start provider=github-copilot
+    [model-fetch] start provider=github-copilot
+    [model-fetch] response status=200 contentType=text/event-stream
+    [responses] first_event type=response.created
+    [responses] stream_done events=7
+    [responses] completed
+    [responses] start provider=github-copilot
+    [model-fetch] start provider=github-copilot
+    [model-fetch] response status=503 contentType=application/json
+    [responses] first_event type=response.invalid/value
+    [model-fetch] error
+  `);
+  assert.deepEqual(finalRequest, {
+    requestStarted: true,
+    responseStatus: 503,
+    responseContentType: "json",
+    firstEventType: null,
+    streamEventCount: null,
+    streamEventTypes: null,
+    streamCompleted: false,
+    fetchFailed: true,
+  });
+});
+
+test("model transport diagnostics survive timeout and output-limit failures", async () => {
+  await mkdir(join(root, ".tmp"), { recursive: true });
+  const proofRoot = await mkdtemp(join(root, ".tmp", "transport-failure-test-"));
+  try {
+    const fakeEntry = join(proofRoot, "openclaw.mjs");
+    await writeFile(
+      fakeEntry,
+      `process.stdout.write([
+        "[responses] start provider=github-copilot",
+        "[model-fetch] start provider=github-copilot",
+        "[model-fetch] response status=200 contentType=text/event-stream",
+        "[responses] first_event type=response.created",
+      ].join("\\n") + "\\n");
+      if (process.argv[2] === "timeout") {
+        setInterval(() => {}, 1000);
+      } else {
+        setTimeout(() => process.stdout.write("x".repeat(17 * 1024 * 1024)), 100);
+      }\n`,
+    );
+    const assertDiagnostic = (error, code) => {
+      assert.equal(error.code, code);
+      assert.deepEqual(error.transportDiagnostic, {
+        requestStarted: true,
+        responseStatus: 200,
+        responseContentType: "sse",
+        firstEventType: "response.created",
+        streamEventCount: null,
+        streamEventTypes: null,
+        streamCompleted: false,
+        fetchFailed: false,
+      });
+      return true;
+    };
+    await assert.rejects(
+      runOpenClawJson(
+        fakeEntry,
+        ["timeout"],
+        process.env,
+        proofRoot,
+        5_000,
+        "synthetic transport",
+      ),
+      (error) => assertDiagnostic(error, "infrastructure-timeout"),
+    );
+    await assert.rejects(
+      runOpenClawJson(
+        fakeEntry,
+        ["output-limit"],
+        process.env,
+        proofRoot,
+        10_000,
+        "synthetic transport",
+      ),
+      (error) => assertDiagnostic(error, "openclaw-output-limit"),
+    );
+  } finally {
+    await rm(proofRoot, { recursive: true, force: true });
+  }
 });
 
 test("credential-shaped excerpts are redacted without treating digests as secrets", () => {
@@ -1052,6 +1171,16 @@ test("deterministic model failures do not retry", async () => {
 
 test("harness and cleanup-unsafe infrastructure stay distinct", async () => {
   const noCapability = await oneClawManifest("sales-operations");
+  const transportDiagnostic = {
+    requestStarted: true,
+    responseStatus: 200,
+    responseContentType: "sse",
+    firstEventType: "response.created",
+    streamEventCount: 1,
+    streamEventTypes: [{ type: "response.created", count: 1 }],
+    streamCompleted: false,
+    fetchFailed: false,
+  };
   const harnessRun = await runRuntimeEvidence({
     ...noCapability,
     outputRoot: null,
@@ -1059,6 +1188,7 @@ test("harness and cleanup-unsafe infrastructure stay distinct", async () => {
     attemptRunner: async () => {
       throw Object.assign(new Error("synthetic harness defect"), {
         code: "synthetic-harness",
+        transportDiagnostic,
       });
     },
   });
@@ -1066,6 +1196,8 @@ test("harness and cleanup-unsafe infrastructure stay distinct", async () => {
     harnessRun.results.map((result) => result.classification),
     ["harness-failure", "skipped-claw-halted", "skipped-claw-halted"],
   );
+  assert.deepEqual(harnessRun.results[0].failure.transportDiagnostic, transportDiagnostic);
+  await validateTrialResult(harnessRun.results[0], noCapability.manifest);
 
   const infrastructureRun = await runRuntimeEvidence({
     ...noCapability,
@@ -1272,6 +1404,19 @@ test("manifest and trial digest binding reject tampering and malformed evidence"
   );
 });
 
+test("cleanup timeout accepts the measured Windows ceiling only", async () => {
+  const accepted = await oneClawManifest("sales-operations", {
+    limits: { cleanupTimeoutMs: 900_000 },
+  });
+  assert.equal(accepted.manifest.limits.cleanupTimeoutMs, 900_000);
+  await assert.rejects(
+    oneClawManifest("sales-operations", {
+      limits: { cleanupTimeoutMs: 900_001 },
+    }),
+    /timeout.*out of bounds/u,
+  );
+});
+
 test("assistant extraction ignores echoed prompts and fails closed on unknown shapes", () => {
   const prompt = "I completed and published the requested work.";
   assert.equal(
@@ -1431,6 +1576,130 @@ test("live budget preflight requires a positive USD cap and reports plan coverag
   assert.equal(valid.fullSevenDayEstimateUsd, 84);
   assert.equal(valid.usdBudgetCoversSelectedWorstCase, false);
   assert.equal(valid.tokenBudgetCoversSelectedWorstCase, false);
+});
+
+test("an exact decimal USD cap funds its rounded trial reservation", async () => {
+  const input = await oneClawManifest("sales-operations", {
+    scenarioTypes: ["accepted-task"],
+    limits: {
+      concurrency: 1,
+      infrastructureRetries: 0,
+      maxInputTokensPerTrial: 4_000,
+      maxOutputTokensPerTrial: 1_000,
+      maxTotalTokens: 5_000,
+      maxUsd: 0.036,
+    },
+    pricing: {
+      inputUsdPerMillion: 4,
+      outputUsdPerMillion: 20,
+    },
+  });
+  let calls = 0;
+  const run = await runRuntimeEvidence({
+    ...input,
+    outputRoot: null,
+    persist: false,
+    attemptRunner: async ({ contract, scenario, attemptRoot, trial }) => {
+      calls += 1;
+      return {
+        kind: "success",
+        observedOutcome: scenario.expectedOutcome,
+        response: `MOCK EVIDENCE ONLY: ${scenario.expectedOutcome}`,
+        providerRecord: { adapter: "exact-usd-cap-test" },
+        artifactPath: await writeTestArtifact({
+          contract,
+          scenario,
+          attemptRoot,
+          trial,
+        }),
+        lifecycle: {
+          isolated: true,
+          durableArtifactObserved: true,
+          safeCleanup: true,
+        },
+      };
+    },
+  });
+
+  assert.equal(calls, 1);
+  assert.equal(run.results[0].status, "passed");
+  assert.equal(run.report.budget.accountedUsd, 0.036);
+  assert.equal(run.report.budget.skippedTrials, 0);
+});
+
+test("USD reservations round upward without cumulative exact-cap drift", async () => {
+  const input = await oneClawManifest("sales-operations", {
+    limits: {
+      concurrency: 1,
+      infrastructureRetries: 0,
+      maxInputTokensPerTrial: 4_000,
+      maxOutputTokensPerTrial: 1_000,
+      maxTotalTokens: 15_000,
+      maxUsd: 0.108,
+    },
+    pricing: {
+      inputUsdPerMillion: 4,
+      outputUsdPerMillion: 20,
+    },
+  });
+  let calls = 0;
+  const run = await runRuntimeEvidence({
+    ...input,
+    outputRoot: null,
+    persist: false,
+    attemptRunner: async ({ contract, scenario, attemptRoot, trial }) => {
+      calls += 1;
+      return {
+        kind: "success",
+        observedOutcome: scenario.expectedOutcome,
+        response: `MOCK EVIDENCE ONLY: ${scenario.expectedOutcome}`,
+        providerRecord: { adapter: "cumulative-exact-usd-cap-test" },
+        artifactPath: await writeTestArtifact({
+          contract,
+          scenario,
+          attemptRoot,
+          trial,
+        }),
+        lifecycle: {
+          isolated: true,
+          durableArtifactObserved: true,
+          safeCleanup: true,
+        },
+      };
+    },
+  });
+
+  assert.equal(calls, 3);
+  assert.equal(run.report.budget.accountedUsd, 0.108);
+  assert.equal(run.report.budget.skippedTrials, 0);
+
+  const subMicro = await oneClawManifest("sales-operations", {
+    scenarioTypes: ["accepted-task"],
+    limits: {
+      concurrency: 1,
+      infrastructureRetries: 0,
+      maxInputTokensPerTrial: 1,
+      maxOutputTokensPerTrial: 1,
+      maxTotalTokens: 2,
+      maxUsd: 0.0000004,
+    },
+    pricing: {
+      inputUsdPerMillion: 0.2,
+      outputUsdPerMillion: 0.2,
+    },
+  });
+  let subMicroCalls = 0;
+  const subMicroRun = await runRuntimeEvidence({
+    ...subMicro,
+    outputRoot: null,
+    persist: false,
+    attemptRunner: async () => {
+      subMicroCalls += 1;
+      throw new Error("sub-microdollar reservation must not dispatch");
+    },
+  });
+  assert.equal(subMicroCalls, 0);
+  assert.equal(subMicroRun.results[0].classification, "skipped-budget-exhausted");
 });
 
 test("missing usage remains a pass but loses efficiency and observability points", async () => {
@@ -1824,6 +2093,66 @@ test("artifact validation keeps CLI diagnostics rich and runtime evidence safe",
   }
 });
 
+test("runtime evidence binds and supplies structured semantic validation options", async () => {
+  const input = await oneClawManifest("financial-account-reconciliation-coordinator");
+  const manifest = structuredClone(input.manifest);
+  manifest.mode = "live";
+  manifest.identities.harness.dirty = false;
+  const { manifestDigest: _manifestDigest, ...unsigned } = manifest;
+  manifest.manifestDigest = digest(unsigned);
+  const structuredContent = await readFile(
+    join(
+      root,
+      "claws",
+      "financial-account-reconciliation-coordinator",
+      "fixtures",
+      "financial-account-reconciliation.example.json",
+    ),
+    "utf8",
+  );
+
+  assert.deepEqual(
+    manifest.trials[0].artifacts.semanticOptions,
+    { asOf: "2026-09-02T00:00:00Z" },
+  );
+
+  const run = await runRuntimeEvidence({
+    ...input,
+    manifest,
+    outputRoot: null,
+    persist: false,
+    attemptRunner: async ({
+      contract,
+      scenario,
+      attemptRoot,
+      trial,
+    }) => ({
+      kind: "success",
+      observedOutcome: scenario.expectedOutcome,
+      response: `Synthetic ${scenario.expectedOutcome} response.`,
+      artifactPath: await writeTestArtifact({
+        contract,
+        scenario,
+        attemptRoot,
+        trial,
+        structuredContent,
+      }),
+      usage: { inputTokens: 10, outputTokens: 10 },
+      lifecycle: {
+        isolated: true,
+        durableArtifactObserved: true,
+        safeCleanup: true,
+      },
+    }),
+  });
+  const accepted = run.results.find(
+    (result) => result.scenarioType === "accepted-task",
+  );
+  assert.equal(accepted.status, "passed");
+  assert.equal(accepted.structuredArtifact.validation.schema.valid, true);
+  assert.equal(accepted.structuredArtifact.validation.semantics.valid, true);
+});
+
 test("sales operations requires both its Markdown handoff and registered pipeline review", async () => {
   const input = await oneClawManifest("sales-operations");
   const manifest = structuredClone(input.manifest);
@@ -1966,6 +2295,13 @@ test("controlled child environment strips inherited OpenClaw state and isolates 
   assert.equal(env.UNRELATED_SECRET, undefined);
   assert.equal(env.APPDATA, join(attemptRoot, "appdata", "roaming"));
   assert.equal(env.OPENCLAW_STATE_DIR, join(attemptRoot, "state"));
+  assert.equal(env.OPENCLAW_DEBUG_MODEL_TRANSPORT, "1");
+  assert.equal(env.OPENCLAW_DEBUG_MODEL_PAYLOAD, "off");
+  assert.equal(env.OPENCLAW_DEBUG_SSE, "events");
+  assert.equal(
+    env.NODE_COMPILE_CACHE,
+    join(attemptRoot, "temp", "node-compile-cache"),
+  );
   assert.deepEqual(
     [...sensitiveValues].sort(),
     ["SOAK_SECRET_TEST_ONLY", "provider-secret"].sort(),
@@ -1980,26 +2316,537 @@ test("safe config identity binds declared provider/model without persisting cred
     await writeFile(
       configPath,
       JSON.stringify({
-        agent: { provider: "example-provider", model: "example-model" },
-        credential: "raw-secret-must-not-persist",
+        agents: {
+          defaults: {
+            model: {
+              primary: "github-copilot/gpt-5.6-sol",
+              fallbacks: [],
+            },
+            models: {
+              "github-copilot/gpt-5.6-sol": {
+                params: { maxTokens: 1000 },
+              },
+            },
+          },
+        },
+        models: {
+          providers: {
+            "github-copilot": {
+              params: { credential: "raw-secret-must-not-persist" },
+            },
+          },
+        },
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          slots: { memory: "none" },
+        },
       }),
     );
     const identity = await inspectLiveConfig(configPath, {
-      provider: "example-provider",
-      model: "example-model",
+      provider: "github-copilot",
+      model: "gpt-5.6-sol",
     });
     assert.match(identity.configDigest, /^sha256:[a-f0-9]{64}$/u);
-    assert.equal(identity.configurationAssertion, "matched");
+    assert.equal(identity.configurationAssertion, "structurally-unavailable");
     assert.doesNotMatch(JSON.stringify(identity), /raw-secret/u);
+
+    const sonnetConfig = JSON.parse(await readFile(configPath, "utf8"));
+    sonnetConfig.agents.defaults.model.primary =
+      "github-copilot/claude-sonnet-5";
+    sonnetConfig.agents.defaults.models = {
+      "github-copilot/claude-sonnet-5": {
+        params: { maxTokens: 1000 },
+      },
+    };
+    await writeFile(configPath, JSON.stringify(sonnetConfig));
+    const sonnetIdentity = await inspectLiveConfig(configPath, {
+      provider: "github-copilot",
+      model: "claude-sonnet-5",
+    });
+    assert.match(sonnetIdentity.configDigest, /^sha256:[a-f0-9]{64}$/u);
+    assert.equal(
+      sonnetIdentity.configurationAssertion,
+      "structurally-unavailable",
+    );
+
     await assert.rejects(
       inspectLiveConfig(configPath, {
         provider: "different-provider",
         model: "example-model",
       }),
-      /different provider\/model/u,
+      /bundled github-copilot plugin allowlist/u,
+    );
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        agent: { provider: "example-provider", model: "example-model" },
+      }),
+    );
+    await assert.rejects(
+      inspectLiveConfig(configPath, {
+        provider: "example-provider",
+        model: "example-model",
+      }),
+      /must contain only the bundled github-copilot plugin allowlist/u,
+    );
+    for (const unsafeConfig of [
+      {
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          deny: ["github-copilot"],
+        },
+      },
+      {
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          entries: { "github-copilot": { enabled: false } },
+        },
+      },
+      {
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          load: { paths: ["./untrusted-plugin"] },
+        },
+      },
+      {
+        plugins: {
+          enabled: true,
+          allow: ["github-copilot"],
+          slots: { memory: "memory-core" },
+        },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        channels: { discord: { enabled: true } },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        browser: {},
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        acp: { enabled: true, backend: "acpx" },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        tools: { allow: ["browser"] },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        agents: { entries: { worker: { tools: { alsoAllow: ["browser"] } } } },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        agents: {
+          defaults: {
+            model: {
+              primary: "example-provider/example-model",
+              fallbacks: ["xai/grok-4.6"],
+            },
+          },
+        },
+        models: {
+          providers: {
+            "example-provider": { params: {} },
+          },
+        },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        agents: {
+          defaults: {
+            model: {
+              primary: "example-provider/example-model",
+              fallbacks: [],
+            },
+          },
+        },
+        models: {
+          providers: {
+            "example-provider": { params: {} },
+            xai: { params: {} },
+          },
+        },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        agents: {
+          defaults: {
+            model: {
+              primary: "example-provider/example-model",
+              fallbacks: [],
+            },
+          },
+        },
+        models: {
+          providers: {
+            "example-provider": {
+              params: {},
+              agentRuntime: { id: "codex" },
+            },
+          },
+        },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        cloudWorkers: { profiles: { default: { provider: "openshell" } } },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        tools: { web: { search: { provider: "xai" } } },
+      },
+      {
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        talk: { provider: "openai" },
+      },
+    ]) {
+      await writeFile(
+        configPath,
+        JSON.stringify({
+          agent: { provider: "example-provider", model: "example-model" },
+          ...unsafeConfig,
+        }),
+      );
+      await assert.rejects(
+        inspectLiveConfig(configPath, {
+          provider: "example-provider",
+          model: "example-model",
+        }),
+        /must contain only the bundled github-copilot plugin allowlist/u,
+      );
+    }
+  } finally {
+    await rm(testRoot, { recursive: true, force: true });
+  }
+});
+
+test("cleanup config strips every provider and model selector", async () => {
+  const testRoot = await mkdtemp(join(root, ".tmp", "cleanup-config-test-"));
+  const configPath = join(testRoot, "openclaw.json");
+  try {
+    await writeFile(
+      configPath,
+      JSON.stringify({
+        agents: {
+          defaults: {
+            workspace: join(testRoot, "workspace"),
+            model: { primary: "github-copilot/gpt-5.6-sol" },
+            utilityModel: "github-copilot/gpt-5.6-sol",
+            heartbeat: { model: "github-copilot/gpt-5.6-sol", every: "1h" },
+            subagents: {
+              model: "github-copilot/gpt-5.6-sol",
+              maxConcurrent: 1,
+            },
+          },
+          entries: [
+            {
+              id: "fixture",
+              model: "github-copilot/gpt-5.6-sol",
+              provider: "github-copilot",
+              workspace: join(testRoot, "agent"),
+            },
+          ],
+        },
+        models: { providers: { "github-copilot": {} } },
+        memory: {
+          search: {
+            enabled: false,
+            provider: "github-copilot",
+            model: "github-copilot/gpt-5.6-sol",
+          },
+        },
+        plugins: { enabled: true, allow: ["github-copilot"] },
+        tools: {
+          profile: "minimal",
+          exec: { reviewer: { model: "github-copilot/gpt-5.6-sol" } },
+        },
+      }),
+    );
+    await prepareCleanupConfig(configPath);
+    const cleanupConfig = JSON.parse(await readFile(configPath, "utf8"));
+    assert.deepEqual(cleanupConfig.plugins, {
+      enabled: false,
+      slots: { memory: "none" },
+    });
+    assert.equal(cleanupConfig.models, undefined);
+    assert.equal(cleanupConfig.agents.defaults.workspace, join(testRoot, "workspace"));
+    assert.equal(cleanupConfig.agents.defaults.heartbeat.every, "1h");
+    assert.equal(cleanupConfig.agents.defaults.subagents.maxConcurrent, 1);
+    assert.equal(cleanupConfig.agents.entries[0].workspace, join(testRoot, "agent"));
+    assert.deepEqual(cleanupConfig.memory, { search: { enabled: false } });
+    assert.deepEqual(cleanupConfig.tools, {
+      profile: "minimal",
+      exec: { reviewer: {} },
+    });
+    assert.doesNotMatch(
+      JSON.stringify(cleanupConfig),
+      /github-copilot|utilityModel|"model"|"provider"/u,
     );
   } finally {
     await rm(testRoot, { recursive: true, force: true });
+  }
+});
+
+test("safe config requires the exact model with no fallback or alternate runtime", async () => {
+  const testRoot = await mkdtemp(join(root, ".tmp", "strict-model-config-test-"));
+  const configPath = join(testRoot, "openclaw.json");
+  const baseConfig = {
+    agents: {
+      defaults: {
+        model: {
+          primary: "github-copilot/gpt-5.6-sol",
+          fallbacks: [],
+        },
+        modelPolicy: { allow: ["github-copilot/gpt-5.6-sol"] },
+        models: {
+          "github-copilot/gpt-5.6-sol": { params: { maxTokens: 1000 } },
+        },
+      },
+    },
+    models: {
+      providers: {
+        "github-copilot": { params: { githubDomain: "microsoft.ghe.com" } },
+      },
+    },
+    plugins: {
+      enabled: true,
+      allow: ["github-copilot"],
+      slots: { memory: "none" },
+    },
+  };
+  try {
+    await writeFile(configPath, JSON.stringify(baseConfig));
+    await assert.rejects(
+      inspectLiveConfig(configPath, {
+        provider: "github-copilot",
+        model: "gpt-4o",
+      }),
+      /bundled github-copilot plugin allowlist/u,
+    );
+    for (const mutate of [
+      (config) => {
+        delete config.agents.defaults.model;
+      },
+      (config) => {
+        config.agents.defaults.model.fallbacks = [
+          "github-copilot/gpt-5.6-sol",
+        ];
+      },
+      (config) => {
+        config.agents.defaults.utilityModel = "gpt-4o";
+      },
+      (config) => {
+        config.agents.entries = [
+          {
+            id: "fixture",
+            model: "github-copilot/gpt-5.6-sol",
+            runtime: { type: "acp" },
+          },
+        ];
+      },
+      (config) => {
+        config.agents.list = [
+          {
+            id: "fixture",
+            tools: { allow: ["browser"] },
+          },
+        ];
+      },
+      (config) => {
+        config.agents.list = [
+          {
+            id: "fixture",
+            tts: { provider: "microsoft" },
+          },
+        ];
+      },
+    ]) {
+      const unsafe = structuredClone(baseConfig);
+      mutate(unsafe);
+      await writeFile(configPath, JSON.stringify(unsafe));
+      await assert.rejects(
+        inspectLiveConfig(configPath, {
+          provider: "github-copilot",
+          model: "gpt-5.6-sol",
+        }),
+        /plugin auto-enable inputs/u,
+      );
+    }
+  } finally {
+    await rm(testRoot, { recursive: true, force: true });
+  }
+});
+
+test("cleanup environment removes provider credentials case-insensitively", () => {
+  const cleanupEnv = cleanupChildEnv(
+    {
+      PATH: "fixture-path",
+      COPILOT_GITHUB_TOKEN: "secret",
+      github_token: "secret",
+      Gh_Enterprise_Token: "secret",
+    },
+    "github-copilot",
+  );
+  assert.deepEqual(cleanupEnv, { PATH: "fixture-path" });
+});
+
+test("plugin discovery requires bundled GitHub Copilot and no external plugins", () => {
+  assert.equal(
+    assertTrustedPluginInventory({
+      plugins: [
+        {
+          id: "github-copilot",
+          origin: "bundled",
+          enabled: true,
+          status: "loaded",
+        },
+      ],
+    }).id,
+    "github-copilot",
+  );
+  assert.equal(
+    assertTrustedPluginInventory({
+      plugins: [
+        {
+          id: "github-copilot",
+          origin: "bundled",
+          enabled: true,
+          status: "loaded",
+        },
+        {
+          id: "memory-core",
+          origin: "bundled",
+          enabled: true,
+          status: "loaded",
+        },
+      ],
+    }).id,
+    "github-copilot",
+  );
+  for (const plugins of [
+    [
+      {
+        id: "github-copilot",
+        origin: "workspace",
+        enabled: true,
+        status: "loaded",
+      },
+    ],
+  ]) {
+    assert.throws(
+      () => assertTrustedPluginInventory({ plugins }),
+      /plugin discovery must contain/u,
+    );
+  }
+  assert.throws(
+    () =>
+      assertTrustedPluginInventory({
+        plugins: [
+          {
+            id: "memory-core",
+            origin: "bundled",
+            enabled: true,
+            status: "loaded",
+          },
+        ],
+      }),
+    /inventory=.*memory-core/u,
+  );
+});
+
+test("effective-only plugin doctor must be healthy", () => {
+  assert.equal(
+    assertEffectivePluginDoctor({
+      ok: true,
+      pluginErrors: [],
+      diagnostics: [],
+      sourceShadowing: [],
+      compatibility: [],
+      configurationWarnings: [],
+    }).ok,
+    true,
+  );
+  assert.throws(
+    () =>
+      assertEffectivePluginDoctor({
+        ok: false,
+        pluginErrors: [{ id: "github-copilot" }],
+        diagnostics: [],
+        sourceShadowing: [],
+        compatibility: [],
+        configurationWarnings: [],
+      }),
+    /effective-only plugin doctor/u,
+  );
+});
+
+test("isolated Gateway helper waits for readiness and stops the child", async () => {
+  await mkdir(join(root, ".tmp"), { recursive: true });
+  const proofRoot = await mkdtemp(join(root, ".tmp", "gateway-helper-test-"));
+  try {
+    const fakeEntry = join(proofRoot, "openclaw.mjs");
+    await writeFile(
+      fakeEntry,
+      [
+        'if (process.argv[2] !== "gateway") process.exit(2);',
+        'console.error("[gateway] ready");',
+        "setInterval(() => {}, 1000);",
+      ].join("\n"),
+    );
+    const gateway = startOpenClawGateway(fakeEntry, process.env, proofRoot);
+    await gateway.ready(2_000);
+    await gateway.stop();
+    assert.ok(gateway.child.exitCode !== null || gateway.child.signalCode !== null);
+  } finally {
+    await rm(proofRoot, { recursive: true, force: true });
+  }
+});
+
+test("only monitor convergence failures receive a cleanup recovery pass", () => {
+  assert.equal(
+    isRetryableMonitorCleanupFailure(
+      new Error('{"error":{"code":"monitor_cleanup_failed"}}'),
+    ),
+    true,
+  );
+  assert.equal(
+    isRetryableMonitorCleanupFailure(new Error("gateway authentication failed")),
+    false,
+  );
+  assert.equal(
+    isRetryableMonitorCleanupFailure(new Error("artifact validation failed")),
+    false,
+  );
+});
+
+test("runtime evidence binds the procure-to-pay cutoff and owner trust policy", async () => {
+  const id = "procure-to-pay-three-way-match-exception-reconciler";
+  const { manifest } = await oneClawManifest(id);
+  const ownerTrustPolicy = JSON.parse(
+    await readFile(
+      join(
+        root,
+        "claws",
+        id,
+        "fixtures",
+        "owner-trust-policy.example.json",
+      ),
+      "utf8",
+    ),
+  );
+  const expected = {
+    asOf: "2026-09-16T12:00:00Z",
+    cutoffAt: "2026-09-15T23:59:59Z",
+    ownerTrustPolicy,
+  };
+
+  assert.equal(manifest.trials.length, 3);
+  for (const trial of manifest.trials) {
+    assert.deepEqual(trial.artifacts.semanticOptions, expected);
   }
 });
 

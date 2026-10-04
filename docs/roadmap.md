@@ -1,6 +1,6 @@
 # Awesome Claws roadmap
 
-Awesome Claws has 103 maintained starter Claws. The catalog now covers a broad
+Awesome Claws has 141 maintained starter Claws. The catalog now covers a broad
 personal-agent lane, a work-operations lane, and several capstone examples that
 show how Claws compose into larger managed workflows.
 
@@ -8,11 +8,11 @@ show how Claws compose into larger managed workflows.
 
 | Category | Count | Current emphasis |
 | --- | ---: | --- |
-| Productivity | 47 | Personal operating systems, personal media, fantasy sports, household planning, documents, travel, meetings, and knowledge work |
-| Operations | 22 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
+| Productivity | 55 | Personal operating systems, personal media, fantasy sports, household planning, civic services, documents, travel, meetings, and knowledge work |
+| Operations | 36 | Workflows with handoffs, queues, events, public safety, facilities, household operations, and manager Claws |
 | Analysis | 16 | Research, evidence collection, financial monitoring, public/company watching, data work, and model evaluation |
-| Engineering | 8 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
-| Governance | 7 | Compliance, privacy requests, accessibility review, data governance, legal-matter preservation, records retention and disposition, and vulnerability exposure disposition |
+| Engineering | 11 | Software delivery, incidents, release readiness, security, migration, QA, and controlled local change execution |
+| Governance | 20 | Compliance, privacy requests, accessibility review, data governance, legal-matter preservation, estate administration, records retention and disposition, and vulnerability exposure disposition |
 | Product | 3 | Product decisions, UX synthesis, and experiments |
 
 The strongest recent expansion is practical personal work: vehicle service,
@@ -20,7 +20,7 @@ home repair, garden care, pet care, pond and water features, appliance care,
 care-circle coordination, favorite sports teams, fantasy sports, stock portfolios, movies and
 streaming, subscriptions, music, relationships and gifts, personal archives,
 restaurants and venues, local events, school logistics, games backlogs, home
-inventory, meals and groceries, insurance policies, tax documents, purchase
+inventory, rental housing, home purchase transactions, meals and groceries, medication regimens, estate administration, insurance policies, tax documents, identity recovery, purchase
 research, household budgets, life timelines, child activities, neighborhood
 operations, wardrobes, document renewals, and medical appointment prep.
 
@@ -31,7 +31,7 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 
 | Manager Claw | Coordinates | Boundary |
 | --- | --- | --- |
-| Household Steward | Meal and Grocery Planner, Home Inventory Binder, Subscription Manager, Household Budget Steward, Document Renewal Tracker, Medical Appointment Prep, Child Activity Manager, Care Circle Coordinator, Vehicle Service Coordinator, Appliance Care Coordinator, Home Repair Coordinator, Green Thumb Coordinator, Pet Care Coordinator, Pond and Water Feature Coordinator | Keeps household-wide conflicts visible while leaving purchases, appointments, care, payments, messages, and account changes with the owner |
+| Household Steward | Meal and Grocery Planner, Home Inventory Binder, Subscription Manager, Household Budget Steward, Document Renewal Tracker, Medical Appointment Prep, Child Activity Manager, Care Circle Coordinator, Vehicle Service Coordinator, Appliance Care Coordinator, Home Repair Coordinator, Rental Housing Coordinator, Green Thumb Coordinator, Pet Care Coordinator, Pond and Water Feature Coordinator | Keeps household-wide conflicts visible while leaving purchases, appointments, care, payments, messages, and account changes with the owner |
 | Work Chief of Staff | Project Manager, Product Manager, Release Coordinator, Recruiting Coordinator, Sales Operations, Customer Support, Procurement Evaluator, Grant Portfolio Manager, Fundraising Campaign Manager, Experimentation Lead, Localization Program Manager | Coordinates portfolio state, decision forums, capacity, and commitments without becoming the executive or functional owner |
 | Care Circle Coordinator | Medical Appointment Prep, Document Renewal Tracker, Meal and Grocery Planner, Home Repair Coordinator, Pet Care Coordinator, Child Activity Manager, Gift and Relationship Manager | Coordinates helpers, privacy, consent, logistics, and recipient needs without making care, clinical, financial, legal, scheduling, or messaging decisions |
 | Delegation Coordinator | Software Maintainer, Research Briefing, Data Analyst, Document Intake Analyst, Presentation Producer, Spreadsheet Analyst, Model Evaluation Adjudicator | Tracks worker-session scope, evidence, provenance, and handoff quality without granting hidden authority to workers |
@@ -39,15 +39,15 @@ read specialist artifacts, surface conflicts, and prepare owner decisions.
 ## Quality Uplift
 
 The [catalog quality scorecard](catalog-quality-scorecard.md) is now the primary
-post-100 prioritization tool. The current baseline has 103 of 103 Claws passing
+post-100 prioritization tool. The current baseline has 141 of 141 Claws passing
 the non-negotiable package, regression, resource, and Experience gates. The
 highest-value portfolio work is depth rather than count:
 
 | Uplift | Baseline | Goal |
 | --- | ---: | --- |
-| Retrospective admission records | 92 of 103 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
-| Structured artifact schemas | 103 of 103 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 103 of 103 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Retrospective admission records | 130 of 141 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
+| Structured artifact schemas | 141 of 141 | Add schemas only where a durable structured decision artifact improves the job |
+| Semantic artifact validators | 141 of 141 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates
@@ -151,10 +151,58 @@ approval, investigation, and risk owners remain authoritative; the Claw does not
 scan, reach networks or registries, infer severity or exploitability, patch,
 gate a release, publish VEX, or claim remediation, compliance, or security.
 
+Learning Plan Coordinator now owns the learner-controlled planning lane. It
+turns supplied goals, availability, resource constraints, competency evidence,
+and checkpoint criteria into a versioned plan with explicit prerequisites,
+selected resources, weekly practice, evidence gaps, and review decisions. It
+keeps enrollment, purchases, scheduling, submission, grading, credentials, and
+mastery claims with authorized humans, and remains distinct from Learning
+Program Manager's organizational curriculum and cohort-governance contract.
+
+Civic Services Navigator now owns the jurisdiction-resolved public-service
+access lane. It binds service-area claims, administering agencies, official
+program revisions, published criteria, resident-controlled evidence states,
+language and accessibility channels, ordered access steps, and unresolved
+agency questions into a versioned route map. Agency adjudication, case
+initiation, resident-material transmission, contact, payment, accounts, and
+professional advice remain outside the workspace.
+
+Household Emergency Preparedness Coordinator now owns the pre-incident
+household-coverage lane. It binds generalized locations and official hazard
+guidance to privacy-safe household participants, dependents, animals,
+accessibility and communication needs, evacuation and shelter options,
+reunification, transport, device continuity, supplies, dependencies, drills,
+findings, and corrective actions. It does not monitor incidents, issue alerts,
+interpret warning thresholds, direct an emergency response, contact helpers,
+purchase or book services, transmit household data, publish precise locations,
+provide professional advice, or certify readiness.
+
+Rental Housing Coordinator now owns the resident-controlled tenancy-lifecycle
+lane. It binds one controlling supplied lease revision to recurring obligations,
+notices and deadlines, payments and independent receipts, generalized premises
+condition, maintenance episodes, access events, move-in and move-out evidence,
+returned keys or devices, charges, disputes, and residual gaps. It does not
+interpret leases or rights, diagnose habitability or safety, decide payment or
+deposit entitlement, contact anyone, submit notices, pay, sign, schedule, grant
+access, authorize repairs, change accounts, surrender possession, or claim the
+tenancy closed.
+
+Home Purchase Transaction Coordinator now owns the accepted-offer residential
+acquisition lane. It binds the buyer, exact contract revisions, contingencies,
+conditions, deadline candidates, inspection, appraisal, financing, title,
+insurance, funds, settlement, closing, and possession workstreams to attributed
+professional evidence, buyer-controlled actions, and independent receipts. It
+keeps stale revisions, conflicting deadlines or amounts, unmet conditions,
+wire-safety questions, and missing receipts blocked without interpreting a
+document, recommending terms, validating transfer instructions, contacting or
+negotiating with anyone, submitting, ordering, scheduling, signing, waiving,
+paying, transferring funds, recording title, or claiming clearance, closing, or
+ownership. It ends at the buyer review gate rather than becoming Rental Housing
+Coordinator's tenancy lifecycle, Moving Checklist Coordinator's relocation
+plan, or Home Repair Coordinator's repair workflow.
+
 Potential additions remain subject to the
-[contribution admission policy](contribution-admission.md). Civic Services
-Navigator and Learning Plan Coordinator remain plausible candidates. Home
-Project Planner should first be tested as an
+[contribution admission policy](contribution-admission.md). Home Project Planner should first be tested as an
 improvement or composition of Moving Checklist Coordinator, Home Repair
 Coordinator, Facilities Operations Coordinator, and Household Steward.
 

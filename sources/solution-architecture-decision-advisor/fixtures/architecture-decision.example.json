@@ -1,0 +1,921 @@
+{
+  "schemaVersion": "awesomeClaws.solutionArchitectureDecision.v1",
+  "workload": {
+    "id": "checkout-modernization",
+    "name": "Checkout modernization",
+    "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+    "approvedAt": "2026-09-09T17:00:00Z",
+    "approvedByPrincipalRef": "principal-requirements-owner",
+    "scope": "Payment orchestration and order submission for the North America checkout workload; fulfillment and customer selection are out of scope.",
+    "decisionDueAt": "2026-09-15T17:00:00Z"
+  },
+  "requirementUniverse": {
+    "revision": "REQ-CHECKOUT-2026-09-09-03",
+    "sourceRef": "controlled://requirements/checkout-revision-03",
+    "declaredRequirementIds": [
+      "req-throughput",
+      "req-availability",
+      "req-data-residency",
+      "constraint-annual-cost",
+      "constraint-operations-team"
+    ],
+    "declaredConstraintIds": [
+      "constraint-annual-cost",
+      "constraint-operations-team"
+    ],
+    "completenessAttestedAt": "2026-09-09T17:05:00Z",
+    "attestedByPrincipalRef": "principal-requirements-owner",
+    "contentDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239"
+  },
+  "evaluationWindow": {
+    "startsAt": "2026-09-10T09:00:00Z",
+    "endsAt": "2026-09-14T20:00:00Z"
+  },
+  "principals": [
+    {
+      "id": "principal-requirements-owner",
+      "name": "Priya Shah",
+      "role": "Business requirements owner",
+      "scopes": [
+        "requirements-approval",
+        "requirement-ownership"
+      ]
+    },
+    {
+      "id": "principal-architect",
+      "name": "Elena Garcia",
+      "role": "Solution architect",
+      "scopes": [
+        "architecture-analysis",
+        "adr-authoring"
+      ]
+    },
+    {
+      "id": "principal-decision-owner",
+      "name": "Morgan Lee",
+      "role": "VP Engineering",
+      "scopes": [
+        "architecture-decision-authority"
+      ]
+    },
+    {
+      "id": "principal-finops",
+      "name": "Noah Williams",
+      "role": "FinOps lead",
+      "scopes": [
+        "cost-assessment"
+      ]
+    },
+    {
+      "id": "principal-security",
+      "name": "Amina Okafor",
+      "role": "Security architect",
+      "scopes": [
+        "security-assessment",
+        "risk-ownership"
+      ]
+    },
+    {
+      "id": "principal-sre",
+      "name": "Daniel Kim",
+      "role": "Site reliability lead",
+      "scopes": [
+        "reliability-assessment",
+        "experiment-ownership",
+        "risk-ownership"
+      ]
+    },
+    {
+      "id": "principal-operations",
+      "name": "Sofia Martinez",
+      "role": "Platform operations lead",
+      "scopes": [
+        "operability-assessment",
+        "experiment-ownership",
+        "risk-ownership"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "req-throughput",
+      "type": "functional",
+      "statement": "Sustain 1,200 checkout submissions per second at the approved synthetic peak profile.",
+      "priority": "required",
+      "ownerRef": "principal-requirements-owner",
+      "sourceRef": "controlled://requirements/checkout-revision-03-throughput"
+    },
+    {
+      "id": "req-availability",
+      "type": "non-functional",
+      "statement": "Support a 99.95 percent monthly availability objective and a 15-minute recovery objective without claiming a guarantee.",
+      "priority": "required",
+      "ownerRef": "principal-requirements-owner",
+      "sourceRef": "controlled://requirements/checkout-revision-03-availability"
+    },
+    {
+      "id": "req-data-residency",
+      "type": "non-functional",
+      "statement": "Keep payment-token processing and logs within approved United States regions.",
+      "priority": "required",
+      "ownerRef": "principal-requirements-owner",
+      "sourceRef": "controlled://requirements/checkout-revision-03-residency"
+    },
+    {
+      "id": "constraint-annual-cost",
+      "type": "constraint",
+      "statement": "Keep the modeled annual run-cost range below USD 1.8 million under the supplied demand assumptions.",
+      "priority": "required",
+      "ownerRef": "principal-requirements-owner",
+      "sourceRef": "controlled://requirements/checkout-revision-03-cost"
+    },
+    {
+      "id": "constraint-operations-team",
+      "type": "constraint",
+      "statement": "Operate with the approved six-person platform team and its documented container skill baseline.",
+      "priority": "required",
+      "ownerRef": "principal-requirements-owner",
+      "sourceRef": "controlled://requirements/checkout-revision-03-operations"
+    }
+  ],
+  "options": [
+    {
+      "id": "opt-managed-containers",
+      "revision": 2,
+      "name": "Managed containers",
+      "description": "A regional managed-container service with stateless checkout workers, managed queues, and separately owned payment adapters.",
+      "state": "candidate",
+      "contentDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa"
+    },
+    {
+      "id": "opt-serverless-events",
+      "revision": 1,
+      "name": "Serverless events",
+      "description": "Event-driven functions and managed orchestration with regional queues and independently scaled payment adapters.",
+      "state": "candidate",
+      "contentDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0"
+    }
+  ],
+  "criteria": [
+    {
+      "id": "criterion-requirement-fit",
+      "dimension": "requirement-fit",
+      "statement": "Coverage of the exact approved functional, non-functional, and constraint universe.",
+      "comparisonMethod": "Trace every declared requirement to option-revision evidence and classify coverage using the same four-state rubric.",
+      "requiredSpecialistScope": "architecture-analysis"
+    },
+    {
+      "id": "criterion-cost",
+      "dimension": "cost",
+      "statement": "Modeled annual run-cost range under one demand and pricing assumption set.",
+      "comparisonMethod": "Compare low/base/high estimates in USD using the same demand profile, included services, and exclusions.",
+      "requiredSpecialistScope": "cost-assessment"
+    },
+    {
+      "id": "criterion-security",
+      "dimension": "security",
+      "statement": "Trust boundaries, data residency, identity, isolation, and control dependencies.",
+      "comparisonMethod": "Apply the same threat-boundary checklist and supplied control revision to each option without certification.",
+      "requiredSpecialistScope": "security-assessment"
+    },
+    {
+      "id": "criterion-reliability",
+      "dimension": "reliability",
+      "statement": "Peak behavior, failure isolation, recovery evidence, and availability-objective fit.",
+      "comparisonMethod": "Run the same bounded synthetic load and failure-injection profile and report observed ranges without guarantees.",
+      "requiredSpecialistScope": "reliability-assessment"
+    },
+    {
+      "id": "criterion-operability",
+      "dimension": "operability",
+      "statement": "Day-two ownership, on-call complexity, deployment-unit count, and team skill fit.",
+      "comparisonMethod": "Execute the same tabletop scenarios with the approved platform-team roster and score observed operator steps.",
+      "requiredSpecialistScope": "operability-assessment"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-containers-fit",
+      "kind": "source-analysis",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "criterionRef": "criterion-requirement-fit",
+      "requirementRefs": [
+        "req-throughput",
+        "req-availability",
+        "req-data-residency",
+        "constraint-annual-cost",
+        "constraint-operations-team"
+      ],
+      "ownerRef": "principal-architect",
+      "sourceRef": "controlled://architecture/container-fit-revision-02",
+      "assertedAt": "2026-09-14T12:00:00Z",
+      "comparableSetId": "comparison-requirement-fit",
+      "claim": "Managed containers trace to all five declared requirements at option revision 2.",
+      "result": "Five requirements satisfy the shared coverage rubric.",
+      "uncertainty": "Production behavior is not observed; coverage relies on supplied designs and bounded synthetic evidence."
+    },
+    {
+      "id": "evidence-serverless-fit",
+      "kind": "source-analysis",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "criterionRef": "criterion-requirement-fit",
+      "requirementRefs": [
+        "req-throughput",
+        "req-availability",
+        "req-data-residency",
+        "constraint-annual-cost",
+        "constraint-operations-team"
+      ],
+      "ownerRef": "principal-architect",
+      "sourceRef": "controlled://architecture/serverless-fit-revision-01",
+      "assertedAt": "2026-09-14T12:05:00Z",
+      "comparableSetId": "comparison-requirement-fit",
+      "claim": "Serverless events trace to all five declared requirements at option revision 1 with an operations-team gap.",
+      "result": "Four requirements satisfy and the operations-team constraint is partial.",
+      "uncertainty": "The team-learning estimate is based on a bounded tabletop rather than sustained operations."
+    },
+    {
+      "id": "evidence-containers-cost",
+      "kind": "estimate",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "criterionRef": "criterion-cost",
+      "requirementRefs": [
+        "constraint-annual-cost"
+      ],
+      "ownerRef": "principal-finops",
+      "sourceRef": "controlled://finops/checkout-cost-model-2026-09-containers-r2",
+      "assertedAt": "2026-09-14T13:00:00Z",
+      "comparableSetId": "comparison-cost-2026-09",
+      "claim": "The managed-container option remains below the cost constraint under the shared demand model.",
+      "result": "Modeled annual range USD 1.42M to USD 1.69M; base USD 1.55M.",
+      "uncertainty": "Pricing, traffic shape, and support allocations may change; this is not a bill or savings guarantee."
+    },
+    {
+      "id": "evidence-serverless-cost",
+      "kind": "estimate",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "criterionRef": "criterion-cost",
+      "requirementRefs": [
+        "constraint-annual-cost"
+      ],
+      "ownerRef": "principal-finops",
+      "sourceRef": "controlled://finops/checkout-cost-model-2026-09-serverless-r1",
+      "assertedAt": "2026-09-14T13:05:00Z",
+      "comparableSetId": "comparison-cost-2026-09",
+      "claim": "The serverless option has the lower base estimate under the shared demand model.",
+      "result": "Modeled annual range USD 1.18M to USD 1.74M; base USD 1.39M.",
+      "uncertainty": "Burst duration and orchestration requests widen the range; this is not a bill or savings guarantee."
+    },
+    {
+      "id": "evidence-containers-security",
+      "kind": "specialist-assessment",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "criterionRef": "criterion-security",
+      "requirementRefs": [
+        "req-data-residency"
+      ],
+      "ownerRef": "principal-security",
+      "sourceRef": "controlled://security/checkout-boundary-review-containers-r2",
+      "assertedAt": "2026-09-14T14:00:00Z",
+      "comparableSetId": "comparison-security-control-revision-11",
+      "claim": "The supplied container design supports the residency requirement with explicit workload and egress boundaries.",
+      "result": "No blocking design gap; managed-egress ownership remains a residual dependency.",
+      "uncertainty": "This design review is not a security or compliance certification."
+    },
+    {
+      "id": "evidence-serverless-security",
+      "kind": "specialist-assessment",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "criterionRef": "criterion-security",
+      "requirementRefs": [
+        "req-data-residency"
+      ],
+      "ownerRef": "principal-security",
+      "sourceRef": "controlled://security/checkout-boundary-review-serverless-r1",
+      "assertedAt": "2026-09-14T14:05:00Z",
+      "comparableSetId": "comparison-security-control-revision-11",
+      "claim": "The supplied serverless design supports residency but expands service-policy and event-identity dependencies.",
+      "result": "Residency requirement satisfies; identity-policy complexity is rated mixed.",
+      "uncertainty": "Provider control operation is untested and no certification is claimed."
+    },
+    {
+      "id": "evidence-containers-reliability",
+      "kind": "experiment-result",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "criterionRef": "criterion-reliability",
+      "requirementRefs": [
+        "req-throughput",
+        "req-availability"
+      ],
+      "ownerRef": "principal-sre",
+      "sourceRef": "controlled://experiments/checkout-load-failure-containers-r2",
+      "assertedAt": "2026-09-14T16:10:00Z",
+      "comparableSetId": "comparison-reliability-synthetic-profile-07",
+      "claim": "The container prototype met the bounded synthetic throughput and recovery thresholds.",
+      "result": "Observed 1,310 submissions/s at p95 182 ms and recovery in 8m 40s.",
+      "uncertainty": "Synthetic observations do not guarantee production performance or monthly availability."
+    },
+    {
+      "id": "evidence-serverless-reliability",
+      "kind": "experiment-result",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "criterionRef": "criterion-reliability",
+      "requirementRefs": [
+        "req-throughput",
+        "req-availability"
+      ],
+      "ownerRef": "principal-sre",
+      "sourceRef": "controlled://experiments/checkout-load-failure-serverless-r1",
+      "assertedAt": "2026-09-14T16:12:00Z",
+      "comparableSetId": "comparison-reliability-synthetic-profile-07",
+      "claim": "The serverless prototype met throughput but showed a wider recovery range under the bounded failure profile.",
+      "result": "Observed 1,460 submissions/s at p95 228 ms and recovery in 12m 20s.",
+      "uncertainty": "Synthetic observations do not guarantee production performance or monthly availability."
+    },
+    {
+      "id": "evidence-containers-operability",
+      "kind": "experiment-result",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "criterionRef": "criterion-operability",
+      "requirementRefs": [
+        "constraint-operations-team"
+      ],
+      "ownerRef": "principal-operations",
+      "sourceRef": "controlled://experiments/checkout-operations-tabletop-containers-r2",
+      "assertedAt": "2026-09-14T17:10:00Z",
+      "comparableSetId": "comparison-operability-tabletop-04",
+      "claim": "The six-person team completed the container tabletop using its documented skill baseline.",
+      "result": "All three scenarios completed; median 11 operator steps with one training action.",
+      "uncertainty": "A tabletop does not establish sustained production-operability outcomes."
+    },
+    {
+      "id": "evidence-serverless-operability",
+      "kind": "experiment-result",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "criterionRef": "criterion-operability",
+      "requirementRefs": [
+        "constraint-operations-team"
+      ],
+      "ownerRef": "principal-operations",
+      "sourceRef": "controlled://experiments/checkout-operations-tabletop-serverless-r1",
+      "assertedAt": "2026-09-14T17:12:00Z",
+      "comparableSetId": "comparison-operability-tabletop-04",
+      "claim": "The six-person team required unplanned event-debugging guidance in the serverless tabletop.",
+      "result": "Two of three scenarios completed; median 19 operator steps and two skill gaps.",
+      "uncertainty": "Training may close the gap; the tabletop does not establish sustained production-operability outcomes."
+    }
+  ],
+  "coverage": [
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "req-throughput",
+      "state": "satisfies",
+      "evidenceRefs": [
+        "evidence-containers-fit",
+        "evidence-containers-reliability"
+      ],
+      "rationale": "The exact option revision is traced and the bounded load profile exceeds the required threshold."
+    },
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "req-availability",
+      "state": "satisfies",
+      "evidenceRefs": [
+        "evidence-containers-fit",
+        "evidence-containers-reliability"
+      ],
+      "rationale": "Design isolation and observed recovery meet the approved evaluation thresholds without guaranteeing availability."
+    },
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "req-data-residency",
+      "state": "satisfies",
+      "evidenceRefs": [
+        "evidence-containers-fit",
+        "evidence-containers-security"
+      ],
+      "rationale": "The supplied regional design and security assessment trace the residency requirement."
+    },
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "constraint-annual-cost",
+      "state": "satisfies",
+      "evidenceRefs": [
+        "evidence-containers-fit",
+        "evidence-containers-cost"
+      ],
+      "rationale": "The shared cost model remains below the constraint across its stated range."
+    },
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "constraint-operations-team",
+      "state": "satisfies",
+      "evidenceRefs": [
+        "evidence-containers-fit",
+        "evidence-containers-operability"
+      ],
+      "rationale": "The supplied team completed all tabletop scenarios with one owned training action."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "req-throughput",
+      "state": "satisfies",
+      "evidenceRefs": [
+        "evidence-serverless-fit",
+        "evidence-serverless-reliability"
+      ],
+      "rationale": "The exact option revision exceeds the synthetic peak threshold."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "req-availability",
+      "state": "satisfies",
+      "evidenceRefs": [
+        "evidence-serverless-fit",
+        "evidence-serverless-reliability"
+      ],
+      "rationale": "Observed recovery remains inside the evaluation threshold without guaranteeing availability."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "req-data-residency",
+      "state": "satisfies",
+      "evidenceRefs": [
+        "evidence-serverless-fit",
+        "evidence-serverless-security"
+      ],
+      "rationale": "The supplied regional service design supports residency with added policy dependencies."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "constraint-annual-cost",
+      "state": "satisfies",
+      "evidenceRefs": [
+        "evidence-serverless-fit",
+        "evidence-serverless-cost"
+      ],
+      "rationale": "The shared cost-model range remains below the approved constraint."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "requirementRef": "constraint-operations-team",
+      "state": "partial",
+      "evidenceRefs": [
+        "evidence-serverless-fit",
+        "evidence-serverless-operability"
+      ],
+      "rationale": "Two documented skill gaps prevent full fit with the current approved team baseline."
+    }
+  ],
+  "tradeoffs": [
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-requirement-fit",
+      "rating": "favorable",
+      "evidenceRefs": [
+        "evidence-containers-fit"
+      ],
+      "summary": "All declared requirements satisfy the shared coverage rubric."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-requirement-fit",
+      "rating": "mixed",
+      "evidenceRefs": [
+        "evidence-serverless-fit"
+      ],
+      "summary": "The operations-team constraint remains partial."
+    },
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-cost",
+      "rating": "mixed",
+      "evidenceRefs": [
+        "evidence-containers-cost"
+      ],
+      "summary": "The estimate fits the constraint but exceeds the serverless base estimate."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-cost",
+      "rating": "favorable",
+      "evidenceRefs": [
+        "evidence-serverless-cost"
+      ],
+      "summary": "The base estimate is lower with a wider burst-sensitive range."
+    },
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-security",
+      "rating": "favorable",
+      "evidenceRefs": [
+        "evidence-containers-security"
+      ],
+      "summary": "Boundaries are explicit; managed egress remains an owned dependency."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-security",
+      "rating": "mixed",
+      "evidenceRefs": [
+        "evidence-serverless-security"
+      ],
+      "summary": "Residency fits, while identity-policy dependencies expand."
+    },
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-reliability",
+      "rating": "favorable",
+      "evidenceRefs": [
+        "evidence-containers-reliability"
+      ],
+      "summary": "The bounded profile met throughput and recovery thresholds with the lower observed latency."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-reliability",
+      "rating": "mixed",
+      "evidenceRefs": [
+        "evidence-serverless-reliability"
+      ],
+      "summary": "The bounded profile met thresholds with a wider recovery range."
+    },
+    {
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-operability",
+      "rating": "mixed",
+      "evidenceRefs": [
+        "evidence-containers-operability"
+      ],
+      "summary": "The team completed every scenario with one owned training action."
+    },
+    {
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "criterionRef": "criterion-operability",
+      "rating": "unfavorable",
+      "evidenceRefs": [
+        "evidence-serverless-operability"
+      ],
+      "summary": "One scenario remained incomplete and two skill gaps were observed."
+    }
+  ],
+  "risks": [
+    {
+      "id": "risk-platform-team-ramp",
+      "scope": "option",
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "statement": "The team needs a bounded workload-isolation training action before implementation planning.",
+      "severity": "medium",
+      "state": "open",
+      "residual": true,
+      "ownerRef": "principal-operations",
+      "evidenceRefs": [
+        "evidence-containers-operability"
+      ]
+    },
+    {
+      "id": "risk-managed-egress",
+      "scope": "option",
+      "optionRef": "opt-managed-containers",
+      "optionRevision": 2,
+      "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "statement": "The managed-egress dependency needs a named implementation control owner.",
+      "severity": "medium",
+      "state": "open",
+      "residual": true,
+      "ownerRef": "principal-security",
+      "evidenceRefs": [
+        "evidence-containers-security"
+      ]
+    },
+    {
+      "id": "risk-serverless-skill-gap",
+      "scope": "option",
+      "optionRef": "opt-serverless-events",
+      "optionRevision": 1,
+      "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "statement": "The current team has two event-debugging skill gaps.",
+      "severity": "high",
+      "state": "open",
+      "residual": true,
+      "ownerRef": "principal-operations",
+      "evidenceRefs": [
+        "evidence-serverless-operability"
+      ]
+    }
+  ],
+  "experiments": [
+    {
+      "id": "experiment-load-failure",
+      "question": "How do both option revisions behave under the same synthetic peak and bounded dependency-failure profile?",
+      "optionRefs": [
+        "opt-managed-containers",
+        "opt-serverless-events"
+      ],
+      "optionBindings": [
+        {
+          "optionRef": "opt-managed-containers",
+          "optionRevision": 2,
+          "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa"
+        },
+        {
+          "optionRef": "opt-serverless-events",
+          "optionRevision": 1,
+          "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0"
+        }
+      ],
+      "criterionRefs": [
+        "criterion-reliability"
+      ],
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "ownerRef": "principal-sre",
+      "state": "completed",
+      "method": "Replay synthetic checkout traffic and inject one queue dependency interruption in isolated prototypes.",
+      "successCriteria": "Observe at least 1,200 submissions/s and recovery inside 15 minutes for each option.",
+      "startedAt": "2026-09-14T15:00:00Z",
+      "completedAt": "2026-09-14T16:00:00Z",
+      "evidenceRefs": [
+        "evidence-containers-reliability",
+        "evidence-serverless-reliability"
+      ],
+      "limitations": [
+        "Synthetic traffic excludes production customer data and cannot establish monthly availability.",
+        "No tenant, service, or production configuration was changed."
+      ]
+    },
+    {
+      "id": "experiment-operations-tabletop",
+      "question": "Can the approved team diagnose the same three incidents for each option using its current skill baseline?",
+      "optionRefs": [
+        "opt-managed-containers",
+        "opt-serverless-events"
+      ],
+      "optionBindings": [
+        {
+          "optionRef": "opt-managed-containers",
+          "optionRevision": 2,
+          "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa"
+        },
+        {
+          "optionRef": "opt-serverless-events",
+          "optionRevision": 1,
+          "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0"
+        }
+      ],
+      "criterionRefs": [
+        "criterion-operability"
+      ],
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "ownerRef": "principal-operations",
+      "state": "completed",
+      "method": "Run three paper tabletop scenarios against supplied diagrams and runbook drafts without connecting to any tenant.",
+      "successCriteria": "Complete all scenarios and identify no more than one owned training action per option.",
+      "startedAt": "2026-09-14T16:15:00Z",
+      "completedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-containers-operability",
+        "evidence-serverless-operability"
+      ],
+      "limitations": [
+        "Tabletop performance does not guarantee production-operability outcomes.",
+        "Training estimates remain owned by the platform operations lead."
+      ]
+    }
+  ],
+  "adrRevisions": [
+    {
+      "id": "adr-checkout-001",
+      "revision": 1,
+      "createdAt": "2026-09-14T18:00:00Z",
+      "authorRef": "principal-architect",
+      "state": "superseded",
+      "supersedesRef": null,
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRefs": [
+        "opt-managed-containers",
+        "opt-serverless-events"
+      ],
+      "optionBindings": [
+        {
+          "optionRef": "opt-managed-containers",
+          "optionRevision": 2,
+          "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa"
+        },
+        {
+          "optionRef": "opt-serverless-events",
+          "optionRevision": 1,
+          "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0"
+        }
+      ],
+      "evidenceRefs": [
+        "evidence-containers-fit",
+        "evidence-serverless-fit",
+        "evidence-containers-cost",
+        "evidence-serverless-cost",
+        "evidence-containers-security",
+        "evidence-serverless-security",
+        "evidence-containers-reliability",
+        "evidence-serverless-reliability",
+        "evidence-containers-operability",
+        "evidence-serverless-operability"
+      ],
+      "recordedDecisionRef": null,
+      "contentDigest": "sha256:2df10b26687ed4db450cb76a60717471fe23c0a90722c2747f1da9920e1285d2",
+      "rationale": "Prepared the complete comparison for owner review without selecting an option."
+    },
+    {
+      "id": "adr-checkout-002",
+      "revision": 2,
+      "createdAt": "2026-09-14T18:35:00Z",
+      "authorRef": "principal-architect",
+      "state": "current",
+      "supersedesRef": "adr-checkout-001",
+      "requirementsRevision": "REQ-CHECKOUT-2026-09-09-03",
+      "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+      "optionRefs": [
+        "opt-managed-containers",
+        "opt-serverless-events"
+      ],
+      "optionBindings": [
+        {
+          "optionRef": "opt-managed-containers",
+          "optionRevision": 2,
+          "optionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa"
+        },
+        {
+          "optionRef": "opt-serverless-events",
+          "optionRevision": 1,
+          "optionDigest": "sha256:a0c8d5a919e7bb12d5490fbbb0b1c72cafda2854d10903ed9bbbf8ddff78c0c0"
+        }
+      ],
+      "evidenceRefs": [
+        "evidence-containers-fit",
+        "evidence-serverless-fit",
+        "evidence-containers-cost",
+        "evidence-serverless-cost",
+        "evidence-containers-security",
+        "evidence-serverless-security",
+        "evidence-containers-reliability",
+        "evidence-serverless-reliability",
+        "evidence-containers-operability",
+        "evidence-serverless-operability"
+      ],
+      "recordedDecisionRef": "decision-checkout-architecture",
+      "contentDigest": "sha256:ba40ef2a06059da09849e7285330774f3408a06bf63c61c7b2e0fe09a7e8fd70",
+      "rationale": "Records Morgan Lee's selection of managed containers and preserves both open residual risks without accepting them."
+    }
+  ],
+  "decision": {
+    "id": "decision-checkout-architecture",
+    "state": "recorded-owner-decision",
+    "ownerRef": "principal-decision-owner",
+    "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+    "selectedOptionRef": "opt-managed-containers",
+    "selectedOptionRevision": 2,
+    "selectedOptionDigest": "sha256:6f6cd6637ca7365ff079c11311bbf7378cd2e139ccf32a544532b69dcebdd8aa",
+    "decidedAt": "2026-09-14T18:30:00Z",
+    "adrRevisionRef": "adr-checkout-002",
+    "adrDigest": "sha256:ba40ef2a06059da09849e7285330774f3408a06bf63c61c7b2e0fe09a7e8fd70",
+    "evidenceRefs": [
+      "evidence-containers-fit",
+      "evidence-serverless-fit",
+      "evidence-containers-cost",
+      "evidence-serverless-cost",
+      "evidence-containers-security",
+      "evidence-serverless-security",
+      "evidence-containers-reliability",
+      "evidence-serverless-reliability",
+      "evidence-containers-operability",
+      "evidence-serverless-operability"
+    ],
+    "residualRiskRefs": [
+      "risk-platform-team-ramp",
+      "risk-managed-egress"
+    ],
+    "contentDigest": "sha256:c505325dc97f7999397d04f40481a2926ca001409afaf7d40985f9dd7fc4a449",
+    "summary": "Morgan Lee selected managed containers revision 2 for downstream implementation planning, subject to the two retained residual risks and separate execution approvals."
+  },
+  "handoff": {
+    "state": "recorded-owner-decision",
+    "ownerRef": "principal-decision-owner",
+    "requirementUniverseDigest": "sha256:3cece5e94a9904d8379d6abdf741dcb7e813921039cdd55cd9eb1201622d5239",
+    "decisionDigest": "sha256:c505325dc97f7999397d04f40481a2926ca001409afaf7d40985f9dd7fc4a449",
+    "generatedAt": "2026-09-14T18:40:00Z",
+    "prohibitedActions": [
+      "deploy",
+      "mutate-tenant-or-configuration",
+      "commit-product-or-vendor",
+      "select-customer",
+      "certify-security-or-compliance",
+      "accept-risk",
+      "guarantee-performance-or-cost"
+    ],
+    "summary": "The package records the owner's architecture decision and complete evidence trail. It performs no deployment, tenant or configuration mutation, product or vendor commitment, customer selection, certification, risk acceptance, or performance or cost guarantee."
+  }
+}

@@ -1,0 +1,486 @@
+{
+  "schemaVersion": "awesomeClaws.customerSuccessReview.v1",
+  "artifactId": "contoso-september-success-review",
+  "review": {
+    "id": "review-september",
+    "customer": {"id": "customer-contoso", "name": "Contoso"},
+    "tenant": {"id": "tenant-contoso-prod", "customerRef": "customer-contoso"},
+    "account": {
+      "id": "account-contoso-enterprise",
+      "customerRef": "customer-contoso",
+      "tenantRef": "tenant-contoso-prod"
+    },
+    "plan": {
+      "id": "plan-contoso-2026",
+      "revision": 7,
+      "approvedAt": "2026-08-28T17:00:00Z",
+      "approvedByRef": "principal-success-owner",
+      "customerRef": "customer-contoso",
+      "tenantRef": "tenant-contoso-prod",
+      "accountRef": "account-contoso-enterprise"
+    },
+    "periodStart": "2026-08-01T00:00:00Z",
+    "periodEnd": "2026-08-31T23:59:59Z",
+    "asOf": "2026-09-14T19:00:00Z",
+    "ownerRef": "principal-success-manager",
+    "approvalDecisionRef": "decision-plan-approval",
+    "state": "blocked"
+  },
+  "principals": [
+    {"id": "principal-success-manager", "kind": "human", "role": "Customer success program owner"},
+    {"id": "principal-success-owner", "kind": "human", "role": "Accountable success-plan approver"},
+    {"id": "principal-renewal-owner", "kind": "human", "role": "Commercial renewal owner"},
+    {"id": "principal-product-owner", "kind": "human", "role": "Adoption action owner"},
+    {"id": "principal-adoption-system", "kind": "system", "role": "Approved adoption export"},
+    {"id": "principal-health-system", "kind": "system", "role": "Approved service-health export"}
+  ],
+  "workloads": [
+    {
+      "id": "workload-teams",
+      "name": "Microsoft Teams",
+      "serviceRef": "service-teams",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "services": [
+    {
+      "id": "service-teams",
+      "name": "Microsoft Teams service",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-approved-plan",
+      "kind": "approved-plan",
+      "sourceUri": "controlled://success-plans/contoso/2026/revisions/7",
+      "collectedAt": "2026-09-14T18:00:00Z",
+      "suppliedByRef": "principal-success-owner",
+      "workloadRef": null,
+      "serviceRef": null,
+      "verifiedContentDigests": [
+        "sha256:3adc2bc9d90fc36272dcc8090d17c404239c5b9efe21ad7461a2e2686326b344"
+      ],
+      "verification": {
+        "keyId": "customer-success-plan-authority-v1",
+        "signature": "gCPmLxvTOqyssjjAIZ739cvDLfvAHk3CiUFRUBFo8wJALPDWLCAR395g5oihiS+d1qcGr8oO7TBjFRLSAQ22BQ=="
+      },
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    },
+    {
+      "id": "source-teams-adoption",
+      "kind": "adoption-export",
+      "sourceUri": "controlled://adoption/contoso/teams/2026-08",
+      "collectedAt": "2026-09-02T12:00:00Z",
+      "suppliedByRef": "principal-adoption-system",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    },
+    {
+      "id": "source-teams-health",
+      "kind": "service-health",
+      "sourceUri": "controlled://service-health/contoso/teams/2026-08",
+      "collectedAt": "2026-09-01T08:00:00Z",
+      "suppliedByRef": "principal-health-system",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    },
+    {
+      "id": "source-rollout-acceptance",
+      "kind": "milestone-acceptance",
+      "sourceUri": "controlled://success-plans/contoso/milestones/teams-rollout/acceptance",
+      "collectedAt": "2026-08-30T16:00:00Z",
+      "suppliedByRef": "principal-success-owner",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    },
+    {
+      "id": "source-champion-action",
+      "kind": "action-receipt",
+      "sourceUri": "controlled://success-actions/contoso/champion-session/receipt",
+      "collectedAt": "2026-09-10T17:00:00Z",
+      "suppliedByRef": "principal-product-owner",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    },
+    {
+      "id": "source-owner-review",
+      "kind": "owner-decision",
+      "sourceUri": "controlled://success-reviews/contoso/2026-09/decisions",
+      "collectedAt": "2026-09-14T18:30:00Z",
+      "suppliedByRef": "principal-success-manager",
+      "workloadRef": null,
+      "serviceRef": null,
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "metricDefinitions": [
+    {
+      "id": "metric-teams-active-user-rate",
+      "name": "Monthly active enabled-user rate",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "definition": "Distinct enabled users with at least one Teams activity during the window divided by enabled licensed users at window end.",
+      "unit": "ratio",
+      "aggregation": "ratio",
+      "direction": "at-least",
+      "target": 0.75,
+      "windowStart": "2026-08-01T00:00:00Z",
+      "windowEnd": "2026-08-31T23:59:59Z",
+      "sourceRef": "source-teams-adoption",
+      "approvedPlanSourceRef": "source-approved-plan",
+      "definitionDigest": "sha256:3adc2bc9d90fc36272dcc8090d17c404239c5b9efe21ad7461a2e2686326b344",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "metricObservations": [
+    {
+      "id": "observation-teams-active-user-rate",
+      "metricRef": "metric-teams-active-user-rate",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "sourceRef": "source-teams-adoption",
+      "windowStart": "2026-08-01T00:00:00Z",
+      "windowEnd": "2026-08-31T23:59:59Z",
+      "observedAt": "2026-09-02T12:00:00Z",
+      "value": 0.68,
+      "status": "below-target",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "serviceHealthObservations": [
+    {
+      "id": "health-teams-august",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "sourceRef": "source-teams-health",
+      "windowStart": "2026-08-01T00:00:00Z",
+      "windowEnd": "2026-08-31T23:59:59Z",
+      "observedAt": "2026-09-01T08:00:00Z",
+      "status": "healthy",
+      "incidentRef": null,
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "milestones": [
+    {
+      "id": "milestone-teams-rollout",
+      "name": "Teams rollout accepted",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "ownerRef": "principal-success-owner",
+      "dueAt": "2026-08-31T17:00:00Z",
+      "acceptanceCriteria": [
+        {
+          "id": "criterion-rollout-evidence",
+          "description": "Accountable plan owner accepts the supplied rollout completion record.",
+          "metricRef": null,
+          "observationRef": null,
+          "evidenceRef": "source-rollout-acceptance"
+        }
+      ],
+      "state": "accepted",
+      "receiptRefs": ["receipt-teams-rollout"],
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    },
+    {
+      "id": "milestone-teams-adoption",
+      "name": "Teams active-user target sustained",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "ownerRef": "principal-product-owner",
+      "dueAt": "2026-09-30T17:00:00Z",
+      "acceptanceCriteria": [
+        {
+          "id": "criterion-adoption-target",
+          "description": "Monthly active enabled-user rate reaches the approved target.",
+          "metricRef": "metric-teams-active-user-rate",
+          "observationRef": "observation-teams-active-user-rate",
+          "evidenceRef": "source-teams-adoption"
+        }
+      ],
+      "state": "at-risk",
+      "receiptRefs": [],
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "milestoneReceipts": [
+    {
+      "id": "receipt-teams-rollout",
+      "milestoneRef": "milestone-teams-rollout",
+      "criterionRef": "criterion-rollout-evidence",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "sourceRef": "source-rollout-acceptance",
+      "acceptedByRef": "principal-success-owner",
+      "acceptedAt": "2026-08-30T16:00:00Z",
+      "decisionRef": "decision-rollout-acceptance",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "risksAndBlockers": [
+    {
+      "id": "risk-teams-adoption-gap",
+      "kind": "risk",
+      "summary": "The approved active-user target is not yet met.",
+      "severity": "high",
+      "status": "mitigating",
+      "ownerRef": "principal-product-owner",
+      "evidenceRefs": ["source-teams-adoption"],
+      "actionRefs": ["action-champion-session"],
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "action-champion-session",
+      "summary": "Complete the owner-led Teams champion session and record its receipt.",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "ownerRef": "principal-product-owner",
+      "dueAt": "2026-09-10T17:00:00Z",
+      "status": "complete",
+      "evidenceRefs": ["source-teams-adoption"],
+      "receiptRefs": ["receipt-champion-session"],
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    },
+    {
+      "id": "action-adoption-remeasure",
+      "summary": "Supply the next approved adoption export using the unchanged metric definition.",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "ownerRef": "principal-product-owner",
+      "dueAt": "2026-10-02T17:00:00Z",
+      "status": "open",
+      "evidenceRefs": ["source-teams-adoption"],
+      "receiptRefs": [],
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "actionReceipts": [
+    {
+      "id": "receipt-champion-session",
+      "actionRef": "action-champion-session",
+      "workloadRef": "workload-teams",
+      "serviceRef": "service-teams",
+      "sourceRef": "source-champion-action",
+      "recordedByRef": "principal-product-owner",
+      "recordedAt": "2026-09-10T17:00:00Z",
+      "outcome": "completed",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-plan-approval",
+      "kind": "plan-approval",
+      "madeByRef": "principal-success-owner",
+      "madeAt": "2026-08-28T17:00:00Z",
+      "evidenceRefs": ["source-approved-plan"],
+      "result": "Success plan revision 7 is the approved basis for this review.",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    },
+    {
+      "id": "decision-rollout-acceptance",
+      "kind": "milestone-acceptance",
+      "madeByRef": "principal-success-owner",
+      "madeAt": "2026-08-30T16:00:00Z",
+      "evidenceRefs": ["source-rollout-acceptance"],
+      "result": "The rollout milestone acceptance criterion is satisfied.",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    },
+    {
+      "id": "decision-september-review",
+      "kind": "review-classification",
+      "madeByRef": "principal-success-manager",
+      "madeAt": "2026-09-14T18:30:00Z",
+      "evidenceRefs": ["source-owner-review", "source-teams-adoption", "source-teams-health"],
+      "result": "Keep the internal review blocked on the adoption target and route renewal context to its owner.",
+      "binding": {
+        "customerRef": "customer-contoso",
+        "tenantRef": "tenant-contoso-prod",
+        "accountRef": "account-contoso-enterprise",
+        "planRef": "plan-contoso-2026",
+        "planRevision": 7
+      }
+    }
+  ],
+  "cadence": {
+    "frequency": "monthly",
+    "timezone": "America/Los_Angeles",
+    "priorReviewAt": "2026-08-14T19:00:00Z",
+    "nextReviewAt": "2026-10-14T19:00:00Z",
+    "ownerRef": "principal-success-manager",
+    "binding": {
+      "customerRef": "customer-contoso",
+      "tenantRef": "tenant-contoso-prod",
+      "accountRef": "account-contoso-enterprise",
+      "planRef": "plan-contoso-2026",
+      "planRevision": 7
+    }
+  },
+  "handoff": {
+    "state": "blocked",
+    "ownerRef": "principal-success-manager",
+    "generatedAt": "2026-09-14T19:00:00Z",
+    "decisionNeeded": "Review the adoption gap, accountable remeasurement action, and bounded renewal or escalation routes.",
+    "dueAt": "2026-09-18T17:00:00Z",
+    "renewal": {
+      "state": "owner-review-required",
+      "ownerRef": "principal-renewal-owner",
+      "evidenceRefs": ["source-owner-review"]
+    },
+    "escalation": {
+      "state": "owner-review-required",
+      "ownerRef": "principal-success-owner",
+      "riskRefs": ["risk-teams-adoption-gap"]
+    },
+    "prohibitedActions": [
+      "contact-customer",
+      "send-message",
+      "change-workload",
+      "change-tenant",
+      "mutate-account",
+      "mutate-service",
+      "mutate-support-case",
+      "make-commercial-promise",
+      "change-pricing",
+      "change-contract",
+      "commit-renewal",
+      "accept-risk",
+      "claim-customer-success"
+    ],
+    "summary": "Internal owner review remains blocked on the approved adoption target; renewal and escalation remain human-owned handoffs.",
+    "binding": {
+      "customerRef": "customer-contoso",
+      "tenantRef": "tenant-contoso-prod",
+      "accountRef": "account-contoso-enterprise",
+      "planRef": "plan-contoso-2026",
+      "planRevision": 7
+    }
+  }
+}

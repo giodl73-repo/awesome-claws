@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "customer-success-program-manager",
+  "scenario": "Reconcile Contoso tenant t-001 and account a-001 against approved success plan CSP-2026 revision 7 for the September monthly review using the supplied Teams adoption export, service-health snapshot, accepted milestone receipts, owner actions, and renewal handoff constraints.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile Contoso tenant t-001 and account a-001 against approved success plan CSP-2026 revision 7 for the September monthly review using the supplied Teams adoption export, service-health snapshot, accepted milestone receipts, owner actions, and renewal handoff constraints."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/customer-success-review.md and the matching inline review with exact scope, evidence gaps, blocked authority, and accountable owners separated."
+    }
+  ],
+  "report": {
+    "title": "Customer success program manager session handoff",
+    "summary": "A revision-bound internal review that preserves exact customer, tenant, account, workload, service, metric, window, source, milestone, owner, receipt, decision, and timestamp identity; exposes stale, missing, conflicting, or cross-scope evidence; and leaves customer contact, tenant changes, case mutation, commercial commitments, risk acceptance, success claims, renewal decisions, and escalation execution to authorized humans.",
+    "output": "outputs/customer-success-review.md",
+    "items": [
+      {
+        "title": "Success-plan revision ledger",
+        "summary": "Every material status statement traces to the exact customer, tenant, account, plan revision, workload or service, metric definition, measurement window, source, and observation timestamp",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Adoption, service-health, and outcome reconciliation",
+        "summary": "Every outcome milestone is evaluated only against its approved acceptance criteria and receipts, and every risk, blocker, and action has an accountable owner and current evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Risk, blocker, action, receipt, and decision register",
+        "summary": "The next review and any renewal or escalation handoff identify the authorized owner, decision needed, due timestamp, and blocked authority without claiming contact, mutation, commitment, acceptance, or success",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Review-cadence and renewal or escalation handoff",
+        "summary": "Every material status statement traces to the exact customer, tenant, account, plan revision, workload or service, metric definition, measurement window, source, and observation timestamp",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

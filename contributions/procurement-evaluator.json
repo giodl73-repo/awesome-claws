@@ -122,6 +122,11 @@
         "id": "model-evaluation-adjudicator",
         "overlap": "Both adjudicate a bounded shortlist of candidates against rubric-style criteria and evidence without making the final selection themselves.",
         "difference": "Model evaluation adjudicator compares model outputs under blinded rubric scoring and disagreement adjudication; it has no vendor commercial evidence, budget boundary, disqualifier, or specialist purchasing-review workflow."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both preserve supplier and agreement evidence, owner authority, gaps, and a durable governance handoff without taking external action.",
+        "difference": "Contract Obligation Tracker begins after execution from an owner-confirmed obligation register and performs no vendor comparison or recommendation; Procurement Evaluator remains a pre-selection decision-support contract."
       }
     ]
   }

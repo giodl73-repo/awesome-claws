@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "business-continuity-program-manager",
+  "scenario": "Run the quarterly continuity-program reconciliation over this exact critical-process register, approved BIA exports, dependency attestations, plan revisions, and exercise evidence. Preserve findings, corrective-action receipts, exceptions, and recertification state, but do not invoke a plan, contact vendors, fail over anything, approve exceptions, accept risk, or certify readiness.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Run the quarterly continuity-program reconciliation over this exact critical-process register, approved BIA exports, dependency attestations, plan revisions, and exercise evidence. Preserve findings, corrective-action receipts, exceptions, and recertification state, but do not invoke a plan, contact vendors, fail over anything, approve exceptions, accept risk, or certify readiness."
+    },
+    {
+      "role": "agent",
+      "text": "I reconciled the exact current and predecessor process registers and kept BIA approval, dependency ownership, plan invocation, exercise evaluation, remediation, exception, risk, and certification authority separated."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/business-continuity-program.json, the durable outputs/business-continuity-program-manager-handoff.md fallback, and the X4 outputs/business-continuity-program.html view with exact blockers and structural authority non-claims."
+    }
+  ],
+  "report": {
+    "title": "Business Continuity Program Manager session handoff",
+    "summary": "A revision-bound continuity-program artifact accounts for every critical process, records owner-approved RTO and RPO requirements, maps current service/vendor/site dependencies, links plan revisions and exercise evidence, preserves stable findings, remediation receipts, and one active exception, requires independent recertification, and hands exact blockers to named owners without readiness or compliance claims.",
+    "output": "outputs/business-continuity-program-manager-handoff.md",
+    "items": [
+      {
+        "title": "Versioned critical-process and business-impact register with exact owner-approved RTO and RPO evidence",
+        "summary": "The current process universe exactly equals the owner-supplied register and every add, retain, revise, and retire transition binds current and predecessor revisions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Process-to-service, vendor, site, facility, people, data, and process dependency map",
+        "summary": "Every current critical process has one current BIA, named-owner RTO and RPO approval, complete dependency set or an exact blocker, and one current continuity-plan coverage record",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Continuity-plan revision and approval ledger",
+        "summary": "Every plan revision binds exact process, recovery-requirement, dependency, strategy, approval, and predecessor content",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exercise scope, inject, evidence, result, and stable finding register",
+        "summary": "Every exercise binds exact approved scope, plan versions, process revisions, injects, evidence, results, stable findings, and causal corrective-action receipts without claiming execution",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Corrective-action receipt, exception, blocker, independent recertification, and owner-handoff ledger",
+        "summary": "Every exception is independently approved, scope-bound, time-bounded, and non-certifying, and every affected process has independent recertification after the latest material evidence",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

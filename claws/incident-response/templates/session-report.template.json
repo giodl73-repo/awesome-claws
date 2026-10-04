@@ -1,15 +1,18 @@
 {
   "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
-  "title": "Incident response session report",
+  "title": "Incident response DRI and Incident Manager handoff",
   "output": "outputs/incident-response-handoff.md",
+  "structuredOutput": "outputs/incident-state.json",
   "sections": [
-    "request",
-    "known_facts",
-    "assumptions",
-    "evidence",
-    "decisions_or_recommendations",
-    "blocked_actions",
-    "next_owner"
+    "exact_incident_snapshot",
+    "technical_dri_loop",
+    "incident_manager_loop",
+    "update_cadence",
+    "decision_chronology",
+    "actions_and_communications",
+    "service_recovery_incident_recovery_and_closure",
+    "durable_follow_ups_and_compliance_handoffs",
+    "structural_authority_and_next_owner"
   ],
   "itemShape": {
     "title": "string",
@@ -18,5 +21,5 @@
       "string"
     ]
   },
-  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+  "fallback": "Render the same separated loops, ordered chronology, recovery/closure states, follow-up identities, and authority non-claims as Markdown when widgets or rich clients are unavailable."
 }

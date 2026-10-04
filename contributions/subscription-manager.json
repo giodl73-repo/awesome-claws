@@ -169,6 +169,11 @@
         "id": "games-backlog-manager",
         "overlap": "Both may use subscription access, account labels, source freshness, usage context, owner review, and blocked payment or account actions.",
         "difference": "Games Backlog Manager uses subscription access only as game availability evidence for play selection; Subscription Manager tracks recurring services, renewal dates, price changes, usage, overlap, and account-action boundaries."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both organize agreement-related records, dates, accountable owners, recurring commitments, and review-ready evidence.",
+        "difference": "Contract Obligation Tracker makes no spend, cancellation, or renewal recommendation and instead enforces clause-bound obligation totality, performance evidence, and exact completion authority across an owner-confirmed register."
       }
     ]
   }

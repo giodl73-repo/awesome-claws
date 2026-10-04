@@ -1,0 +1,1157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.invalid/workforce-plan-reconciliation.schema.json",
+  "title": "Workforce plan reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "asOf",
+    "privacyClassification",
+    "plan",
+    "principals",
+    "authorityRoster",
+    "organizations",
+    "roles",
+    "locations",
+    "roleDemand",
+    "funding",
+    "fundedPositions",
+    "reconciliations",
+    "scenarios",
+    "capabilityGaps",
+    "successionCoverage",
+    "locationConstraints",
+    "ownerActions",
+    "decisionCheckpoints",
+    "authorityAttestations",
+    "evidence",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.workforcePlanReconciliation.v1"
+    },
+    "asOf": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "privacyClassification": {
+      "$ref": "#/$defs/privacyClassification"
+    },
+    "plan": {
+      "$ref": "#/$defs/plan"
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "authorityRoster": {
+      "$ref": "#/$defs/authorityRoster"
+    },
+    "organizations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/namedRecord"
+      }
+    },
+    "roles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/role"
+      }
+    },
+    "locations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/namedRecord"
+      }
+    },
+    "roleDemand": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/roleDemand"
+      }
+    },
+    "funding": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/funding"
+      }
+    },
+    "fundedPositions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/fundedPosition"
+      }
+    },
+    "reconciliations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/reconciliation"
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/scenario"
+      }
+    },
+    "capabilityGaps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capabilityGap"
+      }
+    },
+    "successionCoverage": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/successionCoverage"
+      }
+    },
+    "locationConstraints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/locationConstraint"
+      }
+    },
+    "ownerActions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ownerAction"
+      }
+    },
+    "decisionCheckpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisionCheckpoint"
+      }
+    },
+    "authorityAttestations": {
+      "type": "array",
+      "minItems": 12,
+      "items": {
+        "$ref": "#/$defs/authorityAttestation"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,120}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "period": {
+      "type": "string",
+      "pattern": "^20[0-9]{2}-Q[1-4]$"
+    },
+    "fte": {
+      "type": "number",
+      "minimum": 0
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "contentAddressedRef": {
+      "type": "string",
+      "pattern": "^controlled://[a-z0-9][a-z0-9-]{2,60}/[a-z0-9][a-z0-9._/-]*@sha256-[a-f0-9]{64}$"
+    },
+    "privacyClassification": {
+      "enum": [
+        "aggregate",
+        "approved-role-level"
+      ]
+    },
+    "idList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true
+    },
+    "nonEmptyIdList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true
+    },
+    "planScoped": {
+      "type": "object",
+      "required": [
+        "planId",
+        "planRevision",
+        "organizationRef"
+      ],
+      "properties": {
+        "planId": {
+          "$ref": "#/$defs/id"
+        },
+        "planRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "organizationRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "periodScoped": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/planScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "period"
+          ],
+          "properties": {
+            "period": {
+              "$ref": "#/$defs/period"
+            }
+          }
+        }
+      ]
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "state",
+        "organizationRef",
+        "horizonStart",
+        "horizonEnd",
+        "authorityRosterRef",
+        "approvedByRef",
+        "approvalEvidenceRef",
+        "ownerRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "state": {
+          "const": "approved"
+        },
+        "organizationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "horizonStart": {
+          "$ref": "#/$defs/date"
+        },
+        "horizonEnd": {
+          "$ref": "#/$defs/date"
+        },
+        "authorityRosterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvalEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/planScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "kind",
+            "scopes"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "name": {
+              "$ref": "#/$defs/text"
+            },
+            "kind": {
+              "enum": [
+                "human",
+                "team",
+                "system",
+                "agent"
+              ]
+            },
+            "scopes": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "plan-owner",
+                  "plan-approver",
+                  "authority-roster-custodian",
+                  "evidence-approver",
+                  "critical-role-approver",
+                  "action-owner",
+                  "decision-owner",
+                  "handoff-owner",
+                  "authority-attestor"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "authorityRoster": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/planScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "principalRefs",
+            "custodianRef",
+            "evidenceRef",
+            "rosterDigest"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "principalRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            },
+            "custodianRef": {
+              "$ref": "#/$defs/id"
+            },
+            "evidenceRef": {
+              "$ref": "#/$defs/id"
+            },
+            "rosterDigest": {
+              "$ref": "#/$defs/digest"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "namedRecord": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/planScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "name": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "role": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/planScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "capabilityRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "name": {
+              "$ref": "#/$defs/text"
+            },
+            "capabilityRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "roleDemand": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "roleRef",
+            "locationRefs",
+            "requiredFte",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "roleRef": {
+              "$ref": "#/$defs/id"
+            },
+            "locationRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            },
+            "requiredFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "evidenceRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "funding": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "roleRef",
+            "fundedFte",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "roleRef": {
+              "$ref": "#/$defs/id"
+            },
+            "fundedFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "evidenceRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "fundedPosition": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "roleRef",
+            "locationRef",
+            "fundingRef",
+            "fundedFte",
+            "state",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "roleRef": {
+              "$ref": "#/$defs/id"
+            },
+            "locationRef": {
+              "$ref": "#/$defs/id"
+            },
+            "fundingRef": {
+              "$ref": "#/$defs/id"
+            },
+            "fundedFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "state": {
+              "const": "funded"
+            },
+            "evidenceRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "reconciliation": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "demandRef",
+            "fundingRefs",
+            "positionRefs",
+            "approvedDemandFte",
+            "fundedFte",
+            "baselineGapFte"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "demandRef": {
+              "$ref": "#/$defs/id"
+            },
+            "fundingRefs": {
+              "$ref": "#/$defs/idList"
+            },
+            "positionRefs": {
+              "$ref": "#/$defs/idList"
+            },
+            "approvedDemandFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "fundedFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "baselineGapFte": {
+              "type": "number"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "scenario": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "classification",
+            "assumptions",
+            "projections"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "name": {
+              "$ref": "#/$defs/text"
+            },
+            "classification": {
+              "const": "modeled-not-approved"
+            },
+            "assumptions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/scenarioAssumption"
+              }
+            },
+            "projections": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/scenarioProjection"
+              }
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "scenarioAssumption": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "demandRef",
+            "startingFte",
+            "aggregateHiringFte",
+            "aggregateAttritionRate",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "demandRef": {
+              "$ref": "#/$defs/id"
+            },
+            "startingFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "aggregateHiringFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "aggregateAttritionRate": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "evidenceRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "scenarioProjection": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "demandRef",
+            "assumptionRef",
+            "projectedEndingFte",
+            "gapFte"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "demandRef": {
+              "$ref": "#/$defs/id"
+            },
+            "assumptionRef": {
+              "$ref": "#/$defs/id"
+            },
+            "projectedEndingFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "gapFte": {
+              "type": "number"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "capabilityGap": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "demandRef",
+            "roleRef",
+            "capabilityRef",
+            "requiredFte",
+            "availableFte",
+            "gapFte",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "demandRef": {
+              "$ref": "#/$defs/id"
+            },
+            "roleRef": {
+              "$ref": "#/$defs/id"
+            },
+            "capabilityRef": {
+              "$ref": "#/$defs/id"
+            },
+            "requiredFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "availableFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "gapFte": {
+              "type": "number"
+            },
+            "evidenceRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "successionCoverage": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "demandRef",
+            "roleRef",
+            "aggregationLevel",
+            "criticalRoleCount",
+            "coveredRoleCount",
+            "gapCount",
+            "criticalRoleEvidenceRefs",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "demandRef": {
+              "$ref": "#/$defs/id"
+            },
+            "roleRef": {
+              "$ref": "#/$defs/id"
+            },
+            "aggregationLevel": {
+              "const": "role"
+            },
+            "criticalRoleCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "coveredRoleCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "gapCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "criticalRoleEvidenceRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            },
+            "evidenceRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "locationConstraint": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "demandRef",
+            "roleRef",
+            "locationRef",
+            "demandFte",
+            "fundedFte",
+            "gapFte",
+            "state",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "demandRef": {
+              "$ref": "#/$defs/id"
+            },
+            "roleRef": {
+              "$ref": "#/$defs/id"
+            },
+            "locationRef": {
+              "$ref": "#/$defs/id"
+            },
+            "demandFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "fundedFte": {
+              "$ref": "#/$defs/fte"
+            },
+            "gapFte": {
+              "type": "number"
+            },
+            "state": {
+              "enum": [
+                "within-constraint",
+                "constrained"
+              ]
+            },
+            "evidenceRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ownerAction": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "ownerRef",
+            "dueDate",
+            "status",
+            "targetRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "kind": {
+              "enum": [
+                "resolve-funding-evidence",
+                "validate-capability-mitigation",
+                "review-succession-coverage",
+                "resolve-location-constraint",
+                "request-plan-revision"
+              ]
+            },
+            "ownerRef": {
+              "$ref": "#/$defs/id"
+            },
+            "dueDate": {
+              "$ref": "#/$defs/date"
+            },
+            "status": {
+              "enum": [
+                "open",
+                "blocked"
+              ]
+            },
+            "targetRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "decisionCheckpoint": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/periodScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "ownerRef",
+            "dueDate",
+            "state",
+            "targetRefs",
+            "question"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "kind": {
+              "enum": [
+                "manager-priority",
+                "finance-funding",
+                "capability-mitigation",
+                "succession-review",
+                "location-exception",
+                "plan-revision"
+              ]
+            },
+            "ownerRef": {
+              "$ref": "#/$defs/id"
+            },
+            "dueDate": {
+              "$ref": "#/$defs/date"
+            },
+            "state": {
+              "enum": [
+                "pending",
+                "deferred"
+              ]
+            },
+            "targetRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            },
+            "question": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "authorityAction": {
+      "enum": [
+        "hire",
+        "terminate",
+        "evaluate-candidate",
+        "infer-individual-performance",
+        "promote",
+        "set-compensation",
+        "reorganize",
+        "infer-sensitive-trait",
+        "mutate-hr-system",
+        "communicate-with-employee",
+        "approve-headcount",
+        "represent-scenario-as-approved"
+      ]
+    },
+    "authorityAttestation": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/planScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "action",
+            "state",
+            "attestedByRef",
+            "attestedAt",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "action": {
+              "$ref": "#/$defs/authorityAction"
+            },
+            "state": {
+              "const": "not-performed"
+            },
+            "attestedByRef": {
+              "$ref": "#/$defs/id"
+            },
+            "attestedAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "evidenceRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/planScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "kind",
+            "sourceRef",
+            "effectiveAt",
+            "privacyClassification",
+            "approvedByRef",
+            "subjectRefs",
+            "payloadDigest",
+            "recordDigest"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "kind": {
+              "enum": [
+                "organization-plan-approval",
+                "authority-roster",
+                "role-demand",
+                "funding-approval",
+                "position-snapshot",
+                "scenario-assumption",
+                "capability-aggregate",
+                "critical-role-approval",
+                "succession-aggregate",
+                "location-policy",
+                "authority-attestation"
+              ]
+            },
+            "sourceRef": {
+              "$ref": "#/$defs/contentAddressedRef"
+            },
+            "effectiveAt": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "privacyClassification": {
+              "$ref": "#/$defs/privacyClassification"
+            },
+            "approvedByRef": {
+              "$ref": "#/$defs/id"
+            },
+            "subjectRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            },
+            "payloadDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "recordDigest": {
+              "$ref": "#/$defs/digest"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "handoff": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/planScoped"
+        },
+        {
+          "type": "object",
+          "required": [
+            "state",
+            "privacyClassification",
+            "blockerRefs",
+            "actionRefs",
+            "decisionRefs",
+            "authorityAttestationRefs",
+            "ownerRef",
+            "summary",
+            "prohibitedActions"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "blocked",
+                "ready-for-manager-review"
+              ]
+            },
+            "privacyClassification": {
+              "$ref": "#/$defs/privacyClassification"
+            },
+            "blockerRefs": {
+              "$ref": "#/$defs/idList"
+            },
+            "actionRefs": {
+              "$ref": "#/$defs/idList"
+            },
+            "decisionRefs": {
+              "$ref": "#/$defs/idList"
+            },
+            "authorityAttestationRefs": {
+              "$ref": "#/$defs/nonEmptyIdList"
+            },
+            "ownerRef": {
+              "$ref": "#/$defs/id"
+            },
+            "summary": {
+              "$ref": "#/$defs/text"
+            },
+            "prohibitedActions": {
+              "type": "array",
+              "minItems": 12,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/authorityAction"
+              }
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}

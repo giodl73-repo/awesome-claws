@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "backup-restore-verification-coordinator",
+  "scenario": "Verify this supplied protected-resource and eligible-recovery-point metadata for the quarterly restore exercise. Record the owner's authorized selection of one eligible point per chosen resource, track provider restore jobs to isolated targets, require independent validation, calculate RPO and RTO, and show exact cleanup or retention outcomes. Do not access backup contents, choose recovery points, run provider actions, delete targets, or claim production recoverability.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Verify this supplied protected-resource and eligible-recovery-point metadata for the quarterly restore exercise. Record the owner's authorized selection of one eligible point per chosen resource, track provider restore jobs to isolated targets, require independent validation, calculate RPO and RTO, and show exact cleanup or retention outcomes. Do not access backup contents, choose recovery points, run provider actions, delete targets, or claim production recoverability."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/backup-restore-verification-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Backup Restore Verification Coordinator session handoff",
+    "summary": "A metadata-only verification artifact partitions six protected resources into five selected and one excluded resource, records two successful validations with one outside the RTO objective, one validation failure, one restore failure, one missing provider job, one RPO violation, and exact cleaned, pending, or retained temporary-target outcomes, then hands the complete blocked evidence set to the approved resilience owner without claiming execution, recoverability, production readiness, compliance, or audit assurance.",
+    "output": "outputs/backup-restore-verification-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Exact metadata-only protected-resource and eligible-recovery-point exports with selected and excluded partition proof and explicit external trust roots",
+        "summary": "The protected-resource export equals the complete resource ledger and selected plus excluded references form a disjoint exact partition, while selected triples equal selected resources and eligible recovery points exactly",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Selected resource, recovery-point, isolated-target triples with provider job outcomes and separately authored independent validation outcomes",
+        "summary": "Every selected triple binds one resource, one eligible recovery point, and one isolated target by semantic payload digest rather than id alone, with no resource, point, target, job, validation, cleanup, grant, or evidence reuse",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact cleanup ledger covering every temporary target as cleaned, pending, or retained with bounded retention metadata",
+        "summary": "RPO uses the exact round.requestedAt-derived cutoff and RTO runs from the selected triple's own provider restore job submittedAt through successful independent validation completedAt; failed or absent validation never satisfies RTO",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Derived RPO cutoff, own-provider-job-submission-to-successful-validation RTO measurements, and exact blocker equality including missing jobs, restore failures, validation failures, RPO or RTO violations, pending cleanup, and retained targets",
+        "summary": "Provider job, independent validation, and cleanup chronology is causal and authorized under current exact-round grants held by pairwise separated roles",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Content-bound authority, evidence, coverage, destination, and owner handoff records with every execution, production, recoverability, compliance, audit, failover, deletion, and completion claim structurally not-claimed",
+        "summary": "The blocker ledger exactly equals every derived category and target pair, including every RTO violation, and the handoff cannot become ready while any blocker exists",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

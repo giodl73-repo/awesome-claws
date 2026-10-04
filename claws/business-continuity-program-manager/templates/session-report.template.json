@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Business Continuity Program Manager session report",
+  "output": "outputs/business-continuity-program-manager-handoff.md",
+  "structuredOutput": "outputs/business-continuity-program.json",
+  "visualOutput": "outputs/business-continuity-program.html",
+  "sections": [
+    "exact_process_universe",
+    "business_impact_and_recovery_requirements",
+    "dependency_map",
+    "plan_revision_ledger",
+    "exercise_scope_injects_and_results",
+    "findings_actions_and_exceptions",
+    "independent_recertification",
+    "exact_blockers_and_authority_non_claims",
+    "next_owner"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the exact process, BIA, recovery-requirement, dependency, plan, exercise, finding, corrective-action, exception, blocker, recertification, and authority-boundary sections as durable Markdown when the X4 inline visual is unavailable."
+}

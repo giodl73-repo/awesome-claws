@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "procure-to-pay-three-way-match-exception-reconciler",
+  "scenario": "Reconcile PO-450 revision 2 and its approved amendment against these complete receipt and invoice exports at the supplied cutoff. Preserve split receipts, the return, partial invoices, the credit, and every unmatched line. Accept only exact owner-approved three-way groups; do not post, pay, create receipts, contact the supplier, interpret tax or accounting treatment, or change any source.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile PO-450 revision 2 and its approved amendment against these complete receipt and invoice exports at the supplied cutoff. Preserve split receipts, the return, partial invoices, the credit, and every unmatched line. Accept only exact owner-approved three-way groups; do not post, pay, create receipts, contact the supplier, interpret tax or accounting treatment, or change any source."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/procure-to-pay-three-way-match.md and the matching outputs/three-way-match-review.html visual with exact evidence, residuals, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Procure-to-Pay Three-Way Match Exception Reconciler session handoff",
+    "summary": "A partition-root-bound review with two exact authorized three-sided groups, one PO-side residual, complete source-line identity and reversal evidence, zero hidden or reused lines, and no posting, payment, supplier-contact, interpretation, or mutation claim.",
+    "output": "outputs/procure-to-pay-three-way-match.md",
+    "items": [
+      {
+        "title": "Exact PO, receipt, and invoice line manifests with immutable owner source identities",
+        "summary": "The current PO revision and amendment payloads, owner matching policy, scoped grants, and caller-controlled time all validate exactly",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-approved policy, amendment, revision, and typed grant ledger",
+        "summary": "All three line manifests recompute and every source identity triple is unique within its owner export",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Authorized exact three-sided match-group register with reversal lineage and deterministic arithmetic",
+        "summary": "Every return and credit is either bound to its exact earlier source line or preserved as a side-specific residual",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Complete side-specific residual and structured blocker register",
+        "summary": "Every PO, receipt, and invoice line is consumed exactly once by an allowed one-PO-line three-sided group or one side-specific residual",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Partition-root-bound X3 handoff and matching accessible X4 exception-review visual",
+        "summary": "Every accepted group has equal net integer quantities, exact current PO unit price, equal invoice and PO minor-unit amounts, and a current named-human decision bound to policy and manifests",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

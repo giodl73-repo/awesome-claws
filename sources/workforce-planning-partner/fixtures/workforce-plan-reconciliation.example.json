@@ -1,0 +1,1041 @@
+{
+  "schemaVersion": "awesomeClaws.workforcePlanReconciliation.v1",
+  "asOf": "2026-09-14T17:00:00Z",
+  "privacyClassification": "approved-role-level",
+  "plan": {
+    "id": "plan-op-2027",
+    "revision": 4,
+    "state": "approved",
+    "organizationRef": "org-platform",
+    "horizonStart": "2027-01-01",
+    "horizonEnd": "2027-03-31",
+    "authorityRosterRef": "authority-roster-op-2027-r4",
+    "approvedByRef": "owner-operating-committee",
+    "approvalEvidenceRef": "evidence-plan-approval",
+    "ownerRef": "owner-workforce-planning"
+  },
+  "principals": [
+    {
+      "id": "owner-workforce-planning",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "Workforce planning owner",
+      "kind": "human",
+      "scopes": [
+        "plan-owner",
+        "authority-roster-custodian",
+        "evidence-approver",
+        "handoff-owner",
+        "authority-attestor"
+      ]
+    },
+    {
+      "id": "owner-operating-committee",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "Operating committee approver",
+      "kind": "human",
+      "scopes": [
+        "plan-approver",
+        "evidence-approver"
+      ]
+    },
+    {
+      "id": "owner-finance-partner",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "Finance partner",
+      "kind": "human",
+      "scopes": [
+        "evidence-approver",
+        "action-owner",
+        "decision-owner"
+      ]
+    },
+    {
+      "id": "owner-platform-manager",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "Platform manager",
+      "kind": "human",
+      "scopes": [
+        "evidence-approver",
+        "action-owner",
+        "decision-owner"
+      ]
+    },
+    {
+      "id": "owner-hr-partner",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "Human resources partner",
+      "kind": "human",
+      "scopes": [
+        "evidence-approver",
+        "critical-role-approver",
+        "action-owner",
+        "decision-owner"
+      ]
+    }
+  ],
+  "authorityRoster": {
+    "id": "authority-roster-op-2027-r4",
+    "planId": "plan-op-2027",
+    "planRevision": 4,
+    "organizationRef": "org-platform",
+    "principalRefs": [
+      "owner-workforce-planning",
+      "owner-operating-committee",
+      "owner-finance-partner",
+      "owner-platform-manager",
+      "owner-hr-partner"
+    ],
+    "custodianRef": "owner-workforce-planning",
+    "evidenceRef": "evidence-authority-roster",
+    "rosterDigest": "sha256:7e09afbb428753f2293d981915e13a2b70a52457931bd61de53c0122a68a4f38"
+  },
+  "organizations": [
+    {
+      "id": "org-platform",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "Platform"
+    }
+  ],
+  "roles": [
+    {
+      "id": "role-platform-engineer",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "Platform engineer",
+      "capabilityRefs": [
+        "capability-distributed-systems"
+      ]
+    },
+    {
+      "id": "role-site-reliability-engineer",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "Site reliability engineer",
+      "capabilityRefs": [
+        "capability-reliability-engineering"
+      ]
+    }
+  ],
+  "locations": [
+    {
+      "id": "location-us",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "United States"
+    },
+    {
+      "id": "location-canada",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "name": "Canada"
+    }
+  ],
+  "roleDemand": [
+    {
+      "id": "demand-platform-engineer-q1",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "roleRef": "role-platform-engineer",
+      "period": "2027-Q1",
+      "locationRefs": [
+        "location-us",
+        "location-canada"
+      ],
+      "requiredFte": 12,
+      "evidenceRefs": [
+        "evidence-role-demand"
+      ]
+    },
+    {
+      "id": "demand-sre-q1",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "roleRef": "role-site-reliability-engineer",
+      "period": "2027-Q1",
+      "locationRefs": [
+        "location-us"
+      ],
+      "requiredFte": 6,
+      "evidenceRefs": [
+        "evidence-role-demand"
+      ]
+    }
+  ],
+  "funding": [
+    {
+      "id": "funding-platform-engineer-q1",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "roleRef": "role-platform-engineer",
+      "period": "2027-Q1",
+      "fundedFte": 10,
+      "evidenceRefs": [
+        "evidence-funding-approval"
+      ]
+    },
+    {
+      "id": "funding-sre-q1",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "roleRef": "role-site-reliability-engineer",
+      "period": "2027-Q1",
+      "fundedFte": 6,
+      "evidenceRefs": [
+        "evidence-funding-approval"
+      ]
+    }
+  ],
+  "fundedPositions": [
+    {
+      "id": "position-pool-platform-us",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "roleRef": "role-platform-engineer",
+      "locationRef": "location-us",
+      "period": "2027-Q1",
+      "fundingRef": "funding-platform-engineer-q1",
+      "fundedFte": 8,
+      "state": "funded",
+      "evidenceRefs": [
+        "evidence-position-snapshot"
+      ]
+    },
+    {
+      "id": "position-pool-platform-canada",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "roleRef": "role-platform-engineer",
+      "locationRef": "location-canada",
+      "period": "2027-Q1",
+      "fundingRef": "funding-platform-engineer-q1",
+      "fundedFte": 2,
+      "state": "funded",
+      "evidenceRefs": [
+        "evidence-position-snapshot"
+      ]
+    },
+    {
+      "id": "position-pool-sre-us",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "roleRef": "role-site-reliability-engineer",
+      "locationRef": "location-us",
+      "period": "2027-Q1",
+      "fundingRef": "funding-sre-q1",
+      "fundedFte": 6,
+      "state": "funded",
+      "evidenceRefs": [
+        "evidence-position-snapshot"
+      ]
+    }
+  ],
+  "reconciliations": [
+    {
+      "id": "reconciliation-platform-engineer-q1",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "demandRef": "demand-platform-engineer-q1",
+      "fundingRefs": [
+        "funding-platform-engineer-q1"
+      ],
+      "positionRefs": [
+        "position-pool-platform-us",
+        "position-pool-platform-canada"
+      ],
+      "approvedDemandFte": 12,
+      "fundedFte": 10,
+      "baselineGapFte": 2
+    },
+    {
+      "id": "reconciliation-sre-q1",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "demandRef": "demand-sre-q1",
+      "fundingRefs": [
+        "funding-sre-q1"
+      ],
+      "positionRefs": [
+        "position-pool-sre-us"
+      ],
+      "approvedDemandFte": 6,
+      "fundedFte": 6,
+      "baselineGapFte": 0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "scenario-approved-assumptions",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "name": "Approved aggregate assumptions",
+      "classification": "modeled-not-approved",
+      "assumptions": [
+        {
+          "id": "assumption-platform-base",
+          "planId": "plan-op-2027",
+          "planRevision": 4,
+          "organizationRef": "org-platform",
+          "period": "2027-Q1",
+          "demandRef": "demand-platform-engineer-q1",
+          "startingFte": 9,
+          "aggregateHiringFte": 2,
+          "aggregateAttritionRate": 0.1,
+          "evidenceRefs": [
+            "evidence-scenario-assumptions"
+          ]
+        },
+        {
+          "id": "assumption-sre-base",
+          "planId": "plan-op-2027",
+          "planRevision": 4,
+          "organizationRef": "org-platform",
+          "period": "2027-Q1",
+          "demandRef": "demand-sre-q1",
+          "startingFte": 6,
+          "aggregateHiringFte": 0,
+          "aggregateAttritionRate": 0.1,
+          "evidenceRefs": [
+            "evidence-scenario-assumptions"
+          ]
+        }
+      ],
+      "projections": [
+        {
+          "id": "projection-platform-base",
+          "planId": "plan-op-2027",
+          "planRevision": 4,
+          "organizationRef": "org-platform",
+          "period": "2027-Q1",
+          "demandRef": "demand-platform-engineer-q1",
+          "assumptionRef": "assumption-platform-base",
+          "projectedEndingFte": 10.1,
+          "gapFte": 1.9
+        },
+        {
+          "id": "projection-sre-base",
+          "planId": "plan-op-2027",
+          "planRevision": 4,
+          "organizationRef": "org-platform",
+          "period": "2027-Q1",
+          "demandRef": "demand-sre-q1",
+          "assumptionRef": "assumption-sre-base",
+          "projectedEndingFte": 5.4,
+          "gapFte": 0.6
+        }
+      ]
+    },
+    {
+      "id": "scenario-constrained",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "name": "Constrained aggregate assumptions",
+      "classification": "modeled-not-approved",
+      "assumptions": [
+        {
+          "id": "assumption-platform-constrained",
+          "planId": "plan-op-2027",
+          "planRevision": 4,
+          "organizationRef": "org-platform",
+          "period": "2027-Q1",
+          "demandRef": "demand-platform-engineer-q1",
+          "startingFte": 9,
+          "aggregateHiringFte": 1,
+          "aggregateAttritionRate": 0.15,
+          "evidenceRefs": [
+            "evidence-scenario-assumptions"
+          ]
+        },
+        {
+          "id": "assumption-sre-constrained",
+          "planId": "plan-op-2027",
+          "planRevision": 4,
+          "organizationRef": "org-platform",
+          "period": "2027-Q1",
+          "demandRef": "demand-sre-q1",
+          "startingFte": 6,
+          "aggregateHiringFte": 0,
+          "aggregateAttritionRate": 0.15,
+          "evidenceRefs": [
+            "evidence-scenario-assumptions"
+          ]
+        }
+      ],
+      "projections": [
+        {
+          "id": "projection-platform-constrained",
+          "planId": "plan-op-2027",
+          "planRevision": 4,
+          "organizationRef": "org-platform",
+          "period": "2027-Q1",
+          "demandRef": "demand-platform-engineer-q1",
+          "assumptionRef": "assumption-platform-constrained",
+          "projectedEndingFte": 8.65,
+          "gapFte": 3.35
+        },
+        {
+          "id": "projection-sre-constrained",
+          "planId": "plan-op-2027",
+          "planRevision": 4,
+          "organizationRef": "org-platform",
+          "period": "2027-Q1",
+          "demandRef": "demand-sre-q1",
+          "assumptionRef": "assumption-sre-constrained",
+          "projectedEndingFte": 5.1,
+          "gapFte": 0.9
+        }
+      ]
+    }
+  ],
+  "capabilityGaps": [
+    {
+      "id": "gap-distributed-systems",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "demandRef": "demand-platform-engineer-q1",
+      "roleRef": "role-platform-engineer",
+      "capabilityRef": "capability-distributed-systems",
+      "requiredFte": 6,
+      "availableFte": 5,
+      "gapFte": 1,
+      "evidenceRefs": [
+        "evidence-capability-aggregate"
+      ]
+    },
+    {
+      "id": "gap-reliability-engineering",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "demandRef": "demand-sre-q1",
+      "roleRef": "role-site-reliability-engineer",
+      "capabilityRef": "capability-reliability-engineering",
+      "requiredFte": 6,
+      "availableFte": 4,
+      "gapFte": 2,
+      "evidenceRefs": [
+        "evidence-capability-aggregate"
+      ]
+    }
+  ],
+  "successionCoverage": [
+    {
+      "id": "succession-sre-q1",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "demandRef": "demand-sre-q1",
+      "roleRef": "role-site-reliability-engineer",
+      "aggregationLevel": "role",
+      "criticalRoleCount": 3,
+      "coveredRoleCount": 2,
+      "gapCount": 1,
+      "criticalRoleEvidenceRefs": [
+        "evidence-critical-role-approval"
+      ],
+      "evidenceRefs": [
+        "evidence-succession-aggregate"
+      ]
+    }
+  ],
+  "locationConstraints": [
+    {
+      "id": "location-gap-platform-us",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "demandRef": "demand-platform-engineer-q1",
+      "roleRef": "role-platform-engineer",
+      "locationRef": "location-us",
+      "demandFte": 8,
+      "fundedFte": 8,
+      "gapFte": 0,
+      "state": "within-constraint",
+      "evidenceRefs": [
+        "evidence-location-policy"
+      ]
+    },
+    {
+      "id": "location-gap-platform-canada",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "demandRef": "demand-platform-engineer-q1",
+      "roleRef": "role-platform-engineer",
+      "locationRef": "location-canada",
+      "demandFte": 4,
+      "fundedFte": 2,
+      "gapFte": 2,
+      "state": "constrained",
+      "evidenceRefs": [
+        "evidence-location-policy"
+      ]
+    },
+    {
+      "id": "location-gap-sre-us",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "demandRef": "demand-sre-q1",
+      "roleRef": "role-site-reliability-engineer",
+      "locationRef": "location-us",
+      "demandFte": 6,
+      "fundedFte": 6,
+      "gapFte": 0,
+      "state": "within-constraint",
+      "evidenceRefs": [
+        "evidence-location-policy"
+      ]
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "action-funding-gap",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "kind": "resolve-funding-evidence",
+      "ownerRef": "owner-finance-partner",
+      "dueDate": "2026-09-21",
+      "status": "open",
+      "targetRefs": [
+        "reconciliation-platform-engineer-q1"
+      ]
+    },
+    {
+      "id": "action-capability-mitigation",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "kind": "validate-capability-mitigation",
+      "ownerRef": "owner-platform-manager",
+      "dueDate": "2026-09-23",
+      "status": "open",
+      "targetRefs": [
+        "gap-distributed-systems",
+        "gap-reliability-engineering"
+      ]
+    },
+    {
+      "id": "action-succession-review",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "kind": "review-succession-coverage",
+      "ownerRef": "owner-hr-partner",
+      "dueDate": "2026-09-24",
+      "status": "open",
+      "targetRefs": [
+        "succession-sre-q1"
+      ]
+    },
+    {
+      "id": "action-location-constraint",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "kind": "resolve-location-constraint",
+      "ownerRef": "owner-platform-manager",
+      "dueDate": "2026-09-24",
+      "status": "open",
+      "targetRefs": [
+        "location-gap-platform-canada"
+      ]
+    }
+  ],
+  "decisionCheckpoints": [
+    {
+      "id": "decision-platform-priority",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "kind": "manager-priority",
+      "ownerRef": "owner-platform-manager",
+      "dueDate": "2026-09-25",
+      "state": "pending",
+      "targetRefs": [
+        "reconciliation-platform-engineer-q1",
+        "gap-distributed-systems",
+        "location-gap-platform-canada",
+        "scenario-approved-assumptions",
+        "scenario-constrained"
+      ],
+      "question": "Which approved-plan constraint should be returned to the planning owner for revision first?"
+    },
+    {
+      "id": "decision-succession-mitigation",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "period": "2027-Q1",
+      "kind": "succession-review",
+      "ownerRef": "owner-hr-partner",
+      "dueDate": "2026-09-25",
+      "state": "pending",
+      "targetRefs": [
+        "succession-sre-q1",
+        "gap-reliability-engineering"
+      ],
+      "question": "Which aggregate succession and capability mitigation should enter the next plan revision?"
+    }
+  ],
+  "authorityAttestations": [
+    {
+      "id": "attestation-hire",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "hire",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-terminate",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "terminate",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-evaluate-candidate",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "evaluate-candidate",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-infer-individual-performance",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "infer-individual-performance",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-promote",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "promote",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-set-compensation",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "set-compensation",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-reorganize",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "reorganize",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-infer-sensitive-trait",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "infer-sensitive-trait",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-mutate-hr-system",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "mutate-hr-system",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-communicate-with-employee",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "communicate-with-employee",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-approve-headcount",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "approve-headcount",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    },
+    {
+      "id": "attestation-represent-scenario-as-approved",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "action": "represent-scenario-as-approved",
+      "state": "not-performed",
+      "attestedByRef": "owner-workforce-planning",
+      "attestedAt": "2026-09-14T17:00:00Z",
+      "evidenceRefs": [
+        "evidence-authority-attestations"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-plan-approval",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "organization-plan-approval",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/approval@sha256-95698b5cc5d014a3a6f5863f905879be4045f91401899068883daf3dec834b73",
+      "effectiveAt": "2026-09-01T16:00:00Z",
+      "privacyClassification": "aggregate",
+      "approvedByRef": "owner-operating-committee",
+      "subjectRefs": [
+        "plan-op-2027",
+        "authority-roster-op-2027-r4"
+      ],
+      "payloadDigest": "sha256:a2b26097ba7fe89d8db3f2a5f28127da93cdf33b3426499fcb2d4c0c845c8ff3",
+      "recordDigest": "sha256:95698b5cc5d014a3a6f5863f905879be4045f91401899068883daf3dec834b73"
+    },
+    {
+      "id": "evidence-authority-roster",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "authority-roster",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/authority-roster@sha256-0d3e06b635a683caf3d8b23d8ae4c67227662ef1a7ab6b078bbc015fbf22608d",
+      "effectiveAt": "2026-09-01T15:00:00Z",
+      "privacyClassification": "aggregate",
+      "approvedByRef": "owner-workforce-planning",
+      "subjectRefs": [
+        "authority-roster-op-2027-r4",
+        "owner-workforce-planning",
+        "owner-operating-committee",
+        "owner-finance-partner",
+        "owner-platform-manager",
+        "owner-hr-partner"
+      ],
+      "payloadDigest": "sha256:34cbc6ab7da43f0a6eed209f9a5dff9874baba5cdcf683ef81014b02fb561c63",
+      "recordDigest": "sha256:0d3e06b635a683caf3d8b23d8ae4c67227662ef1a7ab6b078bbc015fbf22608d"
+    },
+    {
+      "id": "evidence-role-demand",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "role-demand",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/role-demand@sha256-fec13310017f762abfc139145e28e6e40d4a67cc194801afc20827584170493e",
+      "effectiveAt": "2026-09-01T16:00:00Z",
+      "privacyClassification": "approved-role-level",
+      "approvedByRef": "owner-workforce-planning",
+      "subjectRefs": [
+        "demand-platform-engineer-q1",
+        "demand-sre-q1"
+      ],
+      "payloadDigest": "sha256:68fbba014b957673058356adc3897f805fdabdd71898def708225de784c97e6c",
+      "recordDigest": "sha256:fec13310017f762abfc139145e28e6e40d4a67cc194801afc20827584170493e"
+    },
+    {
+      "id": "evidence-funding-approval",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "funding-approval",
+      "sourceRef": "controlled://finance/op-2027/revision-4/q1-funding@sha256-256a18a78ce58c7bd2e685f35e8a7beb8d44e1284cb49cfd6d00ec7a7df5a082",
+      "effectiveAt": "2026-09-02T16:00:00Z",
+      "privacyClassification": "approved-role-level",
+      "approvedByRef": "owner-finance-partner",
+      "subjectRefs": [
+        "funding-platform-engineer-q1",
+        "funding-sre-q1"
+      ],
+      "payloadDigest": "sha256:7130fba86c336d023574b44c350a3880aaa33e14683f189e2e7b780452ccff84",
+      "recordDigest": "sha256:256a18a78ce58c7bd2e685f35e8a7beb8d44e1284cb49cfd6d00ec7a7df5a082"
+    },
+    {
+      "id": "evidence-position-snapshot",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "position-snapshot",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/funded-position-pools@sha256-b62926fdb4623bec1982da9e5f372f46a6ecee598e6097c98357473d49d08b90",
+      "effectiveAt": "2026-09-10T16:00:00Z",
+      "privacyClassification": "approved-role-level",
+      "approvedByRef": "owner-workforce-planning",
+      "subjectRefs": [
+        "position-pool-platform-us",
+        "position-pool-platform-canada",
+        "position-pool-sre-us"
+      ],
+      "payloadDigest": "sha256:c15bf6d87862bca11ff0cebfc62e969f08d97ac0f0567e40c9cf6c920383a209",
+      "recordDigest": "sha256:b62926fdb4623bec1982da9e5f372f46a6ecee598e6097c98357473d49d08b90"
+    },
+    {
+      "id": "evidence-scenario-assumptions",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "scenario-assumption",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/scenario-assumptions@sha256-3b7b5b888b04db43799b2f74175a13c9142027397f3bb1f77553b8c54a922443",
+      "effectiveAt": "2026-09-11T16:00:00Z",
+      "privacyClassification": "aggregate",
+      "approvedByRef": "owner-workforce-planning",
+      "subjectRefs": [
+        "assumption-platform-base",
+        "assumption-sre-base",
+        "assumption-platform-constrained",
+        "assumption-sre-constrained"
+      ],
+      "payloadDigest": "sha256:375f92ef8335bab3eb9f713db0e0a855b5d942d187e65a5b8d5a5a2f0c972fbd",
+      "recordDigest": "sha256:3b7b5b888b04db43799b2f74175a13c9142027397f3bb1f77553b8c54a922443"
+    },
+    {
+      "id": "evidence-capability-aggregate",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "capability-aggregate",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/capability-aggregate@sha256-24949b5c88474fa1658525dd5ef4b41480ec8e6b85d10dcaa90121f475b7d509",
+      "effectiveAt": "2026-09-10T16:00:00Z",
+      "privacyClassification": "aggregate",
+      "approvedByRef": "owner-hr-partner",
+      "subjectRefs": [
+        "gap-distributed-systems",
+        "gap-reliability-engineering"
+      ],
+      "payloadDigest": "sha256:38d8edff372d047569a7a2db2fddb3707c9e5e40f7599ebe35f92ac51088ecaa",
+      "recordDigest": "sha256:24949b5c88474fa1658525dd5ef4b41480ec8e6b85d10dcaa90121f475b7d509"
+    },
+    {
+      "id": "evidence-critical-role-approval",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "critical-role-approval",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/critical-role-approval@sha256-5040fe1470386d5f734e43f8c1ccd594953934e490cce7910e2eb84067ea1947",
+      "effectiveAt": "2026-09-09T16:00:00Z",
+      "privacyClassification": "aggregate",
+      "approvedByRef": "owner-hr-partner",
+      "subjectRefs": [
+        "succession-sre-q1"
+      ],
+      "payloadDigest": "sha256:fa9725d6a8bcf4a9e32ee4c31d4cff37a4fd9fbbd27d660e61bd62b09a2597a3",
+      "recordDigest": "sha256:5040fe1470386d5f734e43f8c1ccd594953934e490cce7910e2eb84067ea1947"
+    },
+    {
+      "id": "evidence-succession-aggregate",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "succession-aggregate",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/succession-aggregate@sha256-813ce6bc6cd7d16e8a89812fbd7fabbc9432ad3a4b0bf7b7fd5744f357d03997",
+      "effectiveAt": "2026-09-10T16:00:00Z",
+      "privacyClassification": "aggregate",
+      "approvedByRef": "owner-hr-partner",
+      "subjectRefs": [
+        "succession-sre-q1"
+      ],
+      "payloadDigest": "sha256:f2cfab4e76c94430ab5ed10c30e825ce6dc919193bf41e5eccf649f1e6dfcc1c",
+      "recordDigest": "sha256:813ce6bc6cd7d16e8a89812fbd7fabbc9432ad3a4b0bf7b7fd5744f357d03997"
+    },
+    {
+      "id": "evidence-location-policy",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "location-policy",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/location-policy@sha256-e318a107b958a94fe6eec3e188b86b0383950eb92c6a54de89024d877c0082f7",
+      "effectiveAt": "2026-09-03T16:00:00Z",
+      "privacyClassification": "aggregate",
+      "approvedByRef": "owner-workforce-planning",
+      "subjectRefs": [
+        "location-gap-platform-us",
+        "location-gap-platform-canada",
+        "location-gap-sre-us"
+      ],
+      "payloadDigest": "sha256:55aa6b58e7a094120a46a0a014e47e6da1b3ee22bc735e08136b2dbf219f976d",
+      "recordDigest": "sha256:e318a107b958a94fe6eec3e188b86b0383950eb92c6a54de89024d877c0082f7"
+    },
+    {
+      "id": "evidence-authority-attestations",
+      "planId": "plan-op-2027",
+      "planRevision": 4,
+      "organizationRef": "org-platform",
+      "kind": "authority-attestation",
+      "sourceRef": "controlled://workforce-planning/op-2027/revision-4/authority-attestations@sha256-c2bbe01e0a8c42fb21193bb744d383f27a6c22949de833a3d721a92489f1927d",
+      "effectiveAt": "2026-09-14T17:00:00Z",
+      "privacyClassification": "aggregate",
+      "approvedByRef": "owner-workforce-planning",
+      "subjectRefs": [
+        "attestation-hire",
+        "attestation-terminate",
+        "attestation-evaluate-candidate",
+        "attestation-infer-individual-performance",
+        "attestation-promote",
+        "attestation-set-compensation",
+        "attestation-reorganize",
+        "attestation-infer-sensitive-trait",
+        "attestation-mutate-hr-system",
+        "attestation-communicate-with-employee",
+        "attestation-approve-headcount",
+        "attestation-represent-scenario-as-approved"
+      ],
+      "payloadDigest": "sha256:26dbfe7b6b06985d477df827321d940d3cc153d0de2cd1e436c7547ce3dc03e8",
+      "recordDigest": "sha256:c2bbe01e0a8c42fb21193bb744d383f27a6c22949de833a3d721a92489f1927d"
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "planId": "plan-op-2027",
+    "planRevision": 4,
+    "organizationRef": "org-platform",
+    "privacyClassification": "approved-role-level",
+    "blockerRefs": [
+      "reconciliation-platform-engineer-q1",
+      "gap-distributed-systems",
+      "gap-reliability-engineering",
+      "succession-sre-q1",
+      "location-gap-platform-canada"
+    ],
+    "actionRefs": [
+      "action-funding-gap",
+      "action-capability-mitigation",
+      "action-succession-review",
+      "action-location-constraint"
+    ],
+    "decisionRefs": [
+      "decision-platform-priority",
+      "decision-succession-mitigation"
+    ],
+    "authorityAttestationRefs": [
+      "attestation-hire",
+      "attestation-terminate",
+      "attestation-evaluate-candidate",
+      "attestation-infer-individual-performance",
+      "attestation-promote",
+      "attestation-set-compensation",
+      "attestation-reorganize",
+      "attestation-infer-sensitive-trait",
+      "attestation-mutate-hr-system",
+      "attestation-communicate-with-employee",
+      "attestation-approve-headcount",
+      "attestation-represent-scenario-as-approved"
+    ],
+    "ownerRef": "owner-workforce-planning",
+    "summary": "OP-2027 revision 4 remains blocked for manager review by a funded-FTE gap, aggregate scenario gaps, capability gaps, succession coverage, and one location constraint. No workforce action or approval has occurred.",
+    "prohibitedActions": [
+      "hire",
+      "terminate",
+      "evaluate-candidate",
+      "infer-individual-performance",
+      "promote",
+      "set-compensation",
+      "reorganize",
+      "infer-sensitive-trait",
+      "mutate-hr-system",
+      "communicate-with-employee",
+      "approve-headcount",
+      "represent-scenario-as-approved"
+    ]
+  }
+}

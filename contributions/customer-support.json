@@ -55,6 +55,11 @@
     "proofPlan": "Preserve the exact strict legacy support-case schema under anyOf; add a schema-marked enriched case ledger with stable case/account/product/environment/snapshot identity, principals, consent, controlled evidence, diagnostics, diagnoses, draft communications, escalations, recommendation, and handoff; register a total validator for malformed ledgers, duplicate/dangling ids, cross-case evidence, unapproved data classes, secret requests, chronology, unresolved escalation, self-review, bare Customer Support identities, premature readiness, and unauthorized account/refund/closure/message claims, plus CLI and legacy tests.",
     "existingAlternatives": [
       {
+        "id": "customer-success-program-manager",
+        "overlap": "Both bind work to an exact customer and account scope, preserve evidence and accountable ownership, expose escalation needs, and prohibit customer-system mutation, unsupported commitments, and message-sending claims.",
+        "difference": "Customer Success Program Manager reconciles a recurring approved success-plan revision across workload adoption, service health, accepted outcomes, actions, review cadence, and renewal handoff. Customer Support diagnoses and resolves one technical case from consent-minimized diagnostics and prepares a customer-ready response or case escalation."
+      },
+      {
         "id": "incident-response",
         "overlap": "Both preserve an evidence timeline, technical diagnosis, escalation ownership, and a bounded handoff during an operational problem.",
         "difference": "Incident Response manages live service containment and recovery; Customer Support binds a single customer/account/product/environment case, consent-minimized diagnostics, customer-facing draft communication, and case-owner resolution."
@@ -73,6 +78,11 @@
         "id": "knowledge-curator",
         "overlap": "Both turn evidence and findings into reusable, attributable operational knowledge without claiming external mutation.",
         "difference": "Knowledge Curator organizes durable knowledge collections and source provenance, while Customer Support manages one active customer issue, consent, diagnosis, communication draft, escalation, and case-owner resolution."
+      },
+      {
+        "id": "partner-business-manager",
+        "overlap": "Both bind one scoped operating record to controlled evidence, named principals, unresolved escalations, and a human-owned handoff without exercising external authority.",
+        "difference": "Partner Business Manager reconciles a multi-domain partner-plan revision and its business authority boundaries; Customer Support proves one consent-scoped technical diagnosis and reserves account, refund, closure, and customer-message actions for the case owner."
       }
     ]
   }

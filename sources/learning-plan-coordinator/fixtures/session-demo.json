@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "learning-plan-coordinator",
+  "scenario": "Build a twelve-week learner-controlled plan for practical data visualization using my supplied portfolio samples, weekly availability, free-resource constraint, and checkpoint rubric.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Build a twelve-week learner-controlled plan for practical data visualization using my supplied portfolio samples, weekly availability, free-resource constraint, and checkpoint rubric."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced and validated outputs/learning-plan.json, then rendered the durable handoff at outputs/learning-plan-coordinator-handoff.md with competencies, prerequisites, evidence, blocked checkpoints, and the learner-owned next revision separated."
+    }
+  ],
+  "report": {
+    "title": "Learning plan coordinator session handoff",
+    "summary": "A versioned competency plan links prerequisites, selected resources, weekly practice, checkpoint criteria, evidence gaps, accessibility constraints, and review decisions without purchasing, enrolling, grading, or claiming mastery.",
+    "output": "outputs/learning-plan-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Competency and prerequisite map",
+        "summary": "The competency map records current evidence state and explicit prerequisite links without inferring mastery.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Sequenced practice and resource plan",
+        "summary": "Every planned activity traces to a competency, prerequisite state, selected free resource, owner, time budget, and checkpoint criterion.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Checkpoint evidence ledger",
+        "summary": "Checkpoint records distinguish supporting evidence, gaps, blocked states, and the learner-owned evidence still required.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Versioned progress review and next-plan handoff",
+        "summary": "The next revision preserves failed, skipped, and blocked checkpoints while leaving enrollment, purchase, grading, credentialing, and mastery decisions with authorized humans.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

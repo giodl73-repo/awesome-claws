@@ -458,6 +458,15 @@
       "state": "open",
       "requiredDecisionRefs": ["principal-ceo", "principal-product"],
       "summary": "Sales assumptions cannot become a roadmap or customer commitment without both required decisions."
+    },
+    {
+      "id": "conflict-product-capacity-resolved",
+      "kind": "capacity",
+      "workstreamRefs": ["workstream-product"],
+      "principalRefs": ["principal-ceo", "principal-product"],
+      "state": "resolved-by-principals",
+      "requiredDecisionRefs": [],
+      "summary": "The principals resolved the product capacity allocation within the 12 person-week envelope."
     }
   ],
   "views": [

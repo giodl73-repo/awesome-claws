@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "enterprise-license-entitlement-reconciler",
+  "scenario": "Reconcile organization Northwind's owner-supplied Enterprise Agreement EA-204 license-program LP-2026 rights manifest v4 and SKU mapping v7 against the complete assignment and measured-consumption exports for 2026-08, using cutoff 2026-09-01T00:00:00Z, validation asOf 2026-09-03T18:00:00Z, reconciliation round round-2026-08-r2, and predecessor round-2026-07-r1. Preserve every right, pool, assignment, consumption record, exception, and fresh human decision exactly once. Do not interpret agreement text, infer access or usage, purchase, assign, revoke, renew, mutate accounts, submit a true-up, recommend action, or declare compliance.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile organization Northwind's owner-supplied Enterprise Agreement EA-204 license-program LP-2026 rights manifest v4 and SKU mapping v7 against the complete assignment and measured-consumption exports for 2026-08, using cutoff 2026-09-01T00:00:00Z, validation asOf 2026-09-03T18:00:00Z, reconciliation round round-2026-08-r2, and predecessor round-2026-07-r1. Preserve every right, pool, assignment, consumption record, exception, and fresh human decision exactly once. Do not interpret agreement text, infer access or usage, purchase, assign, revoke, renew, mutate accounts, submit a true-up, recommend action, or declare compliance."
+    },
+    {
+      "role": "agent",
+      "text": "I bound the review to the supplied organization, agreement, program, predecessor, round, period, cutoff, rights manifest v4, SKU mapping v7, and caller-supplied validation time. I preserved the four named-human source owners, reviewer, destination approver, and handoff owner as separate authorities."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/license-position-review.md and an inline review surface from the same validated artifact. All 2 rights, 3 pools, 3 assignment rows, 3 consumption rows, 3 exceptions, and 3 fresh human decisions are covered exactly once. No purchase, assignment, revocation, renewal, account mutation, true-up submission, effective-access or usage inference, recommendation, or compliance declaration occurred."
+    }
+  ],
+  "report": {
+    "title": "Enterprise License Entitlement Reconciler session handoff",
+    "summary": "A deterministic rights-to-pool-to-assignment-and-consumption reconciliation for one fixed organization, agreement, program, period, cutoff, and round, with exact coverage, mapped integer arithmetic, reciprocal evidence, typed named-human authority, explicit exceptions and decisions, and an owner-review handoff that performs no licensing or account action and makes no compliance claim.",
+    "output": "outputs/license-position-review.md",
+    "items": [
+      {
+        "title": "Version-bound organization, agreement, program, round, predecessor, rights-manifest, SKU-mapping, principal, authority, and evidence ledgers",
+        "summary": "The organization, agreement, license program, predecessor, round, period, cutoff, rights manifest, SKU mapping, authority roster, and destination bindings are exact and every internal digest recomputes deterministically",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Closed right, entitlement-pool, assignment, and measured-consumption reconciliation with deterministic integer-unit arithmetic",
+        "summary": "Every declared right, pool, assignment, consumption record, exception, decision, and evidence record appears exactly once in its closed index with reciprocal lineage and no duplicate or dangling identity",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Exact unmapped, conflicting, incomplete, out-of-period, under-assigned, over-assigned, under-consumed, and over-consumed exception ledger",
+        "summary": "Every in-period mapped assignment and consumption record resolves only through the canonical owner-supplied SKU mapping to one declared right and pool with exact integer arithmetic, while unmapped, conflicting, or out-of-period rows remain excluded from position arithmetic under one exact blocker",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Fresh named-human decision ledger with exact scope, authority, chronology, and reciprocal evidence",
+        "summary": "Every non-balanced or blocked position has one exact exception and either one fresh authorized named-human decision or an explicit pending-decision state, while predecessor decisions remain lineage only",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Accessible license-position review with complete Markdown fallback and a destination-bound blocked or ready-for-owner-review handoff carrying structural not-performed and not-claimed fields",
+        "summary": "The visual and Markdown views agree, the handoff is blocked whenever evidence, mapping, authority, chronology, coverage, arithmetic, exception, or decision validity fails, and no purchase, assignment, revocation, renewal, account mutation, true-up submission, recommendation, effective-access inference, effective-usage inference, or compliance claim occurred",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

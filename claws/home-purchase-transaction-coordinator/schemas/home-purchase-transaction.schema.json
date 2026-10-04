@@ -1,0 +1,346 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/home-purchase-transaction.schema.json",
+  "title": "Home purchase transaction ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "transaction",
+    "authorities",
+    "sources",
+    "milestones",
+    "conditions",
+    "deadlines",
+    "workstreams",
+    "actions",
+    "questions",
+    "gaps",
+    "review",
+    "prohibitedActions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.homePurchaseTransaction.v1" },
+    "transaction": { "$ref": "#/$defs/transaction" },
+    "authorities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/authority" } },
+    "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } },
+    "milestones": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/milestone" } },
+    "conditions": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+    "deadlines": { "type": "array", "items": { "$ref": "#/$defs/deadline" } },
+    "workstreams": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/workstream" } },
+    "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } },
+    "questions": { "type": "array", "items": { "$ref": "#/$defs/question" } },
+    "gaps": { "type": "array", "items": { "$ref": "#/$defs/gap" } },
+    "review": { "$ref": "#/$defs/review" },
+    "prohibitedActions": { "$ref": "#/$defs/prohibitedActions" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._:-]*$", "maxLength": 100 },
+    "nullableId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "nullableTimestamp": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+    "shortText": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "controlledRef": { "type": "string", "pattern": "^controlled://[a-z0-9][a-z0-9._/-]*$", "maxLength": 240 },
+    "refArray": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "nonEmptyRefArray": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "nullableAmount": { "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "null" }] },
+    "nullableCurrency": { "anyOf": [{ "type": "string", "pattern": "^[A-Z]{3}$" }, { "type": "null" }] },
+    "transaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "stableTransactionRef", "generalizedPropertyRef", "asOf", "buyerAuthorityRef", "approvedDestinationRef",
+        "sourceRefs", "milestoneRefs", "conditionRefs", "deadlineRefs", "workstreamRefs", "actionRefs", "questionRefs", "gapRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "stableTransactionRef": { "$ref": "#/$defs/shortText" },
+        "generalizedPropertyRef": { "$ref": "#/$defs/shortText" },
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "buyerAuthorityRef": { "$ref": "#/$defs/id" },
+        "approvedDestinationRef": { "$ref": "#/$defs/controlledRef" },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "milestoneRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "conditionRefs": { "$ref": "#/$defs/refArray" },
+        "deadlineRefs": { "$ref": "#/$defs/refArray" },
+        "workstreamRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "actionRefs": { "$ref": "#/$defs/refArray" },
+        "questionRefs": { "$ref": "#/$defs/refArray" },
+        "gapRefs": { "$ref": "#/$defs/refArray" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "transactionRef", "kind", "label", "scope", "authorizationSourceRef", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "transactionRef": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "buyer", "real-estate-professional", "seller-or-counterparty", "inspector", "appraiser", "lender",
+            "title-or-escrow", "insurer", "tax-professional", "legal-counsel", "closing-professional"
+          ]
+        },
+        "label": { "$ref": "#/$defs/shortText" },
+        "scope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "transaction-owner", "source-issuer", "contract-question", "inspection-question", "appraisal-question",
+              "financing-question", "title-question", "insurance-question", "tax-question", "settlement-question",
+              "wire-safety-question", "receipt-issuer", "review"
+            ]
+          }
+        },
+        "authorizationSourceRef": { "$ref": "#/$defs/nullableId" },
+        "status": { "enum": ["current", "stale", "revoked", "unknown"] }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "transactionRef", "stableSourceRef", "kind", "subjectRef", "issuerAuthorityRef", "controlledRef", "revision",
+        "supersedesSourceRef", "assertedAt", "retrievedAt", "freshness", "amountMinorUnits", "currency", "minimized", "containsSecrets"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "transactionRef": { "$ref": "#/$defs/id" },
+        "stableSourceRef": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "buyer-authorization", "contract-revision", "disclosure", "inspection-report", "counterparty-position",
+            "appraisal-report", "lender-condition", "title-record", "insurance-record", "tax-record", "settlement-record",
+            "closing-instruction", "owner-action-note", "independent-receipt", "professional-answer", "gap-resolution"
+          ]
+        },
+        "subjectRef": { "$ref": "#/$defs/id" },
+        "issuerAuthorityRef": { "$ref": "#/$defs/id" },
+        "controlledRef": { "$ref": "#/$defs/controlledRef" },
+        "revision": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "supersedesSourceRef": { "$ref": "#/$defs/nullableId" },
+        "assertedAt": { "$ref": "#/$defs/timestamp" },
+        "retrievedAt": { "$ref": "#/$defs/timestamp" },
+        "freshness": { "enum": ["current", "superseded", "stale", "unknown"] },
+        "amountMinorUnits": { "$ref": "#/$defs/nullableAmount" },
+        "currency": { "$ref": "#/$defs/nullableCurrency" },
+        "minimized": { "const": true },
+        "containsSecrets": { "const": false }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "transactionRef", "kind", "label", "state", "amountMinorUnits", "currency", "sourceRefs", "conditionRefs",
+        "deadlineRefs", "workstreamRefs", "actionRefs", "gapRefs", "readinessDeterminationByClaw"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "transactionRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["contract", "earnest-money", "inspection", "appraisal", "financing", "title", "insurance", "tax", "settlement", "closing", "possession"] },
+        "label": { "$ref": "#/$defs/shortText" },
+        "state": { "enum": ["pending", "blocked", "satisfied-by-authority", "failed", "conflicting", "unknown", "withdrawn"] },
+        "amountMinorUnits": { "$ref": "#/$defs/nullableAmount" },
+        "currency": { "$ref": "#/$defs/nullableCurrency" },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "conditionRefs": { "$ref": "#/$defs/refArray" },
+        "deadlineRefs": { "$ref": "#/$defs/refArray" },
+        "workstreamRefs": { "$ref": "#/$defs/refArray" },
+        "actionRefs": { "$ref": "#/$defs/refArray" },
+        "gapRefs": { "$ref": "#/$defs/refArray" },
+        "readinessDeterminationByClaw": { "const": false }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "transactionRef", "kind", "subjectRefs", "state", "sourceRefs", "decidedByAuthorityRef", "decisionSourceRef",
+        "actionRefs", "gapRefs", "satisfactionDeterminationByClaw", "waiverDeterminationByClaw"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "transactionRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["contract", "inspection", "appraisal", "financing", "title", "insurance", "tax", "settlement", "closing", "possession", "other"] },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "state": { "enum": ["pending", "satisfied-by-authority", "failed", "conflicting", "unknown", "waived-by-owner", "withdrawn"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "decidedByAuthorityRef": { "$ref": "#/$defs/nullableId" },
+        "decisionSourceRef": { "$ref": "#/$defs/nullableId" },
+        "actionRefs": { "$ref": "#/$defs/refArray" },
+        "gapRefs": { "$ref": "#/$defs/refArray" },
+        "satisfactionDeterminationByClaw": { "const": false },
+        "waiverDeterminationByClaw": { "const": false }
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "transactionRef", "kind", "subjectRefs", "candidateAt", "timezone", "state", "sourceRefs",
+        "confirmedByAuthorityRef", "confirmationSourceRef", "gapRefs", "applicabilityDeterminationByClaw"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "transactionRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["contract", "earnest-money", "inspection", "appraisal", "financing", "title", "insurance", "settlement", "closing", "possession", "other"] },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "candidateAt": { "$ref": "#/$defs/nullableTimestamp" },
+        "timezone": { "$ref": "#/$defs/shortText" },
+        "state": { "enum": ["source-supplied", "professional-confirmed", "owner-confirmed", "conflicting", "unknown"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "confirmedByAuthorityRef": { "$ref": "#/$defs/nullableId" },
+        "confirmationSourceRef": { "$ref": "#/$defs/nullableId" },
+        "gapRefs": { "$ref": "#/$defs/refArray" },
+        "applicabilityDeterminationByClaw": { "const": false }
+      }
+    },
+    "workstream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "transactionRef", "kind", "ownerAuthorityRef", "state", "sourceRefs", "milestoneRefs", "conditionRefs",
+        "deadlineRefs", "actionRefs", "gapRefs", "professionalConclusionByClaw"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "transactionRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["contract", "inspection", "appraisal", "financing", "title", "insurance", "tax", "funds", "settlement", "closing", "possession"] },
+        "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["pending", "blocked", "professional-complete", "not-applicable-by-authority", "unknown"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "milestoneRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "conditionRefs": { "$ref": "#/$defs/refArray" },
+        "deadlineRefs": { "$ref": "#/$defs/refArray" },
+        "actionRefs": { "$ref": "#/$defs/refArray" },
+        "gapRefs": { "$ref": "#/$defs/refArray" },
+        "professionalConclusionByClaw": { "const": false }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "transactionRef", "subjectRefs", "kind", "ownerAuthorityRef", "state", "attemptedAt", "sourceRefs",
+        "receiptSourceRef", "externalExecution", "agentExecuted"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "transactionRef": { "$ref": "#/$defs/id" },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "kind": { "enum": ["contact", "negotiate", "submit", "apply", "order", "schedule", "sign", "certify", "waive", "release", "pay", "transfer-funds", "change-account", "record-title", "take-possession", "cancel", "review-record", "other"] },
+        "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["proposed", "attempted", "failed", "blocked", "withdrawn", "owner-completed-receipted"] },
+        "attemptedAt": { "$ref": "#/$defs/nullableTimestamp" },
+        "sourceRefs": { "$ref": "#/$defs/refArray" },
+        "receiptSourceRef": { "$ref": "#/$defs/nullableId" },
+        "externalExecution": { "const": "owner-only" },
+        "agentExecuted": { "const": false }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "transactionRef", "kind", "subjectRefs", "askedOfAuthorityRef", "state", "sourceRefs", "answerSourceRef", "interpretationByClaw"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "transactionRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["contract", "legal", "inspection", "appraisal", "financing", "title", "insurance", "tax", "settlement", "wire-safety", "closing"] },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "askedOfAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["open", "answered"] },
+        "sourceRefs": { "$ref": "#/$defs/refArray" },
+        "answerSourceRef": { "$ref": "#/$defs/nullableId" },
+        "interpretationByClaw": { "const": false }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "transactionRef", "kind", "subjectRefs", "sourceRefs", "nextOwnerAuthorityRef", "state", "resolutionSourceRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "transactionRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["missing-authority", "missing-source", "stale-source", "contract", "contingency", "condition", "deadline", "amount", "receipt", "professional-question", "privacy", "wire-safety", "residual-transaction-state"] },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "sourceRefs": { "$ref": "#/$defs/refArray" },
+        "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["open", "resolved"] },
+        "resolutionSourceRef": { "$ref": "#/$defs/nullableId" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asOf", "state", "nextOwnerAuthorityRef", "openQuestionRefs", "openGapRefs", "unresolvedMilestoneRefs",
+        "unresolvedConditionRefs", "unresolvedDeadlineRefs", "blockedWorkstreamRefs", "missingReceiptActionRefs", "wireSafetyQuestionRefs",
+        "clearToCloseClaim", "ownershipClaim", "legalConclusion", "contractInterpretation", "inspectionConclusion", "appraisalConclusion",
+        "financingConclusion", "titleConclusion", "insuranceConclusion", "taxConclusion", "settlementConclusion", "wireInstructionValidation"
+      ],
+      "properties": {
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "state": { "enum": ["blocked", "ready-for-buyer-review"] },
+        "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+        "openQuestionRefs": { "$ref": "#/$defs/refArray" },
+        "openGapRefs": { "$ref": "#/$defs/refArray" },
+        "unresolvedMilestoneRefs": { "$ref": "#/$defs/refArray" },
+        "unresolvedConditionRefs": { "$ref": "#/$defs/refArray" },
+        "unresolvedDeadlineRefs": { "$ref": "#/$defs/refArray" },
+        "blockedWorkstreamRefs": { "$ref": "#/$defs/refArray" },
+        "missingReceiptActionRefs": { "$ref": "#/$defs/refArray" },
+        "wireSafetyQuestionRefs": { "$ref": "#/$defs/refArray" },
+        "clearToCloseClaim": { "const": false },
+        "ownershipClaim": { "const": false },
+        "legalConclusion": { "const": false },
+        "contractInterpretation": { "const": false },
+        "inspectionConclusion": { "const": false },
+        "appraisalConclusion": { "const": false },
+        "financingConclusion": { "const": false },
+        "titleConclusion": { "const": false },
+        "insuranceConclusion": { "const": false },
+        "taxConclusion": { "const": false },
+        "settlementConclusion": { "const": false },
+        "wireInstructionValidation": { "const": false }
+      }
+    },
+    "prohibitedActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legalAdvice", "financialAdvice", "realEstateAdvice", "contractInterpretation", "propertyRecommendation", "contact",
+        "negotiation", "submission", "application", "serviceOrder", "scheduling", "signature", "certification", "waiver",
+        "release", "payment", "fundTransfer", "accountChange", "titleRecording", "possession", "cancellation", "disclosure", "closing"
+      ],
+      "properties": {
+        "legalAdvice": { "const": false },
+        "financialAdvice": { "const": false },
+        "realEstateAdvice": { "const": false },
+        "contractInterpretation": { "const": false },
+        "propertyRecommendation": { "const": false },
+        "contact": { "const": false },
+        "negotiation": { "const": false },
+        "submission": { "const": false },
+        "application": { "const": false },
+        "serviceOrder": { "const": false },
+        "scheduling": { "const": false },
+        "signature": { "const": false },
+        "certification": { "const": false },
+        "waiver": { "const": false },
+        "release": { "const": false },
+        "payment": { "const": false },
+        "fundTransfer": { "const": false },
+        "accountChange": { "const": false },
+        "titleRecording": { "const": false },
+        "possession": { "const": false },
+        "cancellation": { "const": false },
+        "disclosure": { "const": false },
+        "closing": { "const": false }
+      }
+    }
+  }
+}

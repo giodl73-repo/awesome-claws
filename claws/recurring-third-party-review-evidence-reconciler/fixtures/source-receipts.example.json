@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "awesomeClaws.recurringThirdPartyReviewSourceReceipts.v1",
+  "ownerRef": "principal-evidence-custodian-priya",
+  "signingKeyId": "key-source-receipts-2026",
+  "issuedAt": "2026-09-16T18:30:00Z",
+  "receipts": [
+    {
+      "evidenceRef": "evidence-applicability-alpine-assurance",
+      "sourceRef": "controlled://third-party-review/applicability/alpine-assurance",
+      "sourceVersion": "v1",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1hcHBsaWNhYmlsaXR5LWFscGluZS1hc3N1cmFuY2UK",
+      "contentDigest": "sha256:bd9cd12cc398d8190795cc08f167785afa9c4566d129e9727ce95de59c139cee"
+    },
+    {
+      "evidenceRef": "evidence-applicability-alpine-security",
+      "sourceRef": "controlled://third-party-review/applicability/alpine-security",
+      "sourceVersion": "v1",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1hcHBsaWNhYmlsaXR5LWFscGluZS1zZWN1cml0eQo=",
+      "contentDigest": "sha256:98872955a22e2311eb4885d9137f70b885159e8ecdf3fabcd7b02df910fbc773"
+    },
+    {
+      "evidenceRef": "evidence-applicability-alpine-subprocessor",
+      "sourceRef": "controlled://third-party-review/applicability/alpine-subprocessor",
+      "sourceVersion": "v1",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1hcHBsaWNhYmlsaXR5LWFscGluZS1zdWJwcm9jZXNzb3IK",
+      "contentDigest": "sha256:ed4c077551222e84ea7d350dd36bd5652c72b2d988889ae3f373b09ebbc11236"
+    },
+    {
+      "evidenceRef": "evidence-applicability-brightpay-security",
+      "sourceRef": "controlled://third-party-review/applicability/brightpay-security",
+      "sourceVersion": "v1",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1hcHBsaWNhYmlsaXR5LWJyaWdodHBheS1zZWN1cml0eQo=",
+      "contentDigest": "sha256:735db0cedc31d977968149777a9f042e72fe46d03aec3d93f0d840d1b767a25d"
+    },
+    {
+      "evidenceRef": "evidence-applicability-brightpay-subprocessor",
+      "sourceRef": "controlled://third-party-review/applicability/brightpay-subprocessor",
+      "sourceVersion": "v1",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1hcHBsaWNhYmlsaXR5LWJyaWdodHBheS1zdWJwcm9jZXNzb3IK",
+      "contentDigest": "sha256:53b7bc0050be4dd62235668d45a79cb39cd0d93f690caec864dbffb9b6352b94"
+    },
+    {
+      "evidenceRef": "evidence-applicability-brightpay-continuity",
+      "sourceRef": "controlled://third-party-review/applicability/brightpay-continuity",
+      "sourceVersion": "v1",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1hcHBsaWNhYmlsaXR5LWJyaWdodHBheS1jb250aW51aXR5Cg==",
+      "contentDigest": "sha256:f53723bb4068d9cf0849e86bbf2d2fbdd44e25902ec3b94282a24e35cdacf0d4"
+    },
+    {
+      "evidenceRef": "evidence-cycle-approval",
+      "sourceRef": "controlled://third-party-review/cycle-approvals/2026-q3",
+      "sourceVersion": "v1",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1jeWNsZS1hcHByb3ZhbAo=",
+      "contentDigest": "sha256:cb5c230a6c4ba93f7980d31dd50312af0017488635853f8bf95fa00866a8148b"
+    },
+    {
+      "evidenceRef": "evidence-alpine-assurance-report",
+      "sourceRef": "https://trust.alpine.example/assurance/soc3-2025",
+      "sourceVersion": "2025",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1hbHBpbmUtYXNzdXJhbmNlLXJlcG9ydAo=",
+      "contentDigest": "sha256:04ec04048f95965cab4ab4122e2fa969215f48c3df4381bc238bb98908a9eafc"
+    },
+    {
+      "evidenceRef": "evidence-alpine-security-questionnaire",
+      "sourceRef": "controlled://third-party-review/questionnaires/alpine-2026",
+      "sourceVersion": "v3",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1hbHBpbmUtc2VjdXJpdHktcXVlc3Rpb25uYWlyZQo=",
+      "contentDigest": "sha256:d771e1a7768eb254ca816a9c412e3a5825bb2a448d75581af28c083696ec599d"
+    },
+    {
+      "evidenceRef": "evidence-brightpay-security-questionnaire",
+      "sourceRef": "controlled://third-party-review/questionnaires/brightpay-2026",
+      "sourceVersion": "v4",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1icmlnaHRwYXktc2VjdXJpdHktcXVlc3Rpb25uYWlyZQo=",
+      "contentDigest": "sha256:3b3b3b4e7e075b174597af8038082ae2b32b3900f3ffbd8a69c171504bf2b52c"
+    },
+    {
+      "evidenceRef": "evidence-shared-subprocessor-disclosure",
+      "sourceRef": "controlled://third-party-review/subprocessors/shared-cloud-2026",
+      "sourceVersion": "v2",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1zaGFyZWQtc3VicHJvY2Vzc29yLWRpc2Nsb3N1cmUK",
+      "contentDigest": "sha256:93fd75511d938eb572baf34479cee1a106d982648d98ca5f74048a0f8ea96be2"
+    },
+    {
+      "evidenceRef": "evidence-brightpay-continuity-test",
+      "sourceRef": "controlled://third-party-review/continuity-tests/brightpay-2026",
+      "sourceVersion": "v2",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1icmlnaHRwYXktY29udGludWl0eS10ZXN0Cg==",
+      "contentDigest": "sha256:1b31efa522b57bbcc09102b1e594e4502dc1d7d1106142bb7e83d5cd85078978"
+    },
+    {
+      "evidenceRef": "evidence-remediation-alpine-assurance",
+      "sourceRef": "controlled://third-party-review/remediations/alpine-assurance-2026-q3",
+      "sourceVersion": "v1",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1yZW1lZGlhdGlvbi1hbHBpbmUtYXNzdXJhbmNlCg==",
+      "contentDigest": "sha256:64cc80baa268abd7dc11af372c8544bc1d1f5ec5cc33d68f8a6f672f84a8cc43"
+    },
+    {
+      "evidenceRef": "evidence-exception-brightpay-security",
+      "sourceRef": "controlled://third-party-review/exceptions/brightpay-security-2026-q3",
+      "sourceVersion": "v1",
+      "contentBase64": "dmVyaWZpZWQgc291cmNlIGJ5dGVzIGZvciBldmlkZW5jZS1leGNlcHRpb24tYnJpZ2h0cGF5LXNlY3VyaXR5Cg==",
+      "contentDigest": "sha256:74fcabdc30d6c19c4235539737a38220307335b3f854df92e1aa1a8f309cb6fd"
+    }
+  ],
+  "signature": "0sakiaRC5WgI2UlNTPtgcY3bfawvn1spiB0ua0E2zDJr+htiwN/9+DBQFRoPBw6j3ousmM/K5BvzyHrfQeSIDQ=="
+}

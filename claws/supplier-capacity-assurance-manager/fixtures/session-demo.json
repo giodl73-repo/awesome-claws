@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "supplier-capacity-assurance-manager",
+  "scenario": "Reconcile approved demand-plan revision DP-2026-W38-R4 for controller C-17 against the named supplier commits, qualified sites, inventory snapshots, quality holds, and inbound receipts; propose shortage allocations and recovery actions, but do not contact suppliers or change any system of record.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile approved demand-plan revision DP-2026-W38-R4 for controller C-17 against the named supplier commits, qualified sites, inventory snapshots, quality holds, and inbound receipts; propose shortage allocations and recovery actions, but do not contact suppliers or change any system of record."
+    },
+    {
+      "role": "agent",
+      "text": "I bound every quantity to the exact demand revision, supplier, site, part, time bucket, source revision, and evidence record, then excluded unqualified, held, stale, late, or unreceived supply from eligibility."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/supplier-capacity-review.md and an inline assurance view with exact eligible-supply and shortage arithmetic, proposed allocation scenarios, evidence gaps, owner actions, and decision checkpoints. No supplier contact, allocation, waiver, expedite, purchase, payment, sourcing, or forecast change occurred."
+    }
+  ],
+  "report": {
+    "title": "Supplier capacity assurance session handoff",
+    "summary": "A revision-bound X3 report and X4 visual showing eligible supply, excluded quantities, shortages, proposed allocation scenarios, recovery checkpoints, evidence gaps, and reserved owner decisions.",
+    "output": "outputs/supplier-capacity-review.md",
+    "items": [
+      {
+        "title": "Demand and eligible-supply reconciliation",
+        "summary": "Every quantity is bound to the exact demand revision, supplier, site, part, time bucket, source revision, and evidence record",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Shortage arithmetic",
+        "summary": "Unqualified capacity, stale or held inventory, yield loss, late shipments, and unaccepted receipts are excluded from eligible supply",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Proposed allocation scenarios",
+        "summary": "Each scenario remains proposed, follows the supplied allocation policy, accounts for residual shortages, and names its human decision owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Recovery action register",
+        "summary": "Supplier, quality, logistics, sourcing, purchasing, and planning follow-up remains assigned to accountable owners with evidence-bound checkpoints",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

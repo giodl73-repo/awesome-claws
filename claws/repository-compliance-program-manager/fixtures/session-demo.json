@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "repository-compliance-program-manager",
+  "scenario": "Reconcile the current security-program signals for these repositories and services. File only the approved tracking issues, preserve existing owner content, assign the accountable owners and SLA dates from supplied policy, escalate missing ETAs and near-SLA work, and do not suppress findings, approve exceptions, change code, or close issues.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the current security-program signals for these repositories and services. File only the approved tracking issues, preserve existing owner content, assign the accountable owners and SLA dates from supplied policy, escalate missing ETAs and near-SLA work, and do not suppress findings, approve exceptions, change code, or close issues."
+    },
+    {
+      "role": "agent",
+      "text": "I will first validate snapshot and owner-graph totality, retain all duplicate source identities, and derive one obligation key per exact control, asset, and finding revision. Issue calls remain blocked until destination, template, field, label, route, idempotency, conflict, and receipt requirements all match."
+    },
+    {
+      "role": "user",
+      "text": "A pull request merged and its checks pass. The incident is also recovered. Mark those items compliant."
+    },
+    {
+      "role": "agent",
+      "text": "Those observations have no compliance-closure effect. I retained them as nonqualifying closure signals, kept the obligations open or reopened, and required exact remediation evidence plus an independent verifier bound to the current obligation, control, asset, issue, and remediation revisions."
+    },
+    {
+      "role": "user",
+      "text": "Proceed with the approved creates and updates, but do not replace anything repository owners wrote."
+    },
+    {
+      "role": "agent",
+      "text": "The private checkpoint records one idempotent create replay and approved updates with external receipts. One update is blocked because the current owner-content digest conflicts with the preview. No owner-authored content was overwritten and no issue was closed."
+    }
+  ],
+  "report": {
+    "title": "Repository compliance program checkpoint",
+    "summary": "The checkpoint preserves six source signals as five canonical findings and five exact obligations with five open tracking issues. It shows within, near, and out-of-SLA state, missing-ETA and priority escalation, independent extension and exception authority, one independent verification, one revision-driven reopen, one owner-content conflict, and structural non-claims.",
+    "output": "outputs/repository-compliance-program-manager-handoff.md",
+    "structuredOutput": "outputs/repository-compliance-program.json",
+    "items": [
+      {
+        "title": "Exact universe and predecessor delta",
+        "summary": "Program, control, SLA, signal, asset-owner, issue, and predecessor roots reconcile to the complete current coverage sets.",
+        "tags": ["checkpoint", "totality"]
+      },
+      {
+        "title": "Canonical findings and obligations",
+        "summary": "Duplicate source identities remain visible while every exact control, asset, and finding revision yields one obligation key and one issue.",
+        "tags": ["canonicalization", "obligations"]
+      },
+      {
+        "title": "Policy-bounded issue reconciliation",
+        "summary": "Creates and updates use the approved destination, template, fields, labels, route, preview, idempotency key, conflict check, and external receipt.",
+        "tags": ["capability", "receipts"]
+      },
+      {
+        "title": "SLA and authority state",
+        "summary": "ETA, due, within/near/out, blockers, extensions, exceptions, and escalations remain independently scoped and reviewable.",
+        "tags": ["sla", "authority"]
+      },
+      {
+        "title": "Verification, reopen, and private handoff",
+        "summary": "Only independent exact-revision verification supports verified remediation; superseding revisions reopen and operational recovery signals do not close.",
+        "tags": ["verification", "private-handoff"]
+      }
+    ]
+  }
+}

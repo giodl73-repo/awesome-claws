@@ -1,6 +1,55 @@
 import { createHash } from "node:crypto";
+import { invoiceDraftFindings } from "./invoice-draft-producer.mjs";
+import { jobEstimateFindings } from "./job-estimate-producer.mjs";
+import { payrollReviewFindings } from "./payroll-review-preparer.mjs";
+import { documentControlFindings } from "./project-document-controller.mjs";
+import { supplierOnboardingFindings } from "./supplier-onboarding-preparer.mjs";
+import { rfpResponseFindings } from "./rfp-response-producer.mjs";
 import { accessEntitlementReviewFindings } from "./access-entitlement-review-coordinator.mjs";
+import { backupRestoreVerificationFindings } from "./backup-restore-verification-coordinator.mjs";
+import { businessContinuityProgramFindings } from "./business-continuity-program-manager.mjs";
+import {
+  benefitsRealizationFindings,
+  BENEFITS_REALIZATION_EXAMPLE_PROFILE_OPTIONS,
+} from "./benefits-realization-manager.mjs";
+import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.mjs";
+import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
+import { consumerProductRecallFindings } from "./consumer-product-recall-coordinator.mjs";
+import { medicationRegimenFindings } from "./medication-regimen-coordinator.mjs";
+import { estateAdministrationFindings } from "./estate-administration-coordinator.mjs";
+import { homePurchaseTransactionFindings } from "./home-purchase-transaction-coordinator.mjs";
+import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
+import { civicServiceAccessFindings } from "./civic-services-navigator.mjs";
+import { householdEmergencyPreparednessFindings } from "./household-emergency-preparedness-coordinator.mjs";
+import { identityTheftRecoveryFindings } from "./identity-theft-recovery-coordinator.mjs";
+import { propertyInsuranceClaimFindings } from "./property-insurance-claim-coordinator.mjs";
+import { rentalHousingFindings } from "./rental-housing-coordinator.mjs";
+import { enterpriseLicenseEntitlementFindings } from "./enterprise-license-entitlement-reconciler.mjs";
+import { financialAccountReconciliationFindings } from "./financial-account-reconciliation-coordinator.mjs";
 import { isSafePackagePath, pathsConflict, portablePathKey } from "./portable-paths.mjs";
+import { learningProgramFindings } from "./learning-program-manager.mjs";
+import { learningPlanFindings } from "./learning-plan-coordinator.mjs";
+import { partnerBusinessPlanFindings } from "./partner-business-manager.mjs";
+import { ownerTrustPolicy as procureToPayOwnerTrustPolicy } from "./procure-to-pay-three-way-match-exception-reconciler-fixtures.mjs";
+import { procureToPayThreeWayMatchFindings } from "./procure-to-pay-three-way-match-exception-reconciler.mjs";
+import {
+  problemKnownErrorFindings,
+  PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS,
+} from "./problem-known-error-coordinator.mjs";
+import { repositoryOperationsFindings } from "./repository-operations-manager.mjs";
+import { repositoryComplianceProgramFindings } from "./repository-compliance-program-manager.mjs";
+import {
+  recurringThirdPartyReviewFindings,
+  RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS,
+} from "./recurring-third-party-review-evidence-reconciler.mjs";
+import { solutionArchitectureDecisionFindings } from "./solution-architecture-decision-advisor.mjs";
+import {
+  securityAlertReviewArtifactFindings,
+  SECURITY_ALERT_REVIEW_EXAMPLE_PROFILE_OPTIONS,
+} from "./security-alert-review-reconciler.mjs";
+import { supplierCapacityAssuranceFindings } from "./supplier-capacity-assurance-manager.mjs";
+import { tlsCertificateRotationVerificationFindings } from "./tls-certificate-rotation-verification-coordinator.mjs";
+import { workforcePlanningFindings } from "./workforce-planning-partner.mjs";
 
 export function hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative) {
   const adjacentNegation =
@@ -59,7 +108,7 @@ function hasUnsafePublicHost(hostname) {
   return match !== null && Number(match[1]) >= 16 && Number(match[1]) <= 31;
 }
 
-function isCredentialFreePublicHttpsReference(reference) {
+export function isCredentialFreePublicHttpsReference(reference) {
   const unsafeQueryKeys =
     /^(?:access[_-]?token|api[_-]?key|auth|code|credential|key|password|secret|token)$/iu;
   const unsafeQuery =
@@ -4392,7 +4441,7 @@ function civicDataFindings(value) {
   return findings;
 }
 
-function changeControlFindings(value) {
+export function changeControlFindings(value) {
   const stepIds = value.plan.steps.map((item) => item.id);
   const steps = new Set(stepIds);
   const findings = [
@@ -19034,7 +19083,7 @@ function publicationReadinessRecordFindings(value) {
     ...value.reviewQuestions.map((item) => item.question),
   ];
   const prohibitedNarrative =
-    /\b(?:(?:i|we|the (?:agent|assistant|claw)|content operations)\s+(?:have\s+)?(?:published|scheduled|distributed|sent|messaged|updated the cms|mutated the cms|approved)|(?:results|analytics|conversion|engagement|open rate|click rate)\s+(?:show|showed|prove|proved|increased|decreased|improved))\b/giu;
+    /\b(?:(?:claim\s+)?(?:i|we|the (?:agent|assistant|claw)|content operations)\s+(?:have\s+)?(?:published|scheduled|distributed|sent|messaged|updated the cms|mutated the cms|approved|(?:measured|observed|achieved)\s+(?:a\s+|an\s+)?(?:\d+(?:\.\d+)?\s*(?:percent|%)\s+)?(?:conversion|uplift|open rate|click rate|engagement))|(?:results|analytics|conversion|engagement|open rate|click rate)\s+(?:show|showed|prove|proved|increased|decreased|improved))\b/giu;
   if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
     findings.push(
       finding(
@@ -40248,7 +40297,7 @@ function researchSynthesisFindings(value) {
   return findings;
 }
 
-function qualityAssuranceReleaseFindings(value) {
+export function qualityAssuranceReleaseFindings(value) {
   const findings = [];
   function toEpochMillis(text) {
     if (typeof text !== "string") return NaN;
@@ -45548,21 +45597,131 @@ function dataGovernanceAssessmentFindings(input) {
   return findings;
 }
 
-function incidentResponseFindings(input) {
+export function incidentResponseFindings(input) {
   const value = isRecord(input) ? input : {};
   const findings = [];
+  const version2 = value.schemaVersion === "awesomeClaws.incidentResponse.v2";
+  const sameStringSet = (left, right) =>
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === new Set(left).size &&
+    right.length === new Set(right).size &&
+    left.length === right.length &&
+    left.every((item) => right.includes(item));
+  const technicalDriResponsibilities = [
+    "technical-investigation",
+    "hypothesis-management",
+    "mitigation-proposals",
+    "technical-owner-coordination",
+    "execution-evidence-reconciliation",
+    "service-recovery-criteria",
+  ];
+  const incidentManagerResponsibilities = [
+    "incident-severity-state",
+    "incident-update-cadence",
+    "incident-decision-chronology",
+    "incident-action-loop",
+    "incident-escalation",
+    "incident-communication-approval",
+    "incident-shift-handoff",
+    "incident-closure-recommendation",
+    "incident-recovery-review",
+  ];
+  const requiredUpdateSections = [
+    "severity-and-state",
+    "impact-and-evidence",
+    "technical-dri-loop",
+    "incident-manager-loop",
+    "decisions-and-actions",
+    "communications",
+    "recovery-and-next-update",
+  ];
+  const sortedStrings = (items) =>
+    Array.isArray(items) ? [...items].sort() : [];
+  const actionRevision = (action) =>
+    sha256Digest({
+      incidentRef: action.incidentRef,
+      serviceRef: action.serviceRef,
+      kind: action.kind,
+      summary: action.summary,
+      target: action.target,
+      timing: action.timing,
+      verificationCriteria: action.verificationCriteria,
+      rollbackCondition: action.rollbackCondition,
+      proposedById: action.proposedById,
+      ownerId: action.ownerId,
+    });
+  const communicationRevision = (communication) =>
+    sha256Digest({
+      incidentRef: communication.incidentRef,
+      audience: communication.audience,
+      channel: communication.channel,
+      timing: communication.timing,
+      authorId: communication.authorId,
+      ownerId: communication.ownerId,
+      messageRef: communication.messageRef,
+    });
+  const cadenceRevision = (cadence) =>
+    sha256Digest({
+      id: cadence.id,
+      incidentRef: cadence.incidentRef,
+      managedById: cadence.managedById,
+      intervalMinutes: cadence.intervalMinutes,
+      anchorAt: cadence.anchorAt,
+      updateIdPrefix: cadence.updateIdPrefix,
+      requiredSections: sortedStrings(cadence.requiredSections),
+    });
+  const serviceRecoveryRevision = (serviceRecovery) =>
+    sha256Digest({
+      id: serviceRecovery.id,
+      state: serviceRecovery.state,
+      technicalDriId: serviceRecovery.technicalDriId,
+      timelineSnapshotRef: serviceRecovery.timelineSnapshotRef,
+      recoveryCheckRefs: sortedStrings(serviceRecovery.recoveryCheckRefs),
+      evaluatedAt: serviceRecovery.evaluatedAt,
+    });
+  const incidentRecoveryRevision = (incidentRecovery) =>
+    sha256Digest({
+      id: incidentRecovery.id,
+      state: incidentRecovery.state,
+      serviceRecoveryRef: incidentRecovery.serviceRecoveryRef,
+      technicalDriId: incidentRecovery.technicalDriId,
+      incidentManagerId: incidentRecovery.incidentManagerId,
+      recommendedAt: incidentRecovery.recommendedAt,
+      rationale: incidentRecovery.rationale,
+    });
+  const closureRevision = (closure) =>
+    sha256Digest({
+      id: closure.id,
+      incidentRef: closure.incidentRef,
+      incidentRecoveryRecommendationRef:
+        closure.incidentRecoveryRecommendationRef,
+      state: closure.state,
+      incidentManagerId: closure.incidentManagerId,
+      authorityOwnerId: closure.authorityOwnerId,
+      closedAt: closure.closedAt,
+    });
   const enriched = [
     "incident",
     "principals",
+    "roleAssignments",
     "services",
     "signals",
     "evidence",
     "hypotheses",
+    "updateCadence",
+    "updates",
+    "decisions",
     "timelineEvents",
     "actions",
     "recoveryChecks",
+    "serviceRecovery",
+    "incidentRecoveryRecommendation",
+    "closure",
     "followUps",
+    "complianceHandoffs",
     "limitations",
+    "authority",
     "recommendation",
     "owner",
     "ownerId",
@@ -45591,14 +45750,16 @@ function incidentResponseFindings(input) {
       );
     }
   }
-  const schemaVersionValid =
-    value.schemaVersion === "awesomeClaws.incidentResponse.v1";
+  const schemaVersionValid = [
+    "awesomeClaws.incidentResponse.v1",
+    "awesomeClaws.incidentResponse.v2",
+  ].includes(value.schemaVersion);
   if (!schemaVersionValid) {
     findings.push(
       finding(
         "invalid_schema_version",
         "schemaVersion",
-        "Enriched incident response must declare schemaVersion awesomeClaws.incidentResponse.v1.",
+        "Enriched incident response must declare supported schemaVersion awesomeClaws.incidentResponse.v1 or awesomeClaws.incidentResponse.v2.",
       ),
     );
   }
@@ -45610,11 +45771,18 @@ function incidentResponseFindings(input) {
       ["signals", "Signal"],
       ["evidence", "Evidence"],
       ["hypotheses", "Hypothesis"],
+      ...(version2
+        ? [
+            ["updates", "Update"],
+            ["decisions", "Decision"],
+          ]
+        : []),
       ["timelineEvents", "Timeline event"],
       ["actions", "Action"],
       ["recoveryChecks", "Recovery check"],
       ["communications", "Communication"],
       ["followUps", "Follow-up"],
+      ...(version2 ? [["complianceHandoffs", "Compliance handoff"]] : []),
     ],
     findings,
   );
@@ -45623,6 +45791,67 @@ function incidentResponseFindings(input) {
     "incident response",
     findings,
   );
+  const roleAssignments = isRecord(value.roleAssignments)
+    ? value.roleAssignments
+    : {};
+  const technicalDri = isRecord(roleAssignments.technicalDri)
+    ? roleAssignments.technicalDri
+    : {};
+  const incidentManager = isRecord(roleAssignments.incidentManager)
+    ? roleAssignments.incidentManager
+    : {};
+  const technicalDriPrincipal = ledgers.principals.byId.get(
+    technicalDri.principalId,
+  );
+  const incidentManagerPrincipal = ledgers.principals.byId.get(
+    incidentManager.principalId,
+  );
+  if (
+    version2 &&
+    (technicalDri.principalId === incidentManager.principalId ||
+      !principals.isAccountablePrincipal(technicalDri.principalId) ||
+      !principals.isAccountablePrincipal(incidentManager.principalId) ||
+      /(?:claw|agent|assistant|bot|automation)/iu.test(
+        technicalDri.principalId ?? "",
+      ) ||
+      /(?:claw|agent|assistant|bot|automation)/iu.test(
+        incidentManager.principalId ?? "",
+      ) ||
+      ["technical dri", "incident manager"].includes(
+        technicalDriPrincipal?.name?.trim().toLowerCase(),
+      ) ||
+      ["technical dri", "incident manager"].includes(
+        incidentManagerPrincipal?.name?.trim().toLowerCase(),
+      ) ||
+      !sameStringSet(
+        technicalDri.responsibilities,
+        technicalDriResponsibilities,
+      ) ||
+      !sameStringSet(
+        incidentManager.responsibilities,
+        incidentManagerResponsibilities,
+      ) ||
+      !technicalDriResponsibilities.every((scope) =>
+        principals.hasScope(technicalDri.principalId, scope),
+      ) ||
+      !incidentManagerResponsibilities.every((scope) =>
+        principals.hasScope(incidentManager.principalId, scope),
+      ) ||
+      incidentManagerResponsibilities.some((scope) =>
+        principals.hasScope(technicalDri.principalId, scope),
+      ) ||
+      technicalDriResponsibilities.some((scope) =>
+        principals.hasScope(incidentManager.principalId, scope),
+      ))
+  ) {
+    findings.push(
+      finding(
+        "invalid_incident_role_separation",
+        "roleAssignments",
+        "Technical DRI and Incident Manager must be distinct named human principals with complete, non-overlapping responsibility scopes.",
+      ),
+    );
+  }
   const handoff = upliftOwnerFindings(
     value,
     ledgers.principals,
@@ -45645,6 +45874,16 @@ function incidentResponseFindings(input) {
   }
   const incident = isRecord(value.incident) ? value.incident : {};
   const recommendation = isRecord(value.recommendation) ? value.recommendation : null;
+  const updateCadence = isRecord(value.updateCadence)
+    ? value.updateCadence
+    : {};
+  const serviceRecovery = isRecord(value.serviceRecovery)
+    ? value.serviceRecovery
+    : {};
+  const incidentRecovery = isRecord(value.incidentRecoveryRecommendation)
+    ? value.incidentRecoveryRecommendation
+    : {};
+  const closure = isRecord(value.closure) ? value.closure : {};
   const incidentScopeValid = [
     "id",
     "service",
@@ -45724,6 +45963,19 @@ function incidentResponseFindings(input) {
           ledger.byId.get(evidence[field])?.serviceRef === evidence.serviceRef;
       }
     }
+    if (
+      version2 &&
+      ((evidence.communicationRef !== undefined &&
+        ledgers.communications.byId.get(evidence.communicationRef)
+          ?.incidentRef !== incident.id) ||
+        (evidence.followUpRef !== undefined &&
+          ledgers.followUps.byId.get(evidence.followUpRef)?.incidentRef !==
+            incident.id) ||
+        (evidence.closureRef !== undefined &&
+          evidence.closureRef !== closure.id))
+    ) {
+      exactReferences = false;
+    }
     if (!exactScope || !exactReferences) {
       invalidEvidence = true;
       findings.push(
@@ -45778,26 +46030,28 @@ function incidentResponseFindings(input) {
           evidence.outcome === "passed" &&
           evidence.signalRef === signal.id,
       );
-      if (
-        signal.state !== "resolved" ||
-        !resolvedEvidence ||
-        !Number.isFinite(observedMs) ||
-        !Number.isFinite(resolvedMs) ||
-        resolvedMs < observedMs ||
-        resolvedMs <
-          Math.max(
-            ...evidenceItems.map((evidence) =>
-              upliftTimestampMs(evidence.assertedAt),
-            ),
-          ) ||
-        resolvedMs > nowMs
-      ) {
+      const resolvedClaimInvalid =
+        signal.state === "resolved" &&
+        (!resolvedEvidence ||
+          !Number.isFinite(observedMs) ||
+          !Number.isFinite(resolvedMs) ||
+          resolvedMs < observedMs ||
+          resolvedMs <
+            Math.max(
+              ...evidenceItems.map((evidence) =>
+                upliftTimestampMs(evidence.assertedAt),
+              ),
+            ) ||
+          resolvedMs > nowMs);
+      if (signal.state !== "resolved" || resolvedClaimInvalid) {
         unresolvedHighRiskSignal = true;
+      }
+      if (resolvedClaimInvalid) {
         findings.push(
           finding(
-            "unresolved_high_risk_signal",
+            "invalid_high_risk_resolution",
             `signals[${index}]`,
-            "High and critical signals require current exact-incident recovery evidence and valid resolution chronology.",
+            "A resolved high or critical signal requires current exact-incident recovery evidence and valid resolution chronology.",
           ),
         );
       }
@@ -45815,6 +46069,7 @@ function incidentResponseFindings(input) {
     const valid =
       ledgers.services.ids.has(hypothesis.serviceRef) &&
       principals.isAccountablePrincipal(hypothesis.ownerId) &&
+      (!version2 || hypothesis.ownerId === technicalDri.principalId) &&
       Array.isArray(hypothesis.evidenceRefs) &&
       hypothesis.evidenceRefs.length > 0 &&
       hypothesis.evidenceRefs.every((reference) => {
@@ -45834,6 +46089,296 @@ function incidentResponseFindings(input) {
           "Every hypothesis must have accountable ownership and exact incident/service evidence matching its state.",
         ),
       );
+    }
+  }
+  let invalidUpdateCadence = false;
+  if (version2) {
+    const cadenceAsOfMs = upliftTimestampMs(updateCadence.asOf);
+    const anchorMs = upliftTimestampMs(updateCadence.anchorAt);
+    const intervalMs = updateCadence.intervalMinutes * 60_000;
+    const elapsedOccurrences =
+      Number.isFinite(cadenceAsOfMs) &&
+      Number.isFinite(anchorMs) &&
+      Number.isFinite(intervalMs) &&
+      intervalMs > 0 &&
+      cadenceAsOfMs >= anchorMs
+        ? Math.floor((cadenceAsOfMs - anchorMs) / intervalMs) + 1
+        : 0;
+    const expectedUpdateCount = elapsedOccurrences + 1;
+    const cadenceValid =
+      updateCadence.incidentRef === incident.id &&
+      updateCadence.managedById === incidentManager.principalId &&
+      principals.hasScope(
+        updateCadence.managedById,
+        "incident-update-cadence",
+      ) &&
+      Number.isInteger(updateCadence.intervalMinutes) &&
+      updateCadence.intervalMinutes > 0 &&
+      Number.isFinite(anchorMs) &&
+      anchorMs >= requestedMs &&
+      Number.isFinite(cadenceAsOfMs) &&
+      cadenceAsOfMs >= anchorMs &&
+      cadenceAsOfMs <= nowMs &&
+      updateCadence.revision === cadenceRevision(updateCadence) &&
+      sameStringSet(
+        updateCadence.requiredSections,
+        requiredUpdateSections,
+      ) &&
+      ledgers.updates.items.length === expectedUpdateCount &&
+      updateCadence.nextUpdateId === ledgers.updates.items.at(-1)?.id;
+    if (!cadenceValid) {
+      invalidUpdateCadence = true;
+      findings.push(
+        finding(
+          "invalid_update_cadence",
+          "updateCadence",
+          "Update cadence must bind its exact revision, incident, Incident Manager, anchor, interval, non-future as-of, required sections, every elapsed occurrence, and one next update.",
+        ),
+      );
+    }
+    let priorDueMs = startedMs;
+    let priorObservedMs = startedMs;
+    for (const [index, update] of ledgers.updates.entries) {
+      findings.push(
+        ...referenceFindings(
+          update.evidenceRefs,
+          ledgers.evidence.ids,
+          `updates[${index}].evidenceRefs`,
+          "Evidence",
+        ),
+      );
+      const dueMs = upliftTimestampMs(update.dueAt);
+      const issuedMs =
+        update.issuedAt === null ? null : upliftTimestampMs(update.issuedAt);
+      const observedMs = upliftTimestampMs(update.observedThrough);
+      const expectedId = `${updateCadence.updateIdPrefix}-${String(index + 1).padStart(4, "0")}`;
+      const expectedDueMs = anchorMs + index * intervalMs;
+      const evidenceBeforeObservation =
+        Array.isArray(update.evidenceRefs) &&
+        update.evidenceRefs.every((reference) => {
+          const assertedMs = upliftTimestampMs(
+            ledgers.evidence.byId.get(reference)?.assertedAt,
+          );
+          return Number.isFinite(assertedMs) && assertedMs <= observedMs;
+        });
+      const stateChronologyValid =
+        (update.state === "issued" &&
+          Number.isFinite(issuedMs) &&
+          issuedMs >= dueMs &&
+          issuedMs >= observedMs &&
+          issuedMs <= cadenceAsOfMs &&
+          dueMs <= cadenceAsOfMs) ||
+        (["overdue", "missed"].includes(update.state) &&
+          update.issuedAt === null &&
+          Number.isFinite(cadenceAsOfMs) &&
+          dueMs < cadenceAsOfMs) ||
+        (update.state === "scheduled" &&
+          update.issuedAt === null &&
+          Number.isFinite(cadenceAsOfMs) &&
+          dueMs >= cadenceAsOfMs);
+      const expectedNextId = ledgers.updates.items[index + 1]?.id ?? null;
+      const valid =
+        update.id === expectedId &&
+        update.sequence === index + 1 &&
+        typeof update.revision === "string" &&
+        update.revision.trim().length > 0 &&
+        update.incidentRef === incident.id &&
+        update.timelineSnapshotRef === incident.timelineSnapshotRef &&
+        update.authorId === incidentManager.principalId &&
+        principals.hasScope(update.authorId, "incident-update-cadence") &&
+        sameStringSet(update.requiredSections, requiredUpdateSections) &&
+        Number.isFinite(dueMs) &&
+        dueMs === expectedDueMs &&
+        dueMs >= priorDueMs &&
+        Number.isFinite(observedMs) &&
+        observedMs >= priorObservedMs &&
+        observedMs <= cadenceAsOfMs &&
+        evidenceBeforeObservation &&
+        stateChronologyValid &&
+        update.nextUpdateId === expectedNextId;
+      if (!valid) {
+        invalidUpdateCadence = true;
+        findings.push(
+          finding(
+            "invalid_incident_update_sequence",
+            `updates[${index}]`,
+            "Updates require one uninterrupted anchor/interval occurrence through as-of plus the next scheduled row, deterministic ids, revisions, valid due/issued/observed chronology, Incident Manager authorship, exact snapshot binding, complete sections, and pre-observation evidence.",
+          ),
+        );
+      }
+      if (Number.isFinite(dueMs)) priorDueMs = dueMs;
+      if (Number.isFinite(observedMs)) priorObservedMs = observedMs;
+    }
+  }
+  let invalidDecisionChronology = false;
+  if (version2) {
+    let priorDecisionMs = startedMs;
+    for (const [index, decision] of ledgers.decisions.entries) {
+      findings.push(
+        ...referenceFindings(
+          decision.inputEvidenceRefs,
+          ledgers.evidence.ids,
+          `decisions[${index}].inputEvidenceRefs`,
+          "Evidence",
+        ),
+      );
+      const decidedMs = upliftTimestampMs(decision.decidedAt);
+      const expectedScopeByType = {
+        "severity-state": "incident-severity-state",
+        cadence: "incident-update-cadence",
+        "action-approval": "independent-action-approval",
+        "communication-approval": "independent-communication-approval",
+        escalation: "incident-escalation",
+        "incident-recovery-recommendation": "incident-recovery-review",
+        "closure-recommendation": "incident-closure-recommendation",
+        "owner-closure": "incident-declaration-closure",
+      };
+      const superseded = ledgers.decisions.byId.get(
+        decision.supersedesDecisionId,
+      );
+      const supersessionValid =
+        decision.supersedesDecisionId === null ||
+        (superseded !== undefined &&
+          upliftTimestampMs(superseded.decidedAt) < decidedMs &&
+          superseded.subjectRef === decision.subjectRef);
+      const evidencePrecedesDecision =
+        Array.isArray(decision.inputEvidenceRefs) &&
+        decision.inputEvidenceRefs.length > 0 &&
+        decision.inputEvidenceRefs.every((reference) => {
+          const assertedMs = upliftTimestampMs(
+            ledgers.evidence.byId.get(reference)?.assertedAt,
+          );
+          return Number.isFinite(assertedMs) && assertedMs <= decidedMs;
+        });
+      const signalEvidenceRefs = ledgers.evidence.items
+        .filter(
+          (evidence) =>
+            evidence.kind === "signal" &&
+            ledgers.signals.ids.has(evidence.signalRef),
+        )
+        .map((evidence) => evidence.id);
+      const recoveryEvidenceRefs = [
+        ...new Set([
+          ...ledgers.recoveryChecks.items
+            .map((check) => check.evidenceRef)
+            .filter(Boolean),
+          ...ledgers.actions.items
+            .filter((action) => action.executionState === "owner-executed")
+            .map((action) => action.executionEvidenceRef)
+            .filter(Boolean),
+        ]),
+      ];
+      const action = ledgers.actions.byId.get(decision.subjectRef);
+      const actionApproval = ledgers.evidence.byId.get(
+        action?.approvalEvidenceRef,
+      );
+      const communication = ledgers.communications.byId.get(
+        decision.subjectRef,
+      );
+      const communicationEvidence = ledgers.evidence.items.find(
+        (item) =>
+          item.kind === "communication-draft" &&
+          item.communicationRef === communication?.id,
+      );
+      const closureEvidence = ledgers.evidence.byId.get(closure.evidenceRef);
+      let subjectValid = false;
+      let subjectChronologyValid = true;
+      if (decision.decisionType === "severity-state") {
+        subjectValid =
+          decision.subjectRef === incident.id &&
+          decision.subjectRevision === incident.timelineSnapshotRef &&
+          sameStringSet(decision.inputEvidenceRefs, signalEvidenceRefs);
+      } else if (decision.decisionType === "cadence") {
+        subjectValid =
+          decision.subjectRef === updateCadence.id &&
+          decision.subjectRevision === cadenceRevision(updateCadence) &&
+          sameStringSet(decision.inputEvidenceRefs, signalEvidenceRefs);
+      } else if (decision.decisionType === "action-approval") {
+        subjectValid =
+          action !== undefined &&
+          action.revision === actionRevision(action) &&
+          decision.subjectRevision === action.revision &&
+          sameStringSet(decision.inputEvidenceRefs, [
+            action.approvalEvidenceRef,
+          ]) &&
+          actionApproval?.kind === "action-approval" &&
+          actionApproval.actionRef === action.id &&
+          actionApproval.outcome === "approved" &&
+          actionApproval.approvedById === decision.decisionMakerId &&
+          decision.decisionMakerId !== action.ownerId;
+      } else if (decision.decisionType === "communication-approval") {
+        subjectValid =
+          communication !== undefined &&
+          communication.revision === communicationRevision(communication) &&
+          decision.subjectRevision === communication.revision &&
+          sameStringSet(decision.inputEvidenceRefs, [
+            communicationEvidence?.id,
+          ]) &&
+          communicationEvidence?.outcome === "drafted" &&
+          decision.decisionMakerId === communication.approvedById &&
+          decision.decisionMakerId !== communication.ownerId &&
+          decision.decisionMakerId !== communication.authorId;
+      } else if (
+        decision.decisionType === "incident-recovery-recommendation" ||
+        decision.decisionType === "closure-recommendation"
+      ) {
+        subjectValid =
+          decision.subjectRef === incidentRecovery.id &&
+          incidentRecovery.revision ===
+            incidentRecoveryRevision(incidentRecovery) &&
+          decision.subjectRevision === incidentRecovery.revision &&
+          sameStringSet(decision.inputEvidenceRefs, recoveryEvidenceRefs);
+        subjectChronologyValid =
+          decidedMs >= upliftTimestampMs(serviceRecovery.evaluatedAt);
+      } else if (decision.decisionType === "owner-closure") {
+        subjectValid =
+          decision.subjectRef === closure.id &&
+          closure.revision === closureRevision(closure) &&
+          decision.subjectRevision === closure.revision &&
+          sameStringSet(decision.inputEvidenceRefs, [closure.evidenceRef]) &&
+          closureEvidence?.kind === "owner-closure" &&
+          closureEvidence.closureRef === closure.id &&
+          closureEvidence.outcome === "closed" &&
+          closureEvidence.approvedById === decision.decisionMakerId &&
+          decision.decisionMakerId === closure.authorityOwnerId;
+        subjectChronologyValid =
+          decidedMs >= upliftTimestampMs(incidentRecovery.reviewedAt);
+      } else if (decision.decisionType === "escalation") {
+        subjectValid =
+          decision.subjectRef === incident.id &&
+          decision.subjectRevision === incident.timelineSnapshotRef;
+      }
+      const valid =
+        decision.incidentRef === incident.id &&
+        decision.timelineSnapshotRef === incident.timelineSnapshotRef &&
+        decision.recordedById === incidentManager.principalId &&
+        decision.authorityScope === expectedScopeByType[decision.decisionType] &&
+        principals.hasScope(
+          decision.decisionMakerId,
+          decision.authorityScope,
+        ) &&
+        typeof decision.subjectRef === "string" &&
+        decision.subjectRef.trim().length > 0 &&
+        typeof decision.subjectRevision === "string" &&
+        decision.subjectRevision.trim().length > 0 &&
+        Number.isFinite(decidedMs) &&
+        decidedMs >= priorDecisionMs &&
+        decidedMs <= nowMs &&
+        evidencePrecedesDecision &&
+        subjectValid &&
+        subjectChronologyValid &&
+        supersessionValid;
+      if (!valid) {
+        invalidDecisionChronology = true;
+        findings.push(
+          finding(
+            "invalid_decision_chronology",
+            `decisions[${index}]`,
+            "Decisions must bind the exact incident snapshot, authorized maker and Incident Manager recorder, type-specific subject revision and evidence universe, timestamp, and valid supersession.",
+          ),
+        );
+      }
+      if (Number.isFinite(decidedMs)) priorDecisionMs = decidedMs;
     }
   }
   let invalidChronology = ledgers.timelineEvents.items.length === 0;
@@ -45883,7 +46428,24 @@ function incidentResponseFindings(input) {
     const service = ledgers.services.byId.get(action.serviceRef);
     const approval = ledgers.evidence.byId.get(action.approvalEvidenceRef);
     const execution = ledgers.evidence.byId.get(action.executionEvidenceRef);
+    const approvalDecision = version2
+      ? ledgers.decisions.byId.get(action.approvalDecisionRef)
+      : undefined;
     const executedMs = upliftTimestampMs(action.executedAt);
+    const expectedActionRevision = actionRevision(action);
+    const version2ActionIdentity =
+      !version2 ||
+      (action.revision === expectedActionRevision &&
+        typeof action.target === "string" &&
+        action.target.trim().length > 0 &&
+        typeof action.timing === "string" &&
+        action.timing.trim().length > 0 &&
+        typeof action.verificationCriteria === "string" &&
+        action.verificationCriteria.trim().length > 0 &&
+        typeof action.rollbackCondition === "string" &&
+        action.rollbackCondition.trim().length > 0 &&
+        action.proposedById === technicalDri.principalId &&
+        action.reconciledById === technicalDri.principalId);
     const ownerExecuted =
       action.executionState === "owner-executed" &&
       action.incidentRef === incident.id &&
@@ -45892,20 +46454,46 @@ function incidentResponseFindings(input) {
       approval?.kind === "action-approval" &&
       approval.actionRef === action.id &&
       approval.serviceRef === action.serviceRef &&
-      principals.hasScope(approval.approvedById, "incident-command-review") &&
+      approval.outcome === "approved" &&
+      principals.hasScope(
+        approval.approvedById,
+        version2
+          ? "independent-action-approval"
+          : "incident-command-review",
+      ) &&
       execution?.kind === "owner-execution" &&
       execution.actionRef === action.id &&
       execution.serviceRef === action.serviceRef &&
       execution.outcome === "completed" &&
       Number.isFinite(executedMs) &&
       executedMs >= upliftTimestampMs(approval.assertedAt) &&
-      upliftTimestampMs(execution.assertedAt) >= executedMs;
+      upliftTimestampMs(execution.assertedAt) >= executedMs &&
+      (!version2 ||
+        (approvalDecision?.decisionType === "action-approval" &&
+          approvalDecision.subjectRef === action.id &&
+          approvalDecision.subjectRevision === action.revision &&
+          approvalDecision.decisionMakerId !== action.ownerId &&
+          approvalDecision.decisionMakerId === approval.approvedById &&
+          executedMs >=
+            upliftTimestampMs(approvalDecision.decidedAt) &&
+          approvalDecision.inputEvidenceRefs?.includes(
+            action.approvalEvidenceRef,
+          ))) &&
+      version2ActionIdentity;
     const proposed =
       action.executionState === "proposed" &&
       action.incidentRef === incident.id &&
       service !== undefined &&
       principals.hasScope(action.ownerId, "owner-execution") &&
-      action.executionEvidenceRef === undefined;
+      (version2
+        ? action.executionEvidenceRef === null &&
+          action.executedAt === null &&
+          action.approvalDecisionRef === null &&
+          action.approvalEvidenceRef === null &&
+          action.proposedById === technicalDri.principalId &&
+          action.reconciledById === technicalDri.principalId &&
+          version2ActionIdentity
+        : action.executionEvidenceRef === undefined);
     if (!ownerExecuted && !proposed) {
       invalidAction = true;
       findings.push(
@@ -45914,7 +46502,7 @@ function incidentResponseFindings(input) {
             ? "claw_executed_consequential_action"
             : "unsupported_incident_action",
           `actions[${index}]`,
-          "Every consequential action must be proposed or evidenced as accountable owner-executed under incident-command approval, never Claw-executed.",
+          "Every consequential action must be proposed or evidenced as accountable owner-executed under exact independent-action approval, never Claw-executed.",
         ),
       );
     }
@@ -45968,7 +46556,7 @@ function incidentResponseFindings(input) {
       incompleteRecovery = true;
     }
   }
-  if (incompleteRecovery) {
+  if (incompleteRecovery && !version2) {
     findings.push(
       finding(
         "incomplete_recovery_coverage",
@@ -45977,22 +46565,226 @@ function incidentResponseFindings(input) {
       ),
     );
   }
+  let invalidRecoverySeparation = false;
+  if (version2) {
+    const recoveryDecision = ledgers.decisions.byId.get(
+      incidentRecovery.decisionRef,
+    );
+    const closureRecommendationDecision = ledgers.decisions.byId.get(
+      closure.recommendationDecisionRef,
+    );
+    const closureDecision = ledgers.decisions.byId.get(
+      closure.closureDecisionRef,
+    );
+    const closureEvidence = ledgers.evidence.byId.get(closure.evidenceRef);
+    const serviceRecoveryMs = upliftTimestampMs(serviceRecovery.evaluatedAt);
+    const recommendedMs = upliftTimestampMs(incidentRecovery.recommendedAt);
+    const recoveryReviewedMs = upliftTimestampMs(incidentRecovery.reviewedAt);
+    const closedMs = upliftTimestampMs(closure.closedAt);
+    const referencedRecoveryChecks = Array.isArray(
+      serviceRecovery.recoveryCheckRefs,
+    )
+      ? serviceRecovery.recoveryCheckRefs
+      : [];
+    const serviceRecoveryBaseValid =
+      typeof serviceRecovery.id === "string" &&
+      serviceRecovery.revision ===
+        serviceRecoveryRevision(serviceRecovery) &&
+      serviceRecovery.technicalDriId === technicalDri.principalId &&
+      serviceRecovery.timelineSnapshotRef === incident.timelineSnapshotRef &&
+      referencedRecoveryChecks.every((reference) =>
+        ledgers.recoveryChecks.ids.has(reference),
+      ) &&
+      Number.isFinite(serviceRecoveryMs) &&
+      serviceRecoveryMs >=
+        Math.max(
+          startedMs,
+          ...referencedRecoveryChecks.map((reference) =>
+            upliftTimestampMs(
+              ledgers.recoveryChecks.byId.get(reference)?.checkedAt,
+            ),
+          ),
+        );
+    const serviceRecoveryValid =
+      serviceRecoveryBaseValid &&
+      ((serviceRecovery.state === "criteria-met" &&
+        !incompleteRecovery &&
+        sameStringSet(
+          serviceRecovery.recoveryCheckRefs,
+          [...ledgers.recoveryChecks.ids],
+        )) ||
+        (serviceRecovery.state === "criteria-unmet" &&
+          (incompleteRecovery || unresolvedHighRiskSignal)));
+    const incidentRecoveryBaseValid =
+      typeof incidentRecovery.id === "string" &&
+      incidentRecovery.revision ===
+        incidentRecoveryRevision(incidentRecovery) &&
+      incidentRecovery.serviceRecoveryRef === serviceRecovery.id &&
+      incidentRecovery.technicalDriId === technicalDri.principalId &&
+      incidentRecovery.incidentManagerId === incidentManager.principalId &&
+      Number.isFinite(recommendedMs) &&
+      recommendedMs >= serviceRecoveryMs;
+    const incidentRecoveryValid =
+      incidentRecoveryBaseValid &&
+      ((incidentRecovery.state === "recommended-for-owner-review" &&
+        serviceRecovery.state === "criteria-met" &&
+        !incompleteRecovery &&
+        !unresolvedHighRiskSignal &&
+        recoveryDecision?.decisionType ===
+          "incident-recovery-recommendation" &&
+        recoveryDecision.subjectRef === incidentRecovery.id &&
+        recoveryDecision.subjectRevision === incidentRecovery.revision &&
+        recoveryDecision.decisionMakerId === incidentManager.principalId &&
+        Number.isFinite(recoveryReviewedMs) &&
+        recoveryReviewedMs >= recommendedMs &&
+        recoveryReviewedMs ===
+          upliftTimestampMs(recoveryDecision?.decidedAt)) ||
+        (["not-ready", "withheld"].includes(incidentRecovery.state) &&
+          ((incidentRecovery.decisionRef === null &&
+            incidentRecovery.reviewedAt === null) ||
+            (recoveryDecision?.decisionType ===
+              "incident-recovery-recommendation" &&
+              recoveryDecision.subjectRef === incidentRecovery.id &&
+              recoveryDecision.subjectRevision ===
+                incidentRecovery.revision &&
+              recoveryDecision.decisionMakerId ===
+                incidentManager.principalId &&
+              Number.isFinite(recoveryReviewedMs) &&
+              recoveryReviewedMs >= recommendedMs &&
+              recoveryReviewedMs ===
+                upliftTimestampMs(recoveryDecision.decidedAt)))));
+    const closureBaseValid =
+      typeof closure.id === "string" &&
+      closure.revision === closureRevision(closure) &&
+      closure.incidentRef === incident.id &&
+      closure.incidentRecoveryRecommendationRef === incidentRecovery.id &&
+      closure.incidentManagerId === incidentManager.principalId &&
+      principals.hasScope(
+        closure.incidentManagerId,
+        "incident-closure-recommendation",
+      ) &&
+      principals.hasScope(
+        closure.authorityOwnerId,
+        "incident-declaration-closure",
+      ) &&
+      closure.authorityOwnerId !== closure.incidentManagerId &&
+      value.ownerId === closure.authorityOwnerId;
+    const closureRecommendationValid =
+      closureRecommendationDecision?.decisionType ===
+        "closure-recommendation" &&
+      closureRecommendationDecision.subjectRef === incidentRecovery.id &&
+      closureRecommendationDecision.subjectRevision ===
+        incidentRecovery.revision &&
+      closureRecommendationDecision.decisionMakerId ===
+        incidentManager.principalId;
+    const closureValid =
+      closureBaseValid &&
+      ((closure.state === "open" &&
+        closure.recommendationDecisionRef === null &&
+        closure.closureDecisionRef === null &&
+        closure.evidenceRef === null &&
+        closure.closedAt === null) ||
+        (closure.state === "closure-recommended" &&
+          incidentRecovery.state === "recommended-for-owner-review" &&
+          closureRecommendationValid &&
+          closure.closureDecisionRef === null &&
+          closure.evidenceRef === null &&
+          closure.closedAt === null) ||
+        (closure.state === "closed-by-owner" &&
+          incidentRecovery.state === "recommended-for-owner-review" &&
+          closureRecommendationValid &&
+          closureDecision?.decisionType === "owner-closure" &&
+          closureDecision.subjectRef === closure.id &&
+          closureDecision.subjectRevision === closure.revision &&
+          closureDecision.decisionMakerId === closure.authorityOwnerId &&
+          closureEvidence?.kind === "owner-closure" &&
+          closureEvidence.closureRef === closure.id &&
+          closureEvidence.outcome === "closed" &&
+          closureEvidence.approvedById === closure.authorityOwnerId &&
+          Number.isFinite(closedMs) &&
+          closedMs === upliftTimestampMs(closureDecision.decidedAt) &&
+          closedMs >= upliftTimestampMs(closureEvidence.assertedAt) &&
+          closedMs >=
+            upliftTimestampMs(closureRecommendationDecision.decidedAt)));
+    if (
+      incompleteRecovery &&
+      (serviceRecovery.state === "criteria-met" ||
+        incidentRecovery.state === "recommended-for-owner-review" ||
+        closure.state !== "open")
+    ) {
+      findings.push(
+        finding(
+          "incomplete_recovery_coverage",
+          "recoveryChecks",
+          "A service-recovery or later-state claim requires a current passing exact-incident recovery check for every declared service.",
+        ),
+      );
+    }
+    if (
+      !serviceRecoveryValid ||
+      !incidentRecoveryValid ||
+      !closureValid
+    ) {
+      invalidRecoverySeparation = true;
+      findings.push(
+        finding(
+          "invalid_recovery_closure_separation",
+          "serviceRecovery",
+          "Service recovery, the Technical DRI recommendation, Incident Manager review, and owner-controlled incident closure must remain separate exact-snapshot states.",
+        ),
+      );
+    }
+  }
   let invalidCommunication = false;
   for (const [index, communication] of ledgers.communications.entries) {
+    const approvalDecision = version2
+      ? ledgers.decisions.byId.get(communication.approvalDecisionRef)
+      : undefined;
+    const draftEvidence = version2
+      ? ledgers.evidence.items.find(
+          (item) =>
+            item.kind === "communication-draft" &&
+            item.communicationRef === communication.id,
+        )
+      : undefined;
+    const expectedCommunicationRevision =
+      communicationRevision(communication);
     const approvalValid =
       communication.state === "draft" ||
       (communication.state === "approved-draft" &&
         principals.hasScope(
           communication.approvedById,
-          "incident-command-review",
+          version2
+            ? "independent-communication-approval"
+            : "incident-command-review",
         ) &&
-        communication.approvedById !== communication.ownerId);
+        communication.approvedById !== communication.ownerId &&
+        communication.approvedById !== communication.authorId &&
+        (!version2 ||
+          (approvalDecision?.decisionType === "communication-approval" &&
+            approvalDecision.subjectRef === communication.id &&
+            approvalDecision.subjectRevision === communication.revision &&
+            approvalDecision.decisionMakerId ===
+              communication.approvedById &&
+            approvalDecision.inputEvidenceRefs?.includes(draftEvidence?.id) &&
+            upliftTimestampMs(approvalDecision.decidedAt) >=
+              upliftTimestampMs(draftEvidence?.assertedAt) &&
+            upliftTimestampMs(communication.updatedAt) >=
+              upliftTimestampMs(approvalDecision.decidedAt))));
     const valid =
       communication.incidentRef === incident.id &&
       ["draft", "approved-draft"].includes(communication.state) &&
-      principals.hasScope(communication.ownerId, "communication-draft") &&
+      principals.hasScope(communication.authorId ?? communication.ownerId, "communication-draft") &&
       approvalValid &&
-      isValidControlledReference(communication.messageRef);
+      isValidControlledReference(communication.messageRef) &&
+      (!version2 ||
+        (communication.revision === expectedCommunicationRevision &&
+          communication.ownerId === incidentManager.principalId &&
+          typeof communication.channel === "string" &&
+          communication.channel.trim().length > 0 &&
+          typeof communication.timing === "string" &&
+          communication.timing.trim().length > 0 &&
+          draftEvidence !== undefined));
     if (!valid) {
       invalidCommunication = true;
       findings.push(
@@ -46001,22 +46793,172 @@ function incidentResponseFindings(input) {
             ? "unauthorized_communication_state"
             : "unsupported_communication_draft",
           `communications[${index}]`,
-          "Communications must remain controlled drafts with accountable authorship; approved drafts also require independent incident-command approval.",
+          "Communications must remain controlled drafts with accountable authorship; approved drafts also require exact independent-communication approval.",
         ),
       );
     }
   }
+  let invalidFollowUp = false;
+  const followUpIdentityKeys = new Set();
   for (const [index, followUp] of ledgers.followUps.entries) {
-    if (
-      followUp.incidentRef !== incident.id ||
-      !principals.isAccountablePrincipal(followUp.ownerId) ||
-      !Number.isFinite(upliftTimestampMs(followUp.dueAt))
-    ) {
+    let valid =
+      followUp.incidentRef === incident.id &&
+      principals.isAccountablePrincipal(followUp.ownerId) &&
+      Number.isFinite(upliftTimestampMs(followUp.dueAt));
+    if (version2) {
+      for (const [field, ledger] of [
+        ["originatingEvidenceRefs", ledgers.evidence],
+        ["originatingDecisionRefs", ledgers.decisions],
+        ["originatingActionRefs", ledgers.actions],
+        ["serviceRefs", ledgers.services],
+      ]) {
+        findings.push(
+          ...referenceFindings(
+            followUp[field],
+            ledger.ids,
+            `followUps[${index}].${field}`,
+            field,
+          ),
+        );
+      }
+      const identityInput = {
+        incidentRef: followUp.incidentRef,
+        originatingEvidenceRefs: Array.isArray(
+          followUp.originatingEvidenceRefs,
+        )
+          ? [...followUp.originatingEvidenceRefs].sort()
+          : [],
+        originatingDecisionRefs: Array.isArray(
+          followUp.originatingDecisionRefs,
+        )
+          ? [...followUp.originatingDecisionRefs].sort()
+          : [],
+        originatingActionRefs: Array.isArray(
+          followUp.originatingActionRefs,
+        )
+          ? [...followUp.originatingActionRefs].sort()
+          : [],
+        assetRefs: Array.isArray(followUp.assetRefs)
+          ? [...followUp.assetRefs].sort()
+          : [],
+        serviceRefs: Array.isArray(followUp.serviceRefs)
+          ? [...followUp.serviceRefs].sort()
+          : [],
+        controlRefs: Array.isArray(followUp.controlRefs)
+          ? [...followUp.controlRefs].sort()
+          : [],
+      };
+      const openedMs = upliftTimestampMs(followUp.openedAt);
+      const dueMs = upliftTimestampMs(followUp.dueAt);
+      const expectedIdentityKey = sha256Digest(identityInput);
+      valid &&=
+        followUp.identityKey === expectedIdentityKey &&
+        !followUpIdentityKeys.has(expectedIdentityKey) &&
+        Array.isArray(followUp.originatingEvidenceRefs) &&
+        followUp.originatingEvidenceRefs.length > 0 &&
+        Array.isArray(followUp.originatingDecisionRefs) &&
+        followUp.originatingDecisionRefs.length > 0 &&
+        Array.isArray(followUp.originatingActionRefs) &&
+        followUp.originatingActionRefs.length > 0 &&
+        Array.isArray(followUp.assetRefs) &&
+        followUp.assetRefs.length > 0 &&
+        Array.isArray(followUp.serviceRefs) &&
+        followUp.serviceRefs.length > 0 &&
+        Array.isArray(followUp.controlRefs) &&
+        followUp.controlRefs.length > 0 &&
+        Number.isFinite(openedMs) &&
+        Number.isFinite(dueMs) &&
+        dueMs > openedMs &&
+        typeof followUp.slaPolicyRef === "string" &&
+        followUp.slaPolicyRef.trim().length > 0 &&
+        Number.isInteger(followUp.slaDurationHours) &&
+        followUp.slaDurationHours > 0 &&
+        ["proposed", "planned", "in-progress", "blocked", "owner-completed"].includes(
+          followUp.state,
+        ) &&
+        typeof followUp.complianceRequired === "boolean" &&
+        (followUp.complianceRequired
+          ? ledgers.complianceHandoffs.ids.has(
+              followUp.complianceHandoffRef,
+            )
+          : followUp.complianceHandoffRef === null);
+      followUpIdentityKeys.add(expectedIdentityKey);
+    }
+    if (!valid) {
+      invalidFollowUp = true;
       findings.push(
         finding(
           "invalid_incident_follow_up",
           `followUps[${index}]`,
-          "Every follow-up must bind the exact incident, named owner, and parseable due time.",
+          "Every follow-up must carry deterministic identity, exact incident and origin references, asset/service/control scope, named owner, due/SLA state, and a typed compliance handoff when required.",
+        ),
+      );
+    }
+  }
+  if (version2) {
+    const claimedFollowUps = new Set();
+    for (const [index, handoffItem] of ledgers.complianceHandoffs.entries) {
+      const followUp = ledgers.followUps.byId.get(handoffItem.followUpRef);
+      const valid =
+        followUp !== undefined &&
+        followUp.complianceRequired === true &&
+        followUp.complianceHandoffRef === handoffItem.id &&
+        !claimedFollowUps.has(handoffItem.followUpRef) &&
+        handoffItem.type ===
+          "repository-compliance-program-manager.incident-obligation-handoff.v1" &&
+        handoffItem.targetClaw ===
+          "repository-compliance-program-manager" &&
+        ["proposed", "ready"].includes(handoffItem.state) &&
+        handoffItem.deduplicationKey === followUp.identityKey &&
+        handoffItem.incidentRef === followUp.incidentRef &&
+        sameStringSet(
+          handoffItem.originatingEvidenceRefs,
+          followUp.originatingEvidenceRefs,
+        ) &&
+        sameStringSet(
+          handoffItem.originatingDecisionRefs,
+          followUp.originatingDecisionRefs,
+        ) &&
+        sameStringSet(
+          handoffItem.originatingActionRefs,
+          followUp.originatingActionRefs,
+        ) &&
+        sameStringSet(handoffItem.assetRefs, followUp.assetRefs) &&
+        sameStringSet(handoffItem.serviceRefs, followUp.serviceRefs) &&
+        sameStringSet(handoffItem.controlRefs, followUp.controlRefs) &&
+        handoffItem.ownerId === followUp.ownerId &&
+        handoffItem.dueAt === followUp.dueAt &&
+        handoffItem.slaPolicyRef === followUp.slaPolicyRef &&
+        handoffItem.slaDurationHours === followUp.slaDurationHours &&
+        handoffItem.issueMutationState === "not-requested" &&
+        handoffItem.remediationState === "not-claimed" &&
+        handoffItem.verificationState === "not-claimed" &&
+        handoffItem.closureState === "not-claimed";
+      if (!valid) {
+        invalidFollowUp = true;
+        findings.push(
+          finding(
+            "invalid_compliance_handoff",
+            `complianceHandoffs[${index}]`,
+            "Compliance handoffs must be proposed or ready, exactly mirror one incident obligation and deterministic key, and claim no issue mutation, remediation, verification, or closure.",
+          ),
+        );
+      }
+      claimedFollowUps.add(handoffItem.followUpRef);
+    }
+    if (
+      ledgers.followUps.items.some(
+        (item) =>
+          item.complianceRequired === true &&
+          !claimedFollowUps.has(item.id),
+      )
+    ) {
+      invalidFollowUp = true;
+      findings.push(
+        finding(
+          "missing_compliance_handoff",
+          "complianceHandoffs",
+          "Every compliance-required incident follow-up requires exactly one typed handoff.",
         ),
       );
     }
@@ -46024,6 +46966,38 @@ function incidentResponseFindings(input) {
   findings.push(
     ...stringListFindings(value.limitations, "limitations", "Limitations").findings,
   );
+  let invalidAuthority = false;
+  if (version2) {
+    const authority = isRecord(value.authority) ? value.authority : {};
+    const expectedAuthority = {
+      productionMutation: "not-permitted",
+      trafficShift: "not-permitted",
+      credentialRevocation: "not-permitted",
+      communicationSend: "not-permitted",
+      incidentDeclaration: "not-permitted",
+      incidentClosure: "not-permitted",
+      riskAcceptance: "not-permitted",
+      complianceIssueMutation: "not-permitted",
+      complianceRemediation: "not-claimed",
+      complianceVerification: "not-claimed",
+      complianceClosure: "not-claimed",
+    };
+    if (
+      Object.keys(authority).length !== Object.keys(expectedAuthority).length ||
+      Object.entries(expectedAuthority).some(
+        ([field, expected]) => authority[field] !== expected,
+      )
+    ) {
+      invalidAuthority = true;
+      findings.push(
+        finding(
+          "invalid_incident_authority",
+          "authority",
+          "The incident Claw must structurally disclaim production, traffic, credential, communication, declaration, closure, risk, and compliance lifecycle authority.",
+        ),
+      );
+    }
+  }
   const reviewedMs = upliftTimestampMs(recommendation?.reviewedAt);
   const latestEvidenceMs = Math.max(
     requestedMs,
@@ -46037,35 +47011,105 @@ function incidentResponseFindings(input) {
     ...ledgers.communications.items.map((item) =>
       upliftTimestampMs(item.updatedAt),
     ),
+    ...(version2
+      ? [
+          ...ledgers.updates.items
+            .map((item) => upliftTimestampMs(item.issuedAt))
+            .filter(Number.isFinite),
+          ...ledgers.decisions.items
+            .map((item) => upliftTimestampMs(item.decidedAt))
+            .filter(Number.isFinite),
+          ...ledgers.followUps.items
+            .map((item) => upliftTimestampMs(item.openedAt))
+            .filter(Number.isFinite),
+        ]
+      : []),
   );
-  const recommendationValid =
+  const commonRecommendationValid =
     findings.length === 0 &&
     schemaVersionValid &&
     incidentScopeValid &&
     !invalidEvidence &&
-    !unresolvedHighRiskSignal &&
     !invalidChronology &&
     !invalidAction &&
-    !incompleteRecovery &&
     !invalidCommunication &&
-    recommendation?.state === "ready-for-incident-command-review" &&
+    !invalidUpdateCadence &&
+    !invalidDecisionChronology &&
+    !invalidRecoverySeparation &&
+    !invalidFollowUp &&
+    !invalidAuthority;
+  const readyRecommendationValid =
+    commonRecommendationValid &&
+    !unresolvedHighRiskSignal &&
+    !incompleteRecovery &&
+    recommendation?.state ===
+      (version2
+        ? "ready-for-incident-manager-review"
+        : "ready-for-incident-command-review") &&
     recommendation.reviewerId !== value.ownerId &&
-    principals.hasScope(
-      recommendation.reviewerId,
-      "incident-command-review",
-    ) &&
+    (version2
+      ? incidentRecovery.state === "recommended-for-owner-review" &&
+        ["open", "closure-recommended"].includes(closure.state) &&
+        recommendation.reviewerId === incidentManager.principalId &&
+        principals.hasScope(
+          recommendation.reviewerId,
+          "incident-recovery-review",
+        )
+      : principals.hasScope(
+          recommendation.reviewerId,
+          "incident-command-review",
+        )) &&
     Number.isFinite(reviewedMs) &&
     reviewedMs >= latestEvidenceMs &&
     reviewedMs <= nowMs;
+  const closedRecommendationValid =
+    version2 &&
+    commonRecommendationValid &&
+    closure.state === "closed-by-owner" &&
+    recommendation?.state === "closed-by-owner" &&
+    recommendation.reviewerId === closure.authorityOwnerId &&
+    Number.isFinite(reviewedMs) &&
+    reviewedMs === upliftTimestampMs(closure.closedAt) &&
+    reviewedMs >= latestEvidenceMs &&
+    reviewedMs <= nowMs;
+  const blockedRecommendationValid =
+    version2 &&
+    commonRecommendationValid &&
+    recommendation?.state === "blocked" &&
+    recommendation.reviewerId === null &&
+    recommendation.reviewedAt === null &&
+    closure.state === "open" &&
+    (serviceRecovery.state === "criteria-unmet" ||
+      ["not-ready", "withheld"].includes(incidentRecovery.state));
+  const recommendationValid =
+    readyRecommendationValid || closedRecommendationValid;
   if (
-    recommendation?.state === "ready-for-incident-command-review" &&
+    ((version2 &&
+      ["ready-for-incident-manager-review", "closed-by-owner"].includes(
+        recommendation?.state,
+      )) ||
+      (!version2 &&
+        recommendation?.state === "ready-for-incident-command-review")) &&
     !recommendationValid
   ) {
     findings.push(
       finding(
         "premature_incident_readiness",
         "recommendation.state",
-        "Incident readiness requires exact-incident chronology, owner-executed actions, current recovery across all services, no unresolved high-risk signal, and independent incident-command review after all evidence.",
+        "Incident readiness requires separated role loops, ordered updates and decisions, exact owner-executed actions, current service recovery, distinct incident recovery and closure states, durable follow-ups, and Incident Manager review after all evidence.",
+      ),
+    );
+  }
+  if (
+    version2 &&
+    recommendation?.state === "blocked" &&
+    !blockedRecommendationValid
+  ) {
+    findings.push(
+      finding(
+        "invalid_blocked_incident_state",
+        "recommendation.state",
+        "A blocked incident handoff requires an honest non-ready recovery state, open closure, and no reviewer or review timestamp.",
       ),
     );
   }
@@ -46087,20 +47131,27 @@ function incidentResponseFindings(input) {
       "declare-incident",
       "close-incident",
       "send-communication",
+      ...(version2
+        ? [
+            "accept-risk",
+            "create-or-update-compliance-issue",
+            "claim-compliance-remediation-verification-or-closure",
+          ]
+        : []),
     ],
     findings,
   );
   if (
     hasUnnegatedNarrativeMatch(
       upliftNarrativeStrings(value),
-      /\b(?:we|i|the claw|the agent)\s+(?:mutated|changed|restarted|rolled back)\s+(?:the\s+)?production|\b(?:we|i|the claw|the agent)\s+(?:revoked|invalidated)\s+(?:the\s+)?(?:credential|session|token)|\b(?:we|i|the claw|the agent)\s+(?:shifted|rerouted)\s+(?:the\s+)?traffic|\b(?:we|i|the claw|the agent)\s+(?:declared|closed|resolved)\s+(?:the\s+)?incident|\b(?:we|i|the claw|the agent)\s+(?:sent|posted|emailed)\s+(?:the\s+)?(?:communication|update|message)\b/giu,
+      /\b(?:we|i|the claw|the agent)\s+(?:mutated|changed|restarted|rolled back)\s+(?:the\s+)?production|\b(?:we|i|the claw|the agent)\s+(?:revoked|invalidated)\s+(?:the\s+)?(?:credential|session|token)|\b(?:we|i|the claw|the agent)\s+(?:shifted|rerouted)\s+(?:the\s+)?traffic|\b(?:we|i|the claw|the agent)\s+(?:declared|closed|resolved)\s+(?:the\s+)?incident|\b(?:we|i|the claw|the agent)\s+(?:sent|posted|emailed)\s+(?:the\s+)?(?:communication|update|message)|\b(?:we|i|the claw|the agent)\s+(?:accepted)\s+(?:the\s+)?risk|\b(?:we|i|the claw|the agent)\s+(?:created|updated|closed|verified|remediated)\s+(?:the\s+)?(?:compliance\s+)?(?:issue|obligation|remediation)\b/giu,
     )
   ) {
     findings.push(
       finding(
         "unauthorized_narrative_action",
         "$",
-        "Narrative text cannot claim production mutation, credential/session revocation, traffic shift, incident declaration/closure, or sent communication by the Claw.",
+        "Narrative text cannot claim production mutation, credential/session revocation, traffic shift, incident declaration/closure, sent communication, risk acceptance, or compliance lifecycle action by the Claw.",
       ),
     );
   }
@@ -52199,30 +53250,41 @@ const validators = {
   "accessibility-review-coordinator": accessibilityReviewFindings,
   "api-integration-engineer": apiIntegrationReadinessFindings,
   "appliance-care-coordinator": applianceCareFindings,
+  "backup-restore-verification-coordinator": backupRestoreVerificationFindings,
+  "business-continuity-program-manager": businessContinuityProgramFindings,
+  "benefits-realization-manager": benefitsRealizationFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
   "care-circle-coordinator": careCircleFindings,
   "case-continuity-coordinator": caseContinuityFindings,
+  "civic-services-navigator": civicServiceAccessFindings,
   "certification-renewal-planner": certificationRenewalFindings,
   "conference-opportunity-scout": conferenceOpportunityFindings,
+  "contract-obligation-tracker": contractObligationTrackerFindings,
   "change-control-operator": changeControlFindings,
   "child-activity-manager": childActivityFindings,
   "civic-data-analyst": civicDataFindings,
   "cloud-cost-analyst": cloudCostAnalysisFindings,
+  "commercial-deal-desk-coordinator": commercialDealDeskFindings,
   "compliance-reviewer": complianceAssessmentFindings,
   "data-migration-planner": dataMigrationReadinessFindings,
   "content-operations": publicationReadinessRecordFindings,
+  "rfp-response-producer": rfpResponseFindings,
   "customer-support": customerSupportCaseFindings,
+  "customer-success-program-manager": customerSuccessReviewFindings,
   "data-analyst": dataAnalysisFindings,
   "data-governance-steward": dataGovernanceAssessmentFindings,
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
   "document-intake-analyst": documentIntakeFindings,
+  "enterprise-license-entitlement-reconciler": enterpriseLicenseEntitlementFindings,
   "event-operations-director": eventOperationsFindings,
   "executive-assistant": executiveCommitmentLedgerFindings,
   "executive-briefing": executiveBriefingSnapshotFindings,
   "experimentation-lead": experimentDesignFindings,
   "facilities-operations-coordinator": facilitiesOperationsFindings,
   "financial-analyst": financialAnalysisFindings,
+  "financial-account-reconciliation-coordinator":
+    financialAccountReconciliationFindings,
   "feed-intelligence-monitor": feedIntelligenceDeltaLedgerFindings,
   "freelance-client-pipeline": freelancePipelineFindings,
   "fundraising-campaign-manager": fundraisingCampaignFindings,
@@ -52234,6 +53296,14 @@ const validators = {
   "health-records-binder": healthRecordsFindings,
   "home-repair-coordinator": homeRepairFindings,
   "household-budget-steward": householdBudgetFindings,
+  "household-emergency-preparedness-coordinator": householdEmergencyPreparednessFindings,
+  "identity-theft-recovery-coordinator": identityTheftRecoveryFindings,
+  "property-insurance-claim-coordinator": propertyInsuranceClaimFindings,
+  "rental-housing-coordinator": rentalHousingFindings,
+  "consumer-product-recall-coordinator": consumerProductRecallFindings,
+  "medication-regimen-coordinator": medicationRegimenFindings,
+  "estate-administration-coordinator": estateAdministrationFindings,
+  "home-purchase-transaction-coordinator": homePurchaseTransactionFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,
@@ -52243,6 +53313,8 @@ const validators = {
   "knowledge-curator": knowledgeCollectionIndexFindings,
   "knowledge-gardener": knowledgeSpaceChangePlanFindings,
   "legal-matter-organizer": legalMatterFindings,
+  "learning-program-manager": learningProgramFindings,
+  "learning-plan-coordinator": learningPlanFindings,
   "life-timeline-keeper": lifeTimelineFindings,
   "local-events-watcher": localEventsFindings,
   "localization-program-manager": localizationReadinessFindings,
@@ -52257,6 +53329,7 @@ const validators = {
   "music-organizer": musicOrganizerFindings,
   "neighborhood-operations-watcher": neighborhoodOperationsFindings,
   "personal-archive-curator": personalArchiveFindings,
+  "partner-business-manager": partnerBusinessPlanFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "professional-networking-followup": professionalNetworkingFindings,
@@ -52265,31 +53338,47 @@ const validators = {
   "research-scout": researchEvidenceDeltaFindings,
   "resume-portfolio-curator": resumePortfolioFindings,
   "project-manager": projectFindings,
+  "payroll-review-preparer": payrollReviewFindings,
+  "invoice-draft-producer": invoiceDraftFindings,
+  "job-estimate-producer": jobEstimateFindings,
+  "project-document-controller": documentControlFindings,
   "product-manager": productFindings,
   "presentation-producer": presentationEvidenceManifestFindings,
   "privacy-request-coordinator": privacyRequestFindings,
+  "problem-known-error-coordinator": problemKnownErrorFindings,
   "procurement-evaluator": procurementEvaluationFindings,
+  "procure-to-pay-three-way-match-exception-reconciler":
+    procureToPayThreeWayMatchFindings,
   "purchase-researcher": purchaseResearchFindings,
   "public-safety-monitor": publicSafetyFindings,
   "quality-assurance-lead": qualityAssuranceReleaseFindings,
   "recruiting-coordinator": recruitingFindings,
   "release-coordinator": releaseReadinessFindings,
+  "repository-operations-manager": repositoryOperationsFindings,
+  "repository-compliance-program-manager": repositoryComplianceProgramFindings,
+  "recurring-third-party-review-evidence-reconciler":
+    recurringThirdPartyReviewFindings,
   "records-retention-disposition-coordinator": retentionDispositionFindings,
   "infrastructure-drift-reconciliation-coordinator": infrastructureDriftFindings,
   "restaurant-venue-scout": restaurantVenueFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
+  "supplier-onboarding-preparer": supplierOnboardingFindings,
   "school-coordinator": schoolCoordinatorFindings,
   "security-analyst": securityAssessmentFindings,
   "software-maintainer": changeDeliveryRecordFindings,
+  "solution-architecture-decision-advisor": solutionArchitectureDecisionFindings,
   "sports-team-watcher": sportsTeamWatchFindings,
   "spreadsheet-analyst": spreadsheetChangeFindings,
   "stock-portfolio-monitor": stockPortfolioFindings,
   "subscription-manager": subscriptionManagerFindings,
+  "supplier-capacity-assurance-manager": supplierCapacityAssuranceFindings,
   "tax-document-organizer": taxDocumentFindings,
   "travel-concierge": travelShortlistFindings,
   "travel-planner": itineraryPlanFindings,
   "travel-loyalty-points-organizer": travelLoyaltyFindings,
+  "tls-certificate-rotation-verification-coordinator":
+    tlsCertificateRotationVerificationFindings,
   "ux-research-synthesizer": researchSynthesisFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
   "video-concept-producer": videoConceptGenerationManifestFindings,
@@ -52300,7 +53389,97 @@ const validators = {
   "website-evidence-collector": websiteCaptureEvidenceLedgerFindings,
   "work-chief-of-staff": workChiefOfStaffFindings,
   "workflow-operator": workflowExecutionReconciliationFindings,
+  "workforce-planning-partner": workforcePlanningFindings,
+  "security-alert-review-reconciler": securityAlertReviewArtifactFindings,
 };
+
+const DEFAULT_VALIDATION_OPTIONS = Object.freeze({
+  "backup-restore-verification-coordinator": Object.freeze({
+    asOf: "2026-09-02T12:00:00Z",
+  }),
+  "benefits-realization-manager":
+    BENEFITS_REALIZATION_EXAMPLE_PROFILE_OPTIONS,
+  "business-continuity-program-manager": Object.freeze({
+    asOf: "2026-09-14T19:00:00Z",
+  }),
+  "commercial-deal-desk-coordinator": Object.freeze({
+    asOf: "2026-09-14T12:00:00Z",
+  }),
+  "customer-success-program-manager": Object.freeze({
+    asOf: "2026-09-14T19:00:00Z",
+  }),
+  "contract-obligation-tracker": Object.freeze({
+    asOf: "2026-09-05T17:00:00Z",
+  }),
+  "recurring-third-party-review-evidence-reconciler":
+    RECURRING_THIRD_PARTY_REVIEW_EXAMPLE_OPTIONS,
+  "enterprise-license-entitlement-reconciler": Object.freeze({
+    asOf: "2026-09-03T18:00:00Z",
+    licenseTrustRoot: Object.freeze({
+      schemaVersion: "awesomeClaws.enterpriseLicenseTrustRoot.v1",
+      organizationRef: "organization-northwind",
+      agreementRef: "agreement-ea-204",
+      licenseProgramRef: "license-program-2026",
+      predecessorRound: Object.freeze({
+        id: "round-2026-07-r1",
+        digest: "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      }),
+      rightsManifest: Object.freeze({
+        id: "rights-manifest-ea-204",
+        version: "v4",
+        digest: "sha256:b9d37f4debc7b0ea965f202061629108585f61581c329f75bba72806d9614b2a",
+      }),
+      skuMappingRegister: Object.freeze({
+        id: "sku-mapping-ea-204",
+        version: "v7",
+        digest: "sha256:8d530ca444d7ee436ccb89744a718802d19469ebb4f4b935948738192de2456e",
+      }),
+      authorityRoster: Object.freeze({
+        id: "roster-license-review",
+        version: "v3",
+        digest: "sha256:3fdc7625623834856e88a84cfe00c08692a49180897094bf05a3269b0e3e19fb",
+      }),
+    }),
+  }),
+  "financial-account-reconciliation-coordinator": Object.freeze({
+    asOf: "2026-09-02T00:00:00Z",
+  }),
+  "learning-program-manager": Object.freeze({
+    asOf: "2026-09-14T20:00:00Z",
+  }),
+  "partner-business-manager": Object.freeze({
+    asOf: "2026-09-14T19:00:00Z",
+  }),
+  "procure-to-pay-three-way-match-exception-reconciler": Object.freeze({
+    asOf: "2026-09-16T12:00:00Z",
+    cutoffAt: "2026-09-15T23:59:59Z",
+    ownerTrustPolicy: procureToPayOwnerTrustPolicy,
+  }),
+  "supplier-capacity-assurance-manager": Object.freeze({
+    asOf: "2026-09-14T18:00:00Z",
+  }),
+  "tls-certificate-rotation-verification-coordinator": Object.freeze({
+    asOf: "2026-09-05T00:00:00Z",
+  }),
+  "repository-operations-manager": Object.freeze({
+    asOf: "2026-09-13T17:00:00Z",
+  }),
+  "repository-compliance-program-manager": Object.freeze({
+    asOf: "2026-09-14T19:00:00Z",
+  }),
+  "security-alert-review-reconciler":
+    SECURITY_ALERT_REVIEW_EXAMPLE_PROFILE_OPTIONS,
+  "workforce-planning-partner": Object.freeze({
+    asOf: "2026-09-14T17:00:00Z",
+  }),
+});
+
+export function artifactSemanticValidationOptions(id) {
+  if (id === "problem-known-error-coordinator") {
+    return structuredClone(PROBLEM_KNOWN_ERROR_EXAMPLE_OPTIONS);
+  }
+  return structuredClone(DEFAULT_VALIDATION_OPTIONS[id] ?? {});
+}
 
 export function hasArtifactSemanticValidator(id) {
   return Object.hasOwn(validators, id);

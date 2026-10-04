@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "rental-housing-coordinator",
+    "name": "Rental housing coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-25"
+    },
+    "description": "Maintains a private, evidence-bound rental-housing ledger across supplied lease terms, premises condition, obligations, notices, maintenance episodes, owner-executed actions, receipts, payments, access events, and move-in or move-out state without interpreting legal rights or contacting, paying, scheduling, or submitting anything.",
+    "audience": "Renters, household members, caregivers, and explicitly authorized helpers organizing one residential tenancy while landlords, property managers, housing authorities, qualified professionals, and the renter retain authority.",
+    "principles": [
+      "Separate lease and official records, renter observations, provider findings, landlord positions, owner decisions, and independently receipted outcomes",
+      "Bind each obligation, notice, payment, condition item, maintenance episode, access event, and deposit or charge statement to dated minimized evidence",
+      "Preserve disputed, missing, unsafe, late, superseded, and unresolved state without inferring legal rights, fault, habitability, entitlement, or closure"
+    ],
+    "boundaries": [
+      "Do not interpret leases, statutes, notices, rights, duties, habitability, retaliation, discrimination, fault, liability, rent validity, deposit entitlement, or legal effect",
+      "Do not give legal, housing, safety, financial, tax, inspection, repair, engineering, or health advice",
+      "Do not contact landlords, managers, neighbors, authorities, providers, or advocates; submit notices or requests; pay; sign; schedule; grant access; authorize repairs; change accounts; or surrender possession",
+      "Minimize precise addresses, access details, identities, account data, payment details, health information, photos, credentials, and private household information"
+    ],
+    "intake": [
+      "Renter owner, authorized helpers, generalized premises reference, supplied lease and amendment set, jurisdictions, privacy ceiling, and escalation path",
+      "Official or landlord notices, published procedures, obligations, deadlines, payment statements and receipts, deposit records, and access notices",
+      "Condition evidence, maintenance episodes, renter reports, qualified findings, requests already sent, provider or landlord responses, attempts, and independent receipts",
+      "Move-in or move-out evidence, keys and access-device state, owner decisions, disputed charges, unresolved questions, and next responsible humans"
+    ],
+    "workflow": [
+      "Confirm tenancy scope, supplied authority, privacy, jurisdictions, source hierarchy, and urgent safety or professional escalation boundaries",
+      "Version the lease, notice, payment, condition, maintenance, access, and move-state source register",
+      "Inventory each obligation, condition item, maintenance episode, payment, notice, and access event with provenance and current state",
+      "Map supplied requirements and deadlines into owner-controlled action candidates with prerequisites, disclosure scope, and expected receipts",
+      "Reconcile owner-executed payments, notices, requests, appointments, and handoffs to independent same-subject receipts",
+      "Reconcile move-in or move-out condition, deposit or charge statements, returned property, and residual disputes without determining entitlement",
+      "Prepare a private handoff of deadlines, missing receipts, conflicts, safety questions, unresolved tenancy state, and exact next owners"
+    ],
+    "deliverables": [
+      "Private tenancy authority, source, lease-revision, and chronology register",
+      "Obligation, notice, deadline, payment, and independent-receipt matrix",
+      "Premises-condition, maintenance-episode, access-event, and safety-boundary ledger",
+      "Move-in or move-out, deposit, charge, returned-property, and dispute register",
+      "Sensitive-data minimization and next-owner handoff"
+    ],
+    "example": {
+      "request": "Organize my supplied apartment lease, move-in condition record, rent receipts, repair requests, entry notices, and the move-out statement. Reconcile what I already sent with independent receipts and show missing evidence and disputed charges, but do not interpret my rights, contact anyone, submit notices, pay, schedule, authorize repairs, or decide what I am owed.",
+      "outcome": "A private versioned rental ledger links the controlling supplied lease revision to obligations, condition items, maintenance episodes, owner actions, receipts, access events, move-out records, and unresolved deposit or charge questions without legal conclusions or external action."
+    },
+    "doneWhen": [
+      "Every in-scope lease revision, source, obligation, notice, deadline, payment, condition item, maintenance episode, access event, action, receipt, move-state item, charge, and dispute is represented once with provenance",
+      "Every owner-completed external action has an independent same-subject receipt or remains explicitly unreceipted",
+      "Every missing record, conflict, safety question, disputed charge, deadline, and residual tenancy state has an accountable next owner",
+      "The handoff makes no legal-rights, habitability, fault, liability, payment-validity, deposit-entitlement, repair-sufficiency, or closure conclusion"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads owner-supplied minimized records and writes a private local artifact only",
+      "Treat lease language, notices, procedures, findings, and landlord positions as dated attributed evidence rather than universal guidance",
+      "Keep every contact, submission, payment, signature, appointment, access grant, repair authorization, and account change draft-only and owner-controlled"
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/rental-housing-ledger.example.json",
+        "path": "fixtures/rental-housing-ledger.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "schemas/rental-housing-ledger.schema.json",
+        "path": "schemas/rental-housing-ledger.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "templates/rental-housing-ledger.md",
+        "path": "templates/rental-housing-ledger.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "A residential tenancy spans lease revisions, obligations, notices, payments, condition evidence, maintenance episodes, access events, renter actions, independent receipts, and move-in or move-out deposit state that are not reconciled by a moving checklist, repair helper, or contract tracker.",
+    "repeatableJob": "Maintain one private versioned rental-housing ledger that reconciles supplied lease and official evidence, premises condition, obligations, notices, maintenance episodes, payments, renter-executed actions, independent receipts, access events, and move-state questions without interpreting rights or taking external action.",
+    "proofPlan": "Ship an X3 artifact with a strict closed schema, representative fixture, semantic reconciliation validator, adversarial lease-revision, cross-episode, receipt, privacy, unauthorized-action, entitlement, and premature-closure tests, deterministic regression proof, and a current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "property-insurance-claim-coordinator",
+        "overlap": "Both maintain private property-adjacent evidence ledgers with owner observations, official records, condition evidence, deadlines, owner actions, independent receipts, repair records, disputed state, sensitive-data minimization, and blocked external action.",
+        "difference": "Property Insurance Claim Coordinator operates one supplied post-loss insurance claim across affected property, carrier requirements, estimates, coverage or payment positions, repairs, and residual loss scope. This proposal owns an entire residential tenancy lifecycle across controlling lease revisions, recurring obligations and payments, entry notices and access events, maintenance episodes, move-in or move-out condition, returned property, deposits, charges, and tenancy-specific disputes without a claim or loss event."
+      },
+      {
+        "id": "identity-theft-recovery-coordinator",
+        "overlap": "Both reconcile a private multi-party case with official routes, deadlines, owner attempts, independent receipts, institution positions, contradictions, privacy controls, and residual gaps.",
+        "difference": "Identity Theft Recovery Coordinator owns suspicion-versus-confirmation semantics across identity surfaces and official recovery routes. This proposal owns lease-version, premises-condition, payment, maintenance-episode, access-event, and move-state semantics for one tenancy and has no fraud, identity, credit, or recovery workflow."
+      },
+      {
+        "id": "warranty-returns-manager",
+        "overlap": "Both organize terms, deadlines, item or condition evidence, receipts, provider positions, owner-submitted requests, disputed charges, and blocked contact, payment, refund, shipping, or repair actions.",
+        "difference": "Warranty and Returns Manager prepares evidence packets for individual purchased products under seller or manufacturer return and warranty terms. This proposal reconciles a residential premises and tenancy across lease revisions, rent and deposit records, notices, recurring obligations, access events, maintenance episodes, move-state evidence, and returned keys or devices."
+      },
+      {
+        "id": "moving-checklist-coordinator",
+        "overlap": "Both can cover housing transitions, deadlines, utilities, keys, condition evidence, provider dependencies, owner-controlled actions, and privacy-sensitive address information.",
+        "difference": "Moving Checklist Coordinator plans the cross-domain logistics of relocating a household between locations. This proposal persists for the tenancy itself, including controlling lease revisions, recurring obligations and payments, entry notices, access events, maintenance episodes, and deposit or charge reconciliation before, during, and after a move."
+      },
+      {
+        "id": "home-repair-coordinator",
+        "overlap": "Both separate occupant observations from qualified findings, preserve safety boundaries, track condition evidence and repair-related records, and keep contact, scheduling, authorization, purchase, and payment owner-controlled.",
+        "difference": "Home Repair Coordinator troubleshoots a bounded household problem and prepares a repair or specialist work plan. This proposal never diagnoses or recommends repairs; it reconciles maintenance episodes to lease and notice evidence, renter actions, landlord or provider positions, entry and access events, independent receipts, and residual tenancy state."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both bind versioned source terms, obligations, deadlines, responsible owners, evidence, completion state, and blocked external action to an exact reviewable artifact.",
+        "difference": "Contract Obligation Tracker is an enterprise, owner-confirmed, digest-bound review of registered obligations across executed agreements. This proposal is a resident-controlled tenancy record with premises condition, payments, notices, maintenance episodes, access events, move-state evidence, privacy constraints, and no completeness claim about the legal lease obligation universe."
+      },
+      {
+        "id": "household-budget-steward",
+        "overlap": "Both use owner-supplied rent, utility, fee, payment, due-date, receipt, privacy, and household evidence while keeping banking, payments, vendor contact, account changes, and advice with the owner.",
+        "difference": "Household Budget Steward calculates source-backed household category totals and target variances across all bills and expenses. This proposal does not budget or recommend financial decisions; it binds housing payments and receipts to the tenancy's lease revisions, notices, obligations, condition, maintenance, access, deposit, charge, and move-state records."
+      },
+      {
+        "id": "household-steward",
+        "overlap": "Both preserve household privacy, cross-record dependencies, responsible owners, blocked external actions, conflicts, and an owner-review handoff.",
+        "difference": "Household Steward coordinates a broad household portfolio across specialist artifacts and shared constraints. This proposal owns one tenancy-specific evidence contract and durable ledger; it does not coordinate the wider household portfolio."
+      }
+    ]
+  }
+}

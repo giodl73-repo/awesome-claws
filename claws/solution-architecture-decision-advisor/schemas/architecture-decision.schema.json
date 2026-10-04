@@ -1,0 +1,997 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/architecture-decision.schema.json",
+  "title": "Solution architecture decision record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "workload",
+    "requirementUniverse",
+    "evaluationWindow",
+    "principals",
+    "requirements",
+    "options",
+    "criteria",
+    "evidence",
+    "coverage",
+    "tradeoffs",
+    "risks",
+    "experiments",
+    "adrRevisions",
+    "decision",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.solutionArchitectureDecision.v1"
+    },
+    "workload": {
+      "$ref": "#/$defs/workload"
+    },
+    "requirementUniverse": {
+      "$ref": "#/$defs/requirementUniverse"
+    },
+    "evaluationWindow": {
+      "$ref": "#/$defs/evaluationWindow"
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/requirement"
+      }
+    },
+    "options": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/option"
+      }
+    },
+    "criteria": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "$ref": "#/$defs/criterion"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/coverage"
+      }
+    },
+    "tradeoffs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tradeoff"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/risk"
+      }
+    },
+    "experiments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/experiment"
+      }
+    },
+    "adrRevisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/adrRevision"
+      }
+    },
+    "decision": {
+      "$ref": "#/$defs/decision"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,63}$"
+    },
+    "nonEmpty": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "controlledRef": {
+      "type": "string",
+      "pattern": "^controlled://[^/?#]+/[^?#]+$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "idList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "workload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "requirementsRevision",
+        "approvedAt",
+        "approvedByPrincipalRef",
+        "scope",
+        "decisionDueAt"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "requirementsRevision": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "approvedByPrincipalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "decisionDueAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "requirementUniverse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "sourceRef",
+        "declaredRequirementIds",
+        "declaredConstraintIds",
+        "completenessAttestedAt",
+        "attestedByPrincipalRef",
+        "contentDigest"
+      ],
+      "properties": {
+        "revision": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "declaredRequirementIds": {
+          "$ref": "#/$defs/idList"
+        },
+        "declaredConstraintIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "completenessAttestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "attestedByPrincipalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "evaluationWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "startsAt",
+        "endsAt"
+      ],
+      "properties": {
+        "startsAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "endsAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "role",
+        "scopes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "role": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmpty"
+          }
+        }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "statement",
+        "priority",
+        "ownerRef",
+        "sourceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "enum": [
+            "functional",
+            "non-functional",
+            "constraint"
+          ]
+        },
+        "statement": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "priority": {
+          "enum": [
+            "required",
+            "preferred"
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/controlledRef"
+        }
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "name",
+        "description",
+        "state",
+        "contentDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "description": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "state": {
+          "enum": [
+            "candidate",
+            "withdrawn"
+          ]
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "optionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "optionRef",
+        "optionRevision",
+        "optionDigest"
+      ],
+      "properties": {
+        "optionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "optionRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "optionDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "dimension",
+        "statement",
+        "comparisonMethod",
+        "requiredSpecialistScope"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "dimension": {
+          "enum": [
+            "requirement-fit",
+            "cost",
+            "security",
+            "reliability",
+            "operability"
+          ]
+        },
+        "statement": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "comparisonMethod": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "requiredSpecialistScope": {
+          "$ref": "#/$defs/nonEmpty"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "requirementsRevision",
+        "requirementUniverseDigest",
+        "optionRef",
+        "optionRevision",
+        "optionDigest",
+        "criterionRef",
+        "requirementRefs",
+        "ownerRef",
+        "sourceRef",
+        "assertedAt",
+        "comparableSetId",
+        "claim",
+        "result",
+        "uncertainty"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "specialist-assessment",
+            "estimate",
+            "experiment-result",
+            "source-analysis"
+          ]
+        },
+        "requirementsRevision": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "requirementUniverseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "optionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "optionRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "optionDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "criterionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "requirementRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/controlledRef"
+        },
+        "assertedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "comparableSetId": {
+          "$ref": "#/$defs/id"
+        },
+        "claim": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "result": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "uncertainty": {
+          "$ref": "#/$defs/nonEmpty"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "optionRef",
+        "optionRevision",
+        "optionDigest",
+        "requirementUniverseDigest",
+        "requirementRef",
+        "state",
+        "evidenceRefs",
+        "rationale"
+      ],
+      "properties": {
+        "optionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "optionRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "optionDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "requirementUniverseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "requirementRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "satisfies",
+            "partial",
+            "does-not-satisfy",
+            "unknown"
+          ]
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "rationale": {
+          "$ref": "#/$defs/nonEmpty"
+        }
+      }
+    },
+    "tradeoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "optionRef",
+        "optionRevision",
+        "optionDigest",
+        "requirementUniverseDigest",
+        "criterionRef",
+        "rating",
+        "evidenceRefs",
+        "summary"
+      ],
+      "properties": {
+        "optionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "optionRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "optionDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "requirementUniverseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "criterionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rating": {
+          "enum": [
+            "favorable",
+            "mixed",
+            "unfavorable",
+            "unknown"
+          ]
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmpty"
+        }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "scope",
+        "optionRef",
+        "optionRevision",
+        "optionDigest",
+        "requirementUniverseDigest",
+        "statement",
+        "severity",
+        "state",
+        "residual",
+        "ownerRef",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "enum": [
+            "option",
+            "cross-cutting"
+          ]
+        },
+        "optionRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "optionRevision": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "optionDigest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requirementUniverseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "statement": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "state": {
+          "enum": [
+            "open",
+            "mitigated"
+          ]
+        },
+        "residual": {
+          "type": "boolean"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        }
+      }
+    },
+    "experiment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "question",
+        "optionRefs",
+        "optionBindings",
+        "criterionRefs",
+        "requirementUniverseDigest",
+        "ownerRef",
+        "state",
+        "method",
+        "successCriteria",
+        "startedAt",
+        "completedAt",
+        "evidenceRefs",
+        "limitations"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "question": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "optionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "optionBindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/optionBinding"
+          }
+        },
+        "criterionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "requirementUniverseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "planned",
+            "completed",
+            "blocked"
+          ]
+        },
+        "method": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "successCriteria": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "startedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "completedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/nonEmpty"
+          }
+        }
+      }
+    },
+    "adrRevision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "createdAt",
+        "authorRef",
+        "state",
+        "supersedesRef",
+        "requirementsRevision",
+        "requirementUniverseDigest",
+        "optionRefs",
+        "optionBindings",
+        "evidenceRefs",
+        "recordedDecisionRef",
+        "contentDigest",
+        "rationale"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "authorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "draft",
+            "superseded",
+            "current"
+          ]
+        },
+        "supersedesRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requirementsRevision": {
+          "$ref": "#/$defs/nonEmpty"
+        },
+        "requirementUniverseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "optionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "optionBindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/optionBinding"
+          }
+        },
+        "evidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "recordedDecisionRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "rationale": {
+          "$ref": "#/$defs/nonEmpty"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "state",
+        "ownerRef",
+        "requirementUniverseDigest",
+        "selectedOptionRef",
+        "selectedOptionRevision",
+        "selectedOptionDigest",
+        "decidedAt",
+        "adrRevisionRef",
+        "adrDigest",
+        "evidenceRefs",
+        "residualRiskRefs",
+        "contentDigest",
+        "summary"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "blocked",
+            "planned",
+            "ready-for-owner-review",
+            "recorded-owner-decision"
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "requirementUniverseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "selectedOptionRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selectedOptionRevision": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selectedOptionDigest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decidedAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "adrRevisionRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "adrDigest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "residualRiskRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmpty"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "ownerRef",
+        "requirementUniverseDigest",
+        "decisionDigest",
+        "generatedAt",
+        "prohibitedActions",
+        "summary"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "blocked",
+            "planned",
+            "ready-for-owner-review",
+            "recorded-owner-decision"
+          ]
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "requirementUniverseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "decisionDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "deploy",
+              "mutate-tenant-or-configuration",
+              "commit-product-or-vendor",
+              "select-customer",
+              "certify-security-or-compliance",
+              "accept-risk",
+              "guarantee-performance-or-cost"
+            ]
+          }
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmpty"
+        }
+      }
+    }
+  }
+}

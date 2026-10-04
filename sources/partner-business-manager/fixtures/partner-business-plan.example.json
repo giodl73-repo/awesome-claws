@@ -1,0 +1,1382 @@
+{
+  "schemaVersion": "awesomeClaws.partnerBusinessPlan.v1",
+  "identity": {
+    "partnerId": "partner-contoso-cloud",
+    "partnerName": "Contoso Cloud Services",
+    "planId": "jbp-ccs-2027",
+    "planRevision": 4,
+    "predecessorRevision": 3,
+    "asOf": "2026-09-14T19:00:00Z",
+    "period": {
+      "start": "2026-07-01",
+      "end": "2026-12-31",
+      "segments": [
+        {
+          "id": "fy27-q1",
+          "start": "2026-07-01",
+          "end": "2026-09-30"
+        },
+        {
+          "id": "fy27-q2",
+          "start": "2026-10-01",
+          "end": "2026-12-31"
+        }
+      ]
+    }
+  },
+  "predecessorManifest": {
+    "id": "predecessor-manifest-revision-3",
+    "contentDigest": "sha256:a00d07e6872d7d1092fdb5368d8d33a26abcfda164e3bc33ca9c22e08db64e36",
+    "signingKeyId": "partner-governance-ed25519-v1",
+    "signature": "ntEjHm8b/fbJP9xEv1AkT/yOMdZZMuaH9kgMh3OLBgPhgNhdYU0IzvDqKvepOXvgjcvl4J7Q017pvGoxZJJnDw==",
+    "partnerId": "partner-contoso-cloud",
+    "planId": "jbp-ccs-2027",
+    "planRevision": 3,
+    "sourceRef": "controlled://partner-governance/jbp-ccs-2027-revision-3-manifest",
+    "sourceVersion": "signed-revision-3",
+    "observedAt": "2026-06-28T16:00:00Z",
+    "issuedByPrincipalRef": "principal-business-manager",
+    "confidentialityScopeRef": "scope-partner-plan",
+    "records": [
+      {
+        "domain": "capabilities",
+        "recordRef": "capability-data-ai",
+        "contentDigest": "sha256:d2bc027720bf1e9390428d3cf65c7f384ad199763e4015677086248db9cd13b1",
+        "evidenceRefs": ["evidence-capability-prior"],
+        "evidenceFingerprints": [
+          {
+            "evidenceRef": "evidence-capability-prior",
+            "contentDigest": "sha256:9de16b7fb09fc7a69cecde42983f92bcbb7a756ae36b604cc99006a0b13229a9"
+          }
+        ]
+      }
+    ]
+  },
+  "principals": [
+    {
+      "id": "principal-partner-lead",
+      "name": "Contoso alliance lead",
+      "kind": "human",
+      "organization": "partner",
+      "decisionRights": [
+        "own-action",
+        "qbr-decision",
+        "partner-commitment"
+      ]
+    },
+    {
+      "id": "principal-business-manager",
+      "name": "Vendor partner business manager",
+      "kind": "human",
+      "organization": "vendor",
+      "decisionRights": [
+        "reconcile-plan",
+        "own-action",
+        "solution-play",
+        "vendor-commitment",
+        "escalate"
+      ]
+    },
+    {
+      "id": "principal-program-owner",
+      "name": "Partner program owner",
+      "kind": "human",
+      "organization": "vendor",
+      "decisionRights": [
+        "capability-status",
+        "enrollment",
+        "designation",
+        "benefit-eligibility",
+        "authority-governance"
+      ]
+    },
+    {
+      "id": "principal-sales-owner",
+      "name": "Co-sell sales owner",
+      "kind": "human",
+      "organization": "vendor",
+      "decisionRights": [
+        "opportunity-mutation",
+        "revenue-commitment",
+        "customer-contact"
+      ]
+    },
+    {
+      "id": "principal-finance-owner",
+      "name": "Partner incentives finance owner",
+      "kind": "human",
+      "organization": "vendor",
+      "decisionRights": [
+        "incentive-approval",
+        "incentive-payment"
+      ]
+    },
+    {
+      "id": "principal-legal-owner",
+      "name": "Partner legal owner",
+      "kind": "human",
+      "organization": "vendor",
+      "decisionRights": [
+        "agreement-modification"
+      ]
+    },
+    {
+      "id": "principal-risk-owner",
+      "name": "Alliance risk owner",
+      "kind": "human",
+      "organization": "vendor",
+      "decisionRights": [
+        "risk-acceptance"
+      ]
+    }
+  ],
+  "authorityRosterEvidence": {
+    "id": "authority-roster-fy27",
+    "contentDigest": "sha256:d801ed087318ff4c67cc9a02932354f28ba245ad74aa57941921fbf7dcc46925",
+    "signingKeyId": "partner-governance-ed25519-v1",
+    "signature": "jR4iqrG/wxIM7c+LM9bK7RZt2xbFjhNGYNz1wQcABnZzOuT0pkRvvOfFiz0lO/v3qUaIxO1VLgRdiGu9mbm9Cg==",
+    "sourceRef": "controlled://partner-governance/authority-roster-fy27",
+    "sourceVersion": "approved-2026-09-01",
+    "observedAt": "2026-09-01T16:00:00Z",
+    "maxAgeDays": 30,
+    "issuedByPrincipalRef": "principal-program-owner",
+    "confidentialityScopeRef": "scope-partner-plan",
+    "freshnessRuleDigests": [
+      { "freshnessRuleRef": "freshness-capability-current", "contentDigest": "sha256:aa98f6926aac9e4a72e0e347e33c35003571cece5f0a6b34615ebc5f4930c151" },
+      { "freshnessRuleRef": "freshness-capability-prior", "contentDigest": "sha256:1e83df0a6069b4c6a8edc952beb8e3b6a33aa1e724354a9bece28ff2b9fd1d40" },
+      { "freshnessRuleRef": "freshness-designation", "contentDigest": "sha256:4d9bd1a879080cd71dde8ad8d2847084d30d8557d988cc5c0b9e2175cfbde03b" },
+      { "freshnessRuleRef": "freshness-solution-play", "contentDigest": "sha256:c252a0af0ba90690469bf426435e77563af398cffe59bd122783b116038b1abe" },
+      { "freshnessRuleRef": "freshness-opportunity", "contentDigest": "sha256:e09bd54f6d2135803587f9259b816f5ba0f9e79c0f978ca1d07aebc0ab70b105" },
+      { "freshnessRuleRef": "freshness-commitment", "contentDigest": "sha256:f5f667f4ebaf72f641496c7206e7faba99c5e8191448cf318ded5e2cab218f75" },
+      { "freshnessRuleRef": "freshness-commitment-vendor", "contentDigest": "sha256:1d1af9455b6f612b300f59c8239db6605c2f5c2f8763f123b2e923ea42fdc1a0" },
+      { "freshnessRuleRef": "freshness-benefit", "contentDigest": "sha256:c23afb631e8ae67adb280f196b85ba6ef7b01d0640357d3f8d10ac863892ca4b" },
+      { "freshnessRuleRef": "freshness-incentive", "contentDigest": "sha256:cc3f0de5aea1745dfca18e2d0f3ae237d0418394b69b8a9148d8094dfeb778b1" },
+      { "freshnessRuleRef": "freshness-dependency", "contentDigest": "sha256:eaf6e24e19aa93b65783da32f4b9f108ffa9b6a58b29481158f87e4b0c08793e" },
+      { "freshnessRuleRef": "freshness-risk", "contentDigest": "sha256:aed2e3d0e001680871636159444305dcd55ac0eb876ddcf8ad447171361b319b" },
+      { "freshnessRuleRef": "freshness-action", "contentDigest": "sha256:7a1d3f4f0a48080e173b516243716de3d8bf79f39920041c853896f9e5ab1b81" },
+      { "freshnessRuleRef": "freshness-qbr-decision", "contentDigest": "sha256:0bdea4916dc574f9c968e8c85baf49aca8c362f480e1f744ac538dddf04784b0" }
+    ],
+    "principalAuthorities": [
+      {
+        "principalRef": "principal-partner-lead",
+        "principalName": "Contoso alliance lead",
+        "organization": "partner",
+        "decisionRights": ["own-action", "qbr-decision", "partner-commitment"]
+      },
+      {
+        "principalRef": "principal-business-manager",
+        "principalName": "Vendor partner business manager",
+        "organization": "vendor",
+        "decisionRights": ["reconcile-plan", "own-action", "solution-play", "vendor-commitment", "escalate"]
+      },
+      {
+        "principalRef": "principal-program-owner",
+        "principalName": "Partner program owner",
+        "organization": "vendor",
+        "decisionRights": ["capability-status", "enrollment", "designation", "benefit-eligibility", "authority-governance"]
+      },
+      {
+        "principalRef": "principal-sales-owner",
+        "principalName": "Co-sell sales owner",
+        "organization": "vendor",
+        "decisionRights": ["opportunity-mutation", "revenue-commitment", "customer-contact"]
+      },
+      {
+        "principalRef": "principal-finance-owner",
+        "principalName": "Partner incentives finance owner",
+        "organization": "vendor",
+        "decisionRights": ["incentive-approval", "incentive-payment"]
+      },
+      {
+        "principalRef": "principal-legal-owner",
+        "principalName": "Partner legal owner",
+        "organization": "vendor",
+        "decisionRights": ["agreement-modification"]
+      },
+      {
+        "principalRef": "principal-risk-owner",
+        "principalName": "Alliance risk owner",
+        "organization": "vendor",
+        "decisionRights": ["risk-acceptance"]
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "id": "evidence-capability",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "capability",
+      "subjectRef": "capability-data-ai",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://partner-center/capability-export-2026-09-12",
+      "sourceVersion": "export-2026-09-12",
+      "observedAt": "2026-09-12T16:00:00Z",
+      "issuedByPrincipalRef": "principal-program-owner",
+      "freshnessRuleRef": "freshness-capability-current",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:d2bc027720bf1e9390428d3cf65c7f384ad199763e4015677086248db9cd13b1"
+    },
+    {
+      "id": "evidence-capability-prior",
+      "scope": "predecessor-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 3,
+      "subjectType": "capability",
+      "subjectRef": "capability-data-ai",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://partner-center/capability-export-2026-06-28",
+      "sourceVersion": "export-2026-06-28",
+      "observedAt": "2026-06-28T16:00:00Z",
+      "issuedByPrincipalRef": "principal-program-owner",
+      "freshnessRuleRef": "freshness-capability-prior",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:d2bc027720bf1e9390428d3cf65c7f384ad199763e4015677086248db9cd13b1"
+    },
+    {
+      "id": "evidence-designation",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "designation",
+      "subjectRef": "designation-solutions-partner",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://partner-center/designation-export-2026-09-12",
+      "sourceVersion": "export-2026-09-12",
+      "observedAt": "2026-09-12T16:05:00Z",
+      "issuedByPrincipalRef": "principal-program-owner",
+      "freshnessRuleRef": "freshness-designation",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:22ec9e74db3439838695cf7cef310bb9f7e171909153600d2c7bb403b451a817"
+    },
+    {
+      "id": "evidence-play",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "solution-play",
+      "subjectRef": "play-ai-modernization",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://jbp/solution-play-register-r4",
+      "sourceVersion": "revision-4",
+      "observedAt": "2026-09-10T18:00:00Z",
+      "issuedByPrincipalRef": "principal-business-manager",
+      "freshnessRuleRef": "freshness-solution-play",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:4fe775b9f0abe257384624794da77e82333ba44309694bd31928f77a4d1de8d9"
+    },
+    {
+      "id": "evidence-opportunity",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "opportunity-reference",
+      "subjectRef": "opportunity-cosell-4172",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://crm/opportunity-reference-export-4172",
+      "sourceVersion": "snapshot-2026-09-13",
+      "observedAt": "2026-09-13T20:00:00Z",
+      "issuedByPrincipalRef": "principal-sales-owner",
+      "freshnessRuleRef": "freshness-opportunity",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:150d93d084626de678a0c08b8c9d04d78074419d9e266be85ab17445b4580d12"
+    },
+    {
+      "id": "evidence-commitment",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "commitment",
+      "subjectRef": "commitment-workshops",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "assertion": "approval-granted",
+      "sourceRef": "controlled://jbp/commitment-register-r4",
+      "sourceVersion": "revision-4",
+      "observedAt": "2026-09-10T18:10:00Z",
+      "issuedByPrincipalRef": "principal-partner-lead",
+      "freshnessRuleRef": "freshness-commitment",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:8e1a30399e663523be05a5699027ffb82fbde0c93354447c1e2a4e538a132451"
+    },
+    {
+      "id": "evidence-commitment-vendor",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "commitment",
+      "subjectRef": "commitment-workshops",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "assertion": "approval-granted",
+      "sourceRef": "controlled://jbp/vendor-commitment-approval-r4",
+      "sourceVersion": "revision-4",
+      "observedAt": "2026-09-10T18:12:00Z",
+      "issuedByPrincipalRef": "principal-business-manager",
+      "freshnessRuleRef": "freshness-commitment-vendor",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:8e1a30399e663523be05a5699027ffb82fbde0c93354447c1e2a4e538a132451"
+    },
+    {
+      "id": "evidence-benefit",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "benefit",
+      "subjectRef": "benefit-advisory-hours",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://partner-center/benefit-evidence-2026-09-12",
+      "sourceVersion": "export-2026-09-12",
+      "observedAt": "2026-09-12T16:15:00Z",
+      "issuedByPrincipalRef": "principal-program-owner",
+      "freshnessRuleRef": "freshness-benefit",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:dd03544f538f49de47b1568aab616276073c2b0812d4feee17d75d6d60e11a00"
+    },
+    {
+      "id": "evidence-incentive",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "incentive",
+      "subjectRef": "incentive-workshop-evidence",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://partner-center/incentive-evidence-2026-09-12",
+      "sourceVersion": "export-2026-09-12",
+      "observedAt": "2026-09-12T16:20:00Z",
+      "issuedByPrincipalRef": "principal-finance-owner",
+      "freshnessRuleRef": "freshness-incentive",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [
+        "conflict-incentive-proof"
+      ],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:cf71ec7f0b534346320748f7346da4f52c6065f21f59182c1f88a0670e6e21bd"
+    },
+    {
+      "id": "evidence-incentive-policy",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "incentive",
+      "subjectRef": "incentive-workshop-evidence",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://finance/incentive-policy-check-2026-09-13",
+      "sourceVersion": "policy-check-v2",
+      "observedAt": "2026-09-13T18:00:00Z",
+      "issuedByPrincipalRef": "principal-finance-owner",
+      "freshnessRuleRef": "freshness-incentive",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [
+        "conflict-incentive-proof"
+      ],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:cf71ec7f0b534346320748f7346da4f52c6065f21f59182c1f88a0670e6e21bd"
+    },
+    {
+      "id": "evidence-dependency",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "dependency",
+      "subjectRef": "dependency-speaker",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://jbp/dependency-log-r4",
+      "sourceVersion": "revision-4",
+      "observedAt": "2026-09-11T17:00:00Z",
+      "issuedByPrincipalRef": "principal-business-manager",
+      "freshnessRuleRef": "freshness-dependency",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:5f590418c223a2554d5f4a969c57bbb010e7dc2023c76ad7bc659c1b51213613"
+    },
+    {
+      "id": "evidence-risk",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "risk",
+      "subjectRef": "risk-incentive-gap",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://jbp/risk-register-r4",
+      "sourceVersion": "revision-4",
+      "observedAt": "2026-09-11T17:05:00Z",
+      "issuedByPrincipalRef": "principal-risk-owner",
+      "freshnessRuleRef": "freshness-risk",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:823187942e9f2892927533d78fab0ac37058ef3b49d0536c10eda335247698e3"
+    },
+    {
+      "id": "evidence-action-one",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "action",
+      "subjectRef": "action-confirm-speaker",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://qbr/action-log-2026-08-15",
+      "sourceVersion": "minutes-v1",
+      "observedAt": "2026-08-15T18:00:00Z",
+      "issuedByPrincipalRef": "principal-partner-lead",
+      "freshnessRuleRef": "freshness-action",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:af55e25ceeab1d1f738e7e2cf6238d0bb71d8229690fe0d0dab94acb14d5fa87"
+    },
+    {
+      "id": "evidence-action-two",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "action",
+      "subjectRef": "action-submit-proof",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "sourceRef": "controlled://qbr/action-log-2026-09-10",
+      "sourceVersion": "minutes-v1",
+      "observedAt": "2026-09-10T19:00:00Z",
+      "issuedByPrincipalRef": "principal-business-manager",
+      "freshnessRuleRef": "freshness-action",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:1965153b4f372666a763fd3617bba643fc422d3d4745f36efa7bd00757ecacea"
+    },
+    {
+      "id": "evidence-decision",
+      "scope": "current-revision",
+      "partnerId": "partner-contoso-cloud",
+      "planId": "jbp-ccs-2027",
+      "planRevision": 4,
+      "subjectType": "qbr-decision",
+      "subjectRef": "decision-prioritize-ai-play",
+      "segmentRefs": ["fy27-q1", "fy27-q2"],
+      "assertion": "decision-recorded",
+      "sourceRef": "controlled://qbr/minutes-2026-08-15",
+      "sourceVersion": "signed-v1",
+      "observedAt": "2026-08-15T18:10:00Z",
+      "issuedByPrincipalRef": "principal-partner-lead",
+      "freshnessRuleRef": "freshness-qbr-decision",
+      "confidentialityScopeRef": "scope-partner-plan",
+      "conflictRefs": [],
+      "dispositionConflictRefs": [],
+      "subjectContentDigest": "sha256:914c1944fbc3e0d032af3ed5753d6d7f86a9305d5a6e16f44f25f141c3bb913c"
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "capability-data-ai",
+      "name": "Data and AI delivery capability",
+      "evidenceRefs": [
+        "evidence-capability"
+      ],
+      "observedState": "evidence-current",
+      "authorityOwnerRef": "principal-program-owner",
+      "contentDigest": "sha256:d2bc027720bf1e9390428d3cf65c7f384ad199763e4015677086248db9cd13b1"
+    }
+  ],
+  "designations": [
+    {
+      "id": "designation-solutions-partner",
+      "name": "Solutions Partner designation observation",
+      "evidenceRefs": [
+        "evidence-designation"
+      ],
+      "observedState": "evidence-current",
+      "authorityOwnerRef": "principal-program-owner",
+      "contentDigest": "sha256:22ec9e74db3439838695cf7cef310bb9f7e171909153600d2c7bb403b451a817"
+    }
+  ],
+  "solutionPlays": [
+    {
+      "id": "play-ai-modernization",
+      "name": "AI modernization solution play",
+      "evidenceRefs": [
+        "evidence-play"
+      ],
+      "observedState": "evidence-current",
+      "authorityOwnerRef": "principal-business-manager",
+      "contentDigest": "sha256:4fe775b9f0abe257384624794da77e82333ba44309694bd31928f77a4d1de8d9"
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "opportunity-cosell-4172",
+      "name": "Co-sell opportunity 4172",
+      "evidenceRefs": [
+        "evidence-opportunity"
+      ],
+      "reference": "COS-4172",
+      "attribution": "co-sell",
+      "mutationState": "reference-only",
+      "authorityOwnerRef": "principal-sales-owner",
+      "contentDigest": "sha256:150d93d084626de678a0c08b8c9d04d78074419d9e266be85ab17445b4580d12"
+    }
+  ],
+  "commitments": [
+    {
+      "id": "commitment-workshops",
+      "name": "Joint AI workshop delivery",
+      "evidenceRefs": [
+        "evidence-commitment",
+        "evidence-commitment-vendor"
+      ],
+      "committingParty": "joint",
+      "measure": "Qualified workshops",
+      "target": "Four workshops in FY27 Q1-Q2",
+      "state": "at-risk",
+      "authorityOwnerRefs": [
+        "principal-partner-lead",
+        "principal-business-manager"
+      ],
+      "approvalEvidenceRefs": [
+        "evidence-commitment",
+        "evidence-commitment-vendor"
+      ],
+      "contentDigest": "sha256:8e1a30399e663523be05a5699027ffb82fbde0c93354447c1e2a4e538a132451"
+    }
+  ],
+  "eligibilityEvidence": [
+    {
+      "id": "benefit-advisory-hours",
+      "name": "Advisory hours benefit evidence",
+      "evidenceRefs": [
+        "evidence-benefit"
+      ],
+      "kind": "benefit",
+      "programItem": "Technical advisory hours",
+      "assessment": "evidence-present",
+      "authorityOwnerRef": "principal-program-owner",
+      "contentDigest": "sha256:dd03544f538f49de47b1568aab616276073c2b0812d4feee17d75d6d60e11a00"
+    },
+    {
+      "id": "incentive-workshop-evidence",
+      "name": "Workshop incentive evidence",
+      "evidenceRefs": [
+        "evidence-incentive",
+        "evidence-incentive-policy"
+      ],
+      "kind": "incentive",
+      "programItem": "FY27 workshop incentive",
+      "assessment": "evidence-gap",
+      "authorityOwnerRef": "principal-finance-owner",
+      "contentDigest": "sha256:cf71ec7f0b534346320748f7346da4f52c6065f21f59182c1f88a0670e6e21bd"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "dependency-speaker",
+      "name": "Partner speaker confirmation",
+      "evidenceRefs": [
+        "evidence-dependency"
+      ],
+      "ownerRef": "principal-partner-lead",
+      "dueAt": "2026-09-30T23:59:59Z",
+      "state": "open",
+      "blocksRefs": [
+        "commitment-workshops"
+      ],
+      "contentDigest": "sha256:5f590418c223a2554d5f4a969c57bbb010e7dc2023c76ad7bc659c1b51213613"
+    }
+  ],
+  "risks": [
+    {
+      "id": "risk-incentive-gap",
+      "name": "Incentive proof remains incomplete",
+      "evidenceRefs": [
+        "evidence-risk"
+      ],
+      "ownerRef": "principal-risk-owner",
+      "likelihood": "medium",
+      "impact": "high",
+      "response": "Finance owner reviews the missing proof before any eligibility or payment decision.",
+      "state": "open",
+      "acceptanceState": "not-accepted",
+      "contentDigest": "sha256:823187942e9f2892927533d78fab0ac37058ef3b49d0536c10eda335247698e3"
+    }
+  ],
+  "actions": [
+    {
+      "id": "action-confirm-speaker",
+      "name": "Confirm partner workshop speaker",
+      "evidenceRefs": [
+        "evidence-action-one"
+      ],
+      "ownerRef": "principal-partner-lead",
+      "recordedAt": "2026-08-15T18:00:00Z",
+      "dueAt": "2026-09-30T23:59:59Z",
+      "state": "open",
+      "previousActionRef": null,
+      "contentDigest": "sha256:af55e25ceeab1d1f738e7e2cf6238d0bb71d8229690fe0d0dab94acb14d5fa87"
+    },
+    {
+      "id": "action-submit-proof",
+      "name": "Provide incentive eligibility proof",
+      "evidenceRefs": [
+        "evidence-action-two"
+      ],
+      "ownerRef": "principal-business-manager",
+      "recordedAt": "2026-09-10T19:00:00Z",
+      "dueAt": "2026-10-15T23:59:59Z",
+      "state": "blocked",
+      "previousActionRef": "action-confirm-speaker",
+      "contentDigest": "sha256:1965153b4f372666a763fd3617bba643fc422d3d4745f36efa7bd00757ecacea"
+    }
+  ],
+  "qbrDecisions": [
+    {
+      "id": "decision-prioritize-ai-play",
+      "name": "Prioritize the AI modernization play",
+      "evidenceRefs": [
+        "evidence-decision"
+      ],
+      "decisionMakerRef": "principal-partner-lead",
+      "recordedAt": "2026-08-15T18:10:00Z",
+      "state": "recorded",
+      "rationale": "Signed QBR minutes record the partner lead's decision.",
+      "supersedesDecisionRef": null,
+      "contentDigest": "sha256:914c1944fbc3e0d032af3ed5753d6d7f86a9305d5a6e16f44f25f141c3bb913c"
+    }
+  ],
+  "revisionDelta": [
+    {
+      "id": "delta-add-ai-play",
+      "name": "AI modernization play added in revision 4",
+      "evidenceRefs": [
+        "evidence-play"
+      ],
+      "domain": "solution-plays",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "play-ai-modernization"
+      ],
+      "predecessorRecordRefs": [],
+      "predecessorEvidenceRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "play-ai-modernization",
+          "contentDigest": "sha256:4fe775b9f0abe257384624794da77e82333ba44309694bd31928f77a4d1de8d9"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "contentDigest": "sha256:384f06edb7f61dca021110a7a1868d60295889f52215ef1877f0975a41e4f5d1"
+    },
+    {
+      "id": "delta-capability-unchanged",
+      "name": "Data and AI capability remains evidenced",
+      "evidenceRefs": [
+        "evidence-capability"
+      ],
+      "domain": "capabilities",
+      "change": "unchanged",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "capability-data-ai"
+      ],
+      "predecessorRecordRefs": [
+        "capability-data-ai"
+      ],
+      "predecessorEvidenceRefs": [
+        "evidence-capability-prior"
+      ],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "capability-data-ai",
+          "contentDigest": "sha256:d2bc027720bf1e9390428d3cf65c7f384ad199763e4015677086248db9cd13b1"
+        }
+      ],
+      "predecessorRecordFingerprints": [
+        {
+          "recordRef": "capability-data-ai",
+          "contentDigest": "sha256:d2bc027720bf1e9390428d3cf65c7f384ad199763e4015677086248db9cd13b1"
+        }
+      ],
+      "contentDigest": "sha256:62b5cb992bcbccde46edd496c3d81c181e7d2685125fbd9ef70f75862d5fd94e"
+    },
+    {
+      "id": "delta-designations-added",
+      "name": "designations added in revision 4",
+      "evidenceRefs": [
+        "evidence-designation"
+      ],
+      "domain": "designations",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "designation-solutions-partner"
+      ],
+      "predecessorRecordRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "designation-solutions-partner",
+          "contentDigest": "sha256:22ec9e74db3439838695cf7cef310bb9f7e171909153600d2c7bb403b451a817"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "predecessorEvidenceRefs": [],
+      "contentDigest": "sha256:28a864079619455f8c6d866c8e65ef412ac1b9f9fd906d779d6b50a0aadac00b"
+    },
+    {
+      "id": "delta-opportunities-added",
+      "name": "opportunities added in revision 4",
+      "evidenceRefs": [
+        "evidence-opportunity"
+      ],
+      "domain": "opportunities",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "opportunity-cosell-4172"
+      ],
+      "predecessorRecordRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "opportunity-cosell-4172",
+          "contentDigest": "sha256:150d93d084626de678a0c08b8c9d04d78074419d9e266be85ab17445b4580d12"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "predecessorEvidenceRefs": [],
+      "contentDigest": "sha256:23e7091d4621284d1d96f17ac590221bf69d9d4f807e4b560e2d2e463fa2a588"
+    },
+    {
+      "id": "delta-commitments-added",
+      "name": "commitments added in revision 4",
+      "evidenceRefs": [
+        "evidence-commitment",
+        "evidence-commitment-vendor"
+      ],
+      "domain": "commitments",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "commitment-workshops"
+      ],
+      "predecessorRecordRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "commitment-workshops",
+          "contentDigest": "sha256:8e1a30399e663523be05a5699027ffb82fbde0c93354447c1e2a4e538a132451"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "predecessorEvidenceRefs": [],
+      "contentDigest": "sha256:02db2172a5e718c3db3a6ae2a0b52e08c8f2e7a67ea69dcc57f7b8354656a249"
+    },
+    {
+      "id": "delta-benefits-added",
+      "name": "benefits added in revision 4",
+      "evidenceRefs": [
+        "evidence-benefit"
+      ],
+      "domain": "benefits",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "benefit-advisory-hours"
+      ],
+      "predecessorRecordRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "benefit-advisory-hours",
+          "contentDigest": "sha256:dd03544f538f49de47b1568aab616276073c2b0812d4feee17d75d6d60e11a00"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "predecessorEvidenceRefs": [],
+      "contentDigest": "sha256:02d8188c23699f35b46674b2edb80b908a0c729670dd178d8808cdc889196e86"
+    },
+    {
+      "id": "delta-incentives-added",
+      "name": "incentives added in revision 4",
+      "evidenceRefs": [
+        "evidence-incentive",
+        "evidence-incentive-policy"
+      ],
+      "domain": "incentives",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "incentive-workshop-evidence"
+      ],
+      "predecessorRecordRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "incentive-workshop-evidence",
+          "contentDigest": "sha256:cf71ec7f0b534346320748f7346da4f52c6065f21f59182c1f88a0670e6e21bd"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "predecessorEvidenceRefs": [],
+      "contentDigest": "sha256:be8fd6abcbc5939a39a11ba124cd43ea5b420aa347e6a269cd063f6c38bc894a"
+    },
+    {
+      "id": "delta-dependencies-added",
+      "name": "dependencies added in revision 4",
+      "evidenceRefs": [
+        "evidence-dependency"
+      ],
+      "domain": "dependencies",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "dependency-speaker"
+      ],
+      "predecessorRecordRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "dependency-speaker",
+          "contentDigest": "sha256:5f590418c223a2554d5f4a969c57bbb010e7dc2023c76ad7bc659c1b51213613"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "predecessorEvidenceRefs": [],
+      "contentDigest": "sha256:8b18cebd74aea4a2ad84da6e69746cc874ace21f17e36eaa665ca0278abb8579"
+    },
+    {
+      "id": "delta-risks-added",
+      "name": "risks added in revision 4",
+      "evidenceRefs": [
+        "evidence-risk"
+      ],
+      "domain": "risks",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "risk-incentive-gap"
+      ],
+      "predecessorRecordRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "risk-incentive-gap",
+          "contentDigest": "sha256:823187942e9f2892927533d78fab0ac37058ef3b49d0536c10eda335247698e3"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "predecessorEvidenceRefs": [],
+      "contentDigest": "sha256:3f6c7c86f76b2879a6dd9b441cb3589afd619285b700d103f00d9fe40c18da94"
+    },
+    {
+      "id": "delta-actions-added",
+      "name": "actions added in revision 4",
+      "evidenceRefs": [
+        "evidence-action-one",
+        "evidence-action-two"
+      ],
+      "domain": "actions",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "action-confirm-speaker",
+        "action-submit-proof"
+      ],
+      "predecessorRecordRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "action-confirm-speaker",
+          "contentDigest": "sha256:af55e25ceeab1d1f738e7e2cf6238d0bb71d8229690fe0d0dab94acb14d5fa87"
+        },
+        {
+          "recordRef": "action-submit-proof",
+          "contentDigest": "sha256:1965153b4f372666a763fd3617bba643fc422d3d4745f36efa7bd00757ecacea"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "predecessorEvidenceRefs": [],
+      "contentDigest": "sha256:c36b196e905afe6433a71cb94edc393f42f8746235deabbba545a31499b502af"
+    },
+    {
+      "id": "delta-qbr-decisions-added",
+      "name": "qbr-decisions added in revision 4",
+      "evidenceRefs": [
+        "evidence-decision"
+      ],
+      "domain": "qbr-decisions",
+      "change": "added",
+      "ownerRef": "principal-business-manager",
+      "currentRecordRefs": [
+        "decision-prioritize-ai-play"
+      ],
+      "predecessorRecordRefs": [],
+      "currentRecordFingerprints": [
+        {
+          "recordRef": "decision-prioritize-ai-play",
+          "contentDigest": "sha256:914c1944fbc3e0d032af3ed5753d6d7f86a9305d5a6e16f44f25f141c3bb913c"
+        }
+      ],
+      "predecessorRecordFingerprints": [],
+      "predecessorEvidenceRefs": [],
+      "contentDigest": "sha256:9cb72b9ad6f64cee4947f39cce1fff78fd8a9ddfca70197caef3bdaab64940f2"
+    }
+  ],
+  "coverage": [
+    {
+      "id": "coverage-capabilities",
+      "domain": "capabilities",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "capability-data-ai"
+      ],
+      "ownerRef": "principal-program-owner",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:0d390be74f0b4b35b476a54abaef48fa19e229e4e246b55e39e1cabb11a4d2c8"
+    },
+    {
+      "id": "coverage-designations",
+      "domain": "designations",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "designation-solutions-partner"
+      ],
+      "ownerRef": "principal-program-owner",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:b1281d6833ac96c3fff2949943c6442d30e3626f59edd74a90edb780b054271e"
+    },
+    {
+      "id": "coverage-solution-plays",
+      "domain": "solution-plays",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "play-ai-modernization"
+      ],
+      "ownerRef": "principal-business-manager",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:f8a2b2e58c4e70518f98de542a4bea125bd3fc7dc05f02ca6adda5c95206802d"
+    },
+    {
+      "id": "coverage-opportunities",
+      "domain": "opportunities",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "opportunity-cosell-4172"
+      ],
+      "ownerRef": "principal-sales-owner",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:784d64560381d6998611cbef742837ad644ce5bc42da2e980d02c27a261aaefd"
+    },
+    {
+      "id": "coverage-commitments",
+      "domain": "commitments",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "commitment-workshops"
+      ],
+      "ownerRef": "principal-partner-lead",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:8db2bb5081786afdab4e60a7674ad97d23a084e7523220446a4e8196155d5227"
+    },
+    {
+      "id": "coverage-benefits",
+      "domain": "benefits",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "benefit-advisory-hours"
+      ],
+      "ownerRef": "principal-program-owner",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:cfcd088c04cce6b0011e74bffde0f08306d960ad6dcdd03109dda4f8b5a8c0ad"
+    },
+    {
+      "id": "coverage-incentives",
+      "domain": "incentives",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "gap",
+      "recordRefs": [
+        "incentive-workshop-evidence"
+      ],
+      "ownerRef": "principal-finance-owner",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:e6fd49e35ff552958e7d4eddf56585f1f8870e14a98f0ee8e663f703d388f97f"
+    },
+    {
+      "id": "coverage-dependencies",
+      "domain": "dependencies",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "dependency-speaker"
+      ],
+      "ownerRef": "principal-partner-lead",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:1a6eb252c445580a7295977f82f2d427fbb4240f017ba5383b89f0e2a724fef2"
+    },
+    {
+      "id": "coverage-risks",
+      "domain": "risks",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "risk-incentive-gap"
+      ],
+      "ownerRef": "principal-risk-owner",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:c94232e9db8933405dfa2fa7e8e900c14f811d4f4ba1b615727d2e3237e3b49a"
+    },
+    {
+      "id": "coverage-actions",
+      "domain": "actions",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "action-confirm-speaker",
+        "action-submit-proof"
+      ],
+      "ownerRef": "principal-business-manager",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:035005379edec71adb56607982d242c596bd1beba49cd2bb487192a8e900ce78"
+    },
+    {
+      "id": "coverage-qbr-decisions",
+      "domain": "qbr-decisions",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "decision-prioritize-ai-play"
+      ],
+      "ownerRef": "principal-partner-lead",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:86f25cb0680cf03ee65e403ef27f064339aa4b9fcbc93e4d0f74c8de0f2a38ec"
+    },
+    {
+      "id": "coverage-revision-delta",
+      "domain": "revision-delta",
+      "segmentRefs": [
+        "fy27-q1",
+        "fy27-q2"
+      ],
+      "state": "covered",
+      "recordRefs": [
+        "delta-add-ai-play",
+        "delta-capability-unchanged",
+        "delta-designations-added",
+        "delta-opportunities-added",
+        "delta-commitments-added",
+        "delta-benefits-added",
+        "delta-incentives-added",
+        "delta-dependencies-added",
+        "delta-risks-added",
+        "delta-actions-added",
+        "delta-qbr-decisions-added"
+      ],
+      "ownerRef": "principal-business-manager",
+      "applicabilityEvidenceRefs": [],
+      "contentDigest": "sha256:94d83d80508ceae7077e0b8b9d61ee281ca589b93268794f6e71a15d623caca0"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-incentive-proof",
+      "domain": "incentives",
+      "description": "The supplied export does not include the required delivery proof.",
+      "ownerRef": "principal-finance-owner",
+      "dueAt": "2026-10-15T23:59:59Z",
+      "escalationPathRef": "escalation-incentive-proof"
+    }
+  ],
+  "evidenceGovernance": {
+    "freshnessRules": [
+      {
+        "id": "freshness-capability-current",
+        "domain": "capabilities",
+        "subjectType": "capability",
+        "scope": "current-revision",
+        "maxAgeDays": 30,
+        "ownerRef": "principal-program-owner"
+      },
+      {
+        "id": "freshness-capability-prior",
+        "domain": "capabilities",
+        "subjectType": "capability",
+        "scope": "predecessor-revision",
+        "maxAgeDays": 365,
+        "ownerRef": "principal-program-owner"
+      },
+      {
+        "id": "freshness-designation",
+        "domain": "designations",
+        "subjectType": "designation",
+        "scope": "current-revision",
+        "maxAgeDays": 30,
+        "ownerRef": "principal-program-owner"
+      },
+      {
+        "id": "freshness-solution-play",
+        "domain": "solution-plays",
+        "subjectType": "solution-play",
+        "scope": "current-revision",
+        "maxAgeDays": 60,
+        "ownerRef": "principal-business-manager"
+      },
+      {
+        "id": "freshness-opportunity",
+        "domain": "opportunities",
+        "subjectType": "opportunity-reference",
+        "scope": "current-revision",
+        "maxAgeDays": 14,
+        "ownerRef": "principal-sales-owner"
+      },
+      {
+        "id": "freshness-commitment",
+        "domain": "commitments",
+        "subjectType": "commitment",
+        "scope": "current-revision",
+        "maxAgeDays": 60,
+        "ownerRef": "principal-partner-lead"
+      },
+      {
+        "id": "freshness-commitment-vendor",
+        "domain": "commitments",
+        "subjectType": "commitment",
+        "scope": "current-revision",
+        "maxAgeDays": 60,
+        "ownerRef": "principal-business-manager"
+      },
+      {
+        "id": "freshness-benefit",
+        "domain": "benefits",
+        "subjectType": "benefit",
+        "scope": "current-revision",
+        "maxAgeDays": 30,
+        "ownerRef": "principal-program-owner"
+      },
+      {
+        "id": "freshness-incentive",
+        "domain": "incentives",
+        "subjectType": "incentive",
+        "scope": "current-revision",
+        "maxAgeDays": 30,
+        "ownerRef": "principal-finance-owner"
+      },
+      {
+        "id": "freshness-dependency",
+        "domain": "dependencies",
+        "subjectType": "dependency",
+        "scope": "current-revision",
+        "maxAgeDays": 60,
+        "ownerRef": "principal-partner-lead"
+      },
+      {
+        "id": "freshness-risk",
+        "domain": "risks",
+        "subjectType": "risk",
+        "scope": "current-revision",
+        "maxAgeDays": 60,
+        "ownerRef": "principal-risk-owner"
+      },
+      {
+        "id": "freshness-action",
+        "domain": "actions",
+        "subjectType": "action",
+        "scope": "current-revision",
+        "maxAgeDays": 60,
+        "ownerRef": "principal-business-manager"
+      },
+      {
+        "id": "freshness-qbr-decision",
+        "domain": "qbr-decisions",
+        "subjectType": "qbr-decision",
+        "scope": "current-revision",
+        "maxAgeDays": 60,
+        "ownerRef": "principal-partner-lead"
+      }
+    ],
+    "confidentialityScopes": [
+      {
+        "id": "scope-partner-plan",
+        "classification": "confidential",
+        "audienceRefs": [
+          "principal-partner-lead",
+          "principal-business-manager",
+          "principal-program-owner",
+          "principal-sales-owner",
+          "principal-finance-owner",
+          "principal-legal-owner",
+          "principal-risk-owner"
+        ],
+        "ownerRef": "principal-business-manager"
+      }
+    ],
+    "conflicts": [
+      {
+        "id": "conflict-incentive-proof",
+        "domain": "incentives",
+        "scope": "current-revision",
+        "evidenceRefs": [
+          "evidence-incentive",
+          "evidence-incentive-policy"
+        ],
+        "state": "unresolved",
+        "disposition": "Finance owner must reconcile whether the delivery proof satisfies the current policy.",
+        "dispositionOwnerRef": "principal-finance-owner",
+        "dispositionEvidenceRefs": []
+      }
+    ],
+    "escalationPaths": [
+      {
+        "id": "escalation-incentive-proof",
+        "domain": "incentives",
+        "ownerRef": "principal-finance-owner",
+        "escalationOwnerRef": "principal-business-manager",
+        "state": "unresolved",
+        "trigger": "Eligibility proof remains unresolved at the action due date.",
+        "route": "Place the evidence conflict and owner question on the next partner-plan review agenda.",
+        "resolutionEvidenceRefs": [],
+        "resolvedAt": null
+      }
+    ]
+  },
+  "authorityClaims": {
+    "partnerEnrollment": false,
+    "capabilityAward": false,
+    "designationAward": false,
+    "benefitEligibility": false,
+    "incentiveApproval": false,
+    "incentivePayment": false,
+    "revenueCommitment": false,
+    "opportunityMutation": false,
+    "customerContact": false,
+    "agreementModification": false,
+    "riskAcceptance": false,
+    "qbrDecision": false
+  },
+  "handoff": {
+    "state": "blocked",
+    "accountableOwnerRef": "principal-business-manager",
+    "blockedAuthorityActions": [
+      {
+        "category": "partner-enrollment",
+        "ownerRef": "principal-program-owner",
+        "reason": "Only the program owner may perform enrollment."
+      },
+      {
+        "category": "capability-award",
+        "ownerRef": "principal-program-owner",
+        "reason": "Capability evidence does not award a capability."
+      },
+      {
+        "category": "designation-award",
+        "ownerRef": "principal-program-owner",
+        "reason": "The record observes evidence and does not award designation."
+      },
+      {
+        "category": "benefit-eligibility",
+        "ownerRef": "principal-program-owner",
+        "reason": "Benefit evidence does not determine official eligibility."
+      },
+      {
+        "category": "incentive-approval",
+        "ownerRef": "principal-finance-owner",
+        "reason": "Eligibility evidence is incomplete and approval is reserved."
+      },
+      {
+        "category": "incentive-payment",
+        "ownerRef": "principal-finance-owner",
+        "reason": "No payment authority is granted."
+      },
+      {
+        "category": "revenue-commitment",
+        "ownerRef": "principal-sales-owner",
+        "reason": "A JBP target is not a revenue commitment."
+      },
+      {
+        "category": "opportunity-mutation",
+        "ownerRef": "principal-sales-owner",
+        "reason": "The opportunity is reference-only."
+      },
+      {
+        "category": "customer-contact",
+        "ownerRef": "principal-sales-owner",
+        "reason": "No customer communication authority is granted."
+      },
+      {
+        "category": "agreement-modification",
+        "ownerRef": "principal-legal-owner",
+        "reason": "The plan does not modify an agreement."
+      },
+      {
+        "category": "risk-acceptance",
+        "ownerRef": "principal-risk-owner",
+        "reason": "The risk remains not accepted."
+      },
+      {
+        "category": "qbr-decision",
+        "ownerRef": "principal-partner-lead",
+        "reason": "The record preserves a human-owned decision and cannot make one."
+      }
+    ],
+    "output": "outputs/partner-business-plan-review.md",
+    "published": false
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "partner-business-manager",
+  "scenario": "Reconcile Contoso Cloud Services' FY27 joint business plan JBP-CCS-2027 revision 4 for the Q1 through Q2 review using the supplied partner-center exports, co-sell references, commitment evidence, action log, risk register, and QBR minutes. Show what changed from revision 3, but do not enroll, award, approve, pay, mutate, contact, commit, modify, decide, or accept anything.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile Contoso Cloud Services' FY27 joint business plan JBP-CCS-2027 revision 4 for the Q1 through Q2 review using the supplied partner-center exports, co-sell references, commitment evidence, action log, risk register, and QBR minutes. Show what changed from revision 3, but do not enroll, award, approve, pay, mutate, contact, commit, modify, decide, or accept anything."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/partner-business-plan-review.html with an equivalent outputs/partner-business-plan-review.md fallback, attributable evidence, coverage gaps, blocked authority actions, and accountable owners."
+    }
+  ],
+  "report": {
+    "title": "Partner business manager session handoff",
+    "summary": "A partner-plan-revision-bound X4 review package with attributable evidence, exact period coverage, revision deltas, chronological actions and decisions, owned gaps and risks, and every reserved-authority action blocked for its authorized owner.",
+    "output": "outputs/partner-business-plan-review.html",
+    "items": [
+      {
+        "title": "Partner, plan, revision, predecessor, period, owner, and decision-right identity block",
+        "summary": "The record proves one exact partner, plan, revision, predecessor, and period and rejects mixed-identity or mixed-revision evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Evidence-attributed capability, designation, solution-play, opportunity-reference, commitment, benefit, and incentive reconciliation",
+        "summary": "Every material capability, designation, solution play, opportunity reference, commitment, benefit, and incentive observation has attributable evidence or an explicit gap",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Chronological dependency, risk, owner-action, and QBR-decision ledgers",
+        "summary": "Every action and decision is chronologically ordered and tied to an accountable owner, decision right, source, and status",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Coverage and conflict accounting with revision delta and blocked-authority register",
+        "summary": "Every declared period segment and required plan domain is covered, explicitly not applicable with authority, or blocked with an owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "X4 joint-business-plan review visual with equivalent Markdown handoff",
+        "summary": "No output claims or exercises partner enrollment, designation, incentive, revenue, opportunity, customer-contact, agreement, QBR-decision, or risk-acceptance authority",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

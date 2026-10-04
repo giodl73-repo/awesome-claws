@@ -1,0 +1,688 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/partner-business-plan.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "identity",
+    "predecessorManifest",
+    "principals",
+    "authorityRosterEvidence",
+    "evidence",
+    "capabilities",
+    "designations",
+    "solutionPlays",
+    "opportunities",
+    "commitments",
+    "eligibilityEvidence",
+    "dependencies",
+    "risks",
+    "actions",
+    "qbrDecisions",
+    "revisionDelta",
+    "coverage",
+    "gaps",
+    "evidenceGovernance",
+    "authorityClaims",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.partnerBusinessPlan.v1" },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["partnerId", "partnerName", "planId", "planRevision", "predecessorRevision", "asOf", "period"],
+      "properties": {
+        "partnerId": { "$ref": "#/$defs/id" },
+        "partnerName": { "$ref": "#/$defs/text" },
+        "planId": { "$ref": "#/$defs/id" },
+        "planRevision": { "type": "integer", "minimum": 1 },
+        "predecessorRevision": { "type": "integer", "minimum": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "period": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end", "segments"],
+          "properties": {
+            "start": { "type": "string", "format": "date" },
+            "end": { "type": "string", "format": "date" },
+            "segments": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["id", "start", "end"],
+                "properties": {
+                  "id": { "$ref": "#/$defs/id" },
+                  "start": { "type": "string", "format": "date" },
+                  "end": { "type": "string", "format": "date" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "predecessorManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "contentDigest", "signingKeyId", "signature", "partnerId", "planId", "planRevision", "sourceRef", "sourceVersion", "observedAt", "issuedByPrincipalRef", "confidentialityScopeRef", "records"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "contentDigest": { "$ref": "#/$defs/digest" },
+        "signingKeyId": { "$ref": "#/$defs/id" },
+        "signature": { "$ref": "#/$defs/signature" },
+        "partnerId": { "$ref": "#/$defs/id" },
+        "planId": { "$ref": "#/$defs/id" },
+        "planRevision": { "type": "integer", "minimum": 1 },
+        "sourceRef": { "$ref": "#/$defs/controlledRef" },
+        "sourceVersion": { "$ref": "#/$defs/text" },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "issuedByPrincipalRef": { "$ref": "#/$defs/id" },
+        "confidentialityScopeRef": { "$ref": "#/$defs/id" },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["domain", "recordRef", "contentDigest", "evidenceRefs", "evidenceFingerprints"],
+            "properties": {
+              "domain": {
+                "enum": ["capabilities", "designations", "solution-plays", "opportunities", "commitments", "benefits", "incentives", "dependencies", "risks", "actions", "qbr-decisions"]
+              },
+              "recordRef": { "$ref": "#/$defs/id" },
+              "contentDigest": { "$ref": "#/$defs/digest" },
+              "evidenceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+              "evidenceFingerprints": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["evidenceRef", "contentDigest"],
+                  "properties": {
+                    "evidenceRef": { "$ref": "#/$defs/id" },
+                    "contentDigest": { "$ref": "#/$defs/digest" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "kind", "organization", "decisionRights"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/text" },
+          "kind": { "enum": ["human", "team"] },
+          "organization": { "enum": ["partner", "vendor"] },
+          "decisionRights": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "reconcile-plan",
+                "own-action",
+                "capability-status",
+                "solution-play",
+                "escalate",
+                "authority-governance",
+                "qbr-decision",
+                "partner-commitment",
+                "vendor-commitment",
+                "enrollment",
+                "designation",
+                "benefit-eligibility",
+                "incentive-approval",
+                "incentive-payment",
+                "revenue-commitment",
+                "opportunity-mutation",
+                "customer-contact",
+                "agreement-modification",
+                "risk-acceptance"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "authorityRosterEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "contentDigest", "signingKeyId", "signature", "sourceRef", "sourceVersion", "observedAt", "maxAgeDays", "issuedByPrincipalRef", "confidentialityScopeRef", "freshnessRuleDigests", "principalAuthorities"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "contentDigest": { "$ref": "#/$defs/digest" },
+        "signingKeyId": { "$ref": "#/$defs/id" },
+        "signature": { "$ref": "#/$defs/signature" },
+        "sourceRef": { "$ref": "#/$defs/controlledRef" },
+        "sourceVersion": { "$ref": "#/$defs/text" },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "maxAgeDays": { "type": "integer", "minimum": 0, "maximum": 365 },
+        "issuedByPrincipalRef": { "$ref": "#/$defs/id" },
+        "confidentialityScopeRef": { "$ref": "#/$defs/id" },
+        "freshnessRuleDigests": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["freshnessRuleRef", "contentDigest"],
+            "properties": {
+              "freshnessRuleRef": { "$ref": "#/$defs/id" },
+              "contentDigest": { "$ref": "#/$defs/digest" }
+            }
+          }
+        },
+        "principalAuthorities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["principalRef", "principalName", "organization", "decisionRights"],
+            "properties": {
+              "principalRef": { "$ref": "#/$defs/id" },
+              "principalName": { "$ref": "#/$defs/text" },
+              "organization": { "enum": ["partner", "vendor"] },
+              "decisionRights": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "reconcile-plan",
+                    "own-action",
+                    "capability-status",
+                    "solution-play",
+                    "escalate",
+                    "authority-governance",
+                    "qbr-decision",
+                    "partner-commitment",
+                    "vendor-commitment",
+                    "enrollment",
+                    "designation",
+                    "benefit-eligibility",
+                    "incentive-approval",
+                    "incentive-payment",
+                    "revenue-commitment",
+                    "opportunity-mutation",
+                    "customer-contact",
+                    "agreement-modification",
+                    "risk-acceptance"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "scope", "partnerId", "planId", "planRevision", "subjectType", "subjectRef", "subjectContentDigest", "segmentRefs", "sourceRef", "sourceVersion", "observedAt", "issuedByPrincipalRef", "freshnessRuleRef", "confidentialityScopeRef", "conflictRefs", "dispositionConflictRefs"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "scope": { "enum": ["current-revision", "predecessor-revision"] },
+          "partnerId": { "$ref": "#/$defs/id" },
+          "planId": { "$ref": "#/$defs/id" },
+          "planRevision": { "type": "integer", "minimum": 1 },
+          "subjectType": {
+            "enum": ["capability", "designation", "solution-play", "opportunity-reference", "commitment", "benefit", "incentive", "dependency", "risk", "action", "qbr-decision", "domain-applicability"]
+          },
+          "subjectRef": { "$ref": "#/$defs/id" },
+          "subjectContentDigest": { "$ref": "#/$defs/digest" },
+          "segmentRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+          "assertion": { "enum": ["observed", "approval-granted", "approval-denied", "decision-recorded"] },
+          "sourceRef": { "$ref": "#/$defs/controlledRef" },
+          "sourceVersion": { "$ref": "#/$defs/text" },
+          "observedAt": { "type": "string", "format": "date-time" },
+          "issuedByPrincipalRef": { "$ref": "#/$defs/id" },
+          "freshnessRuleRef": { "$ref": "#/$defs/id" },
+          "confidentialityScopeRef": { "$ref": "#/$defs/id" },
+          "conflictRefs": { "$ref": "#/$defs/idList" },
+          "dispositionConflictRefs": { "$ref": "#/$defs/idList" },
+          "resolutionEscalationRefs": { "$ref": "#/$defs/idList" }
+        }
+      }
+    },
+    "capabilities": { "$ref": "#/$defs/statusRecords" },
+    "designations": { "$ref": "#/$defs/statusRecords" },
+    "solutionPlays": { "$ref": "#/$defs/statusRecords" },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "allOf": [
+          { "$ref": "#/$defs/baseRecord" },
+          {
+            "type": "object",
+            "required": ["reference", "attribution", "mutationState", "authorityOwnerRef"],
+            "properties": {
+              "reference": { "$ref": "#/$defs/text" },
+              "attribution": { "enum": ["partner-led", "vendor-led", "co-sell"] },
+              "mutationState": { "const": "reference-only" },
+              "authorityOwnerRef": { "$ref": "#/$defs/id" }
+            }
+          }
+        ]
+      }
+    },
+    "commitments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "allOf": [
+          { "$ref": "#/$defs/baseRecord" },
+          {
+            "type": "object",
+            "required": ["committingParty", "measure", "target", "state", "authorityOwnerRefs", "approvalEvidenceRefs"],
+            "properties": {
+              "committingParty": { "enum": ["partner", "vendor", "joint"] },
+              "measure": { "$ref": "#/$defs/text" },
+              "target": { "$ref": "#/$defs/text" },
+              "state": { "enum": ["recorded", "at-risk", "blocked", "superseded"] },
+              "authorityOwnerRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+              "approvalEvidenceRefs": { "$ref": "#/$defs/nonEmptyIdList" }
+            }
+          }
+        ]
+      }
+    },
+    "eligibilityEvidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "allOf": [
+          { "$ref": "#/$defs/baseRecord" },
+          {
+            "type": "object",
+            "required": ["kind", "programItem", "assessment", "authorityOwnerRef"],
+            "properties": {
+              "kind": { "enum": ["benefit", "incentive"] },
+              "programItem": { "$ref": "#/$defs/text" },
+              "assessment": { "enum": ["evidence-present", "evidence-gap"] },
+              "authorityOwnerRef": { "$ref": "#/$defs/id" }
+            }
+          }
+        ]
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "allOf": [
+          { "$ref": "#/$defs/baseRecord" },
+          {
+            "type": "object",
+            "required": ["ownerRef", "dueAt", "state", "blocksRefs"],
+            "properties": {
+              "ownerRef": { "$ref": "#/$defs/id" },
+              "dueAt": { "type": "string", "format": "date-time" },
+              "state": { "enum": ["open", "blocked", "resolved"] },
+              "blocksRefs": { "$ref": "#/$defs/idList" }
+            }
+          }
+        ]
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "allOf": [
+          { "$ref": "#/$defs/baseRecord" },
+          {
+            "type": "object",
+            "required": ["ownerRef", "likelihood", "impact", "response", "state", "acceptanceState"],
+            "properties": {
+              "ownerRef": { "$ref": "#/$defs/id" },
+              "likelihood": { "enum": ["low", "medium", "high"] },
+              "impact": { "enum": ["low", "medium", "high"] },
+              "response": { "$ref": "#/$defs/text" },
+              "state": { "enum": ["open", "mitigated", "closed"] },
+              "acceptanceState": { "const": "not-accepted" }
+            }
+          }
+        ]
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "allOf": [
+          { "$ref": "#/$defs/baseRecord" },
+          {
+            "type": "object",
+            "required": ["ownerRef", "recordedAt", "dueAt", "state", "previousActionRef"],
+            "properties": {
+              "ownerRef": { "$ref": "#/$defs/id" },
+              "recordedAt": { "type": "string", "format": "date-time" },
+              "dueAt": { "type": "string", "format": "date-time" },
+              "state": { "enum": ["open", "blocked", "done", "superseded"] },
+              "previousActionRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+            }
+          }
+        ]
+      }
+    },
+    "qbrDecisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "allOf": [
+          { "$ref": "#/$defs/baseRecord" },
+          {
+            "type": "object",
+            "required": ["decisionMakerRef", "recordedAt", "state", "rationale", "supersedesDecisionRef"],
+            "properties": {
+              "decisionMakerRef": { "$ref": "#/$defs/id" },
+              "recordedAt": { "type": "string", "format": "date-time" },
+              "state": { "enum": ["recorded", "proposed", "deferred", "superseded"] },
+              "rationale": { "$ref": "#/$defs/text" },
+              "supersedesDecisionRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+            }
+          }
+        ]
+      }
+    },
+    "revisionDelta": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "allOf": [
+          { "$ref": "#/$defs/deltaBaseRecord" },
+          {
+            "type": "object",
+            "required": ["domain", "change", "ownerRef", "currentRecordRefs", "predecessorRecordRefs", "currentRecordFingerprints", "predecessorRecordFingerprints", "predecessorEvidenceRefs"],
+            "properties": {
+              "domain": { "$ref": "#/$defs/deltaDomain" },
+              "change": { "enum": ["added", "changed", "removed", "unchanged"] },
+              "ownerRef": { "$ref": "#/$defs/id" },
+              "currentRecordRefs": { "$ref": "#/$defs/idList" },
+              "predecessorRecordRefs": { "$ref": "#/$defs/idList" },
+              "currentRecordFingerprints": { "$ref": "#/$defs/recordFingerprints" },
+              "predecessorRecordFingerprints": { "$ref": "#/$defs/recordFingerprints" },
+              "predecessorEvidenceRefs": { "$ref": "#/$defs/idList" }
+            }
+          }
+        ]
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "minItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "contentDigest", "domain", "segmentRefs", "state", "recordRefs", "ownerRef", "applicabilityEvidenceRefs"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "contentDigest": { "$ref": "#/$defs/digest" },
+          "domain": { "$ref": "#/$defs/domain" },
+          "segmentRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+          "state": { "enum": ["covered", "gap", "not-applicable-by-owner"] },
+          "recordRefs": { "$ref": "#/$defs/idList" },
+          "ownerRef": { "$ref": "#/$defs/id" },
+          "applicabilityEvidenceRefs": { "$ref": "#/$defs/idList" }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "domain", "description", "ownerRef", "dueAt", "escalationPathRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "domain": { "$ref": "#/$defs/domain" },
+          "description": { "$ref": "#/$defs/text" },
+          "ownerRef": { "$ref": "#/$defs/id" },
+          "dueAt": { "type": "string", "format": "date-time" },
+          "escalationPathRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "evidenceGovernance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["freshnessRules", "confidentialityScopes", "conflicts", "escalationPaths"],
+      "properties": {
+        "freshnessRules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "domain", "subjectType", "scope", "maxAgeDays", "ownerRef"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "domain": { "$ref": "#/$defs/domain" },
+              "subjectType": { "$ref": "#/$defs/evidenceSubjectType" },
+              "scope": { "enum": ["current-revision", "predecessor-revision"] },
+              "maxAgeDays": { "type": "integer", "minimum": 0 },
+              "ownerRef": { "$ref": "#/$defs/id" }
+            }
+          }
+        },
+        "confidentialityScopes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "classification", "audienceRefs", "ownerRef"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "classification": { "enum": ["private", "confidential", "highly-confidential"] },
+              "audienceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+              "ownerRef": { "$ref": "#/$defs/id" }
+            }
+          }
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "domain", "scope", "evidenceRefs", "state", "disposition", "dispositionOwnerRef", "dispositionEvidenceRefs"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "domain": { "$ref": "#/$defs/domain" },
+              "scope": { "enum": ["current-revision", "predecessor-revision"] },
+              "evidenceRefs": {
+                "type": "array",
+                "minItems": 2,
+                "uniqueItems": true,
+                "items": { "$ref": "#/$defs/id" }
+              },
+              "state": { "enum": ["unresolved", "resolved", "superseded"] },
+              "disposition": { "$ref": "#/$defs/text" },
+              "dispositionOwnerRef": { "$ref": "#/$defs/id" },
+              "dispositionEvidenceRefs": { "$ref": "#/$defs/idList" }
+            }
+          }
+        },
+        "escalationPaths": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "domain", "ownerRef", "escalationOwnerRef", "state", "trigger", "route", "resolutionEvidenceRefs", "resolvedAt"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "domain": { "$ref": "#/$defs/domain" },
+              "ownerRef": { "$ref": "#/$defs/id" },
+              "escalationOwnerRef": { "$ref": "#/$defs/id" },
+              "state": { "enum": ["unresolved", "resolved"] },
+              "trigger": { "$ref": "#/$defs/text" },
+              "route": { "$ref": "#/$defs/text" },
+              "resolutionEvidenceRefs": { "$ref": "#/$defs/idList" },
+              "resolvedAt": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] }
+            },
+            "allOf": [
+              {
+                "if": { "properties": { "state": { "const": "resolved" } } },
+                "then": {
+                  "properties": {
+                    "resolutionEvidenceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+                    "resolvedAt": { "type": "string", "format": "date-time" }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "resolutionEvidenceRefs": { "type": "array", "maxItems": 0 },
+                    "resolvedAt": { "type": "null" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "authorityClaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["partnerEnrollment", "capabilityAward", "designationAward", "benefitEligibility", "incentiveApproval", "incentivePayment", "revenueCommitment", "opportunityMutation", "customerContact", "agreementModification", "riskAcceptance", "qbrDecision"],
+      "properties": {
+        "partnerEnrollment": { "const": false },
+        "capabilityAward": { "const": false },
+        "designationAward": { "const": false },
+        "benefitEligibility": { "const": false },
+        "incentiveApproval": { "const": false },
+        "incentivePayment": { "const": false },
+        "revenueCommitment": { "const": false },
+        "opportunityMutation": { "const": false },
+        "customerContact": { "const": false },
+        "agreementModification": { "const": false },
+        "riskAcceptance": { "const": false },
+        "qbrDecision": { "const": false }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "accountableOwnerRef", "blockedAuthorityActions", "output", "published"],
+      "properties": {
+        "state": { "enum": ["ready-for-owner-review", "blocked"] },
+        "accountableOwnerRef": { "$ref": "#/$defs/id" },
+        "blockedAuthorityActions": {
+          "type": "array",
+          "minItems": 12,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["category", "ownerRef", "reason"],
+            "properties": {
+              "category": {
+                "enum": ["partner-enrollment", "capability-award", "designation-award", "benefit-eligibility", "incentive-approval", "incentive-payment", "revenue-commitment", "opportunity-mutation", "customer-contact", "agreement-modification", "risk-acceptance", "qbr-decision"]
+              },
+              "ownerRef": { "$ref": "#/$defs/id" },
+              "reason": { "$ref": "#/$defs/text" }
+            }
+          }
+        },
+        "output": { "const": "outputs/partner-business-plan-review.md" },
+        "published": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,79}$" },
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "signature": { "type": "string", "pattern": "^[A-Za-z0-9+/]{86}==$" },
+    "text": { "type": "string", "minLength": 1 },
+    "controlledRef": {
+      "type": "string",
+      "pattern": "^controlled://[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?/[A-Za-z0-9._~!$&'()*+,;=:@%/-]+$"
+    },
+    "idList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "nonEmptyIdList": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "domain": {
+      "enum": ["capabilities", "designations", "solution-plays", "opportunities", "commitments", "benefits", "incentives", "dependencies", "risks", "actions", "qbr-decisions", "revision-delta"]
+    },
+    "deltaDomain": {
+      "enum": ["capabilities", "designations", "solution-plays", "opportunities", "commitments", "benefits", "incentives", "dependencies", "risks", "actions", "qbr-decisions"]
+    },
+    "evidenceSubjectType": {
+      "enum": ["capability", "designation", "solution-play", "opportunity-reference", "commitment", "benefit", "incentive", "dependency", "risk", "action", "qbr-decision", "domain-applicability"]
+    },
+    "baseRecord": {
+      "type": "object",
+      "required": ["id", "name", "contentDigest", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/text" },
+        "contentDigest": { "$ref": "#/$defs/digest" },
+        "evidenceRefs": { "$ref": "#/$defs/nonEmptyIdList" }
+      }
+    },
+    "deltaBaseRecord": {
+      "type": "object",
+      "required": ["id", "name", "contentDigest", "evidenceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "$ref": "#/$defs/text" },
+        "contentDigest": { "$ref": "#/$defs/digest" },
+        "evidenceRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "recordFingerprints": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["recordRef", "contentDigest"],
+        "properties": {
+          "recordRef": { "$ref": "#/$defs/id" },
+          "contentDigest": { "$ref": "#/$defs/digest" }
+        }
+      }
+    },
+    "statusRecords": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "unevaluatedProperties": false,
+        "allOf": [
+          { "$ref": "#/$defs/baseRecord" },
+          {
+            "type": "object",
+            "required": ["observedState", "authorityOwnerRef"],
+            "properties": {
+              "observedState": { "enum": ["evidence-current", "evidence-stale", "evidence-gap"] },
+              "authorityOwnerRef": { "$ref": "#/$defs/id" }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

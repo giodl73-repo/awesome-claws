@@ -110,6 +110,11 @@
         "id": "professional-networking-followup",
         "overlap": "Both operate in professional contexts and protect sensitive career information from unauthorized external action.",
         "difference": "Professional Networking Follow-up manages contacts and messages; Certification Renewal Planner manages credentials, issuers, renewal requirements, CE evidence, and owner filing gates."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both preserve fixed time boundaries, required evidence, accountable named humans, blockers, and renewal-adjacent owner review.",
+        "difference": "Contract Obligation Tracker plans no credential renewal; it proves exact coverage of executed-agreement obligations and current evidence-bound owner confirmation, while Certification Renewal Planner organizes one person's credential validity and renewal work."
       }
     ]
   }

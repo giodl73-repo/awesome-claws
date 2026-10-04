@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/change-plan.schema.json",
+  "title": "Digest-bound change plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "decision", "execution"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.changePlan.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "digest", "generatedAt", "workspace", "baseState", "targets", "steps", "verification", "rollback"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "workspace": { "type": "string", "minLength": 1 },
+        "baseState": { "type": "string", "minLength": 1 },
+        "targets": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind", "target", "summary"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "kind": { "enum": ["inspect", "edit", "command"] },
+              "target": { "type": "string", "minLength": 1 },
+              "summary": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "verification": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "rollback": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "owner", "decidedAt", "planDigest"],
+      "properties": {
+        "state": { "enum": ["proposed", "approved-by-owner", "rejected-by-owner", "expired-by-drift"] },
+        "owner": { "type": "string", "minLength": 1 },
+        "decidedAt": { "type": "string", "format": "date-time" },
+        "planDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "planDigest", "stepResults", "verificationResults", "rollbackState"],
+      "properties": {
+        "state": { "enum": ["not-started", "blocked", "failed", "partial", "verified", "rolled-back"] },
+        "planDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "stepResults": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["stepRef", "state", "evidence"],
+            "properties": {
+              "stepRef": { "type": "string", "minLength": 1 },
+              "state": { "enum": ["not-run", "passed", "failed", "skipped"] },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "verificationResults": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "rollbackState": { "enum": ["not-needed", "available", "started", "completed", "failed"] }
+      }
+    }
+  }
+}

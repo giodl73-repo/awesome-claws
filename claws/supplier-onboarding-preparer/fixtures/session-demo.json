@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "supplier-onboarding-preparer",
+  "scenario": "Prepare the setup packet for selected supplier SUP-17. The intake and contract name different legal entities, the service now handles personal data, and the payment-verification reference has not been supplied. Use the provided onboarding rules; do not contact or activate anyone.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Prepare the setup packet for selected supplier SUP-17. The intake and contract name different legal entities, the service now handles personal data, and the payment-verification reference has not been supplied. Use the provided onboarding rules; do not contact or activate anyone."
+    },
+    {
+      "role": "agent",
+      "text": "The setup packet preserves Example Services LLC and Example Services Holdings LLC as conflicting records. The S2 invoice-routing scope includes employee names, so Privacy P1 for S1 is reopened."
+    },
+    {
+      "role": "user",
+      "text": "Give Procurement, Privacy and Finance precise requests. Keep payment details out of the packet."
+    },
+    {
+      "role": "agent",
+      "text": "I prepared the minimized setup fields, five-item checklist and three exact owner questions. Finance is asked only for a controlled receipt after entity resolution; no bank details are requested. This remains a private review draft, not activation or verified payment setup."
+    }
+  ],
+  "report": {
+    "title": "Supplier SUP-17 setup packet",
+    "summary": "Private packet R1 for BUY-US under ONB-3. Five checklist items are represented. Entity, Privacy and Finance prerequisites remain unresolved; no supplier activation or contact performed.",
+    "output": "outputs/supplier-onboarding-preparer-handoff.md",
+    "items": [
+      {
+        "title": "Setup fields",
+        "summary": "SUP-17 / BUY-US. Service: invoice routing including employee names, scope S2. Selection supplied by Business owner; not activation authority.",
+        "tags": [
+          "minimized",
+          "private draft"
+        ]
+      },
+      {
+        "title": "Entity conflict",
+        "summary": "Intake I2 names Example Services LLC; contract C1 names Example Services Holdings LLC. Procurement owner must supply authoritative corrected records, scoped resolution and any master-match observation. Neither name silently wins.",
+        "tags": [
+          "unresolved",
+          "Procurement"
+        ]
+      },
+      {
+        "title": "Privacy reopened",
+        "summary": "P1 covered Example Services LLC under S1 without personal data. Its date validity does not cover S2. Privacy owner must review the resolved entity and exact current scope.",
+        "tags": [
+          "scope changed",
+          "owner review"
+        ]
+      },
+      {
+        "title": "Finance evidence missing",
+        "summary": "Finance owner must provide only a controlled verification receipt reference bound to the resolved entity and S2 scope. No bank account, tax identifier or credential belongs in this packet.",
+        "tags": [
+          "missing receipt",
+          "no raw identifiers"
+        ]
+      },
+      {
+        "title": "Private handoff",
+        "summary": "Procurement owner delivers the actual packet, checklist and exact questions to Supplier activation owner. Selection, specialist judgment, payment verification and activation remain separate human decisions.",
+        "tags": [
+          "blocked",
+          "no external action"
+        ]
+      }
+    ]
+  }
+}

@@ -85,10 +85,64 @@
       "records-retention-disposition-coordinator",
       "vulnerability-disposition-coordinator",
       "infrastructure-drift-reconciliation-coordinator",
-      "access-entitlement-review-coordinator"
+      "access-entitlement-review-coordinator",
+      "financial-account-reconciliation-coordinator",
+      "contract-obligation-tracker",
+      "backup-restore-verification-coordinator",
+      "tls-certificate-rotation-verification-coordinator",
+      "repository-operations-manager",
+      "repository-compliance-program-manager",
+      "learning-plan-coordinator",
+      "civic-services-navigator",
+      "household-emergency-preparedness-coordinator",
+      "identity-theft-recovery-coordinator",
+      "property-insurance-claim-coordinator",
+      "rental-housing-coordinator",
+      "consumer-product-recall-coordinator",
+      "medication-regimen-coordinator",
+      "estate-administration-coordinator",
+      "home-purchase-transaction-coordinator",
+      "payroll-review-preparer",
+      "project-document-controller",
+      "supplier-onboarding-preparer",
+      "rfp-response-producer",
+      "invoice-draft-producer",
+      "job-estimate-producer"
     ]
   },
   "visualCases": [
+    {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/three-way-match-review.html",
+      "fallback": "outputs/procure-to-pay-three-way-match.md",
+      "output": "outputs/three-way-match-review.html"
+    },
+    {
+      "id": "problem-known-error-coordinator",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/problem-known-error-review.html",
+      "fallback": "outputs/problem-known-error-coordinator-handoff.md",
+      "output": "outputs/problem-known-error-review.html"
+    },
+    {
+      "id": "enterprise-license-entitlement-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/license-position-review.html",
+      "fallback": "outputs/license-position-review.md",
+      "output": "outputs/license-position-review.html"
+    },
+    {
+      "id": "workforce-planning-partner",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/workforce-plan-review.html",
+      "fallback": "outputs/workforce-plan-handoff.md",
+      "output": "outputs/workforce-plan-review.html"
+    },
     {
       "id": "travel-concierge",
       "target": 5,
@@ -178,6 +232,14 @@
       "output": "outputs/facilities-queue.html"
     },
     {
+      "id": "supplier-capacity-assurance-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/supplier-capacity-assurance.html",
+      "fallback": "outputs/supplier-capacity-review.md",
+      "output": "outputs/supplier-capacity-assurance.html"
+    },
+    {
       "id": "ux-research-synthesizer",
       "target": 4,
       "primary": "inline-widget",
@@ -258,6 +320,14 @@
       "output": "outputs/control-assessment.html"
     },
     {
+      "id": "commercial-deal-desk-coordinator",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/deal-readiness.html",
+      "fallback": "outputs/commercial-deal-desk.md",
+      "output": "outputs/deal-readiness.html"
+    },
+    {
       "id": "security-analyst",
       "target": 4,
       "primary": "inline-widget",
@@ -312,6 +382,70 @@
       "asset": "assets/research-brief.html",
       "fallback": "outputs/research-brief.md",
       "output": "outputs/research-brief.html"
+    },
+    {
+      "id": "solution-architecture-decision-advisor",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/architecture-decision-board.html",
+      "fallback": "outputs/architecture-decision.md",
+      "output": "outputs/architecture-decision-board.html"
+    },
+    {
+      "id": "partner-business-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/partner-business-plan-review.html",
+      "fallback": "outputs/partner-business-plan-review.md",
+      "output": "outputs/partner-business-plan-review.html"
+    },
+    {
+      "id": "business-continuity-program-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/business-continuity-program.html",
+      "fallback": "outputs/business-continuity-program-manager-handoff.md",
+      "output": "outputs/business-continuity-program.html"
+    },
+    {
+      "id": "learning-program-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/learning-program-review.html",
+      "fallback": "outputs/learning-program-release.md",
+      "output": "outputs/learning-program-review.html"
+    },
+    {
+      "id": "customer-success-program-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/customer-success-review.html",
+      "fallback": "outputs/customer-success-review.md",
+      "output": "outputs/customer-success-review.html"
+    },
+    {
+      "id": "benefits-realization-manager",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/benefits-realization-review.html",
+      "fallback": "outputs/benefits-realization-ledger.md",
+      "output": "outputs/benefits-realization-review.html"
+    },
+    {
+      "id": "security-alert-review-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/security-alert-review.html",
+      "fallback": "outputs/security-alert-review.md",
+      "output": "outputs/security-alert-review.html"
+    },
+    {
+      "id": "recurring-third-party-review-evidence-reconciler",
+      "target": 4,
+      "primary": "inline-widget",
+      "asset": "assets/third-party-review-status.html",
+      "fallback": "outputs/third-party-review-handoff.md",
+      "output": "outputs/third-party-review-status.html"
     }
   ]
 }

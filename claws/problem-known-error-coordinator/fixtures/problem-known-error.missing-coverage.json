@@ -1,0 +1,10 @@
+{
+  "description": "Dropping one incident membership from exact closed coverage is a structured failure.",
+  "mutation": {
+    "path": "coverage.incidentMembershipRefs",
+    "operation": "pop"
+  },
+  "expectedFindingCodes": [
+    "invalid_coverage"
+  ]
+}

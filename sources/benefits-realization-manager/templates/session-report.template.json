@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Benefits realization manager session report",
+  "output": "outputs/benefits-realization-ledger.md",
+  "sections": [
+    "plan_revision_period_cutoff_and_trust",
+    "predecessor_continuation_supersession_and_retirement",
+    "benefit_and_disbenefit_universe",
+    "shared_kpi_baseline_target_observation_and_allocation",
+    "attribution_blockers_and_derived_finance",
+    "owner_authority_and_prohibited_actions"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+}

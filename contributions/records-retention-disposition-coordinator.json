@@ -98,6 +98,11 @@
     "proofPlan": "Prove an X3 artifact with a strict versioned schema, total semantic validator, global unique IDs, exact snapshot binding, controlled references and digests, complete forward/reverse/orphan checks, timezone-safe eligibility, broad hold precedence, independent scoped exception and approval chronology, digest-bound batches, append-only custody, separated requests/attempts/outcomes, authoritative independent certificates, exact residual closure, blocker equality, prohibited narrative detection with genuine negation, base-only capability proof, public CLI validation, focused adversarial tests, and catalog-wide generated recipe and workflow checks.",
     "existingAlternatives": [
       {
+        "id": "recurring-third-party-review-evidence-reconciler",
+        "overlap": "Both reconcile an exact owner-declared universe across recurring cycles, authenticate source evidence, preserve predecessor lineage, derive time-sensitive state, and fail closed into typed owner handoffs without executing the governed action.",
+        "difference": "Recurring Third-Party Review Evidence Reconciler operates on vendor-service requirement cells and evidence expiry, while Records Retention Disposition Coordinator owns record-series and copy inventories, event-trigger eligibility, legal-hold precedence, approved disposition batches, execution certificates, custody, and residual-copy closure."
+      },
+      {
         "id": "data-governance-steward",
         "overlap": "Both reconcile retention and access requirements, exceptions, remediation evidence, accountable review, and governance handoffs.",
         "difference": "Data Governance Steward lacks an exact record-series and every-copy inventory, event-trigger calculations, broader legal-hold precedence, digest-bound disposition batches, custody and independently observed outcome certificates, and residual-copy closure."
@@ -118,6 +123,11 @@
         "difference": "Legal Matter Organizer is bound to one already-active legal matter and preservation-safe counsel review; it never owns enterprise retention eligibility, disposition batches, execution certificates, or residual-copy closure."
       },
       {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both reconcile a complete bounded owner-supplied evidence universe into exact coverage, explicit residuals, exact blockers, named-human authority, and a controlled handoff without changing authoritative systems.",
+        "difference": "Financial Account Reconciliation Coordinator partitions two co-equal transaction exports into exact 1:1, 1:n, or n:1 match groups and residuals using signed minor-unit arithmetic. It has no retention schedule, record-series or copy inventory, eligibility calculation, legal-hold precedence, disposition batch, custody trail, independent execution certificate, or residual-copy closure."
+      },
+      {
         "id": "privacy-request-coordinator",
         "overlap": "Both use exact snapshots, minimized records, legal holds, exemptions or exceptions, accountable approvals, and controlled evidence.",
         "difference": "Privacy Request Coordinator coordinates one privacy-rights request and its identity, search, deadline, and response lifecycle, not enterprise record-series schedules, every-copy disposition, certificates, or residual closure."
@@ -136,6 +146,26 @@
         "id": "document-renewal-tracker",
         "overlap": "Both apply date and source evidence to official records, expose conflicts and missing evidence, and prepare an owner-controlled handoff.",
         "difference": "Document Renewal Tracker coordinates renewal dates and filing preparation, not retention schedules, copy-level hold precedence, digest-bound disposition, execution certificates, or backup and replica closure."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both prove exact register coverage, bind evidence and human authority, preserve exact blockers, and hand a complete record to an approved destination.",
+        "difference": "Contract Obligation Tracker performs no eligibility determination or destructive records action and instead observes contractual performance and owner-confirmed completion without interpretation; Records Retention Disposition Coordinator governs record-copy disposition."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both track exact item universes, authority, retention state, evidence, blockers, and completion handoffs.",
+        "difference": "Backup Restore Verification Coordinator tracks temporary restore-target cleanup or bounded retention without applying policy to or disposing record copies."
+      },
+      {
+        "id": "business-continuity-program-manager",
+        "overlap": "Both reconcile an exact owner-supplied universe, bind revisions and evidence, preserve exceptions and blockers, track externally executed corrective outcomes, and reserve approval and certification authority.",
+        "difference": "Business Continuity Program Manager governs critical processes, BIAs, recovery requirements, dependencies, continuity plans, exercises, findings, actions, exceptions, and recertification. Records Retention Disposition Coordinator applies retention schedules and legal-hold precedence to every record copy through approved disposition batches, execution certificates, and residual-copy closure."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both track an exact owner-supplied item universe, authority, retention or terminal state, evidence, blockers, and a completion handoff without executing changes.",
+        "difference": "TLS Certificate Rotation Verification tracks predecessor certificate retirement or approved temporary overlap after successor deployment and endpoint validation. This Claw applies supplied retention policy to record copies."
       }
     ]
   }

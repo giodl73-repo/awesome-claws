@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Procure-to-Pay Three-Way Match Exception Reconciler session report",
+  "output": "outputs/procure-to-pay-three-way-match.md",
+  "sections": [
+    "request",
+    "known_facts",
+    "assumptions",
+    "evidence",
+    "decisions_or_recommendations",
+    "blocked_actions",
+    "next_owner"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+}

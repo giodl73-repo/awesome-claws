@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "benefits-realization-manager",
+  "scenario": "Reconcile benefits plan support-modernization revision 2 for Q3 from the supplied owner-approved benefit profiles, KPI records, allocation approvals, disbenefit observations, predecessor ledger, source bytes, and public trust store. Show realized and blocked value without claiming causality or changing any source or owner decision.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile benefits plan support-modernization revision 2 for Q3 from the supplied owner-approved benefit profiles, KPI records, allocation approvals, disbenefit observations, predecessor ledger, source bytes, and public trust store. Show realized and blocked value without claiming causality or changing any source or owner decision."
+    },
+    {
+      "role": "agent",
+      "text": "I validated plan revision 2, its complete predecessor universe, the caller cutoff, owner-scoped trust, source bytes, KPI observations, allocation approvals, lifecycle decisions, and finance-close evidence."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/benefits-realization-ledger.md and the matching inline review with exact benefit identity, predecessor transitions, allocated KPI deltas, the disbenefit, derived finance totals, and every authority boundary preserved."
+    }
+  ],
+  "report": {
+    "title": "Benefits realization manager session handoff",
+    "summary": "A revision-bound X4 benefit ledger that accounts for every benefit, disbenefit, KPI share, predecessor state, source record, owner decision, unsupported attribution, and finance gate exactly once.",
+    "output": "outputs/benefits-realization-ledger.md",
+    "items": [
+      {
+        "title": "Plan, revision, predecessor, period, cutoff, owner, and trust identity block",
+        "summary": "Every in-scope benefit and disbenefit appears exactly once with stable identity, owner, lifecycle, baseline, target, period, evidence, and predecessor disposition",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Closed benefit and disbenefit universe with lifecycle and predecessor reconciliation",
+        "summary": "Every shared KPI delta is direction-aware, allocated exactly once in integer minor units, and reconciles under a deterministic residual rule without double counting",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Shared-KPI baseline, target, observation, allocation, attribution, and residual ledger",
+        "summary": "Unsupported attribution or an invalid finance close withholds aggregate realization, and no output claims causality, approval, certification, publication, or source mutation",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Derived gross, disbenefit, and net realization with unsupported-attribution blockers",
+        "summary": "Every in-scope benefit and disbenefit appears exactly once with stable identity, owner, lifecycle, baseline, target, period, evidence, and predecessor disposition",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "X4 benefits realization visual with equivalent Markdown handoff",
+        "summary": "Every shared KPI delta is direction-aware, allocated exactly once in integer minor units, and reconciles under a deterministic residual rule without double counting",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

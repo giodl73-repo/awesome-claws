@@ -96,7 +96,11 @@ artifact merely to satisfy that schema.
 Prompts, raw responses, provider payloads, credentials, honeytokens, and raw logs are not
 persisted. Evidence stores only SHA-256 hashes, a bounded redacted excerpt,
 allowlisted failure reproduction metadata, aggregate metrics, and relative
-evidence references.
+evidence references. Provider-live failures may also retain a structured
+transport diagnostic limited to request/response presence, HTTP status,
+content-type class, first event type, an ordered event-type histogram, event
+count, completion state, and fetch failure state. Payload content and headers
+are never included.
 
 ## Isolation and capability policy
 
@@ -129,20 +133,20 @@ action-complete, and bound to a SHA-256 plan integrity value.
 
 ## Baseline and seven-day soak
 
-The current full baseline is the catalog-derived 103 Claws x 3 scenarios =
-**309 trials**. The current seven-day soak is 103 Claws x 3 scenarios x 7
-repetitions = **2,163 trials**. `--check` derives these counts from the loaded
+The current full baseline is the catalog-derived 141 Claws x 3 scenarios =
+**423 trials**. The current seven-day soak is 141 Claws x 3 scenarios x 7
+repetitions = **2,961 trials**. `--check` derives these counts from the loaded
 catalog rather than pinning a fixed count. These are run plans, not claims that
 live work is scheduled or complete.
 
 For calendar scheduling, retain one immutable harness/OpenClaw/model/settings
-identity for the window and dispatch one 309-trial baseline on each of seven
+identity for the window and dispatch one 423-trial baseline on each of seven
 days. Keep every daily manifest and report under a distinct scheduler run id;
 only compare trials whose six identity digests match, including the exact
 handoff/structured-artifact contract. The `seven-day` command
 is the bounded pre-dispatch/rehearsal form: it materializes and runs all seven
 same-identity repetitions in one job so drift classification and the full
-2,163-trial budget can be reviewed before a calendar workflow is enabled. It
+2,961-trial budget can be reviewed before a calendar workflow is enabled. It
 does not sleep between repetitions or claim temporal coverage.
 
 Deterministic offline baseline:
@@ -202,12 +206,56 @@ if removal or the synthetic marker check cannot be proven safe, no retry occurs
 and remaining trials for that Claw are halted. Timed-out children receive
 graceful termination followed by process-tree escalation. Model, safety,
 artifact, harness, and cleanup failures do not retry.
+The cleanup timeout remains bounded at 15 minutes because the exact Windows
+runtime can require several cold CLI starts for Gateway readiness, removal
+preview/apply, and the mandatory final zero-Claw status proof.
 
 Live execution rejects a dirty harness. The supplied OpenClaw config is parsed
-only for preflight, credential-valued fields are stripped before its digest is
-computed, and only that safe digest plus a provider/model structural-match
-status is persisted. The declared provider/model must match whenever the config
-contains a recognizable pair; raw config is never written to evidence.
+only for preflight. Its `plugins` object may contain only
+`enabled: true` and the exact allowlist `["github-copilot"]`; deny lists, entry
+overrides, custom load paths, and every other plugin option are rejected except
+the exact memory-slot disablement `slots.memory: "none"`.
+Channel, browser, ACP, and browser-tool activation inputs are also forbidden,
+including per-agent tool overrides. Provider configuration and every default or
+per-agent model reference must bind exclusively to the selected approved model,
+currently `github-copilot/gpt-5.6-sol` or
+`github-copilot/claude-sonnet-5`, with an explicit default and no fallback chain;
+fallback providers, embedded agent runtimes, web/voice providers, worker
+providers, and unknown root config surfaces are rejected. The same policy is rechecked after Claw installation and before the model turn.
+This limits loading to OpenClaw's bundled Copilot provider without enabling
+another configured plugin surface. The harness then queries OpenClaw's public
+plugin discovery snapshot, requires the selected provider to be the loaded
+bundled `github-copilot` plugin, and rejects every non-bundled discovered
+plugin. Because the snapshot's enabled state describes the installed index
+rather than the effective runtime set, the harness separately runs the public
+effective-only plugin doctor and requires a healthy result before dispatch.
+
+Every copied attempt config is rehashed and compared with the manifest-bound
+config identity before any OpenClaw command. All model-bearing config contexts,
+including secondary/default/per-agent selectors, must remain bound to the exact
+selected provider/model.
+Credential-valued fields are stripped before the config digest is computed, and
+only that safe digest plus a provider/model structural-match status is
+persisted. The declared provider/model must match whenever the config contains
+a recognizable pair; raw config is never written to evidence.
+
+Each live trial reserves a loopback-only Gateway port and an ephemeral synthetic
+Gateway token inside its isolated child environment. The Gateway starts after
+the Claw is installed, overlaps the model turn, and must report ready before
+cleanup. This supports the public OpenClaw removal contract's monitor drainage
+without sharing state or credentials across trials. The harness stops the
+Gateway after removal. When OpenClaw returns the documented
+`monitor_cleanup_failed` convergence fence, the harness performs one fresh
+preview-and-apply recovery pass inside the same cleanup deadline. No other
+cleanup failure is retried. Startup, drainage, convergence, or shutdown failures
+remain cleanup infrastructure failures and cannot become passing-shaped
+results.
+
+Cleanup never reuses the model-serving Gateway. The harness stops it, removes
+provider credentials and recursively strips model/provider/thinking selectors
+from every retained child-config subtree, sets plugins globally disabled with
+memory disabled, and starts a separate isolated cleanup Gateway. A rejected
+plugin inventory therefore cannot execute during recovery.
 
 Drift classification compares semantic signatures (outcome, gates, required
 artifact validation, cleanup, and cap state), not response or artifact bytes,

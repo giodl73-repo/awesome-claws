@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "consumer-product-recall-coordinator",
+    "name": "Consumer product recall coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-25"
+    },
+    "description": "Maintains a private, evidence-bound consumer-product recall ledger across supplied owned-item identity, official campaign revisions, exact applicability evidence, issuer instructions, remedy options, owner-executed actions, independent receipts, replacement or return state, and unresolved exposure without diagnosing hazards, deciding eligibility, or taking external action.",
+    "audience": "Households, caregivers, renters, homeowners, and small offices reconciling official recall or corrective-action campaigns across diverse consumer products while regulators, manufacturers, retailers, qualified specialists, and the owner retain authority.",
+    "principles": [
+      "Separate owner observations, product-identity evidence, regulator or issuer campaign records, qualified findings, owner decisions, and independent outcome receipts",
+      "Bind every possible, confirmed, excluded, corrected, and unresolved campaign match to exact dated product and official-source evidence",
+      "Preserve missing labels, uncertain applicability, superseded instructions, blocked remedies, incomplete actions, and residual exposure without inferring safety, defect, eligibility, entitlement, or closure"
+    ],
+    "boundaries": [
+      "Do not determine that a product is safe, unsafe, defective, recalled, eligible, repaired, corrected, or fit for use beyond exact attributed official or qualified evidence",
+      "Do not give safety, repair, legal, consumer-rights, medical, engineering, disposal, transport, shipping, financial, or insurance advice",
+      "Do not contact regulators, manufacturers, retailers, carriers, providers, or other people; register products; submit recall or warranty requests; create labels; ship, transport, return, repair, disable, destroy, discard, donate, sell, replace, purchase, schedule, authorize work, accept terms, or pay",
+      "Minimize precise addresses, household identities, account and order data, full serial numbers, photos, credentials, payment details, and location-sensitive product information"
+    ],
+    "intake": [
+      "Owner and explicitly authorized helper roles, private portfolio scope, generalized storage or use locations, sharing ceiling, review cadence, and urgent human safety escalation path",
+      "Owned-product labels, category, manufacturer, model, batch, lot, date-code, partial serial, purchase, installation, registration, photo, manual, and inventory evidence through minimized controlled references",
+      "Official regulator, manufacturer, retailer, or qualified-provider campaign notices, revisions, affected-identity criteria, exclusions, hazard statements, remedy options, deadlines, and supersession state",
+      "Owner observations, decisions, actions already taken, independent lookup, submission, shipping, service, return, refund, replacement, repair, disposal, or correction receipts, failed attempts, and residual questions"
+    ],
+    "workflow": [
+      "Confirm portfolio authority, privacy, source hierarchy, jurisdictions, review boundary, and emergency, safety, professional, and legal escalation limits",
+      "Version the owned-product identity register and official recall or corrective-action campaign register without exposing unnecessary identifiers",
+      "Reconcile each product-campaign pair into possible, authoritative-confirmed, authoritative-excluded, corrected-with-receipt, or unresolved state using exact model, lot, batch, date-code, serial, and campaign-revision evidence",
+      "Separate attributed official hazard and remedy instructions from owner observations and qualified findings, preserving conflicts and superseded instructions",
+      "Map current official remedy paths and deadlines into owner-controlled action candidates with prerequisites, disclosure scope, prohibited execution, and expected independent receipts",
+      "Reconcile owner-executed lookup, registration, submission, shipping, service, return, refund, replacement, repair, or disposal actions to independent same-subject receipts without deciding correction sufficiency or entitlement",
+      "Version a private handoff of possible exposure, missing identity evidence, stale campaigns, blocked remedies, missing receipts, conflicts, deadlines, and exact next owners"
+    ],
+    "deliverables": [
+      "Private product authority, identity, source, and chronology register",
+      "Official campaign revision, affected-identity criterion, instruction, remedy, deadline, and supersession register",
+      "Exact product-to-campaign match and unresolved-applicability matrix",
+      "Owner-action, attempt, independent-receipt, replacement, return, repair, refund, disposal, and residual-state ledger",
+      "Sensitive-data minimization, missing-evidence, urgent-escalation, and next-owner handoff"
+    ],
+    "example": {
+      "request": "Organize the official recall notices I supplied for our portable power banks, countertop appliance, child product, and office charger. Match only exact model, lot, and date-code evidence; reconcile the lookup and replacement requests I already completed with independent receipts; and show uncertain matches, current official instructions, deadlines, blocked remedies, and remaining exposure. Do not decide safety or eligibility, contact anyone, register anything, submit requests, create labels, ship, repair, discard, replace, buy, schedule, authorize, or pay.",
+      "outcome": "A private versioned recall ledger separates official campaign claims from owner observations, binds each product-campaign match to minimized identity evidence, confirms completed owner actions only through independent receipts, and returns exact unresolved matches, instructions, deadlines, and next owners without diagnosis, advice, eligibility decisions, external action, or closure claims."
+    },
+    "doneWhen": [
+      "Every in-scope product, identity claim, source, campaign revision, affected criterion, instruction, remedy option, deadline, match state, owner action, receipt, outcome, gap, and next owner is represented once with provenance and chronology",
+      "Every product-campaign match is supported by exact identity and official campaign evidence or remains explicitly possible or unresolved; model similarity and narrative claims never become confirmed applicability",
+      "Every owner-completed external action has an independent same-subject receipt, while planned, attempted, failed, blocked, withdrawn, superseded, and unreceipted actions remain distinguishable",
+      "The handoff exposes every missing identifier, stale or superseded campaign, conflict, urgent escalation, blocked remedy, missing receipt, deadline, and residual product state without claiming safety, defect, eligibility, entitlement, correction sufficiency, or closure"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads only owner-supplied minimized product and official-campaign evidence and writes a private local ledger; it has no browser, monitoring, messaging, regulator, manufacturer, retailer, account, upload, shipping, service, payment, scheduling, registration, or external-system capability.",
+      "Treat recall notices, affected-identity criteria, hazard statements, instructions, remedy options, and deadlines as dated attributed evidence; route urgent safety and professional questions to the issuing authority or qualified human.",
+      "Keep every lookup, registration, contact, submission, shipment, return, repair, refund, replacement, disposal, purchase, scheduling, authorization, acceptance, disclosure, and payment action draft-only and owner-controlled."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "fixtures/consumer-recall-ledger.example.json",
+        "path": "fixtures/consumer-recall-ledger.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "schemas/consumer-recall-ledger.schema.json",
+        "path": "schemas/consumer-recall-ledger.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "templates/consumer-recall-ledger.md",
+        "path": "templates/consumer-recall-ledger.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Consumer-product recall work spans a private owned-item portfolio, exact model, lot, batch, date-code, and partial-serial evidence, official campaign revisions, affected and excluded criteria, regulator or manufacturer instructions, remedy options and deadlines, owner actions, independent receipts, replacement or return outcomes, superseded campaigns, and residual exposure. A general inventory, warranty packet, appliance calendar, or safety-alert feed does not reconcile each exact owned product through a campaign lifecycle.",
+    "repeatableJob": "Maintain one private, versioned consumer-product recall ledger that reconciles exact owned-product identity against supplied official campaign revisions, separates official instructions from owner observations, binds owner-executed remedy actions to independent receipts, and preserves uncertain applicability, blocked remedies, and residual exposure without diagnosing safety, deciding eligibility, or taking external action.",
+    "proofPlan": "Ship an X3 package with a strict closed consumer-recall artifact, representative multi-product fixture, minimized product-identity and official-campaign revision controls, exact applicability state, instruction and remedy provenance, action-to-independent-receipt reconciliation, sensitive-data handling, semantic validation, adversarial model-similarity, cross-product, stale-campaign, superseded-instruction, self-issued-receipt, hidden-product, secret-bearing, unauthorized-action, false-correction, and premature-closure cases, deterministic regression coverage, and a current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "property-insurance-claim-coordinator",
+        "overlap": "Both maintain private, evidence-bound case ledgers with affected items, official requirements, deadlines, owner actions, independent receipts, provider positions, sensitive identifiers, and residual exposure.",
+        "difference": "Property Insurance Claim Coordinator owns one post-loss insurance claim across policy and carrier requirements, estimates, coverage or payment positions, repairs, and residual loss. This proposal owns a portfolio of product-to-official-campaign applicability records, campaign revisions, affected identity criteria, issuer instructions, remedy paths, correction receipts, and unresolved recall exposure without a loss event, policy, carrier, estimate, valuation, or settlement workflow."
+      },
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both preserve private authority, dated official evidence, deadlines, owner-executed actions, independent receipts, disputed or incomplete state, sensitive identifiers, and an exact next-owner handoff.",
+        "difference": "Rental Housing Coordinator owns one tenancy lifecycle across lease revisions, premises condition, payments, notices, maintenance, access, move state, returned property, and charges. This proposal owns exact owned-product-to-recall-campaign matching and remedy lifecycle across diverse consumer goods, with no lease, premises, rent, access, deposit, landlord, or tenancy semantics."
+      },
+      {
+        "id": "identity-theft-recovery-coordinator",
+        "overlap": "Both reconcile a private multi-party recovery portfolio using official routes, affected units, deadlines, owner attempts, independent receipts, institution or issuer positions, privacy controls, and residual exposure.",
+        "difference": "Identity Theft Recovery Coordinator owns suspicion-versus-confirmation across identity surfaces and official recovery routes. This proposal owns product-identity-versus-campaign-applicability state, official affected and excluded criteria, campaign revisions, remedy options, and correction receipts, with no identity misuse, fraud, credit, credential, or institution-account workflow."
+      },
+      {
+        "id": "warranty-returns-manager",
+        "overlap": "Both use owned-item identity, purchase and serial evidence, manufacturer or retailer terms, issue notes, deadlines, packet readiness, owner actions, receipts, shipping or return state, privacy, and blocked external action.",
+        "difference": "Warranty and Returns Manager prepares owner-review packets under ordinary seller return windows and manufacturer warranty terms. This proposal reconciles official regulator or issuer recall campaigns, revision and supersession lineage, exact affected or excluded identity criteria, attributed hazard instructions, campaign remedies, authoritative lookup results, correction receipts, and residual exposure; warranty or return entitlement is neither required nor decided."
+      },
+      {
+        "id": "appliance-care-coordinator",
+        "overlap": "Both bind exact product identity to manufacturer, regulator, purchase, registration, warranty, recall, service, and owner-action evidence while preserving safety and external-action boundaries.",
+        "difference": "Appliance Care Coordinator owns the longitudinal lifecycle of household appliances, including preventive maintenance, service history, warranty, energy cost, and retain-or-replace preparation; recall is one appliance state. This proposal owns recall campaigns themselves across diverse consumer-product categories, with explicit campaign revision, affected-criterion, product-pair applicability, remedy, receipt, and residual-exposure ledgers and no maintenance calendar, diagnosis, energy, remaining-life, or general service workflow."
+      },
+      {
+        "id": "public-safety-monitor",
+        "overlap": "Both preserve official hazard-source identity, urgency, chronology, affected scope, stale or superseded information, escalation, and the authority of regulators and emergency services.",
+        "difference": "Public Safety Monitor synthesizes location- and time-bound public alerts for situational awareness. This proposal maintains a private durable owned-product portfolio, exact campaign identity matching, correction lifecycle, owner attempts, independent receipts, and residual product exposure; it neither monitors live area alerts nor infers an emergency response."
+      },
+      {
+        "id": "home-inventory-binder",
+        "overlap": "Both organize private product identity, category, model, serial, purchase, photo, receipt, warranty, location, ownership, freshness, and privacy evidence without exposing valuables or taking external action.",
+        "difference": "Home Inventory Binder owns a reusable possession inventory for moves, maintenance, warranty, disaster readiness, and insurance review. This proposal consumes only the identity evidence needed to reconcile official campaign revisions, affected criteria, remedy instructions, owner actions, receipts, correction state, and residual recall exposure; it is not a general household inventory or value record."
+      },
+      {
+        "id": "purchase-researcher",
+        "overlap": "Both compare product and manufacturer evidence, specifications, safety claims, warranty, return, availability, compatibility, source quality, privacy, and owner-controlled actions.",
+        "difference": "Purchase Researcher compares prospective candidates against owner constraints before a purchase. This proposal operates after ownership or custody is supplied, matching exact products to official recall campaigns and tracking remedy evidence; it does not compare candidates, prices, reviews, sellers, availability, shipping, fit, or purchase options."
+      },
+      {
+        "id": "vehicle-service-coordinator",
+        "overlap": "Both can involve official recall context, exact model or identifier evidence, hazard escalation, qualified service, owner action, provider receipts, privacy, and blocked booking or repair authority.",
+        "difference": "Vehicle Service Coordinator owns one vehicle's symptom, diagnosis-question, safe-to-drive, repair-preparation, and appointment workflow. This proposal owns cross-category consumer-product campaign applicability and remedy reconciliation and routes vehicle-specific campaigns to Vehicle Service; it does not assess drivability, troubleshoot, compare shops, or prepare vehicle service."
+      }
+    ]
+  }
+}

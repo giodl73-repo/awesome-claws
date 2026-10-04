@@ -1,0 +1,1265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/tls-certificate-rotation.schema.json",
+  "title": "TLS Certificate Rotation Verification Coordinator artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "round",
+    "certificates",
+    "certificateExport",
+    "bindings",
+    "bindingExport",
+    "rotationRequests",
+    "issuances",
+    "deployments",
+    "endpointObservations",
+    "retirements",
+    "overlaps",
+    "principals",
+    "authorityRoster",
+    "authorityGrants",
+    "evidence",
+    "blockers",
+    "coverage",
+    "destinationApproval",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.tlsCertificateRotationVerification.v1"
+    },
+    "artifactId": {
+      "$ref": "#/$defs/id"
+    },
+    "round": {
+      "$ref": "#/$defs/round"
+    },
+    "certificates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/certificate"
+      },
+      "minItems": 1
+    },
+    "certificateExport": {
+      "$ref": "#/$defs/certificateExport"
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/binding"
+      }
+    },
+    "bindingExport": {
+      "$ref": "#/$defs/bindingExport"
+    },
+    "rotationRequests": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rotationRequest"
+      }
+    },
+    "issuances": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/issuance"
+      }
+    },
+    "deployments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/deployment"
+      }
+    },
+    "endpointObservations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/endpointObservation"
+      }
+    },
+    "retirements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/retirement"
+      }
+    },
+    "overlaps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/overlap"
+      }
+    },
+    "principals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/principal"
+      },
+      "minItems": 13
+    },
+    "authorityRoster": {
+      "$ref": "#/$defs/roster"
+    },
+    "authorityGrants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/grant"
+      },
+      "minItems": 8
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      },
+      "minItems": 1
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "destinationApproval": {
+      "$ref": "#/$defs/destinationApproval"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "idList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true
+    },
+    "round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "requestedAt",
+        "campaignRef",
+        "campaignVersion",
+        "campaignCoordinatorRef",
+        "certificateExportRef",
+        "certificateExportDigest",
+        "bindingExportRef",
+        "bindingExportDigest",
+        "authorityRosterRef",
+        "authorityRosterDigest",
+        "destination",
+        "destinationApproverRef",
+        "handoffOwnerRef",
+        "planDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "campaignRef": {
+          "$ref": "#/$defs/id"
+        },
+        "campaignVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "campaignCoordinatorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "certificateExportRef": {
+          "$ref": "#/$defs/id"
+        },
+        "certificateExportDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "bindingExportRef": {
+          "$ref": "#/$defs/id"
+        },
+        "bindingExportDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "authorityRosterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityRosterDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destination": {
+          "const": "tls-rotation-owner-review-queue"
+        },
+        "destinationApproverRef": {
+          "$ref": "#/$defs/id"
+        },
+        "handoffOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "planDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "certificate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ownerSystemRef",
+        "certificateClass",
+        "rotationState",
+        "exclusionReason",
+        "sourceRecordDigest",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerSystemRef": {
+          "$ref": "#/$defs/id"
+        },
+        "certificateClass": {
+          "enum": [
+            "leaf-server",
+            "wildcard",
+            "san-multi",
+            "client-auth",
+            "mutual-tls",
+            "intermediate"
+          ]
+        },
+        "rotationState": {
+          "enum": [
+            "rotate",
+            "exclude"
+          ]
+        },
+        "exclusionReason": {
+          "oneOf": [
+            {
+              "enum": [
+                "owner-approved-out-of-scope",
+                "already-current"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "certificateExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "exportedAt",
+        "suppliedByRef",
+        "certificateRefs",
+        "evidenceRef",
+        "contentDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "exportedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "certificateRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "certificateRef",
+        "serviceRef",
+        "listenerRef",
+        "endpointLocatorDigest",
+        "sourceRecordDigest",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "certificateRef": {
+          "$ref": "#/$defs/id"
+        },
+        "serviceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "listenerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "endpointLocatorDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "sourceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "bindingExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "exportedAt",
+        "suppliedByRef",
+        "bindingRefs",
+        "evidenceRef",
+        "contentDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "exportedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "bindingRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "rotationRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "certificateRef",
+        "certificatePayloadDigest",
+        "campaignRef",
+        "approvedVersion",
+        "requestedByRef",
+        "authorityGrantRef",
+        "requestedAt",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "certificateRef": {
+          "$ref": "#/$defs/id"
+        },
+        "certificatePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "campaignRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "requestedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "issuance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "rotationRequestRef",
+        "rotationRequestPayloadDigest",
+        "providerRef",
+        "providerOperationId",
+        "submittedAt",
+        "decidedAt",
+        "outcome",
+        "campaignRef",
+        "successorLogicalId",
+        "successorVersionId",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "rotationRequestRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rotationRequestPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "providerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "providerOperationId": {
+          "$ref": "#/$defs/id"
+        },
+        "submittedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "decidedAt": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "issued",
+            "failed",
+            "pending"
+          ]
+        },
+        "campaignRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "successorLogicalId": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "successorVersionId": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "bindingRef",
+        "bindingPayloadDigest",
+        "rotationRequestRef",
+        "issuanceRef",
+        "issuancePayloadDigest",
+        "successorVersionId",
+        "observerRef",
+        "observedAt",
+        "outcome",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "bindingRef": {
+          "$ref": "#/$defs/id"
+        },
+        "bindingPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "rotationRequestRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issuanceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issuancePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "successorVersionId": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "outcome": {
+          "enum": [
+            "deployed",
+            "failed"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "endpointObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "deploymentRef",
+        "deploymentPayloadDigest",
+        "bindingRef",
+        "validatorRef",
+        "expectedSuccessorVersionId",
+        "observedAt",
+        "outcome",
+        "checkCodes",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "deploymentRef": {
+          "$ref": "#/$defs/id"
+        },
+        "deploymentPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "bindingRef": {
+          "$ref": "#/$defs/id"
+        },
+        "validatorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "expectedSuccessorVersionId": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "outcome": {
+          "enum": [
+            "match",
+            "fingerprint-mismatch",
+            "chain-failed",
+            "fingerprint-and-chain-failed"
+          ]
+        },
+        "checkCodes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "fingerprint-match",
+              "chain-valid",
+              "hostname-match",
+              "expiry-valid"
+            ]
+          }
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "retirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "certificateRef",
+        "certificatePayloadDigest",
+        "observerRef",
+        "observedAt",
+        "outcome",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "certificateRef": {
+          "$ref": "#/$defs/id"
+        },
+        "certificatePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "outcome": {
+          "enum": [
+            "retired",
+            "revoked"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "overlap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "certificateRef",
+        "certificatePayloadDigest",
+        "approvedByRef",
+        "authorityGrantRef",
+        "declaredAt",
+        "overlapUntil",
+        "state",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "certificateRef": {
+          "$ref": "#/$defs/id"
+        },
+        "certificatePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "declaredAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "overlapUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "state": {
+          "const": "temporary-overlap-active"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "scopes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 80
+        },
+        "kind": {
+          "enum": [
+            "named-human",
+            "owner-system",
+            "provider-system"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "authority-roster-custodian",
+              "authority-grant-issuer",
+              "certificate-exporter",
+              "binding-exporter",
+              "campaign-coordinator",
+              "rotation-approver",
+              "ca-provider-reporter",
+              "deployment-observer",
+              "endpoint-validator",
+              "retirement-observer",
+              "overlap-approver",
+              "destination-approver",
+              "handoff-recipient"
+            ]
+          }
+        }
+      }
+    },
+    "roster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "issuedAt",
+        "custodianRef",
+        "principalRefs",
+        "evidenceRef",
+        "contentDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "custodianRef": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "grant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "granteeRef",
+        "issuedByRef",
+        "scope",
+        "roundRef",
+        "activeFrom",
+        "activeUntil",
+        "rosterRef",
+        "rosterDigest",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "granteeRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "enum": [
+            "approve-rotation-requests",
+            "report-issuance-outcomes",
+            "report-deployment-observations",
+            "report-endpoint-observations",
+            "report-retirement",
+            "approve-temporary-overlap",
+            "approve-destination",
+            "receive-handoff"
+          ]
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "activeFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "activeUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rosterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rosterDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "roundRef",
+        "observedAt",
+        "suppliedByRef",
+        "subjectRefs",
+        "sourceRecordDigest",
+        "payloadDigest",
+        "recordDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "certificate-export",
+            "binding-export",
+            "authority-roster-export",
+            "authority-grant-record",
+            "rotation-request-record",
+            "issuance-record",
+            "deployment-record",
+            "endpoint-observation-record",
+            "retirement-record",
+            "overlap-record",
+            "blocker-record",
+            "destination-approval-record",
+            "handoff-record"
+          ]
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "sourceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "certificateRef",
+        "category",
+        "subjectRefs",
+        "detectedAt",
+        "ownerRef",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "certificateRef": {
+          "$ref": "#/$defs/id"
+        },
+        "category": {
+          "enum": [
+            "issuance-missing",
+            "issuance-pending",
+            "issuance-failed",
+            "deployment-missing",
+            "deployment-failed",
+            "endpoint-missing",
+            "endpoint-fingerprint-mismatch",
+            "endpoint-chain-failed",
+            "overlap-retained"
+          ]
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "detectedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "roundRef",
+        "planDigest",
+        "certificateRefs",
+        "rotateCertificateRefs",
+        "excludeCertificateRefs",
+        "bindingRefs",
+        "rotationRequestRefs",
+        "issuanceRefs",
+        "deploymentRefs",
+        "endpointObservationRefs",
+        "retirementRefs",
+        "overlapRefs",
+        "blockerRefs",
+        "contentDigest"
+      ],
+      "properties": {
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "planDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "certificateRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "rotateCertificateRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "excludeCertificateRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "bindingRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "rotationRequestRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "issuanceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "deploymentRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "endpointObservationRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "retirementRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "overlapRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "destinationApproval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "planDigest",
+        "coverageDigest",
+        "destination",
+        "approvedByRef",
+        "authorityGrantRef",
+        "approvedAt",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "planDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "coverageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destination": {
+          "const": "tls-rotation-owner-review-queue"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "planDigest",
+        "coverageDigest",
+        "destinationApprovalRef",
+        "destinationApprovalDigest",
+        "destinationApprovalEvidenceDigest",
+        "state",
+        "nextOwnerRef",
+        "authorityGrantRef",
+        "handedOffAt",
+        "rotationRequestRefs",
+        "issuanceRefs",
+        "deploymentRefs",
+        "endpointObservationRefs",
+        "retirementRefs",
+        "overlapRefs",
+        "blockerRefs",
+        "privateKeyAccessClaim",
+        "certificateBodyAccessClaim",
+        "issuanceExecutionClaim",
+        "deploymentExecutionClaim",
+        "listenerRouteChangeClaim",
+        "restartClaim",
+        "revocationClaim",
+        "disableClaim",
+        "deletionClaim",
+        "externalCommunicationClaim",
+        "readinessClaim",
+        "identityAssuranceClaim",
+        "securityAssuranceClaim",
+        "complianceClaim",
+        "auditClaim",
+        "rotationCompletionClaim",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "planDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "coverageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destinationApprovalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "destinationApprovalDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destinationApprovalEvidenceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "state": {
+          "enum": [
+            "blocked",
+            "ready-for-owner-review"
+          ]
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "handedOffAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rotationRequestRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "issuanceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "deploymentRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "endpointObservationRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "retirementRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "overlapRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "privateKeyAccessClaim": {
+          "const": "not-claimed"
+        },
+        "certificateBodyAccessClaim": {
+          "const": "not-claimed"
+        },
+        "issuanceExecutionClaim": {
+          "const": "not-claimed"
+        },
+        "deploymentExecutionClaim": {
+          "const": "not-claimed"
+        },
+        "listenerRouteChangeClaim": {
+          "const": "not-claimed"
+        },
+        "restartClaim": {
+          "const": "not-claimed"
+        },
+        "revocationClaim": {
+          "const": "not-claimed"
+        },
+        "disableClaim": {
+          "const": "not-claimed"
+        },
+        "deletionClaim": {
+          "const": "not-claimed"
+        },
+        "externalCommunicationClaim": {
+          "const": "not-claimed"
+        },
+        "readinessClaim": {
+          "const": "not-claimed"
+        },
+        "identityAssuranceClaim": {
+          "const": "not-claimed"
+        },
+        "securityAssuranceClaim": {
+          "const": "not-claimed"
+        },
+        "complianceClaim": {
+          "const": "not-claimed"
+        },
+        "auditClaim": {
+          "const": "not-claimed"
+        },
+        "rotationCompletionClaim": {
+          "const": "not-claimed"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    }
+  }
+}

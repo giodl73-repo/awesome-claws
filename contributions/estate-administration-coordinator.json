@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "estate-administration-coordinator",
+    "name": "Estate administration coordinator",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-25"
+    },
+    "description": "Maintains one already-open decedent-estate administration ledger across supplied appointment authority, court and professional records, assets, liabilities, notices, creditor claims, deadlines, proposed distributions, independent receipts, and unresolved questions without interpreting law, tax, title, entitlement, priority, solvency, or taking estate action.",
+    "audience": "Court-appointed or otherwise documented personal representatives, executors, administrators, and authorized support teams reconciling one already-open decedent estate under named legal, tax, valuation, financial-institution, and court authority.",
+    "principles": [
+      "Bind the estate, appointment authority, source revisions, assets, liabilities, notices, claims, deadlines, actions, distributions, receipts, and review state to exact supplied evidence and chronology",
+      "Preserve unknown ownership, valuation, claim validity, priority, tax treatment, beneficiary entitlement, reserve sufficiency, and distribution authority as qualified-human questions rather than inferred conclusions",
+      "Keep filing, notice, contact, account access, asset movement, sale, payment, settlement, tax election, signature, distribution, and estate closure with the documented personal representative and qualified authorities"
+    ],
+    "boundaries": [
+      "Do not interpret wills, trusts, statutes, court orders, tax rules, ownership, title, creditor priority, claim validity, beneficiary rights, fiduciary duties, or provide legal, tax, investment, valuation, insurance, or financial advice",
+      "Do not decide that appointment authority is sufficient, an asset belongs to the estate, a debt or claim is valid or payable, a deadline applies, a reserve is sufficient, a person is entitled, a distribution is authorized, or the estate is solvent, ready, settled, or closed",
+      "Do not file, publish notice, contact courts, creditors, beneficiaries, institutions, professionals, or agencies, sign, certify, attest, access or change accounts, transfer title, sell, insure, invest, liquidate, pay, settle, distribute, discard, destroy, or close anything",
+      "Do not expose full names, addresses, account numbers, taxpayer identifiers, credentials, document numbers, precise asset locations, medical or family facts, testamentary content, or other sensitive estate data beyond the approved minimized workspace and destination"
+    ],
+    "intake": [
+      "Stable estate reference, generalized jurisdiction, review cutoff, approved private workspace and destination, documented personal-representative authority, named professional and institutional authorities, and privacy or sharing ceiling",
+      "Supplied death, will or trust pointer, appointment or letters, court order, professional instruction, notice, filing, asset, liability, valuation, statement, receipt, correspondence, tax-preparer, and institution records with exact revisions and controlled references",
+      "Owner-approved asset and liability inventory, ownership and value evidence states, creditor claims, notice and deadline candidates, beneficiary or interested-party references, tax and professional questions, reserves, actions, and blockers",
+      "Proposed or owner-executed contacts, filings, payments, transfers, sales, settlements, distributions, and closures, with independent same-subject receipts where an external action is claimed complete"
+    ],
+    "workflow": [
+      "Confirm one already-open estate, exact documented appointment authority, review cutoff, permitted private destination, minimized identities, qualified-human roles, and prohibited action boundary",
+      "Version the supplied authority and source register while preserving court, professional, institutional, testamentary, asset, liability, notice, claim, tax, valuation, and receipt provenance without interpreting legal effect",
+      "Reconcile every asset and liability to exact source identity, ownership or responsibility evidence state, valuation or amount evidence, custody or institution, deadline candidates, conflicts, and next qualified owner",
+      "Track notice, creditor-claim, filing, professional-review, tax, reserve, action, and proposed-distribution lifecycles while separating planned, attempted, owner-completed, independently receipted, rejected, disputed, withdrawn, and unresolved states",
+      "Validate complete indexes, reciprocal references, appointment scope, source authority and chronology, exact claim and distribution subjects, independent receipts, privacy minimization, unresolved questions, and blocker equality",
+      "Produce a blocked or ready-for-personal-representative-review private handoff that exposes every unresolved authority, ownership, value, claim, deadline, tax, reserve, receipt, entitlement, and closure question without making an estate decision"
+    ],
+    "deliverables": [
+      "Private estate, authority, professional-role, source-revision, and chronology register",
+      "Evidence-bound asset, liability, valuation, custody, notice, deadline, creditor-claim, and reserve ledgers",
+      "Owner-controlled action, filing, contact, payment, transfer, sale, settlement, distribution, and independent-receipt register",
+      "Conflict, missing-evidence, privacy, qualified-human question, blocker, and next-owner register",
+      "Blocked or ready-for-personal-representative-review estate-administration handoff"
+    ],
+    "example": {
+      "request": "Reconcile the appointment letters, court notices, account statements, property inventory, valuation records, bills, creditor correspondence, tax-preparer requests, proposed distributions, and receipts I supplied for estate EST-2026-04. Preserve disputed claims, unknown ownership and values, deadline conflicts, missing receipts, and questions for counsel, the preparer, appraiser, institutions, and personal representative. Do not interpret the will or law, determine entitlement or claim priority, contact anyone, file, sign, access accounts, transfer, sell, pay, settle, distribute, or claim the estate is ready or closed.",
+      "outcome": "A private appointment- and source-bound estate administration ledger accounts for each asset, liability, notice, claim, deadline, owner action, proposed distribution, and independent receipt, keeps legal, tax, valuation, entitlement, reserve, and closure questions unresolved, and prepares an exact personal-representative review handoff without estate action or professional conclusions."
+    },
+    "doneWhen": [
+      "Every in-scope authority record, source revision, asset, liability, valuation, notice, deadline, claim, reserve, action, distribution proposal, receipt, question, gap, blocker, and next owner is represented exactly once with complete reciprocal provenance and chronology",
+      "Every asserted appointment, ownership, amount, value, notice, claim, deadline, action, payment, transfer, sale, settlement, distribution, and closure state follows exact kind-appropriate evidence from the documented authority, supplier, or independent recipient",
+      "Every unknown, stale, disputed, conflicting, unsupported, or professional-judgment state remains open and routes to a qualified human without the Claw deciding legal effect, tax treatment, ownership, priority, validity, entitlement, solvency, reserve sufficiency, or readiness",
+      "Every external action remains proposed or owner-controlled, every claimed completion has an independent same-subject receipt where applicable, and the handoff exactly mirrors all unresolved state without exposing unapproved sensitive data or claiming the estate settled or closed"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads only owner-supplied minimized files and controlled references and writes a private local ledger; it grants no court, legal, tax, financial, valuation, insurance, title, account, messaging, browser, payment, transfer, sale, filing, signature, publication, scheduling, or external-system capability.",
+      "Treat wills, trusts, appointment instruments, court orders, notices, professional instructions, valuations, account statements, claims, deadlines, beneficiary records, tax records, and receipts as exact attributed evidence rather than permission or professional conclusions.",
+      "Keep every contact, filing, notice, account access, signature, certification, tax election, payment, transfer, sale, settlement, distribution, disposal, destruction, publication, scheduling, and closure action draft-only and controlled by the documented personal representative and qualified authority."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/estate-administration.schema.json",
+          "path": "schemas/estate-administration.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/estate-administration.example.json",
+          "path": "fixtures/estate-administration.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/estate-administration.md",
+          "path": "templates/estate-administration.md",
+          "role": "template"
+        }
+      ]
+  },
+  "contribution": {
+    "problem": "Administering an already-open decedent estate fragments appointment authority, court and professional records, assets, liabilities, creditor claims, notices, deadlines, valuations, tax requests, reserves, proposed distributions, actions, and receipts across sensitive folders and trackers. A generic legal-matter, archive, tax-document, contract, or household-finance workflow does not reconcile this fiduciary lifecycle without risking unsupported legal, tax, ownership, entitlement, priority, solvency, or closure conclusions.",
+    "repeatableJob": "For a documented personal representative and authorized support team, maintain one private, versioned, evidence-bound administration ledger for an already-open decedent estate that reconciles authority, assets, liabilities, notices, creditor claims, deadlines, owner actions, proposed distributions, independent receipts, professional questions, and unresolved blockers without taking estate action or making professional or fiduciary decisions.",
+    "proofPlan": "Ship an X3 package with a strict closed estate-administration artifact, representative multi-asset and multi-claim fixture, exact appointment and qualified-authority records, source revisions, asset/liability and claim totality, deadline candidates, proposed-versus-owner-executed actions, independent receipts, distributions, privacy minimization, blocked review, semantic validation, and adversarial appointment-scope, cross-estate, cross-asset, cross-claim, stale authority, unsupported ownership/value/deadline, self-issued receipt, premature distribution, entitlement/priority/solvency/closure conclusion, secret-bearing, incomplete-index, false-readiness, and malformed-input cases; add deterministic regression coverage and a current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "legal-matter-organizer",
+        "overlap": "Both maintain a private, source- and chronology-bound legal-domain record with named professional authority, deadlines, controlled evidence, sensitive parties, unresolved questions, preservation boundaries, and a non-acting review handoff.",
+        "difference": "Legal Matter Organizer owns one already-open litigation, regulatory, or advisory matter snapshot with filings, correspondence, evidence custody, privilege, conflicts, holds, tasks, and counsel decisions. Estate Administration Coordinator owns a decedent-estate fiduciary lifecycle with appointment instruments, asset and liability inventory, valuations, notices, creditor claims, reserves, proposed distributions, independent transaction receipts, beneficiary or interested-party questions, and explicit no-entitlement, no-priority, no-solvency, and no-closure conclusions."
+      },
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both reconcile a private, source-versioned administrative lifecycle with governing authority, assets or premises, recurring obligations, notices, deadlines, owner actions, payments, independent receipts, disputes, and an exact no-closure handoff.",
+        "difference": "Rental Housing Coordinator owns one tenancy under a supplied lease across rent, premises condition, maintenance, access, move state, returned property, charges, and deposit disputes. Estate Administration Coordinator owns one legally distinct decedent estate under documented appointment authority across assets, liabilities, valuations, creditor claims, notices, reserves, proposed distributions, and fiduciary questions; it has no lease, occupancy, landlord, maintenance, access, or deposit lifecycle."
+      },
+      {
+        "id": "property-insurance-claim-coordinator",
+        "overlap": "Both maintain private authority, asset and loss-adjacent evidence, valuations or amounts, notices, claims, deadlines, owner actions, independent receipts, disputes, professional questions, and residual exposure without deciding validity, entitlement, payment, or closure.",
+        "difference": "Property Insurance Claim Coordinator owns one policy-governed loss claim across coverage positions, damage items, estimates, repairs, payments, recoveries, and carrier decisions. Estate Administration Coordinator owns the entire decedent-estate administration lifecycle; insurance claims are only one possible asset or receivable source alongside appointment authority, asset title, liabilities, creditor claims, court notices, reserves, and proposed distributions."
+      },
+      {
+        "id": "identity-theft-recovery-coordinator",
+        "overlap": "Both coordinate sensitive multi-party records, official authority, institution positions, claims or disputes, deadlines, owner actions, independent receipts, privacy, urgent escalation, and unresolved exposure without contacting institutions or changing accounts.",
+        "difference": "Identity Theft Recovery Coordinator owns suspicion-versus-confirmation and official recovery routes across misuse of identity, credit, credentials, tax, benefits, insurance, and accounts. Estate Administration Coordinator owns documented post-death appointment authority and the fiduciary reconciliation of estate assets, liabilities, valuations, creditor claims, notices, reserves, proposed distributions, and beneficiary questions; it has no misuse or account-recovery determination."
+      },
+      {
+        "id": "consumer-product-recall-coordinator",
+        "overlap": "Both use exact source revisions, item or asset identity, official notices, deadlines, owner actions, independent receipts, attributed instructions, sensitive-data minimization, conflicts, and residual state without taking external action or declaring closure.",
+        "difference": "Consumer Product Recall Coordinator determines product-to-official-campaign applicability from supplied issuer criteria and follows issuer remedy evidence. Estate Administration Coordinator makes no applicability or safety determination and instead reconciles one appointed estate's assets, liabilities, valuations, creditor claims, notices, reserves, proposed distributions, professional questions, and independent transaction receipts."
+      },
+      {
+        "id": "personal-archive-curator",
+        "overlap": "Both organize highly private owner-supplied records with controlled references, retrieval state, privacy minimization, missing metadata, retention uncertainty, and blocked file or disclosure actions.",
+        "difference": "Personal Archive Curator produces a broad retrieval and tag index for mixed personal files. Estate Administration Coordinator reconciles an exact appointed-authority estate lifecycle across assets, liabilities, claims, notices, deadlines, reserves, owner actions, distributions, and independent receipts and does not organize a general personal archive."
+      },
+      {
+        "id": "tax-document-organizer",
+        "overlap": "Both organize sensitive financial and identity-adjacent records, source authority, deadlines, missing or conflicting evidence, professional-review questions, and blocked filing, payment, account, and disclosure actions.",
+        "difference": "Tax Document Organizer assembles a filing-period document packet for a taxpayer and preparer. Estate Administration Coordinator owns the wider fiduciary administration ledger, where tax-preparer requests are only one workstream alongside appointment authority, assets, liabilities, valuations, creditor claims, notices, reserves, proposed distributions, and transaction receipts."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both preserve exact governing-source revisions, obligations or claims, responsible owners, due-state evidence, performance observations, exceptions, and a non-acting review handoff.",
+        "difference": "Contract Obligation Tracker observes post-execution agreement obligations for organizations without interpreting contract meaning. Estate Administration Coordinator is bound to one decedent estate and documented personal-representative authority and reconciles estate assets, liabilities, statutory or court notice candidates, creditor claims, reserves, proposed distributions, and independent receipts rather than an agreement obligation portfolio."
+      },
+      {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both use exact source identities, amounts, complete coverage, transaction evidence, independent review, residuals, and blocked external financial actions.",
+        "difference": "Financial Account Reconciliation Coordinator mathematically partitions two account exports into exact transaction match groups and residuals. Estate Administration Coordinator does no account reconciliation or matching; it maintains authority- and subject-bound estate assets, liabilities, claims, valuations, actions, proposed distributions, and receipts while leaving ownership, validity, priority, entitlement, and solvency undecided."
+      },
+      {
+        "id": "insurance-policy-organizer",
+        "overlap": "Both preserve sensitive party, asset, beneficiary, policy or authority, claim, deadline, receipt, and professional-question evidence while blocking advice, contact, filing, payment, and account action.",
+        "difference": "Insurance Policy Organizer owns policy terms, premiums, coverage, beneficiaries, renewals, and claim readiness. Estate Administration Coordinator treats insurance records as one possible asset or claim source inside a broader court- or instrument-authorized estate administration lifecycle with liabilities, notices, creditor claims, reserves, and distributions."
+      },
+      {
+        "id": "life-timeline-keeper",
+        "overlap": "Both preserve sensitive life-event chronology, source provenance, uncertain dates, private participants, and owner-controlled review without inferring legal or family facts.",
+        "difference": "Life Timeline Keeper curates a personal chronology and memory-oriented event record. Estate Administration Coordinator operates only after an estate is already open and owns documented appointment authority, assets, liabilities, claims, notices, deadlines, actions, distributions, receipts, and fiduciary review state rather than a life narrative."
+      },
+      {
+        "id": "household-budget-steward",
+        "overlap": "Both track supplied balances, obligations, deadlines, disputed amounts, receipts, privacy, and owner-controlled payment decisions.",
+        "difference": "Household Budget Steward maintains a household spending and budget review. Estate Administration Coordinator binds financial records to one legally distinct decedent estate and appointment authority, includes title and valuation evidence, creditor claims, notices, reserves, proposed distributions, and professional questions, and cannot treat household ownership or budget decisions as estate authority."
+      }
+    ]
+  }
+}

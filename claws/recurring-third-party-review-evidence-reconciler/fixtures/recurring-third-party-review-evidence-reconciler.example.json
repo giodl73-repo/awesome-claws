@@ -1,0 +1,791 @@
+{
+  "schemaVersion": "awesomeClaws.recurringThirdPartyReviewEvidenceReconciler.v1",
+  "artifactId": "third-party-review-2026-q3",
+  "requirementCatalog": {
+    "id": "third-party-requirement-catalog",
+    "version": "v7",
+    "revision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+    "approvedByRef": "principal-catalog-owner-morgan",
+    "approvedAt": "2026-01-15T16:00:00Z",
+    "requirements": [
+      {
+        "id": "requirement-assurance-report",
+        "statement": "The service has the owner-required independent assurance report for the review cycle.",
+        "requiredEvidenceKind": "assurance-report",
+        "freshnessRuleRef": "freshness-assurance-report"
+      },
+      {
+        "id": "requirement-security-questionnaire",
+        "statement": "The service has the owner-required security questionnaire evidence for the review cycle.",
+        "requiredEvidenceKind": "security-questionnaire",
+        "freshnessRuleRef": "freshness-security-questionnaire"
+      },
+      {
+        "id": "requirement-subprocessor-disclosure",
+        "statement": "The service has the owner-required subprocessor disclosure evidence for the review cycle.",
+        "requiredEvidenceKind": "subprocessor-disclosure",
+        "freshnessRuleRef": "freshness-subprocessor-disclosure"
+      },
+      {
+        "id": "requirement-continuity-test",
+        "statement": "The service has the owner-required continuity-test evidence for the review cycle.",
+        "requiredEvidenceKind": "continuity-test",
+        "freshnessRuleRef": "freshness-continuity-test"
+      }
+    ],
+    "cells": [
+      {
+        "id": "cell-alpine-assurance",
+        "vendorServiceRef": "vendor-service-alpine-support",
+        "requirementRef": "requirement-assurance-report",
+        "ownerRef": "principal-service-owner-olivia",
+        "applicability": "owner-declared-applicable",
+        "declaredAt": "2026-01-10T14:00:00Z",
+        "declarationEvidenceRef": "evidence-applicability-alpine-assurance"
+      },
+      {
+        "id": "cell-alpine-security",
+        "vendorServiceRef": "vendor-service-alpine-support",
+        "requirementRef": "requirement-security-questionnaire",
+        "ownerRef": "principal-service-owner-olivia",
+        "applicability": "owner-declared-applicable",
+        "declaredAt": "2026-01-10T14:05:00Z",
+        "declarationEvidenceRef": "evidence-applicability-alpine-security"
+      },
+      {
+        "id": "cell-alpine-subprocessor",
+        "vendorServiceRef": "vendor-service-alpine-support",
+        "requirementRef": "requirement-subprocessor-disclosure",
+        "ownerRef": "principal-service-owner-olivia",
+        "applicability": "owner-declared-applicable",
+        "declaredAt": "2026-01-10T14:10:00Z",
+        "declarationEvidenceRef": "evidence-applicability-alpine-subprocessor"
+      },
+      {
+        "id": "cell-brightpay-security",
+        "vendorServiceRef": "vendor-service-brightpay-payroll",
+        "requirementRef": "requirement-security-questionnaire",
+        "ownerRef": "principal-service-owner-ethan",
+        "applicability": "owner-declared-applicable",
+        "declaredAt": "2026-01-11T15:00:00Z",
+        "declarationEvidenceRef": "evidence-applicability-brightpay-security"
+      },
+      {
+        "id": "cell-brightpay-subprocessor",
+        "vendorServiceRef": "vendor-service-brightpay-payroll",
+        "requirementRef": "requirement-subprocessor-disclosure",
+        "ownerRef": "principal-service-owner-ethan",
+        "applicability": "owner-declared-applicable",
+        "declaredAt": "2026-01-11T15:05:00Z",
+        "declarationEvidenceRef": "evidence-applicability-brightpay-subprocessor"
+      },
+      {
+        "id": "cell-brightpay-continuity",
+        "vendorServiceRef": "vendor-service-brightpay-payroll",
+        "requirementRef": "requirement-continuity-test",
+        "ownerRef": "principal-service-owner-ethan",
+        "applicability": "owner-declared-applicable",
+        "declaredAt": "2026-01-11T15:10:00Z",
+        "declarationEvidenceRef": "evidence-applicability-brightpay-continuity"
+      }
+    ]
+  },
+  "vendorServices": [
+    {
+      "id": "vendor-service-alpine-support",
+      "vendorId": "vendor-alpine",
+      "vendorName": "Alpine SaaS",
+      "serviceId": "service-customer-support",
+      "serviceName": "Customer Support Platform",
+      "ownerRef": "principal-service-owner-olivia",
+      "subprocessorRefs": [
+        "subprocessor-shared-cloud"
+      ]
+    },
+    {
+      "id": "vendor-service-brightpay-payroll",
+      "vendorId": "vendor-brightpay",
+      "vendorName": "BrightPay Systems",
+      "serviceId": "service-managed-payroll",
+      "serviceName": "Managed Payroll",
+      "ownerRef": "principal-service-owner-ethan",
+      "subprocessorRefs": [
+        "subprocessor-shared-cloud"
+      ]
+    }
+  ],
+  "subprocessors": [
+    {
+      "id": "subprocessor-shared-cloud",
+      "name": "Shared Cloud Hosting",
+      "serviceRefs": [
+        "vendor-service-alpine-support",
+        "vendor-service-brightpay-payroll"
+      ],
+      "declarationEvidenceRef": "evidence-shared-subprocessor-disclosure"
+    }
+  ],
+  "freshnessRules": [
+    {
+      "id": "freshness-assurance-report",
+      "evidenceKind": "assurance-report",
+      "maxAgeDays": 365,
+      "explicitValidUntilRequired": true
+    },
+    {
+      "id": "freshness-security-questionnaire",
+      "evidenceKind": "security-questionnaire",
+      "maxAgeDays": 365,
+      "explicitValidUntilRequired": true
+    },
+    {
+      "id": "freshness-subprocessor-disclosure",
+      "evidenceKind": "subprocessor-disclosure",
+      "maxAgeDays": 365,
+      "explicitValidUntilRequired": true
+    },
+    {
+      "id": "freshness-continuity-test",
+      "evidenceKind": "continuity-test",
+      "maxAgeDays": 365,
+      "explicitValidUntilRequired": true
+    },
+    {
+      "id": "freshness-applicability-declaration",
+      "evidenceKind": "applicability-declaration",
+      "maxAgeDays": 365,
+      "explicitValidUntilRequired": true
+    },
+    {
+      "id": "freshness-cycle-approval",
+      "evidenceKind": "cycle-approval",
+      "maxAgeDays": 365,
+      "explicitValidUntilRequired": true
+    },
+    {
+      "id": "freshness-remediation-record",
+      "evidenceKind": "remediation-record",
+      "maxAgeDays": 90,
+      "explicitValidUntilRequired": true
+    },
+    {
+      "id": "freshness-exception-approval",
+      "evidenceKind": "exception-approval",
+      "maxAgeDays": 180,
+      "explicitValidUntilRequired": true
+    }
+  ],
+  "principals": [
+    {
+      "id": "principal-program-owner-ava",
+      "name": "Ava Thompson",
+      "kind": "human",
+      "role": "review-program-owner",
+      "humanIdentityRef": "controlled://identity/ava-thompson",
+      "authoritySourceRef": "controlled://authority/review-program-owner/ava-thompson",
+      "authorityObservedAt": "2026-07-01T12:00:00Z"
+    },
+    {
+      "id": "principal-catalog-owner-morgan",
+      "name": "Morgan Ellis",
+      "kind": "human",
+      "role": "requirement-catalog-owner",
+      "humanIdentityRef": "controlled://identity/morgan-ellis",
+      "authoritySourceRef": "controlled://authority/requirement-catalog-owner/morgan-ellis",
+      "authorityObservedAt": "2026-01-01T12:05:00Z"
+    },
+    {
+      "id": "principal-service-owner-olivia",
+      "name": "Olivia Chen",
+      "kind": "human",
+      "role": "vendor-service-owner",
+      "humanIdentityRef": "controlled://identity/olivia-chen",
+      "authoritySourceRef": "controlled://authority/vendor-service-owner/olivia-chen",
+      "authorityObservedAt": "2026-01-01T12:10:00Z"
+    },
+    {
+      "id": "principal-service-owner-ethan",
+      "name": "Ethan Brooks",
+      "kind": "human",
+      "role": "vendor-service-owner",
+      "humanIdentityRef": "controlled://identity/ethan-brooks",
+      "authoritySourceRef": "controlled://authority/vendor-service-owner/ethan-brooks",
+      "authorityObservedAt": "2026-01-01T12:15:00Z"
+    },
+    {
+      "id": "principal-evidence-custodian-priya",
+      "name": "Priya Desai",
+      "kind": "human",
+      "role": "evidence-custodian",
+      "humanIdentityRef": "controlled://identity/priya-desai",
+      "authoritySourceRef": "controlled://authority/evidence-custodian/priya-desai",
+      "authorityObservedAt": "2025-01-01T12:00:00Z"
+    },
+    {
+      "id": "principal-reviewer-riley",
+      "name": "Riley Chen",
+      "kind": "human",
+      "role": "reviewer",
+      "humanIdentityRef": "controlled://identity/riley-chen",
+      "authoritySourceRef": "controlled://authority/third-party-reviewer/riley-chen",
+      "authorityObservedAt": "2026-01-01T12:00:00Z"
+    },
+    {
+      "id": "principal-remediation-owner-sam",
+      "name": "Sam Rivera",
+      "kind": "human",
+      "role": "remediation-owner",
+      "humanIdentityRef": "controlled://identity/sam-rivera",
+      "authoritySourceRef": "controlled://authority/remediation-owner/sam-rivera",
+      "authorityObservedAt": "2026-07-01T12:30:00Z"
+    },
+    {
+      "id": "principal-exception-authority-jordan",
+      "name": "Jordan Blake",
+      "kind": "human",
+      "role": "exception-authority",
+      "humanIdentityRef": "controlled://identity/jordan-blake",
+      "authoritySourceRef": "controlled://authority/exception-authority/jordan-blake",
+      "authorityObservedAt": "2026-07-01T12:35:00Z"
+    }
+  ],
+  "cycle": {
+    "id": "review-cycle-2026-q3",
+    "status": "approved",
+    "requirementCatalogRef": "third-party-requirement-catalog",
+    "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+    "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+    "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+    "predecessorCycleRef": "review-cycle-2026-q2",
+    "opensAt": "2026-08-01T00:00:00Z",
+    "closesAt": "2026-09-15T18:00:00Z",
+    "approvedByRef": "principal-program-owner-ava",
+    "approvedAt": "2026-07-20T15:00:00Z",
+    "approvalEvidenceRef": "evidence-cycle-approval",
+    "handoffOwnerRef": "principal-program-owner-ava"
+  },
+  "predecessorCycle": {
+    "id": "review-cycle-2026-q2",
+    "requirementCatalogRef": "third-party-requirement-catalog",
+    "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+    "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+    "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+    "closedAt": "2026-06-30T18:00:00Z",
+    "decisions": [
+      {
+        "id": "predecessor-decision-alpine-assurance",
+        "cellRef": "cell-alpine-assurance",
+        "decisionType": "evidence-confirmed",
+        "decidedByRef": "principal-reviewer-riley",
+        "decidedAt": "2026-06-25T15:00:00Z",
+        "evidenceRefs": [
+          "evidence-alpine-assurance-report"
+        ],
+        "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+        "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+        "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+        "cellDigest": "sha256:2a87beea40ed5ef26413b6c751ed640c0c163c6adf787507c35d201ff29d719d"
+      },
+      {
+        "id": "predecessor-decision-alpine-security",
+        "cellRef": "cell-alpine-security",
+        "decisionType": "evidence-confirmed",
+        "decidedByRef": "principal-reviewer-riley",
+        "decidedAt": "2026-06-25T15:05:00Z",
+        "evidenceRefs": [
+          "evidence-alpine-security-questionnaire"
+        ],
+        "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+        "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+        "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+        "cellDigest": "sha256:f50983c9c0ef8299b06bf040b126598717fcb6fb9cfa3eff60844453a6bc09c2"
+      },
+      {
+        "id": "predecessor-decision-alpine-subprocessor",
+        "cellRef": "cell-alpine-subprocessor",
+        "decisionType": "evidence-confirmed",
+        "decidedByRef": "principal-reviewer-riley",
+        "decidedAt": "2026-06-25T15:10:00Z",
+        "evidenceRefs": [
+          "evidence-shared-subprocessor-disclosure"
+        ],
+        "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+        "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+        "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+        "cellDigest": "sha256:999f7bc1b76069cf36d77b0425d5fc46241fee382c3ac61a09e3f97c689b83a1"
+      },
+      {
+        "id": "predecessor-decision-brightpay-security",
+        "cellRef": "cell-brightpay-security",
+        "decisionType": "evidence-confirmed",
+        "decidedByRef": "principal-reviewer-riley",
+        "decidedAt": "2026-06-25T15:15:00Z",
+        "evidenceRefs": [
+          "evidence-brightpay-security-questionnaire"
+        ],
+        "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+        "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+        "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+        "cellDigest": "sha256:2619082d25bbdf21332377eb17ee9bfafbfc78b5d2585bdbd5483123a16d1672"
+      },
+      {
+        "id": "predecessor-decision-brightpay-subprocessor",
+        "cellRef": "cell-brightpay-subprocessor",
+        "decisionType": "evidence-confirmed",
+        "decidedByRef": "principal-reviewer-riley",
+        "decidedAt": "2026-06-25T15:20:00Z",
+        "evidenceRefs": [
+          "evidence-shared-subprocessor-disclosure"
+        ],
+        "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+        "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+        "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+        "cellDigest": "sha256:aac4c48e30edf2c48a66f142c5ef0ec23e4f3d0cde2a1e31272b54f8ea2ea3e5"
+      },
+      {
+        "id": "predecessor-decision-brightpay-continuity",
+        "cellRef": "cell-brightpay-continuity",
+        "decisionType": "evidence-confirmed",
+        "decidedByRef": "principal-reviewer-riley",
+        "decidedAt": "2026-06-25T15:25:00Z",
+        "evidenceRefs": [
+          "evidence-brightpay-continuity-test"
+        ],
+        "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+        "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+        "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+        "cellDigest": "sha256:39a9472a7352ba11adc0bfaac7408efc13f12878ff7aa3d45e74d8ac7e736a3c"
+      }
+    ],
+    "sourceAuthority": {
+      "ownerRef": "principal-program-owner-ava",
+      "signingKeyId": "key-third-party-review-predecessor-2026",
+      "issuedAt": "2026-07-01T13:00:00Z",
+      "signature": "A/f8Y80PWCWzIDmLaoRhMxUGf5AFwiVE1R2kzgxHkvVTDmfxXzuSY4NcuY8QXOEOy/IFCgXVQ70tKx41Dwf5Bg=="
+    },
+    "artifactDigest": "sha256:50d997b38ffe44189e7cf20a2a58e93ba0538c2f0abf64215c88633011abbc78"
+  },
+  "evidence": [
+    {
+      "id": "evidence-applicability-alpine-assurance",
+      "kind": "applicability-declaration",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-alpine-assurance",
+      "cellRefs": [
+        "cell-alpine-assurance"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/applicability/alpine-assurance",
+      "sourceVersion": "v1",
+      "observedAt": "2026-01-10T14:01:00Z",
+      "validUntil": "2027-01-10T14:01:00Z",
+      "suppliedByRef": "principal-service-owner-olivia",
+      "sourceContentDigest": "sha256:bd9cd12cc398d8190795cc08f167785afa9c4566d129e9727ce95de59c139cee"
+    },
+    {
+      "id": "evidence-applicability-alpine-security",
+      "kind": "applicability-declaration",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-alpine-security",
+      "cellRefs": [
+        "cell-alpine-security"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/applicability/alpine-security",
+      "sourceVersion": "v1",
+      "observedAt": "2026-01-10T14:06:00Z",
+      "validUntil": "2027-01-10T14:06:00Z",
+      "suppliedByRef": "principal-service-owner-olivia",
+      "sourceContentDigest": "sha256:98872955a22e2311eb4885d9137f70b885159e8ecdf3fabcd7b02df910fbc773"
+    },
+    {
+      "id": "evidence-applicability-alpine-subprocessor",
+      "kind": "applicability-declaration",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-alpine-subprocessor",
+      "cellRefs": [
+        "cell-alpine-subprocessor"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/applicability/alpine-subprocessor",
+      "sourceVersion": "v1",
+      "observedAt": "2026-01-10T14:11:00Z",
+      "validUntil": "2027-01-10T14:11:00Z",
+      "suppliedByRef": "principal-service-owner-olivia",
+      "sourceContentDigest": "sha256:ed4c077551222e84ea7d350dd36bd5652c72b2d988889ae3f373b09ebbc11236"
+    },
+    {
+      "id": "evidence-applicability-brightpay-security",
+      "kind": "applicability-declaration",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-brightpay-security",
+      "cellRefs": [
+        "cell-brightpay-security"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/applicability/brightpay-security",
+      "sourceVersion": "v1",
+      "observedAt": "2026-01-11T15:01:00Z",
+      "validUntil": "2027-01-11T15:01:00Z",
+      "suppliedByRef": "principal-service-owner-ethan",
+      "sourceContentDigest": "sha256:735db0cedc31d977968149777a9f042e72fe46d03aec3d93f0d840d1b767a25d"
+    },
+    {
+      "id": "evidence-applicability-brightpay-subprocessor",
+      "kind": "applicability-declaration",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-brightpay-subprocessor",
+      "cellRefs": [
+        "cell-brightpay-subprocessor"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/applicability/brightpay-subprocessor",
+      "sourceVersion": "v1",
+      "observedAt": "2026-01-11T15:06:00Z",
+      "validUntil": "2027-01-11T15:06:00Z",
+      "suppliedByRef": "principal-service-owner-ethan",
+      "sourceContentDigest": "sha256:53b7bc0050be4dd62235668d45a79cb39cd0d93f690caec864dbffb9b6352b94"
+    },
+    {
+      "id": "evidence-applicability-brightpay-continuity",
+      "kind": "applicability-declaration",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-brightpay-continuity",
+      "cellRefs": [
+        "cell-brightpay-continuity"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/applicability/brightpay-continuity",
+      "sourceVersion": "v1",
+      "observedAt": "2026-01-11T15:11:00Z",
+      "validUntil": "2027-01-11T15:11:00Z",
+      "suppliedByRef": "principal-service-owner-ethan",
+      "sourceContentDigest": "sha256:f53723bb4068d9cf0849e86bbf2d2fbdd44e25902ec3b94282a24e35cdacf0d4"
+    },
+    {
+      "id": "evidence-cycle-approval",
+      "kind": "cycle-approval",
+      "subjectType": "review-cycle",
+      "subjectRef": "review-cycle-2026-q3",
+      "cellRefs": [],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/cycle-approvals/2026-q3",
+      "sourceVersion": "v1",
+      "observedAt": "2026-07-20T15:01:00Z",
+      "validUntil": "2027-07-20T15:01:00Z",
+      "suppliedByRef": "principal-program-owner-ava",
+      "sourceContentDigest": "sha256:cb5c230a6c4ba93f7980d31dd50312af0017488635853f8bf95fa00866a8148b"
+    },
+    {
+      "id": "evidence-alpine-assurance-report",
+      "kind": "assurance-report",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-alpine-assurance",
+      "cellRefs": [
+        "cell-alpine-assurance"
+      ],
+      "sourceClass": "public-trust",
+      "sourceRef": "https://trust.alpine.example/assurance/soc3-2025",
+      "sourceVersion": "2025",
+      "observedAt": "2025-09-10T12:00:00Z",
+      "validUntil": "2026-09-10T12:00:00Z",
+      "suppliedByRef": "principal-evidence-custodian-priya",
+      "sourceContentDigest": "sha256:04ec04048f95965cab4ab4122e2fa969215f48c3df4381bc238bb98908a9eafc"
+    },
+    {
+      "id": "evidence-alpine-security-questionnaire",
+      "kind": "security-questionnaire",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-alpine-security",
+      "cellRefs": [
+        "cell-alpine-security"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/questionnaires/alpine-2026",
+      "sourceVersion": "v3",
+      "observedAt": "2026-02-10T13:00:00Z",
+      "validUntil": "2027-02-10T13:00:00Z",
+      "suppliedByRef": "principal-evidence-custodian-priya",
+      "sourceContentDigest": "sha256:d771e1a7768eb254ca816a9c412e3a5825bb2a448d75581af28c083696ec599d"
+    },
+    {
+      "id": "evidence-brightpay-security-questionnaire",
+      "kind": "security-questionnaire",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-brightpay-security",
+      "cellRefs": [
+        "cell-brightpay-security"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/questionnaires/brightpay-2026",
+      "sourceVersion": "v4",
+      "observedAt": "2026-02-12T13:00:00Z",
+      "validUntil": "2027-02-12T13:00:00Z",
+      "suppliedByRef": "principal-evidence-custodian-priya",
+      "sourceContentDigest": "sha256:3b3b3b4e7e075b174597af8038082ae2b32b3900f3ffbd8a69c171504bf2b52c"
+    },
+    {
+      "id": "evidence-shared-subprocessor-disclosure",
+      "kind": "subprocessor-disclosure",
+      "subjectType": "subprocessor",
+      "subjectRef": "subprocessor-shared-cloud",
+      "cellRefs": [
+        "cell-alpine-subprocessor",
+        "cell-brightpay-subprocessor"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/subprocessors/shared-cloud-2026",
+      "sourceVersion": "v2",
+      "observedAt": "2026-03-01T14:00:00Z",
+      "validUntil": "2027-03-01T14:00:00Z",
+      "suppliedByRef": "principal-evidence-custodian-priya",
+      "sourceContentDigest": "sha256:93fd75511d938eb572baf34479cee1a106d982648d98ca5f74048a0f8ea96be2"
+    },
+    {
+      "id": "evidence-brightpay-continuity-test",
+      "kind": "continuity-test",
+      "subjectType": "requirement-cell",
+      "subjectRef": "cell-brightpay-continuity",
+      "cellRefs": [
+        "cell-brightpay-continuity"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/continuity-tests/brightpay-2026",
+      "sourceVersion": "v2",
+      "observedAt": "2026-04-15T14:00:00Z",
+      "validUntil": "2027-04-15T14:00:00Z",
+      "suppliedByRef": "principal-evidence-custodian-priya",
+      "sourceContentDigest": "sha256:1b31efa522b57bbcc09102b1e594e4502dc1d7d1106142bb7e83d5cd85078978"
+    },
+    {
+      "id": "evidence-remediation-alpine-assurance",
+      "kind": "remediation-record",
+      "subjectType": "remediation",
+      "subjectRef": "remediation-alpine-assurance",
+      "cellRefs": [
+        "cell-alpine-assurance"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/remediations/alpine-assurance-2026-q3",
+      "sourceVersion": "v1",
+      "observedAt": "2026-09-11T14:05:00Z",
+      "validUntil": "2026-12-10T14:05:00Z",
+      "suppliedByRef": "principal-remediation-owner-sam",
+      "sourceContentDigest": "sha256:64cc80baa268abd7dc11af372c8544bc1d1f5ec5cc33d68f8a6f672f84a8cc43"
+    },
+    {
+      "id": "evidence-exception-brightpay-security",
+      "kind": "exception-approval",
+      "subjectType": "exception",
+      "subjectRef": "exception-brightpay-security",
+      "cellRefs": [
+        "cell-brightpay-security"
+      ],
+      "sourceClass": "owner-controlled",
+      "sourceRef": "controlled://third-party-review/exceptions/brightpay-security-2026-q3",
+      "sourceVersion": "v1",
+      "observedAt": "2026-08-20T16:05:00Z",
+      "validUntil": "2026-12-31T23:59:59Z",
+      "suppliedByRef": "principal-exception-authority-jordan",
+      "sourceContentDigest": "sha256:74fcabdc30d6c19c4235539737a38220307335b3f854df92e1aa1a8f309cb6fd"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-alpine-assurance",
+      "cellRef": "cell-alpine-assurance",
+      "decisionType": "evidence-expired-reopened",
+      "decidedByRef": "principal-reviewer-riley",
+      "decidedAt": "2026-09-15T16:00:00Z",
+      "evidenceRefs": [
+        "evidence-alpine-assurance-report",
+        "evidence-remediation-alpine-assurance"
+      ],
+      "predecessorDecisionRef": "predecessor-decision-alpine-assurance",
+      "remediationRef": "remediation-alpine-assurance",
+      "exceptionRef": null,
+      "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+      "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+      "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+      "cellDigest": "sha256:2a87beea40ed5ef26413b6c751ed640c0c163c6adf787507c35d201ff29d719d"
+    },
+    {
+      "id": "decision-alpine-security",
+      "cellRef": "cell-alpine-security",
+      "decisionType": "evidence-confirmed",
+      "decidedByRef": "principal-reviewer-riley",
+      "decidedAt": "2026-09-15T16:05:00Z",
+      "evidenceRefs": [
+        "evidence-alpine-security-questionnaire"
+      ],
+      "predecessorDecisionRef": "predecessor-decision-alpine-security",
+      "remediationRef": null,
+      "exceptionRef": null,
+      "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+      "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+      "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+      "cellDigest": "sha256:f50983c9c0ef8299b06bf040b126598717fcb6fb9cfa3eff60844453a6bc09c2"
+    },
+    {
+      "id": "decision-alpine-subprocessor",
+      "cellRef": "cell-alpine-subprocessor",
+      "decisionType": "evidence-confirmed",
+      "decidedByRef": "principal-reviewer-riley",
+      "decidedAt": "2026-09-15T16:10:00Z",
+      "evidenceRefs": [
+        "evidence-shared-subprocessor-disclosure"
+      ],
+      "predecessorDecisionRef": "predecessor-decision-alpine-subprocessor",
+      "remediationRef": null,
+      "exceptionRef": null,
+      "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+      "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+      "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+      "cellDigest": "sha256:999f7bc1b76069cf36d77b0425d5fc46241fee382c3ac61a09e3f97c689b83a1"
+    },
+    {
+      "id": "decision-brightpay-security",
+      "cellRef": "cell-brightpay-security",
+      "decisionType": "exception-recorded",
+      "decidedByRef": "principal-reviewer-riley",
+      "decidedAt": "2026-09-15T16:15:00Z",
+      "evidenceRefs": [
+        "evidence-exception-brightpay-security"
+      ],
+      "predecessorDecisionRef": "predecessor-decision-brightpay-security",
+      "remediationRef": null,
+      "exceptionRef": "exception-brightpay-security",
+      "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+      "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+      "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+      "cellDigest": "sha256:2619082d25bbdf21332377eb17ee9bfafbfc78b5d2585bdbd5483123a16d1672"
+    },
+    {
+      "id": "decision-brightpay-subprocessor",
+      "cellRef": "cell-brightpay-subprocessor",
+      "decisionType": "evidence-confirmed",
+      "decidedByRef": "principal-reviewer-riley",
+      "decidedAt": "2026-09-15T16:20:00Z",
+      "evidenceRefs": [
+        "evidence-shared-subprocessor-disclosure"
+      ],
+      "predecessorDecisionRef": "predecessor-decision-brightpay-subprocessor",
+      "remediationRef": null,
+      "exceptionRef": null,
+      "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+      "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+      "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+      "cellDigest": "sha256:aac4c48e30edf2c48a66f142c5ef0ec23e4f3d0cde2a1e31272b54f8ea2ea3e5"
+    },
+    {
+      "id": "decision-brightpay-continuity",
+      "cellRef": "cell-brightpay-continuity",
+      "decisionType": "evidence-confirmed",
+      "decidedByRef": "principal-reviewer-riley",
+      "decidedAt": "2026-09-15T16:25:00Z",
+      "evidenceRefs": [
+        "evidence-brightpay-continuity-test"
+      ],
+      "predecessorDecisionRef": "predecessor-decision-brightpay-continuity",
+      "remediationRef": null,
+      "exceptionRef": null,
+      "requirementCatalogRevision": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+      "cellIndexRevision": "sha256:71c98375cf47f5dba352b5a23a3c17f21e4e44d109a36b4619b245dbcc51c3cc",
+      "freshnessRuleRevision": "sha256:bead429b454ae796becf4938b48681e73dbe3deb2597a6621fb205e6ab916bf4",
+      "cellDigest": "sha256:39a9472a7352ba11adc0bfaac7408efc13f12878ff7aa3d45e74d8ac7e736a3c"
+    }
+  ],
+  "remediations": [
+    {
+      "id": "remediation-alpine-assurance",
+      "cellRef": "cell-alpine-assurance",
+      "ownerRef": "principal-remediation-owner-sam",
+      "state": "in-progress",
+      "cause": "evidence-expired",
+      "expiredEvidenceRef": "evidence-alpine-assurance-report",
+      "predecessorDecisionRef": "predecessor-decision-alpine-assurance",
+      "openedAt": "2026-09-11T14:00:00Z",
+      "dueAt": "2026-09-30T17:00:00Z",
+      "evidenceRef": "evidence-remediation-alpine-assurance"
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-brightpay-security",
+      "cellRef": "cell-brightpay-security",
+      "status": "active",
+      "approvedByRef": "principal-exception-authority-jordan",
+      "approvedAt": "2026-08-20T16:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "evidenceRef": "evidence-exception-brightpay-security",
+      "scopeDigest": "sha256:d8cd87ebc37c2f476998986ed0cb74b569a953a6c000ce16891b773b3e8fd19e"
+    }
+  ],
+  "riskAcceptanceAttempts": [
+    {
+      "id": "risk-attempt-alpine-assurance",
+      "cellRef": "cell-alpine-assurance",
+      "attemptedByRef": "principal-service-owner-ethan",
+      "attemptedAt": "2026-09-15T16:30:00Z",
+      "assertedAuthoritySourceRef": "controlled://authority/vendor-service-owner/ethan-brooks",
+      "requestedDisposition": "accept-risk"
+    }
+  ],
+  "sourceAuthority": {
+    "ownerRef": "principal-program-owner-ava",
+    "signingKeyId": "key-third-party-review-2026",
+    "issuedAt": "2026-09-16T19:00:00Z",
+    "signature": "33K6zjvnmHyp74g6GJFgPYMS0C6wvUB4WazaIN1SjBGFS9OFCFwV8aYwRaC8DmEDol4/7RDR50SVCNMDhVJKAQ=="
+  },
+  "ownerManifests": [
+    {
+      "kind": "requirement-catalog",
+      "subjectRef": "third-party-requirement-catalog",
+      "ownerRef": "principal-catalog-owner-morgan",
+      "signingKeyId": "key-catalog-owner-2026",
+      "issuedAt": "2026-01-15T16:00:00Z",
+      "subjectDigest": "sha256:0381e2e65041f5ee39559eda26ef1d6e714c91fa125eee8827d3a862bdd3d39b",
+      "cellRefs": [],
+      "cellDigests": [],
+      "signature": "I5QzsjkT9EZa0KC5sLiv3QIZ2ynICJ++/eZCVE4AUHcDF8YwPtl5n6R45LwUECRPO7Sjo3ysMvxulIdfpCmZBg=="
+    },
+    {
+      "kind": "vendor-service-applicability",
+      "subjectRef": "vendor-service-alpine-support",
+      "ownerRef": "principal-service-owner-olivia",
+      "signingKeyId": "key-service-owner-olivia-2026",
+      "issuedAt": "2026-01-10T15:00:00Z",
+      "subjectDigest": "sha256:03dc43b54a9e9fc1fc26a8a067c69aeb246c57794bbabf61d4afa40868a632b7",
+      "cellRefs": [
+        "cell-alpine-assurance",
+        "cell-alpine-security",
+        "cell-alpine-subprocessor"
+      ],
+      "cellDigests": [
+        "sha256:2a87beea40ed5ef26413b6c751ed640c0c163c6adf787507c35d201ff29d719d",
+        "sha256:999f7bc1b76069cf36d77b0425d5fc46241fee382c3ac61a09e3f97c689b83a1",
+        "sha256:f50983c9c0ef8299b06bf040b126598717fcb6fb9cfa3eff60844453a6bc09c2"
+      ],
+      "signature": "A5IkkV/hnt0F9J+pV7pbmY5rUEsMAzxf/vhBOtKHnz6KnIbdErWhMwvq7uXD41NKcSes3i7zykHo1TZo8P1tCA=="
+    },
+    {
+      "kind": "vendor-service-applicability",
+      "subjectRef": "vendor-service-brightpay-payroll",
+      "ownerRef": "principal-service-owner-ethan",
+      "signingKeyId": "key-service-owner-ethan-2026",
+      "issuedAt": "2026-01-11T16:00:00Z",
+      "subjectDigest": "sha256:58068973d1e121d83db411e72ae2b3a2bb9eefdc30a915917d3ac33268909751",
+      "cellRefs": [
+        "cell-brightpay-continuity",
+        "cell-brightpay-security",
+        "cell-brightpay-subprocessor"
+      ],
+      "cellDigests": [
+        "sha256:2619082d25bbdf21332377eb17ee9bfafbfc78b5d2585bdbd5483123a16d1672",
+        "sha256:39a9472a7352ba11adc0bfaac7408efc13f12878ff7aa3d45e74d8ac7e736a3c",
+        "sha256:aac4c48e30edf2c48a66f142c5ef0ec23e4f3d0cde2a1e31272b54f8ea2ea3e5"
+      ],
+      "signature": "EhVSjHz+J7wIwGpE/gHQxFF/uc+2BFcOz5JxqUvkS6hfrujPgZk5c6BHZXJKCVA3KbOtS4sFyujyf0Gflnh2CA=="
+    }
+  ]
+}

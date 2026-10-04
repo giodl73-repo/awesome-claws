@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "workforce-planning-partner",
+  "scenario": "Reconcile approved organization plan OP-2027 revision 4 against Q1 funded positions and approved aggregate hiring and attrition assumptions for the Platform organization.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile approved organization plan OP-2027 revision 4 against Q1 funded positions and approved aggregate hiring and attrition assumptions for the Platform organization."
+    },
+    {
+      "role": "agent",
+      "text": "I bound the review to OP-2027 revision 4, checked the approved role-level privacy scope, and separated approved demand and funding facts from modeled hiring and attrition assumptions."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/workforce-plan-handoff.md and an inline review surface with exact demand-to-position reconciliation, aggregate scenario math, capability, succession, and location gaps, owner actions, and pending manager decisions. No personnel action or headcount approval occurred."
+    }
+  ],
+  "report": {
+    "title": "Workforce planning partner session handoff",
+    "summary": "A revision-bound X3 report and X4 visual showing funded role demand variances, aggregate scenarios, capability and succession gaps, location constraints, owned actions, and unresolved manager decisions without any personnel action or headcount approval.",
+    "output": "outputs/workforce-plan-handoff.md",
+    "items": [
+      {
+        "title": "Revision-bound workforce reconciliation ledger",
+        "summary": "Every demand line reconciles to the exact plan revision, funded position evidence, period, organization, role, and allowed location or is explicitly blocked",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Aggregate hiring and attrition scenario comparison",
+        "summary": "Every scenario result preserves its hiring and attrition assumptions and is separated from approved baseline facts",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Capability, succession, and location constraint register",
+        "summary": "Every material capability, succession, location, funding, or privacy gap has an owner action or named decision checkpoint",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner action register",
+        "summary": "The handoff names decision owners and explicitly withholds personnel actions, reorganization, employee communication, HR-system mutation, and headcount approval",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Manager decision checkpoint brief",
+        "summary": "Every demand line reconciles to the exact plan revision, funded position evidence, period, organization, role, and allowed location or is explicitly blocked",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -6,6 +6,7 @@ import addFormats from "ajv-formats";
 import {
   buildMockPlusInventory,
   loadMockPlusContext,
+  mockSemanticValidationOptions,
 } from "./mock-plus-lib.mjs";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 
@@ -107,7 +108,11 @@ export async function discoverSemanticRecipes() {
       if (!validate(candidate)) continue;
       let findings;
       try {
-        findings = validateArtifactSemantics(entry.id, candidate);
+        findings = validateArtifactSemantics(
+          entry.id,
+          candidate,
+          mockSemanticValidationOptions(entry.id),
+        );
       } catch (error) {
         errors.push({
           ...mutation,

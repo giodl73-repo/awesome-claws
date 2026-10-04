@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "civic-services-navigator",
+  "scenario": "Map the official route for obtaining a reduced-fare transit card at my city-county boundary. Preserve which authority serves my address, the dated criterion text, the evidence states I chose to provide, interpreter and offline channels, step dependencies, and questions the transit authority must answer. Do not decide qualification or open a case.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Map the official route for obtaining a reduced-fare transit card at my city-county boundary. Preserve which authority serves my address, the dated criterion text, the evidence states I chose to provide, interpreter and offline channels, step dependencies, and questions the transit authority must answer. Do not decide qualification or open a case."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced and validated outputs/service-access.json, then rendered the durable handoff at outputs/civic-services-navigator-handoff.md with jurisdiction evidence, route versions, resident-controlled evidence states, agency questions, and blocked actions separated."
+    }
+  ],
+  "report": {
+    "title": "Civic services navigator session handoff",
+    "summary": "A versioned route map distinguishes city and county coverage, binds each criterion to resident-controlled evidence state, preserves offline and language-access paths, orders the intake dependencies, and routes unresolved adjudication questions to the transit authority.",
+    "output": "outputs/civic-services-navigator-handoff.md",
+    "items": [
+      {
+        "title": "Jurisdiction and responsible-agency resolution ledger",
+        "summary": "Candidate city and county service-area claims retain their official locator evidence, resolution state, and responsible agency.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Versioned public-service route map",
+        "summary": "Each candidate program retains agency identity, jurisdiction, official revision, status, fees, channels, and source freshness.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Criterion-to-resident-evidence crosswalk",
+        "summary": "Published criteria map to self-attested, document-backed, withheld, unknown, or agency-review-needed states without an eligibility conclusion.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Access-step dependency graph and channel matrix",
+        "summary": "Ordered resident steps preserve online, in-person, interpreter, language, and accessibility paths while external initiation remains blocked.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Agency-question docket and resident handoff",
+        "summary": "Open interpretation and accommodation questions remain agency-owned, and the selected next route remains resident-controlled.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,708 @@
+{
+  "schemaVersion": "awesomeClaws.problemKnownErrorPublicTrust.v1",
+  "id": "public-trust-status-2026-09-17",
+  "publisher": "Contoso public service status",
+  "issuer": {
+    "id": "issuer-awesome-claws-proof",
+    "displayName": "Awesome Claws proof trust issuer",
+    "keyRef": "https://awesome-claws.example/keys/problem-proof-v2/issuer",
+    "keyId": "key-awesome-claws-proof-issuer",
+    "algorithm": "ed25519"
+  },
+  "identityCredentials": [
+    {
+      "id": "credential-problem-owner",
+      "principalRef": "principal-problem-owner",
+      "principalRecordDigest": "sha256:c185088079b2ff95dc7811077f8aeab003b93b5de4ca71606a468e9e17e4f046",
+      "assurance": "verified-human",
+      "subjectKeyId": "key-problem-owner",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "credentialDigest": "sha256:31aa1f01a267915783c6dcc2c3b340ddf9e98701bf2f33c5041c7813d3bccf79"
+    },
+    {
+      "id": "credential-investigator",
+      "principalRef": "principal-investigator",
+      "principalRecordDigest": "sha256:762281f6cb76aa749146d0f5b675977753497532359aa762852143a423b5180d",
+      "assurance": "verified-human",
+      "subjectKeyId": "key-investigator",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "credentialDigest": "sha256:cb44b07ba65b0306818474f2e6b4d610044e21abf2a31c3563bd4c4e6ec77eec"
+    },
+    {
+      "id": "credential-qa-engineer-alex",
+      "principalRef": "principal-qa-engineer-alex",
+      "principalRecordDigest": "sha256:4b0cc405f11f24c41277c802595c42ee13df8dd8476da58756e5cd7046091e91",
+      "assurance": "verified-human",
+      "subjectKeyId": "key-qa-engineer-alex",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "credentialDigest": "sha256:352e4e2885f15cbe86234b8b95d3d8f1d5b0ca48605d8b7cbce297e0fa7e0a8a"
+    },
+    {
+      "id": "credential-workaround-owner",
+      "principalRef": "principal-workaround-owner",
+      "principalRecordDigest": "sha256:c7ca7458788dca2b0329f4ff6ced51a18a89b3daa045f7077425c1803040609c",
+      "assurance": "verified-human",
+      "subjectKeyId": "key-workaround-owner",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "credentialDigest": "sha256:8d4d9116c6c051423e151181693c7135ad21bf328112024b8b550fe565e190e3"
+    },
+    {
+      "id": "credential-known-error-owner",
+      "principalRef": "principal-known-error-owner",
+      "principalRecordDigest": "sha256:75f0cff9ce0b25ad178b72832484b69b03d9d0b0141b2af99e5f54f5e97f4b4a",
+      "assurance": "verified-human",
+      "subjectKeyId": "key-known-error-owner",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "credentialDigest": "sha256:5038775e31f18382b01768e01dadbc744f8791c66cb25f0177c8693c071bb781"
+    },
+    {
+      "id": "credential-change-owner",
+      "principalRef": "principal-change-owner",
+      "principalRecordDigest": "sha256:8e46bc3f9f0092289d714f8b26cea6946f7d3b4cbdd8907a80c1ef1a375d0a65",
+      "assurance": "verified-human",
+      "subjectKeyId": "key-change-owner",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "credentialDigest": "sha256:b5681c72a97bb5bb0c50892df61a036cf5693f31957eb7aa6b3d22bd6159e057"
+    }
+  ],
+  "authorityGrants": [
+    {
+      "principalRef": "principal-problem-owner",
+      "principalRecordDigest": "sha256:c185088079b2ff95dc7811077f8aeab003b93b5de4ca71606a468e9e17e4f046",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": [
+        "incident-membership-declarer",
+        "problem-closure-authority",
+        "problem-owner"
+      ],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:7d672adc147ff1548bff66a9af4ff791f0fc6bd5118640a15278c25fa019c3bc"
+    },
+    {
+      "principalRef": "principal-investigator",
+      "principalRecordDigest": "sha256:762281f6cb76aa749146d0f5b675977753497532359aa762852143a423b5180d",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": [
+        "hypothesis-owner"
+      ],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:368ca5799f11cd15321131035d59715c59a94eca6e24898f57ca1e63dc95fabd"
+    },
+    {
+      "principalRef": "principal-qa-engineer-alex",
+      "principalRecordDigest": "sha256:4b0cc405f11f24c41277c802595c42ee13df8dd8476da58756e5cd7046091e91",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": [
+        "test-executor"
+      ],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:bae5af0984434271e4667766a3c9f22f7cb59346c1c80d78bcbf8bfb48d49702"
+    },
+    {
+      "principalRef": "principal-workaround-owner",
+      "principalRecordDigest": "sha256:c7ca7458788dca2b0329f4ff6ced51a18a89b3daa045f7077425c1803040609c",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": [
+        "workaround-approver"
+      ],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:d8bb68c20ee546cb47c6d8aed4187c68148a33a96e085100e51d89dd3a5b6f05"
+    },
+    {
+      "principalRef": "principal-known-error-owner",
+      "principalRecordDigest": "sha256:75f0cff9ce0b25ad178b72832484b69b03d9d0b0141b2af99e5f54f5e97f4b4a",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": [
+        "known-error-authority",
+        "root-cause-declarer"
+      ],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:c02b296cad13a49df71a6eafd954ad0d3acf0d5d29848c41ff4e721e9f78daac"
+    },
+    {
+      "principalRef": "principal-change-owner",
+      "principalRecordDigest": "sha256:8e46bc3f9f0092289d714f8b26cea6946f7d3b4cbdd8907a80c1ef1a375d0a65",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": [
+        "change-executor"
+      ],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:7440ee979b40d4d2393f9593a46b737744fc6e17b1f484495244dfe8c248e040"
+    },
+    {
+      "principalRef": "principal-incident-system",
+      "principalRecordDigest": "sha256:3bc8c81f834347530586ea3a941678012232d83541f62fe7d67e42aac648184d",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": [
+        "incident-record-authority"
+      ],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:58865c9742649f7f1230a79109966765b37c2a43405bbefa4371dc8b929bdeff"
+    },
+    {
+      "principalRef": "principal-public-status",
+      "principalRecordDigest": "sha256:1ce5cc9d1929a7c229147956455dd1e2736502c6ce55809f3bc2aaa3d0513189",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "scopes": [
+        "incident-record-authority",
+        "public-source"
+      ],
+      "validFrom": "2026-01-01T00:00:00Z",
+      "expiresAt": "2026-12-31T23:59:59Z",
+      "grantDigest": "sha256:3e590c6361622d79bde93d2c2726c4cc796da92f75bff542c1fa3ac449367510"
+    }
+  ],
+  "evidenceRecords": [
+    {
+      "evidenceRef": "evidence-problem-revision",
+      "evidenceRecordDigest": "sha256:8cf61cb570ad3425aa4a2b6bda4b2f461cad2bda1e69a6be69822656aac3b68e",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:826f78e534e373436bbdd27908fff202da433fc73af399abc4690cb841b68552"
+    },
+    {
+      "evidenceRef": "evidence-membership-inc-001",
+      "evidenceRecordDigest": "sha256:3d9aee71ee65be15df3861535195dc8248d29bf2d9220c65d38d522ec76bf501",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:64c86d813c20baf3af6b16ee28ee3af800937e10f3ab5751b45ceddb4c2ce26b"
+    },
+    {
+      "evidenceRef": "evidence-membership-inc-002",
+      "evidenceRecordDigest": "sha256:7994b873170e0ea0caa8cfeef1fc8dae392dd3e70a3b9cdf2fc40953d356fcad",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:867149df76b6051536384b5a4f78c9427232d03e00402cfd14e47c58b4de269e"
+    },
+    {
+      "evidenceRef": "evidence-membership-inc-003",
+      "evidenceRecordDigest": "sha256:a6216e2eb2527884daa9bb1ae6a30f9f9995ab26f9228d3cb4a7697d7e1662bb",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:22baf20bd89a07dab0d43b7f0f21a2336c3c12189e1f9ca94bdf97f48a762d63"
+    },
+    {
+      "evidenceRef": "evidence-incident-inc-001",
+      "evidenceRecordDigest": "sha256:edff2a9ae5595563367c7e4f966a93e5b3818847a0bc67bc813651658e0fd094",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:6b6a2d90ab03f96f69450cc6469911d52b05f63f2b3da1d2f5387d5878642c5f"
+    },
+    {
+      "evidenceRef": "evidence-incident-inc-002",
+      "evidenceRecordDigest": "sha256:ff1c34f9d828cb25801f693727f6e659b4bcda19c8d81a26f430eb12c4fe258e",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:c1a7e8a409f64cb52f36e469f2400190521156134fd8ebac8faa89c2bd25e69d"
+    },
+    {
+      "evidenceRef": "evidence-public-status-inc-003",
+      "evidenceRecordDigest": "sha256:3cdf72ec10f8c209fdc0edb1531995092ecb61b240154bb436d4cc6aefe781b2",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:764c4951b6cb3c84d306751eb42b9bb43593b95d8966b06c837ce2498c64a343"
+    },
+    {
+      "evidenceRef": "evidence-incident-manifest-signature",
+      "evidenceRecordDigest": "sha256:c5c03e50f11682d9ceeec6b2413b97c9a599aeec514eecd0f6935700d209066b",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:bcdca1f06ae0b595546d6ced09c98a95e771b9501b9bbe73faf0dc44fe4c7773"
+    },
+    {
+      "evidenceRef": "evidence-hypothesis-route-cache",
+      "evidenceRecordDigest": "sha256:96e4f7113ed86795059128a9feb6e47a9077c51b7406764a5f8a7e1351710029",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:5cd545701e51ecc6bfe0c8919ada36d52c78aa78261a73cf8b1b26ae3db9d177"
+    },
+    {
+      "evidenceRef": "evidence-hypothesis-database",
+      "evidenceRecordDigest": "sha256:b23549df605001f32246a94249441514758e8d434d45139574972281425d4aae",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:afcbd6b4710483ca2f10e89d82c749aa36b3fc0fe534fcd7aa80d890ebd93eeb"
+    },
+    {
+      "evidenceRef": "evidence-test-route-cache",
+      "evidenceRecordDigest": "sha256:9b5acb21030aff39f9df14c5c890f6a39fc32a7e22acb291e6c3adf5e0aeed3f",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:72ba2c10601aeef458183d54bf3dbec54e6da44824d806b9b52b5e31e9d88ceb"
+    },
+    {
+      "evidenceRef": "evidence-test-database",
+      "evidenceRecordDigest": "sha256:03285499136bbcaca7b7bb0e17f7fb63a022cb717ecaa69c414843813fa474ef",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:92d6a05e1f0bae597468e8d5c5a4d7c06a85a6c58ea2489c0fe58b4f44114e86"
+    },
+    {
+      "evidenceRef": "evidence-workaround-approval",
+      "evidenceRecordDigest": "sha256:c11f1e3b4d919f44763e43ab18df7fb6e37cbc88f530aee8b2b45787291f8eff",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:d1feb6634c66a666a703328a7496f381f408aa9ab5ea22035d7eb1e44fdaf635"
+    },
+    {
+      "evidenceRef": "evidence-known-error-declaration",
+      "evidenceRecordDigest": "sha256:2e0f72d1c89715066ab37e1bacb5fd012eb2fcbb4aee4d9dc6996a26fbc67f0c",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:7238ad61d2ed9fae1125bd90577ed20fbf4215e600a7da7f845222536a5ec972"
+    },
+    {
+      "evidenceRef": "evidence-change-execution",
+      "evidenceRecordDigest": "sha256:865bc83f23db130141bbb6189dca40db4bcf3ccf7401501f8c4fe9d5eb5d7eca",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:62acec591530f44b37d064afd802225a6a9a3280f0f1d2b6baa709c73224a6b6"
+    },
+    {
+      "evidenceRef": "evidence-change-verification",
+      "evidenceRecordDigest": "sha256:514626be94edf69d2bbc18c5d6723e4085fdddfc3457ff171925e98b41d58542",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:2c08fceeb601910353ca2e3ac7aee123a968d2ad2c3b3b84ba17623407861567"
+    },
+    {
+      "evidenceRef": "evidence-problem-change-link",
+      "evidenceRecordDigest": "sha256:d631d30d52210f2f25270614303d864262c371d12e215c93db8709ea195a910a",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:d275daaf97e1799c3f163a7a7390336ded987641e1dd9ec228b61360b525970c"
+    },
+    {
+      "evidenceRef": "evidence-recurrence-inc-003",
+      "evidenceRecordDigest": "sha256:4971d70e9cd1b17cbc609d3b90c5a769d43635c1219a16e0ea51c01751c24aa2",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:eba8f786af494cbdf04c67cd68fca3ddae52b607ca0ff11e3c54c14d10696314"
+    },
+    {
+      "evidenceRef": "evidence-owner-prose",
+      "evidenceRecordDigest": "sha256:968d1c8e68c1b0f97263363fe4ec9235eaf981b4a7ad77b32d06f05c5de0e25e",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "claimDigest": "sha256:7fba2eb79cc76dad39bc89de87fcb1f4a92771b3d41c7d6e011555f87be32a3f"
+    }
+  ],
+  "sourceRecords": [
+    {
+      "evidenceRef": "evidence-problem-revision",
+      "sourceRef": "controlled://problem/checkout-timeout/revisions/current",
+      "sourceBytesDigest": "sha256:0500000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:8cf61cb570ad3425aa4a2b6bda4b2f461cad2bda1e69a6be69822656aac3b68e",
+      "observedAt": "2026-08-13T09:00:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:aef32af886b918ff43a53ad16e562b320b3c3b4d31953f6f32e6cdd90a028101"
+    },
+    {
+      "evidenceRef": "evidence-membership-inc-001",
+      "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-001",
+      "sourceBytesDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:3d9aee71ee65be15df3861535195dc8248d29bf2d9220c65d38d522ec76bf501",
+      "observedAt": "2026-08-13T09:01:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:6912aab1b5d9ecc266d855ed26c73d565ebc783f368f209a1b6dbe7f272eaf44"
+    },
+    {
+      "evidenceRef": "evidence-membership-inc-002",
+      "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-002",
+      "sourceBytesDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000002",
+      "evidenceRecordDigest": "sha256:7994b873170e0ea0caa8cfeef1fc8dae392dd3e70a3b9cdf2fc40953d356fcad",
+      "observedAt": "2026-08-13T09:02:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:95d811a80c7340ab014e793e64def2c396581dd7356a3c08a302dcc6271b2d1f"
+    },
+    {
+      "evidenceRef": "evidence-membership-inc-003",
+      "sourceRef": "controlled://problem/checkout-timeout/memberships/inc-003",
+      "sourceBytesDigest": "sha256:1000000000000000000000000000000000000000000000000000000000000003",
+      "evidenceRecordDigest": "sha256:a6216e2eb2527884daa9bb1ae6a30f9f9995ab26f9228d3cb4a7697d7e1662bb",
+      "observedAt": "2026-09-05T14:32:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:ddd243c8d303b677ae062c34245f7d15af4d94ece7f818c1b99fc97f337a04e0"
+    },
+    {
+      "evidenceRef": "evidence-incident-inc-001",
+      "sourceRef": "controlled://incidents/inc-001/revision/4",
+      "sourceBytesDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:edff2a9ae5595563367c7e4f966a93e5b3818847a0bc67bc813651658e0fd094",
+      "observedAt": "2026-06-10T12:20:00Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:24126e51d93b78ff140de58bbc9e474bec48cdf2e406de8ecf0bc54a178b975d"
+    },
+    {
+      "evidenceRef": "evidence-incident-inc-002",
+      "sourceRef": "controlled://incidents/inc-002/revision/3",
+      "sourceBytesDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000002",
+      "evidenceRecordDigest": "sha256:ff1c34f9d828cb25801f693727f6e659b4bcda19c8d81a26f430eb12c4fe258e",
+      "observedAt": "2026-07-15T16:40:00Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:b72943af7fb323bdf453e81fd967605ce549a57d6a5b3c8da1e50bfb56bda83c"
+    },
+    {
+      "evidenceRef": "evidence-public-status-inc-003",
+      "sourceRef": "https://status.contoso.example/incidents/inc-003",
+      "sourceBytesDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000003",
+      "evidenceRecordDigest": "sha256:3cdf72ec10f8c209fdc0edb1531995092ecb61b240154bb436d4cc6aefe781b2",
+      "observedAt": "2026-09-05T14:30:00Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:179f1c0264b491ad2abd1fdc902d328187fedcf34eab318c8ff25b378dfae8f9"
+    },
+    {
+      "evidenceRef": "evidence-incident-manifest-signature",
+      "sourceRef": "controlled://problem/checkout-timeout/incident-manifest/r1",
+      "sourceBytesDigest": "sha256:1500000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:c5c03e50f11682d9ceeec6b2413b97c9a599aeec514eecd0f6935700d209066b",
+      "observedAt": "2026-09-05T14:33:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:553f67f0ac871f4da700f984aa84d0073d1f021417b71dbc669c3f33f7cc6296"
+    },
+    {
+      "evidenceRef": "evidence-hypothesis-route-cache",
+      "sourceRef": "controlled://problem/checkout-timeout/hypotheses/route-cache-r2",
+      "sourceBytesDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:96e4f7113ed86795059128a9feb6e47a9077c51b7406764a5f8a7e1351710029",
+      "observedAt": "2026-09-01T10:10:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:a068305ce21d8fb1204b62420930bb94b7b6c957cd6221a1cffe9b7cd6fe98f5"
+    },
+    {
+      "evidenceRef": "evidence-hypothesis-database",
+      "sourceRef": "controlled://problem/checkout-timeout/hypotheses/database-r1",
+      "sourceBytesDigest": "sha256:3000000000000000000000000000000000000000000000000000000000000002",
+      "evidenceRecordDigest": "sha256:b23549df605001f32246a94249441514758e8d434d45139574972281425d4aae",
+      "observedAt": "2026-09-01T11:10:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:a968d062c0a6f3312efb88c0e9bae51354a769478515369da8064711159faa28"
+    },
+    {
+      "evidenceRef": "evidence-test-route-cache",
+      "sourceRef": "controlled://qa/problem-checkout-timeout/runs/route-cache-reproduction",
+      "sourceBytesDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:9b5acb21030aff39f9df14c5c890f6a39fc32a7e22acb291e6c3adf5e0aeed3f",
+      "observedAt": "2026-09-01T10:05:00Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:2f91ce17365727915c9fce20f39a6e430e747eeaa8c9181a7183b1db3d993232"
+    },
+    {
+      "evidenceRef": "evidence-test-database",
+      "sourceRef": "controlled://qa/problem-checkout-timeout/runs/database-load-replay",
+      "sourceBytesDigest": "sha256:4000000000000000000000000000000000000000000000000000000000000002",
+      "evidenceRecordDigest": "sha256:03285499136bbcaca7b7bb0e17f7fb63a022cb717ecaa69c414843813fa474ef",
+      "observedAt": "2026-09-01T11:05:00Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:88b3c4e719ba86517c836479486bb4a3720482b77febb92b123d182e8db8f99f"
+    },
+    {
+      "evidenceRef": "evidence-workaround-approval",
+      "sourceRef": "controlled://service-owner/approvals/workaround-route-cache-refresh-r1",
+      "sourceBytesDigest": "sha256:5000000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:c11f1e3b4d919f44763e43ab18df7fb6e37cbc88f530aee8b2b45787291f8eff",
+      "observedAt": "2026-09-02T09:00:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:4685296f3fca9484869ae6b9c13dc6759baa5b843bd1704b9c71e231eb961278"
+    },
+    {
+      "evidenceRef": "evidence-known-error-declaration",
+      "sourceRef": "controlled://problem-owner/known-errors/checkout-timeout-r1",
+      "sourceBytesDigest": "sha256:6000000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:2e0f72d1c89715066ab37e1bacb5fd012eb2fcbb4aee4d9dc6996a26fbc67f0c",
+      "observedAt": "2026-09-03T15:00:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:3b90cacc03dfe3ce77bed98ebe3a6ae96259fe51518e89542677bdc50a3dd749"
+    },
+    {
+      "evidenceRef": "evidence-change-execution",
+      "sourceRef": "controlled://changes/chg-4821/execution/receipt",
+      "sourceBytesDigest": "sha256:7100000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:865bc83f23db130141bbb6189dca40db4bcf3ccf7401501f8c4fe9d5eb5d7eca",
+      "observedAt": "2026-09-04T10:00:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:1193c51eec0853e25729397caccd0ed1ca006d2514f7fbd418ebb6d1cacf4945"
+    },
+    {
+      "evidenceRef": "evidence-change-verification",
+      "sourceRef": "controlled://qa/changes/chg-4821/verification",
+      "sourceBytesDigest": "sha256:7100000000000000000000000000000000000000000000000000000000000002",
+      "evidenceRecordDigest": "sha256:514626be94edf69d2bbc18c5d6723e4085fdddfc3457ff171925e98b41d58542",
+      "observedAt": "2026-09-04T10:05:00Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:24f8c52486d573b270f58d9f958c38149c78be2230108c42d7fd07d1e2a93ea0"
+    },
+    {
+      "evidenceRef": "evidence-problem-change-link",
+      "sourceRef": "controlled://problem/checkout-timeout/change-links/chg-4821",
+      "sourceBytesDigest": "sha256:7200000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:d631d30d52210f2f25270614303d864262c371d12e215c93db8709ea195a910a",
+      "observedAt": "2026-09-04T10:10:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:f35eef029e9c8af027dabd0068d397f2081793c45c3800d40bf7ee312d7e7dc8"
+    },
+    {
+      "evidenceRef": "evidence-recurrence-inc-003",
+      "sourceRef": "controlled://incidents/inc-003/recurrence-observation",
+      "sourceBytesDigest": "sha256:8000000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:4971d70e9cd1b17cbc609d3b90c5a769d43635c1219a16e0ea51c01751c24aa2",
+      "observedAt": "2026-09-05T14:35:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:40eea074b15c539aefbb2569baa3ad517dfc56cbc5d5c7f7eb1622305bc6080e"
+    },
+    {
+      "evidenceRef": "evidence-owner-prose",
+      "sourceRef": "controlled://problem/checkout-timeout/prose/r1",
+      "sourceBytesDigest": "sha256:8500000000000000000000000000000000000000000000000000000000000001",
+      "evidenceRecordDigest": "sha256:968d1c8e68c1b0f97263363fe4ec9235eaf981b4a7ad77b32d06f05c5de0e25e",
+      "observedAt": "2026-09-05T15:00:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "attestationDigest": "sha256:f6da616c830d02446aa2aaec4db7fe26df9084c07372d5631d063c6435476a03"
+    }
+  ],
+  "ownerReceipts": [
+    {
+      "id": "owner-receipt-01",
+      "evidenceRef": "evidence-problem-revision",
+      "evidenceRecordDigest": "sha256:8cf61cb570ad3425aa4a2b6bda4b2f461cad2bda1e69a6be69822656aac3b68e",
+      "ownerRef": "principal-problem-owner",
+      "consumedRevisionRefs": [
+        "sha256:0808080808080808080808080808080808080808080808080808080808080808",
+        "sha256:0909090909090909090909090909090909090909090909090909090909090909",
+        "sha256:fa4952b59721ddf1b5791b9eb0e8defd855189837aa3b3c8dab2e550a9f147ab"
+      ],
+      "issuedAt": "2026-08-13T09:00:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-problem-owner",
+      "receiptDigest": "sha256:a49208af34214b1ae3145b73499ddc785c9d9e8260f97676504c7cbfabea8b15",
+      "signature": "Hl1F+Ck/RO2DrOjS6ruNn2E46kJL0en+6QS1vR2/l6QbiOoXvf7aJ9lFwXyI8DAbhHIzWbQfIUul0fbS6NdCDw=="
+    },
+    {
+      "id": "owner-receipt-02",
+      "evidenceRef": "evidence-membership-inc-001",
+      "evidenceRecordDigest": "sha256:3d9aee71ee65be15df3861535195dc8248d29bf2d9220c65d38d522ec76bf501",
+      "ownerRef": "principal-problem-owner",
+      "consumedRevisionRefs": [
+        "sha256:a6a31a6a56c5221e94158dece407bf49bb4c3b08aecc0d208b999836820a24f9"
+      ],
+      "issuedAt": "2026-08-13T09:01:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-problem-owner",
+      "receiptDigest": "sha256:e03325216aebf5cf9e17b81f722017ba7e4aa994db4ae8582772161172686bb4",
+      "signature": "ZKzd6YztVYriMkXQYLffbLk6bvMlVOEzEErMOG8iundpCpvTfMLGMdqrCgYmDOM/iraVIrKw96uS2z3csmBoBQ=="
+    },
+    {
+      "id": "owner-receipt-03",
+      "evidenceRef": "evidence-membership-inc-002",
+      "evidenceRecordDigest": "sha256:7994b873170e0ea0caa8cfeef1fc8dae392dd3e70a3b9cdf2fc40953d356fcad",
+      "ownerRef": "principal-problem-owner",
+      "consumedRevisionRefs": [
+        "sha256:fc77e3a7487699c4b9c36df63d92200a04f91edde856945e602c66f1e3997f08"
+      ],
+      "issuedAt": "2026-08-13T09:02:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-problem-owner",
+      "receiptDigest": "sha256:725ee7e07a6ba1522b8981ef95bafd594e5586d6f4f2927c7ca9445c7fbb225d",
+      "signature": "ddbGrnI6FGgXVC08W4IIXxDQTqoAWygodF01qT9mqyQzJmWajjCjfCPjf5B5tMlzxbTkFlbiYtHe7fci1w9YCw=="
+    },
+    {
+      "id": "owner-receipt-04",
+      "evidenceRef": "evidence-membership-inc-003",
+      "evidenceRecordDigest": "sha256:a6216e2eb2527884daa9bb1ae6a30f9f9995ab26f9228d3cb4a7697d7e1662bb",
+      "ownerRef": "principal-problem-owner",
+      "consumedRevisionRefs": [
+        "sha256:bc8af6a05d4609fff91b2b79290e4800a54aa75dff8c5ef3d0bce3e891b09fc0"
+      ],
+      "issuedAt": "2026-09-05T14:32:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-problem-owner",
+      "receiptDigest": "sha256:aa4155226bc43239649d55b575da8c19a6bdf1fd93790b65fb05beb66c70c7cd",
+      "signature": "fT+DwuODfLi5scX0HKZ1dheRgnp61oo3xKriXI444wJQ7EpmNZo1tp5as+R/nwtUNpRG51+I5DisgOxJGgibCA=="
+    },
+    {
+      "id": "owner-receipt-05",
+      "evidenceRef": "evidence-incident-manifest-signature",
+      "evidenceRecordDigest": "sha256:c5c03e50f11682d9ceeec6b2413b97c9a599aeec514eecd0f6935700d209066b",
+      "ownerRef": "principal-problem-owner",
+      "consumedRevisionRefs": [
+        "sha256:1614e97bd87cdbbf4872ba6fc88ac4440ea8884dedcf51ee985c0c9a5382ad1e"
+      ],
+      "issuedAt": "2026-09-05T14:33:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-problem-owner",
+      "receiptDigest": "sha256:e677cc0a1994d931975e64796de44b5e15a2cd7612d47ab071d1d87dd6cd15db",
+      "signature": "odoYybgoa51aX7jag3fp1YgdA7Y1jyFUGdR54qU9S14UFNNR8kGuBZ99rbalnV1NbSU0shubXJm6bIKL2bU9DA=="
+    },
+    {
+      "id": "owner-receipt-06",
+      "evidenceRef": "evidence-hypothesis-route-cache",
+      "evidenceRecordDigest": "sha256:96e4f7113ed86795059128a9feb6e47a9077c51b7406764a5f8a7e1351710029",
+      "ownerRef": "principal-investigator",
+      "consumedRevisionRefs": [
+        "sha256:ebdb831744188d811a9ab06496bda0edb0b04add1ebef2c57b21644de9cbf7b9"
+      ],
+      "issuedAt": "2026-09-01T10:10:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-investigator",
+      "receiptDigest": "sha256:a7483f7c3f8d53446acc88acff26effca174660e07e774d5c87c09fbdca49077",
+      "signature": "NqfVPpMkgEWXFOE7J+Q5u+fS06T61GIh9IZ7CdXEGt1C/vC8p936ZbBFng2WPNOJRcMNfTZ9cJxYThHoyxedBQ=="
+    },
+    {
+      "id": "owner-receipt-07",
+      "evidenceRef": "evidence-hypothesis-database",
+      "evidenceRecordDigest": "sha256:b23549df605001f32246a94249441514758e8d434d45139574972281425d4aae",
+      "ownerRef": "principal-investigator",
+      "consumedRevisionRefs": [
+        "sha256:0afd58ffaff0ac1fd58668eee489a46d2263636e8a8bd586f84a87eb67d5e356"
+      ],
+      "issuedAt": "2026-09-01T11:10:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-investigator",
+      "receiptDigest": "sha256:6e3b8c2bb001ad86f23f4926a6ff0883a68ae9c4d4e3c59ec99fba1a975f8ec8",
+      "signature": "EiXDuyxZyZdYWDJvLuiMxlWoBixWx51NJahGuKtsYnFerLR1s8nmXrT/Z+DEACW6tSLl3u0k1l+GGo/YCs6LCQ=="
+    },
+    {
+      "id": "owner-receipt-08",
+      "evidenceRef": "evidence-test-route-cache",
+      "evidenceRecordDigest": "sha256:9b5acb21030aff39f9df14c5c890f6a39fc32a7e22acb291e6c3adf5e0aeed3f",
+      "ownerRef": "principal-qa-engineer-alex",
+      "consumedRevisionRefs": [
+        "sha256:d3e8b2e220d8c1d4f607722d911a9e5bdebd7c615341d45577c46e8ce68626b2"
+      ],
+      "issuedAt": "2026-09-01T10:05:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-qa-engineer-alex",
+      "receiptDigest": "sha256:69e761dae304b1b13f228677ecfd4ab202cc57de81fc2e84ee0981998e1a7937",
+      "signature": "mTXF2IRRAfn2tDqT6B+aER2y0/oU84j9F08s6eSIC4+ajV70tb4t4rDC5o05zEbFTm/zW0dCHt9DbqjLWDY+Cw=="
+    },
+    {
+      "id": "owner-receipt-09",
+      "evidenceRef": "evidence-test-database",
+      "evidenceRecordDigest": "sha256:03285499136bbcaca7b7bb0e17f7fb63a022cb717ecaa69c414843813fa474ef",
+      "ownerRef": "principal-qa-engineer-alex",
+      "consumedRevisionRefs": [
+        "sha256:55fe4cd21b3c7e3136850aba91bc68412ed43136fd0276123b00ca4ac81badb7"
+      ],
+      "issuedAt": "2026-09-01T11:05:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-qa-engineer-alex",
+      "receiptDigest": "sha256:9be56667070612eb7ffebed0b9c08cc7147b5bfd667002fe7f969c64fb823e5e",
+      "signature": "Z6u7NTCMWU4iQLK1qo5fkt8iC+2blPGOqCnMRGquRPo8v3Uxzlhj8yTiG4AUxCNiu1WCLXLaufGtyNRcxTDnCg=="
+    },
+    {
+      "id": "owner-receipt-10",
+      "evidenceRef": "evidence-workaround-approval",
+      "evidenceRecordDigest": "sha256:c11f1e3b4d919f44763e43ab18df7fb6e37cbc88f530aee8b2b45787291f8eff",
+      "ownerRef": "principal-workaround-owner",
+      "consumedRevisionRefs": [
+        "sha256:aa6367e6c2bd09368c7b5bb9b8cd606eac6802fc974d91da09a779c6395fd890"
+      ],
+      "issuedAt": "2026-09-02T09:00:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-workaround-owner",
+      "receiptDigest": "sha256:7e59d91aef0a86701c98fc6e2eaeb1ecd6084259351c6a05baab52642743e9d6",
+      "signature": "hfbYAIOUqSUTnIO+eo1utLM+BrXOmfvA3+gNV/BM9E8vEb6UFO18VesbNFT2caEEeGsN3eVbJzhyDRJ7Jx7iAQ=="
+    },
+    {
+      "id": "owner-receipt-11",
+      "evidenceRef": "evidence-known-error-declaration",
+      "evidenceRecordDigest": "sha256:2e0f72d1c89715066ab37e1bacb5fd012eb2fcbb4aee4d9dc6996a26fbc67f0c",
+      "ownerRef": "principal-known-error-owner",
+      "consumedRevisionRefs": [
+        "sha256:1f426d577f73dbad45a28091fee0a6e93014280a4a30365315173a1731f4e8fa"
+      ],
+      "issuedAt": "2026-09-03T15:00:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-known-error-owner",
+      "receiptDigest": "sha256:54e8846e30f79707d99c60bd996f0b7d3d68590cbe0eb37f72c82699beb49606",
+      "signature": "/XlxvjQH5MmpoCKINWY9i064WSOdEPrDo7O29OiURZYGEQBR80EhXxZIx1/aJmLeJewqXJ2yhJmfPQJrCJ1iAw=="
+    },
+    {
+      "id": "owner-receipt-12",
+      "evidenceRef": "evidence-change-execution",
+      "evidenceRecordDigest": "sha256:865bc83f23db130141bbb6189dca40db4bcf3ccf7401501f8c4fe9d5eb5d7eca",
+      "ownerRef": "principal-change-owner",
+      "consumedRevisionRefs": [
+        "sha256:5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+        "sha256:99d5ce538300782ddd0b134e0c8dd9f2a4200c685476180b40cb33f9cb4b23f5"
+      ],
+      "issuedAt": "2026-09-04T10:00:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-change-owner",
+      "receiptDigest": "sha256:a83b111c054879f4241d0b381bb0400fd84ca09fb5eabb7109e6ad31957246ba",
+      "signature": "UxaYhI88KNT97Dh0cI3SaHW+y4S0qm61B9N+5Gv+YIZdhgKy4QlabC3LPxQjQRYS18FExvFFZg17aXsovD85AQ=="
+    },
+    {
+      "id": "owner-receipt-13",
+      "evidenceRef": "evidence-problem-change-link",
+      "evidenceRecordDigest": "sha256:d631d30d52210f2f25270614303d864262c371d12e215c93db8709ea195a910a",
+      "ownerRef": "principal-problem-owner",
+      "consumedRevisionRefs": [
+        "sha256:08fc6a89aa402bbe5fa026e9b88c3aab99b5eacfa001152b62b9e58bd8ab039a"
+      ],
+      "issuedAt": "2026-09-04T10:10:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-problem-owner",
+      "receiptDigest": "sha256:5d5b0219ca2024f5c6fe3d70dcfdab9573fd8cfc55942bf6acd731ca38e62c09",
+      "signature": "radRJXh0/A9HZicUV1hDDfnS2PdZXngjAHo4/Y/WihIj8GD1g6lZaD03yxn04bjDVQDe9btAiBaXW+Cj5zwdBg=="
+    },
+    {
+      "id": "owner-receipt-14",
+      "evidenceRef": "evidence-change-verification",
+      "evidenceRecordDigest": "sha256:514626be94edf69d2bbc18c5d6723e4085fdddfc3457ff171925e98b41d58542",
+      "ownerRef": "principal-qa-engineer-alex",
+      "consumedRevisionRefs": [
+        "sha256:5dd9e794d1e99ae4b08a72998fb32b04619ccd7302f33af6b61489697885de5c",
+        "sha256:99d5ce538300782ddd0b134e0c8dd9f2a4200c685476180b40cb33f9cb4b23f5"
+      ],
+      "issuedAt": "2026-09-04T10:05:01Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-qa-engineer-alex",
+      "receiptDigest": "sha256:117d8ee46163abcd50a87d04aeb8c0954f7b5ba3fb83cb4d8125bdb7dbfb0a4d",
+      "signature": "YfM480Hd7BS/Jg/GVS+maUfiZ6OfgazP52afKar0qf6oK6dGbnICJE6b79ALB2Ad2x2hwrycdicu3IsMTvcbAg=="
+    },
+    {
+      "id": "owner-receipt-15",
+      "evidenceRef": "evidence-recurrence-inc-003",
+      "evidenceRecordDigest": "sha256:4971d70e9cd1b17cbc609d3b90c5a769d43635c1219a16e0ea51c01751c24aa2",
+      "ownerRef": "principal-incident-system",
+      "consumedRevisionRefs": [
+        "sha256:eeea59b16226fd3dc7d752a403d2ccb24128a208e8161fcb0e6492401b00a912"
+      ],
+      "issuedAt": "2026-09-05T14:35:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-incident-system",
+      "receiptDigest": "sha256:2d10ec22721111f8bd2749b1ef1d6dfedd8f57870a0c9d409ba0e4fd5ee60d8f",
+      "signature": "g7A7KGbQkl5PVZkm6vtJebCtHDEBKIKO2kG8aA3l2zCjBlnN31Ich2kxTEOIOJI1uo66xpKsHbjkMyC7SPv4CA=="
+    },
+    {
+      "id": "owner-receipt-16",
+      "evidenceRef": "evidence-owner-prose",
+      "evidenceRecordDigest": "sha256:968d1c8e68c1b0f97263363fe4ec9235eaf981b4a7ad77b32d06f05c5de0e25e",
+      "ownerRef": "principal-problem-owner",
+      "consumedRevisionRefs": [
+        "sha256:517430c6f288dfcad1983898fa856c4570edc0567d7322b043516709e6d9e8e3"
+      ],
+      "issuedAt": "2026-09-05T15:00:02Z",
+      "issuerRef": "issuer-awesome-claws-proof",
+      "signerKeyId": "key-problem-owner",
+      "receiptDigest": "sha256:8caeb4c2e9a900edc3b92b24d1ab820baf0da76c6fad39228e59403825adc8e6",
+      "signature": "FqPu+pPGuD+FtaoiCkMGMwm5qHWAby1S1cA81PbBUih72/PFn9TcLthkDuNJsZodIUaNADGGtiAH+5JgD9TZBA=="
+    }
+  ],
+  "signatures": {
+    "identityCredentials": "SCUX+RR6zNHZiNDuxULz/LQcm0F0Z70O8xJjMwZ8qb17CDPUumZP039g9qaFVQbSEugTVBbGIKU4XXz32e3OBw==",
+    "authorityGrants": "bBCu/SM4KFL3o7OsnDMAP8ei6IqBkU7sN4Y16peRXpLAQ6F7F4u90fUCFpMvikycih+gYT+wjbz2OO5X/i7eCQ==",
+    "evidenceRecords": "/UNugCBy+nC530eMBpkoLJyFubBPoh2S5Cnw8jwVftgLRKV/HIHoSBaCE1G6NuSStfe6x+p8vI3dMAQUZ0eLDw==",
+    "sourceRecords": "wKdtuXRDJ9o1+PT2CF9gqQamkpT46QEYHhhlFVQZCBMrp4/onRRWTll0b4wjTKtquXrgM9fNDapTZndIzHfkDg==",
+    "ownerReceipts": "w7t6NrwrnzwZws2rWs89bWM524xCAB/vGO9gsX5NGamaBkqH0INBdaKP+pUtbEl8tcDpWQgtAxOcMoaeK7rGBA=="
+  },
+  "records": [
+    {
+      "evidenceRef": "evidence-public-status-inc-003",
+      "sourceRef": "https://status.contoso.example/incidents/inc-003",
+      "recordDigest": "sha256:2100000000000000000000000000000000000000000000000000000000000003",
+      "publishedAt": "2026-09-05T14:30:00Z"
+    }
+  ]
+}

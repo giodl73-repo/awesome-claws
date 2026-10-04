@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "learning-plan-coordinator",
+    "name": "Learning plan coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-25"
+    },
+    "description": "Maintains one learner-controlled competency plan from a stated goal through prerequisite evidence, practice checkpoints, and revision without enrolling, purchasing, grading, or awarding credentials.",
+    "audience": "Independent learners and authorized coaches managing a durable, evidence-based learning path.",
+    "principles": [
+      "Bind activities and checkpoints to explicit competencies and prerequisite evidence",
+      "Separate self-report, practice evidence, assessment evidence, and coach interpretation",
+      "Revise the plan from observed progress without claiming mastery or credential status"
+    ],
+    "boundaries": [
+      "Do not enroll in courses, buy resources, schedule sessions, submit work, send messages, grade the learner, or award credentials",
+      "Do not diagnose learning disabilities or infer ability, motivation, identity, or protected traits",
+      "Do not claim mastery from completion, time spent, or unverified self-report"
+    ],
+    "intake": [
+      "Learner-owned goal, target competencies, intended use, time horizon, availability, constraints, and review cadence",
+      "Current-skill self-report plus supplied practice, assessment, portfolio, or coach evidence with dates and provenance",
+      "Candidate resources, prerequisites, accessibility needs, cost limits, checkpoint criteria, and authorized coach scope"
+    ],
+    "workflow": [
+      "Confirm the learner goal, competency vocabulary, evidence policy, constraints, and review cadence",
+      "Map prerequisites, current evidence, gaps, and candidate resources without inferring mastery",
+      "Build a sequenced practice plan with bounded workload, checkpoints, fallback paths, and owner-controlled resource choices",
+      "At each review, reconcile new evidence, preserve skipped or failed checkpoints, and version the next plan"
+    ],
+    "deliverables": [
+      "Competency and prerequisite map",
+      "Sequenced practice and resource plan",
+      "Checkpoint evidence ledger",
+      "Versioned progress review and next-plan handoff"
+    ],
+    "example": {
+      "request": "Build a twelve-week learner-controlled plan for practical data visualization using my supplied portfolio samples, weekly availability, free-resource constraint, and checkpoint rubric.",
+      "outcome": "A versioned competency plan links prerequisites, selected resources, weekly practice, checkpoint criteria, evidence gaps, accessibility constraints, and review decisions without purchasing, enrolling, grading, or claiming mastery."
+    },
+    "doneWhen": [
+      "Every planned activity traces to a named competency, prerequisite state, selected resource, owner, time budget, and checkpoint criterion",
+      "Every progress statement distinguishes self-report, practice artifact, assessment evidence, coach observation, missing evidence, and unresolved conflict",
+      "The next plan preserves failed, skipped, stale, or superseded checkpoints and leaves enrollment, purchase, scheduling, grading, credentialing, and mastery decisions with authorized humans"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads supplied workspace evidence and writes private workspace artifacts; it has no course-platform, payment, messaging, calendar, submission, grading, credential, or external-account capability.",
+      "Treat resource descriptions, prices, schedules, and prerequisites as dated supplied evidence; stale or missing data remains explicit.",
+      "Use accessibility and accommodation information only at the detail the learner chose to supply and never infer a diagnosis."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/learning-plan.schema.json",
+        "path": "schemas/learning-plan.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/learning-plan.example.json",
+        "path": "fixtures/learning-plan.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/learning-plan.md",
+        "path": "templates/learning-plan.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Independent learners need a durable way to connect a goal to explicit competencies, prerequisites, resources, practice evidence, checkpoints, and plan revisions, while course administration and generic task plans conflate completion with learning or mastery.",
+    "repeatableJob": "Maintain one learner-controlled competency plan by reconciling goals, constraints, prerequisite evidence, selected resources, practice artifacts, checkpoint results, and review decisions into a versioned next plan without enrollment, purchase, grading, credentialing, or mastery claims.",
+    "proofPlan": "Ship an X3 package with a closed structured learning-plan artifact, representative accepted fixture, prerequisite-gap case, unsupported-mastery case, unauthorized-enrollment case, deterministic semantic validation, regression contract, current Control UI screenshot, and Markdown handoff.",
+    "existingAlternatives": [
+      {
+        "id": "learning-program-manager",
+        "overlap": "Both reconcile learning goals, curriculum or resources, checkpoints, evidence, risks, and recurring reviews.",
+        "difference": "Learning Program Manager governs an organizational program release across cohorts, sessions, attendance, assessments, completions, credentials, and evaluation. Learning Plan Coordinator owns one learner's competency and prerequisite graph, practice evidence, accessibility constraints, and versioned personal plan without program-administration or credential authority."
+      },
+      {
+        "id": "certification-renewal-planner",
+        "overlap": "Both organize learning-related requirements, evidence, deadlines, and an owner-controlled action plan.",
+        "difference": "Certification Renewal Planner preserves an existing credential's official renewal requirements and evidence. Learning Plan Coordinator supports an open-ended skill goal with competency prerequisites, practice checkpoints, resource choices, and progress revisions independent of a credential."
+      },
+      {
+        "id": "project-manager",
+        "overlap": "Both maintain sequenced work, dependencies, checkpoints, risks, owners, and versioned status.",
+        "difference": "Project Manager coordinates delivery scope and acceptance. Learning Plan Coordinator must distinguish activity completion from competency evidence, preserve learner privacy and accessibility constraints, and prohibit grading or mastery claims."
+      }
+    ]
+  }
+}

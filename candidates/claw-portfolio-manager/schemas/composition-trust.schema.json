@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/candidates/claw-portfolio-manager/composition-trust.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "revision", "keys"],
+  "properties": {
+    "schemaVersion": {"const": "awesomeClaws.clawPortfolioCompositionTrust.v1"},
+    "revision": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "keys": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "keyId",
+          "signerRef",
+          "domain",
+          "publicKeyPem",
+          "notBefore",
+          "expiresAt"
+        ],
+        "properties": {
+          "keyId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+          },
+          "signerRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+          },
+          "domain": {
+            "enum": [
+              "provider",
+              "continuation",
+              "admission",
+              "catalog",
+              "catalog-maintainer",
+              "receipt",
+              "runtime-budget",
+              "usage"
+            ]
+          },
+          "publicKeyPem": {
+            "type": "string",
+            "minLength": 100,
+            "maxLength": 120
+          },
+          "notBefore": {"type": "string", "format": "date-time"},
+          "expiresAt": {"type": "string", "format": "date-time"}
+        }
+      }
+    }
+  }
+}

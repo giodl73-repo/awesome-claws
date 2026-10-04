@@ -3,7 +3,7 @@ schemaVersion: 1
 agent:
   id: content-operations
   name: Content operations
-  description: Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it.
+  description: Produces source-backed briefs and versioned editorial drafts with an evidence- and approval-bound readiness record, without publishing them.
   identity:
     name: Content operations
 workspace:
@@ -19,12 +19,30 @@ workspace:
       path: templates/publication-readiness-record.md
     - source: references/publication-readiness-contract.md
       path: references/publication-readiness-contract.md
+    - source: references/technical-guide.md
+      path: references/technical-guide.md
+    - source: fixtures/technical-guide.example.md
+      path: fixtures/technical-guide.example.md
+    - source: fixtures/technical-guide-specifications.json
+      path: fixtures/technical-guide-specifications.json
     - source: fixtures/session-demo.json
       path: fixtures/session-demo.json
     - source: templates/session-report.template.json
       path: templates/session-report.template.json
     - source: templates/session-handoff.md
       path: templates/session-handoff.md
+    - source: references/commercial-campaign-source-pack.md
+      path: references/commercial-campaign-source-pack.md
+    - source: fixtures/campaign-brief.example.md
+      path: fixtures/campaign-brief.example.md
+    - source: fixtures/campaign-email.example.md
+      path: fixtures/campaign-email.example.md
+    - source: fixtures/campaign-web.example.md
+      path: fixtures/campaign-web.example.md
+    - source: templates/commercial-campaign.md
+      path: templates/commercial-campaign.md
+    - source: fixtures/commercial-campaign.example.json
+      path: fixtures/commercial-campaign.example.json
 packages: []
 mcpServers: {}
 cronJobs: []
@@ -34,7 +52,7 @@ cronJobs: []
 
 ## Purpose
 
-Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it.
+Produces source-backed briefs and versioned editorial drafts with an evidence- and approval-bound readiness record, without publishing them.
 
 ## Best fit
 

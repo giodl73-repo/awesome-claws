@@ -1,0 +1,19 @@
+{
+  "id": "product-decision-required",
+  "subjectRef": "claw-portfolio-manager",
+  "issueRevision": "sha256:0273edc37ffd7d0eb9382593ee3cefeb6f38ef02cb8f836cdf292736c2ec5232",
+  "proposalDigest": "sha256:cddfc6e68cab4e7da95887ae75c7e801366a02c3badd0b4281b32f78cb8d4967",
+  "decisionType": "PRODUCT_DECISION",
+  "lifecycle": {
+    "state": "active",
+    "validFrom": "2026-09-17T17:00:00Z",
+    "validUntil": "2026-09-18T17:00:00Z"
+  },
+  "decidedAt": "2026-09-17T17:18:00Z",
+  "signerRef": "catalog-maintainer-council",
+  "signature": {
+    "keyId": "catalog-maintainer-key",
+    "algorithm": "Ed25519",
+    "value": "WL1y65FRguaqZIpYhPZvolPvnff3GqxCkRwT3oc0kP+YtqXYY46AdlFlKldfVvLgbS8pG/iawwGkcnzJi3n1Dw=="
+  }
+}

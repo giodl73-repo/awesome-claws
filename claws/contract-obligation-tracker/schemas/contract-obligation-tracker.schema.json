@@ -1,0 +1,944 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.example/schemas/contract-obligation-tracker.spike.v1.json",
+  "title": "Contract Obligation Tracker proposal evidence slice",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "round",
+    "agreements",
+    "register",
+    "obligations",
+    "principals",
+    "authorityRoster",
+    "authorityGrants",
+    "observations",
+    "blockers",
+    "evidence",
+    "coverage",
+    "destinationApproval",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.contractObligationTracker.v1"
+    },
+    "artifactId": {
+      "$ref": "#/$defs/id"
+    },
+    "round": {
+      "$ref": "#/$defs/round"
+    },
+    "agreements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/agreementVersion"
+      }
+    },
+    "register": {
+      "$ref": "#/$defs/register"
+    },
+    "obligations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/obligation"
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "authorityRoster": {
+      "$ref": "#/$defs/authorityRoster"
+    },
+    "authorityGrants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/authorityGrant"
+      }
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/observation"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "destinationApproval": {
+      "$ref": "#/$defs/destinationApproval"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "maxLength": 96
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v[1-9][0-9]*$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "nonEmptyIdList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "registerRef",
+        "registerVersion",
+        "registerDigest",
+        "agreementVersionRefs",
+        "authorityRosterRef",
+        "authorityRosterDigest",
+        "opensAt",
+        "closesAt",
+        "destination",
+        "destinationApproverRef",
+        "handoffOwnerRef",
+        "roundDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "registerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "registerVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "registerDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "agreementVersionRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "authorityRosterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityRosterDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "opensAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "closesAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "destination": {
+          "enum": [
+            "contract-owner-review-queue"
+          ]
+        },
+        "destinationApproverRef": {
+          "$ref": "#/$defs/id"
+        },
+        "handoffOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "roundDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "agreementVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "agreementId",
+        "version",
+        "executedAt",
+        "repositoryRef",
+        "contentDigest",
+        "sourceEvidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "agreementId": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "executedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "repositoryRef": {
+          "$ref": "#/$defs/id"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "sourceEvidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "register": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "confirmedAt",
+        "confirmedByRef",
+        "sourceSystemRef",
+        "agreementVersionRefs",
+        "obligationRefs",
+        "contentDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "confirmedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "confirmedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceSystemRef": {
+          "$ref": "#/$defs/id"
+        },
+        "agreementVersionRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "obligationRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "agreementVersionRef",
+        "responsibleOwnerRef",
+        "clauseLocator",
+        "clauseDigest",
+        "obligationDigest",
+        "dueAt",
+        "performanceEvidenceSupplierRef",
+        "requiredEvidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "agreementVersionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "responsibleOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "clauseLocator": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]+(?:[.-][A-Z0-9]+){0,7}$",
+          "maxLength": 48
+        },
+        "clauseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "obligationDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "dueAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "performanceEvidenceSupplierRef": {
+          "$ref": "#/$defs/id"
+        },
+        "requiredEvidenceRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "scopes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Za-z]*(?: [A-Z][A-Za-z]*){0,3}$",
+          "maxLength": 64
+        },
+        "kind": {
+          "enum": [
+            "named-human",
+            "owner-system"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "agreement-source",
+              "register-source",
+              "obligation-register-owner",
+              "obligation-owner",
+              "authority-roster-custodian",
+              "authority-grant-issuer",
+              "performance-evidence-supplier",
+              "destination-approver",
+              "handoff-recipient"
+            ]
+          }
+        }
+      }
+    },
+    "authorityRoster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "issuedAt",
+        "custodianRef",
+        "principalRefs",
+        "contentDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "custodianRef": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "authorityGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "obligationRef",
+        "granteeRef",
+        "issuedByRef",
+        "scope",
+        "activeFrom",
+        "activeUntil",
+        "rosterRef",
+        "rosterDigest",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "obligationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "granteeRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "const": "owner-completion-confirmation"
+        },
+        "activeFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "activeUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rosterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rosterDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "confirmedByRef",
+        "confirmedAt",
+        "authorityGrantRef",
+        "confirmationEvidenceRef"
+      ],
+      "properties": {
+        "confirmedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "confirmedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "confirmationEvidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "obligationRef",
+        "agreementVersionRef",
+        "clauseDigest",
+        "obligationDigest",
+        "ownerRef",
+        "state",
+        "dueState",
+        "observedAt",
+        "reliedEvidenceRefs",
+        "observationEvidenceRef",
+        "completion"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "obligationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "agreementVersionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "clauseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "obligationDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "enum": [
+            "owner-confirmed-complete",
+            "owner-confirmation-pending",
+            "not-yet-due"
+          ]
+        },
+        "dueState": {
+          "enum": [
+            "due",
+            "not-yet-due"
+          ]
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "reliedEvidenceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "observationEvidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "completion": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/completion"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "owner-confirmed-complete"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "completion": {
+                "$ref": "#/$defs/completion"
+              },
+              "reliedEvidenceRefs": {
+                "$ref": "#/$defs/nonEmptyIdList"
+              },
+              "dueState": {
+                "const": "due"
+              }
+            }
+          },
+          "else": {
+            "not": {}
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "owner-confirmation-pending"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "completion": {
+                "type": "null"
+              },
+              "reliedEvidenceRefs": {
+                "$ref": "#/$defs/nonEmptyIdList"
+              },
+              "dueState": {
+                "const": "due"
+              }
+            }
+          },
+          "else": {
+            "not": {}
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "not-yet-due"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "completion": {
+                "type": "null"
+              },
+              "reliedEvidenceRefs": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "dueState": {
+                "const": "not-yet-due"
+              }
+            }
+          },
+          "else": {
+            "not": {}
+          }
+        }
+      ]
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "obligationRef",
+        "category",
+        "detectedAt",
+        "ownerRef",
+        "exactMissingEvidenceRefs",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "obligationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "category": {
+          "const": "source-evidence-missing"
+        },
+        "detectedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "exactMissingEvidenceRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "roundRef",
+        "roundDigest",
+        "observedAt",
+        "suppliedByRef",
+        "subjectRefs",
+        "sourceRecordDigest",
+        "payloadDigest",
+        "recordDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "executed-agreement-copy",
+            "obligation-register-export",
+            "authority-roster-export",
+            "authority-grant-record",
+            "performance-evidence",
+            "obligation-observation-record",
+            "completion-confirmation",
+            "blocker-record",
+            "destination-approval-record",
+            "handoff-record"
+          ]
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "roundDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/nonEmptyIdList"
+        },
+        "sourceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "coverageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "obligationRef",
+        "resolutionKind",
+        "resolutionRef"
+      ],
+      "properties": {
+        "obligationRef": {
+          "$ref": "#/$defs/id"
+        },
+        "resolutionKind": {
+          "enum": [
+            "observation",
+            "blocker"
+          ]
+        },
+        "resolutionRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registerRef",
+        "registerVersion",
+        "registerDigest",
+        "entries",
+        "contentDigest"
+      ],
+      "properties": {
+        "registerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "registerVersion": {
+          "$ref": "#/$defs/version"
+        },
+        "registerDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/coverageEntry"
+          }
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "destinationApproval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "roundDigest",
+        "registerRef",
+        "registerDigest",
+        "coverageDigest",
+        "destination",
+        "approvedByRef",
+        "approvedAt",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "roundDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "registerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "registerDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "coverageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destination": {
+          "const": "contract-owner-review-queue"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "roundDigest",
+        "registerRef",
+        "registerDigest",
+        "coverageDigest",
+        "destinationApprovalRef",
+        "destinationApprovalDigest",
+        "state",
+        "nextOwnerRef",
+        "handedOffAt",
+        "observationRefs",
+        "blockerRefs",
+        "legalConclusionClaim",
+        "performanceAcceptanceClaim",
+        "complianceClaim",
+        "auditClaim",
+        "noticeSentClaim",
+        "paymentMadeClaim",
+        "amendmentClaim",
+        "renewalClaim",
+        "terminationClaim",
+        "systemMutationClaim",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "roundDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "registerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "registerDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "coverageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destinationApprovalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "destinationApprovalDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "state": {
+          "enum": [
+            "ready-for-owner-review",
+            "blocked"
+          ]
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "handedOffAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "observationRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "legalConclusionClaim": {
+          "const": "not-claimed"
+        },
+        "performanceAcceptanceClaim": {
+          "const": "not-claimed"
+        },
+        "complianceClaim": {
+          "const": "not-claimed"
+        },
+        "auditClaim": {
+          "const": "not-claimed"
+        },
+        "noticeSentClaim": {
+          "const": "not-claimed"
+        },
+        "paymentMadeClaim": {
+          "const": "not-claimed"
+        },
+        "amendmentClaim": {
+          "const": "not-claimed"
+        },
+        "renewalClaim": {
+          "const": "not-claimed"
+        },
+        "terminationClaim": {
+          "const": "not-claimed"
+        },
+        "systemMutationClaim": {
+          "const": "not-claimed"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+<style>
+.sca{padding:24px;background:#f4f7fb;color:#162033;font:15px/1.45 "Segoe UI",Arial,sans-serif}.sca *{box-sizing:border-box}.sca header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.sca h1{font-size:27px;margin:0}.sca .sub{color:#526178;margin:6px 0 0}.sca .state{background:#fff1cc;border:1px solid #e7b94f;border-radius:8px;padding:10px 14px;font-weight:700}.sca .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.sca article,.sca section{background:#fff;border:1px solid #d7e0ec;border-radius:9px}.sca article{padding:15px}.sca small{display:block;color:#64748b;font-weight:700;text-transform:uppercase}.sca strong{display:block;font-size:27px;margin-top:5px}.sca .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px}.sca section{padding:18px}.sca h2{font-size:18px;margin:0 0 12px}.sca table{width:100%;border-collapse:collapse}.sca th,.sca td{text-align:left;border-bottom:1px solid #e5eaf1;padding:9px 7px}.sca th{font-size:12px;color:#5d6b80;text-transform:uppercase}.sca .short{color:#a5352b;font-weight:800}.sca .tag{display:inline-block;border-radius:999px;padding:3px 9px;background:#e8f0fb;color:#24558f;font-size:12px;font-weight:700}.sca .hold{background:#fde8e5;color:#9b2c24}.sca ul{margin:0;padding-left:20px}.sca li+li{margin-top:9px}.sca footer{margin-top:14px;padding:15px;border:1px solid #d7e0ec;border-radius:9px;background:#fff}.sca footer strong{font-size:14px;margin:0}@media(max-width:760px){.sca{padding:14px;overflow:hidden}.sca header,.sca .grid{display:block}.sca .state{margin-top:12px}.sca .metrics{grid-template-columns:1fr 1fr}.sca section+section{margin-top:12px}.sca table,.sca tbody,.sca tr,.sca td{display:block;width:100%;min-width:0}.sca thead,.sca th{display:none}.sca tr{border-bottom:1px solid #d7e0ec;padding:8px 0}.sca td{display:flex;justify-content:space-between;gap:10px;border:0;padding:4px 0;overflow-wrap:anywhere}.sca td:nth-child(1)::before{content:"Supplier / site"}.sca td:nth-child(2)::before{content:"Commit"}.sca td:nth-child(3)::before{content:"Qualified"}.sca td:nth-child(4)::before{content:"Inventory"}.sca td:nth-child(5)::before{content:"Receipts"}.sca td:nth-child(6)::before{content:"Eligible"}.sca td::before{color:#5d6b80;font-size:11px;font-weight:700;text-transform:uppercase}.sca td strong{display:inline;font-size:15px;margin:0}}
+</style>
+<main class="sca" aria-labelledby="sca-title">
+  <header>
+    <div>
+      <h1 id="sca-title">Supplier capacity assurance</h1>
+      <p class="sub">DP-2026-W38-R4 · Controller C-17 · W38 · as of 14 Sep 2026 18:00 UTC</p>
+    </div>
+    <div class="state">Blocked · owner review required</div>
+  </header>
+  <div class="metrics">
+    <article><small>Approved demand</small><strong>1,500</strong><span>units</span></article>
+    <article><small>Eligible supply</small><strong>1,200</strong><span>units</span></article>
+    <article><small>Shortage</small><strong class="short">300</strong><span>units</span></article>
+    <article><small>Open actions</small><strong>3</strong><span>2 checkpoints</span></article>
+  </div>
+  <div class="grid">
+    <section aria-labelledby="supply-title">
+      <h2 id="supply-title">Evidence-qualified supply by site</h2>
+      <table>
+        <thead><tr><th>Supplier / site</th><th>Commit</th><th>Qualified</th><th>Inventory</th><th>Receipts</th><th>Eligible</th></tr></thead>
+        <tbody>
+          <tr><td>Alpha · Austin</td><td>600 · C7</td><td>665</td><td>100</td><td>100</td><td><strong>800</strong></td></tr>
+          <tr><td>Beta · Monterrey</td><td>500 · C12</td><td>400</td><td><span class="tag hold">100 held</span></td><td>0 planned only</td><td><strong>400</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="sub">Eligible commit is capped by qualified yield and logistics. Held inventory and the planned, unreceived Beta shipment contribute zero.</p>
+    </section>
+    <section aria-labelledby="allocation-title">
+      <h2 id="allocation-title">Proposed allocation</h2>
+      <ul>
+        <li><span class="tag">Proposed</span> Demand A: 900 allocated, 0 short</li>
+        <li><span class="tag">Proposed</span> Demand B: 300 allocated, 300 short</li>
+        <li><span class="tag hold">Not approved</span> No scarce-supply allocation executed</li>
+      </ul>
+    </section>
+  </div>
+  <div class="grid" style="margin-top:14px">
+    <section>
+      <h2>Recovery actions</h2>
+      <ul>
+        <li>Supply owner reviews Beta qualified-capacity recovery by 16 Sep.</li>
+        <li>Quality owner decides the 100-unit hold; no waiver is implied.</li>
+        <li>Logistics owner reviews alternatives; no expedite is committed.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Review checkpoints</h2>
+      <ul>
+        <li>16 Sep 16:00 UTC · recovery evidence</li>
+        <li>18 Sep 16:00 UTC · allocation decision</li>
+      </ul>
+    </section>
+  </div>
+  <footer><strong>Authority boundary:</strong> no PO, forecast-of-record change, supplier contact, allocation, quality waiver, expedite commitment, payment, or sourcing decision.</footer>
+</main>

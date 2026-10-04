@@ -95,6 +95,11 @@
         "id": "privacy-request-coordinator",
         "overlap": "Both minimize sensitive evidence, require controlled references, and preserve a separate accountable decision owner.",
         "difference": "Privacy Request Coordinator manages statutory request scope and disclosure/deletion decisions, while Security Analyst evaluates technical threats, exploit preconditions, controls, and remediation verification."
+      },
+      {
+        "id": "solution-architecture-decision-advisor",
+        "overlap": "Both require bounded specialist-owned security evidence, explicit uncertainty, exact scope and revision identity, residual-risk visibility, and an accountable owner boundary.",
+        "difference": "Solution Architecture Decision Advisor uses security as one comparison dimension among requirement fit, cost, reliability, and operability for multiple architecture options; Security Analyst owns the deeper threat-scenario, asset, control, exploitability, and remediation-verification assessment contract."
       }
     ]
   }

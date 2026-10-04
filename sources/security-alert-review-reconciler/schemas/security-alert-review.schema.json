@@ -1,0 +1,1209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/security-alert-review.schema.json",
+  "title": "Security Alert Review Reconciler record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "asOf",
+    "snapshot",
+    "sourceAuthority",
+    "detectorPolicy",
+    "historicalDetectorPolicies",
+    "publicTrustInputs",
+    "principalRoster",
+    "principals",
+    "grants",
+    "evidence",
+    "evidenceRoot",
+    "duplicateGroups",
+    "suppressionAttempts",
+    "priorDecisions",
+    "reviewRecords",
+    "incidentEscalations",
+    "coverage",
+    "authority",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.securityAlertReview.v1"
+    },
+    "artifactId": {
+      "$ref": "#/$defs/id"
+    },
+    "asOf": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "snapshot": {
+      "$ref": "#/$defs/snapshot"
+    },
+    "sourceAuthority": {
+      "$ref": "#/$defs/sourceAuthority"
+    },
+    "detectorPolicy": {
+      "$ref": "#/$defs/detectorPolicy"
+    },
+    "historicalDetectorPolicies": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/detectorPolicy"
+      }
+    },
+    "publicTrustInputs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/publicTrustInput"
+      }
+    },
+    "principalRoster": {
+      "$ref": "#/$defs/principalRoster"
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "grants": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/grant"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "evidenceRoot": {
+      "$ref": "#/$defs/digest"
+    },
+    "duplicateGroups": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/duplicateGroup"
+      }
+    },
+    "suppressionAttempts": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/suppressionAttempt"
+      }
+    },
+    "priorDecisions": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/priorDecision"
+      }
+    },
+    "reviewRecords": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/reviewRecord"
+      }
+    },
+    "incidentEscalations": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/incidentEscalation"
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "idList": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "stringList": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      }
+    },
+    "alertKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10000
+    },
+    "alertKeyList": {
+      "type": "array",
+      "maxItems": 128,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/alertKey"
+      }
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "timestamp": {
+      "type": "string",
+      "maxLength": 40,
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "digest": {
+      "type": "string",
+      "maxLength": 71,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "nullableId": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/id"
+        }
+      ]
+    },
+    "nullableString": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      ]
+    },
+    "nullableTimestamp": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/timestamp"
+        }
+      ]
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "capturedAt",
+        "suppliedByRef",
+        "complete",
+        "alertRefs",
+        "completenessRoot",
+        "evidenceRef",
+        "alerts"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "complete": {
+          "const": true
+        },
+        "alertRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "completenessRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "alerts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/alert"
+          }
+        }
+      }
+    },
+    "alert": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "source",
+        "nativeAlertId",
+        "revision",
+        "supersedesRevision",
+        "detectorRef",
+        "sourceState",
+        "sourceSeverity",
+        "assetIdentityState",
+        "assetRef",
+        "ownerRef",
+        "observedAt",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "nativeAlertId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "supersedesRevision": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "detectorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceState": {
+          "enum": [
+            "open",
+            "muted",
+            "suppressed",
+            "resolved",
+            "unknown"
+          ]
+        },
+        "sourceSeverity": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "assetIdentityState": {
+          "enum": [
+            "known",
+            "unknown"
+          ]
+        },
+        "assetRef": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "sourceAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ownerRef",
+        "manifestVersion",
+        "issuedAt",
+        "snapshotRef",
+        "snapshotRevision",
+        "snapshotCompletenessRoot",
+        "normalizedAlertKeys",
+        "normalizedAlertUniverseDigest",
+        "records",
+        "signingKeyId",
+        "signature"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "manifestVersion": {
+          "const": "v1"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "snapshotRef": {
+          "$ref": "#/$defs/id"
+        },
+        "snapshotRevision": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "snapshotCompletenessRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "normalizedAlertKeys": {
+          "$ref": "#/$defs/alertKeyList"
+        },
+        "normalizedAlertUniverseDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/sourceAuthorityRecord"
+          }
+        },
+        "signingKeyId": {
+          "$ref": "#/$defs/id"
+        },
+        "signature": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9+/]{86}==$"
+        }
+      }
+    },
+    "sourceAuthorityRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "sourceVersion",
+        "sourceContentDigest",
+        "normalizedAlertKeys",
+        "normalizedAlertDigest"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "sourceVersion": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "sourceContentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "normalizedAlertKeys": {
+          "$ref": "#/$defs/alertKeyList"
+        },
+        "normalizedAlertDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "detectorPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "effectiveAt",
+        "suppliedByRef",
+        "trustInputRefs",
+        "trustInputDigests",
+        "detectorRules",
+        "revisionDigest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "effectiveAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "trustInputRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "trustInputDigests": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "detectorRules": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/detectorRule"
+          }
+        },
+        "revisionDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "detectorRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "source",
+        "category",
+        "reviewRequired",
+        "allowedDispositionKinds"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "category": {
+          "enum": [
+            "vulnerability",
+            "code-analysis",
+            "secret-exposure",
+            "identity-anomaly",
+            "configuration",
+            "behavior",
+            "other"
+          ]
+        },
+        "reviewRequired": {
+          "const": true
+        },
+        "allowedDispositionKinds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "false-positive",
+              "duplicate",
+              "incident-review-escalation"
+            ]
+          }
+        }
+      }
+    },
+    "publicTrustInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "publisher",
+        "source",
+        "uri",
+        "retrievedAt",
+        "contentDigest",
+        "authorityEffect",
+        "recordDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "public-detector-contract"
+        },
+        "publisher": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 2048,
+          "pattern": "^https://"
+        },
+        "retrievedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "authorityEffect": {
+          "const": "context-only"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "identityKind",
+        "name",
+        "directoryObjectRef",
+        "scopes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "named-human",
+            "system",
+            "claw"
+          ]
+        },
+        "identityKind": {
+          "enum": [
+            "person",
+            "system",
+            "agent"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "directoryObjectRef": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "scopes": {
+          "$ref": "#/$defs/stringList"
+        }
+      }
+    },
+    "principalRoster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision",
+        "capturedAt",
+        "suppliedByRef",
+        "principalRefs",
+        "digest",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "grant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "granteeRef",
+        "issuedByRef",
+        "source",
+        "detectorRefs",
+        "issuedAt",
+        "validFrom",
+        "validUntil",
+        "policyRevisionDigest",
+        "evidenceRef",
+        "grantDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "enum": [
+            "record-false-positive",
+            "record-duplicate",
+            "declare-duplicate-group",
+            "request-incident-review"
+          ]
+        },
+        "granteeRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "detectorRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "validFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "validUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "policyRevisionDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "grantDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "authorRef",
+        "observedAt",
+        "controlledUri",
+        "contentDigest",
+        "subjectRefs",
+        "subjectDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "alert-snapshot",
+            "detector-policy-revision",
+            "principal-authority-roster",
+            "authority-grant",
+            "human-disposition",
+            "duplicate-declaration",
+            "incident-escalation",
+            "suppression-attempt",
+            "prior-decision"
+          ]
+        },
+        "authorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "controlledUri": {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^controlled://[^/?#]+/[^?#]+$"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/stringList"
+        },
+        "subjectDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "duplicateGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "source",
+        "detectorRef",
+        "memberAlertKeys",
+        "primaryAlertKey",
+        "declaredByRef",
+        "declaredAt",
+        "grantRef",
+        "evidenceRef",
+        "groupDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "detectorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "memberAlertKeys": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/alertKey"
+          }
+        },
+        "primaryAlertKey": {
+          "$ref": "#/$defs/alertKey"
+        },
+        "declaredByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "declaredAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "grantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "groupDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "suppressionAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "alertKey",
+        "requestedByRef",
+        "requestedAt",
+        "requestedAction",
+        "evidenceRef",
+        "attemptDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "alertKey": {
+          "$ref": "#/$defs/alertKey"
+        },
+        "requestedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "requestedAction": {
+          "enum": [
+            "suppress",
+            "mute",
+            "close"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "attemptDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "priorDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "source",
+        "nativeAlertId",
+        "revision",
+        "detectorRef",
+        "alertKey",
+        "policyRevisionDigest",
+        "outcome",
+        "decidedByRef",
+        "decidedAt",
+        "grantRef",
+        "evidenceRef",
+        "invalidatedByAlertKey",
+        "decisionDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "nativeAlertId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "detectorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "alertKey": {
+          "$ref": "#/$defs/alertKey"
+        },
+        "policyRevisionDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "outcome": {
+          "enum": [
+            "false-positive",
+            "duplicate",
+            "incident-review-escalation"
+          ]
+        },
+        "decidedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "decidedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "grantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "invalidatedByAlertKey": {
+          "$ref": "#/$defs/alertKey"
+        },
+        "decisionDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "reviewRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "alertKey",
+        "snapshotRoot",
+        "policyRevisionDigest",
+        "kind",
+        "disposition",
+        "nonDecision",
+        "decidedByRef",
+        "recordedAt",
+        "grantRef",
+        "evidenceRef",
+        "duplicateGroupRef",
+        "incidentEscalationRef",
+        "recordDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "alertKey": {
+          "$ref": "#/$defs/alertKey"
+        },
+        "snapshotRoot": {
+          "$ref": "#/$defs/digest"
+        },
+        "policyRevisionDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "kind": {
+          "enum": [
+            "human-disposition",
+            "non-decision"
+          ]
+        },
+        "disposition": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "false-positive",
+                "duplicate",
+                "incident-review-escalation"
+              ]
+            }
+          ]
+        },
+        "nonDecision": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "source-muted-or-suppressed",
+                "unknown-asset-identity",
+                "self-suppression-attempt",
+                "revision-invalidated-prior-decision"
+              ]
+            }
+          ]
+        },
+        "decidedByRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "recordedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "grantRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "duplicateGroupRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "incidentEscalationRef": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "incidentEscalation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "alertKey",
+        "requestedByRef",
+        "requestedAt",
+        "grantRef",
+        "incidentOwnerRef",
+        "state",
+        "incidentRef",
+        "declarationEffect",
+        "evidenceRef",
+        "escalationDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "alertKey": {
+          "$ref": "#/$defs/alertKey"
+        },
+        "requestedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "grantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "incidentOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "state": {
+          "const": "requested-owner-review"
+        },
+        "incidentRef": {
+          "type": "null"
+        },
+        "declarationEffect": {
+          "const": "none"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "escalationDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expectedAlertCount",
+        "alertKeys",
+        "reviewRecordRefs",
+        "humanDispositionCount",
+        "nonDecisionCount",
+        "humanDispositionAlertKeys",
+        "nonDecisionAlertKeys"
+      ],
+      "properties": {
+        "expectedAlertCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128
+        },
+        "alertKeys": {
+          "$ref": "#/$defs/alertKeyList"
+        },
+        "reviewRecordRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "humanDispositionCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 128
+        },
+        "nonDecisionCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 128
+        },
+        "humanDispositionAlertKeys": {
+          "$ref": "#/$defs/alertKeyList"
+        },
+        "nonDecisionAlertKeys": {
+          "$ref": "#/$defs/alertKeyList"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "siemQuery",
+        "correlationInference",
+        "severityInference",
+        "sourceSuppression",
+        "sourceClosure",
+        "containment",
+        "incidentDeclaration",
+        "ticketMutation",
+        "riskAcceptance",
+        "securityClaim"
+      ],
+      "properties": {
+        "siemQuery": {
+          "const": "not-performed"
+        },
+        "correlationInference": {
+          "const": "not-performed"
+        },
+        "severityInference": {
+          "const": "not-performed"
+        },
+        "sourceSuppression": {
+          "const": "not-performed"
+        },
+        "sourceClosure": {
+          "const": "not-performed"
+        },
+        "containment": {
+          "const": "not-performed"
+        },
+        "incidentDeclaration": {
+          "const": "not-performed"
+        },
+        "ticketMutation": {
+          "const": "not-performed"
+        },
+        "riskAcceptance": {
+          "const": "not-claimed"
+        },
+        "securityClaim": {
+          "const": "not-claimed"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "destination",
+        "published",
+        "state",
+        "generatedAt",
+        "nextOwnerRef",
+        "humanDispositionRefs",
+        "nonDecisionRefs",
+        "incidentEscalationRefs"
+      ],
+      "properties": {
+        "destination": {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^controlled://[^/?#]+/[^?#]+$"
+        },
+        "published": {
+          "const": false
+        },
+        "state": {
+          "const": "complete-covered"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "humanDispositionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "nonDecisionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "incidentEscalationRefs": {
+          "$ref": "#/$defs/idList"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "learning-program-manager",
+  "scenario": "Turn the approved FY27 cloud reliability capability-gap revision into the next curriculum release and cohort plan, then track delivery evidence and prepare the quarterly refresh review.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Turn the approved FY27 cloud reliability capability-gap revision into the next curriculum release and cohort plan, then track delivery evidence and prepare the quarterly refresh review."
+    },
+    {
+      "role": "agent",
+      "text": "I bound the approved aggregate gap, taxonomy, curriculum release, roster revision, assignment receipts, completion and assessment identities, cohort-only measures, privacy class, and review chronology while keeping all consequential authority human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced the validated outputs/learning-program-release.json, complete X3 fallback, and optional X4 review with exact blockers and the next owner."
+    }
+  ],
+  "report": {
+    "title": "Learning program manager session handoff",
+    "summary": "A revision-bound learning program package with versioned curriculum, cohort roster bindings, assignment receipts, completion and assessment identities, aggregate effectiveness evidence, privacy-aware blockers, human-owned refresh decisions, and no individual performance inference.",
+    "output": "outputs/learning-program-release.md",
+    "items": [
+      {
+        "title": "Versioned learning program release ledger",
+        "summary": "Every curriculum release and cohort assignment binds to exact approved gap, taxonomy, curriculum, and roster revisions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Audience and cohort assignment register",
+        "summary": "Every readiness, completion, assessment, and aggregate effectiveness claim has current evidence or a visible blocker",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Delivery readiness and evidence register",
+        "summary": "Every refresh decision and next action names its human owner and chronology without prohibited individual or employment claims",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Aggregate effectiveness and refresh review",
+        "summary": "Every curriculum release and cohort assignment binds to exact approved gap, taxonomy, curriculum, and roster revisions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner handoff",
+        "summary": "Every readiness, completion, assessment, and aggregate effectiveness claim has current evidence or a visible blocker",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

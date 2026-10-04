@@ -1,0 +1,345 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/consumer-recall-ledger.v1.json",
+  "title": "Consumer Product Recall Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "portfolio", "authorities", "sources", "products", "identityClaims", "campaigns", "criteria", "applicabilityChecks", "instructions", "remedies", "actions", "outcomes", "gaps", "review", "prohibitedActions"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.consumerRecallLedger.v1" },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ownerAuthorityRef", "authorizedHelperRefs", "generalizedScopeRef", "jurisdictions", "privacyCeiling", "asOf", "revision", "previousRevisionRef", "sourceRefs", "productRefs", "identityClaimRefs", "campaignRefs", "criterionRefs", "applicabilityCheckRefs", "instructionRefs", "remedyRefs", "actionRefs", "outcomeRefs", "gapRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+        "authorizedHelperRefs": { "$ref": "#/$defs/refArray" },
+        "generalizedScopeRef": { "$ref": "#/$defs/redactedRef" },
+        "jurisdictions": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "privacyCeiling": { "const": "owner-and-explicit-helper" },
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "previousRevisionRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "productRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "identityClaimRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "campaignRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "criterionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "applicabilityCheckRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "instructionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "remedyRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "actionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "outcomeRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "gapRefs": { "$ref": "#/$defs/nonEmptyRefArray" }
+      }
+    },
+    "authorities": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label", "authorizationSourceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["owner", "authorized-helper", "regulator", "manufacturer-or-issuer", "retailer-or-distributor", "qualified-specialist", "carrier-or-service-provider", "other-interested-party"] },
+          "label": { "$ref": "#/$defs/shortText" },
+          "authorizationSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "subjectRef", "issuerAuthorityRef", "controlledRef", "revision", "issuedAt", "retrievedAt", "jurisdiction", "freshness", "redaction", "containsSecrets"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["helper-authorization", "owner-inventory", "official-campaign-notice", "official-campaign-revision", "manufacturer-lookup", "retailer-notice", "qualified-finding", "owner-action-note", "independent-receipt", "remedy-status", "correction-receipt", "owner-decision"] },
+          "subjectRef": { "$ref": "#/$defs/id" },
+          "issuerAuthorityRef": { "$ref": "#/$defs/id" },
+          "controlledRef": { "$ref": "#/$defs/redactedRef" },
+          "revision": { "type": "string", "minLength": 1, "maxLength": 40 },
+          "issuedAt": { "$ref": "#/$defs/timestamp" },
+          "retrievedAt": { "$ref": "#/$defs/timestamp" },
+          "jurisdiction": { "$ref": "#/$defs/redactedRef" },
+          "freshness": { "enum": ["current", "superseded", "stale", "unknown"] },
+          "redaction": { "const": "minimized-reference-only" },
+          "containsSecrets": { "const": false }
+        }
+      }
+    },
+    "products": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "generalizedLabel", "category", "generalizedLocationRef", "custodyState", "identityClaimRefs", "applicabilityCheckRefs", "actionRefs", "outcomeRefs", "gapRefs", "safetyDetermination", "defectDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "generalizedLabel": { "$ref": "#/$defs/shortText" },
+          "category": { "enum": ["electronics", "appliance", "child-product", "furniture", "outdoor", "personal-care", "kitchen", "office", "other-consumer-product"] },
+          "generalizedLocationRef": { "$ref": "#/$defs/redactedRef" },
+          "custodyState": { "enum": ["owned", "borrowed", "workplace-custody", "returned-owner-reported", "disposed-owner-reported", "unknown"] },
+          "identityClaimRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "applicabilityCheckRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "actionRefs": { "$ref": "#/$defs/refArray" },
+          "outcomeRefs": { "$ref": "#/$defs/refArray" },
+          "gapRefs": { "$ref": "#/$defs/refArray" },
+          "safetyDetermination": { "const": false },
+          "defectDetermination": { "const": false }
+        }
+      }
+    },
+    "identityClaims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "productRef", "kind", "valueRef", "sourceRefs", "state"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "productRef": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["manufacturer", "model", "lot", "batch", "date-code", "serial-fragment", "purchase-period", "other-official-identifier"] },
+          "valueRef": { "$ref": "#/$defs/redactedRef" },
+          "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "state": { "enum": ["verified", "unverified", "conflicting"] }
+        }
+      }
+    },
+    "campaigns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "stableCampaignRef", "revision", "state", "predecessorRef", "successorRef", "issuerAuthorityRef", "issuedAt", "sourceRef", "criterionRefs", "instructionRefs", "remedyRefs", "deadlineAt", "safetyDetermination", "eligibilityDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "stableCampaignRef": { "$ref": "#/$defs/redactedRef" },
+          "revision": { "type": "string", "minLength": 1, "maxLength": 40 },
+          "state": { "enum": ["current", "superseded", "withdrawn"] },
+          "predecessorRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "successorRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "issuerAuthorityRef": { "$ref": "#/$defs/id" },
+          "issuedAt": { "$ref": "#/$defs/timestamp" },
+          "sourceRef": { "$ref": "#/$defs/id" },
+          "criterionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "instructionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "remedyRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "deadlineAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "safetyDetermination": { "const": false },
+          "eligibilityDetermination": { "const": false }
+        }
+      }
+    },
+    "criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "campaignRef", "effect", "kind", "valueRef", "sourceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "campaignRef": { "$ref": "#/$defs/id" },
+          "effect": { "enum": ["affected", "excluded"] },
+          "kind": { "enum": ["manufacturer", "model", "lot", "batch", "date-code", "serial-fragment", "purchase-period", "other-official-criterion"] },
+          "valueRef": { "$ref": "#/$defs/redactedRef" },
+          "sourceRef": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "applicabilityChecks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "productRef", "campaignRef", "criterionRefs", "evidenceSourceRefs", "state", "resultSourceRef", "outcomeRef", "safetyDetermination", "defectDetermination", "eligibilityDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "productRef": { "$ref": "#/$defs/id" },
+          "campaignRef": { "$ref": "#/$defs/id" },
+          "criterionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "evidenceSourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "state": { "enum": ["possible-match", "authoritative-confirmed", "authoritative-excluded", "corrected-with-receipt", "unresolved", "superseded"] },
+          "resultSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "outcomeRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "safetyDetermination": { "const": false },
+          "defectDetermination": { "const": false },
+          "eligibilityDetermination": { "const": false }
+        }
+      }
+    },
+    "instructions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "campaignRef", "kind", "summary", "sourceRef", "state", "actionRefs", "adviceByClaw"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "campaignRef": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["stop-use", "limit-use", "unplug", "isolate", "contact-issuer", "register", "submit-request", "return", "ship", "service", "repair", "replace", "refund", "dispose", "other-official-instruction"] },
+          "summary": { "$ref": "#/$defs/shortText" },
+          "sourceRef": { "$ref": "#/$defs/id" },
+          "state": { "enum": ["current", "superseded"] },
+          "actionRefs": { "$ref": "#/$defs/refArray" },
+          "adviceByClaw": { "const": false }
+        }
+      }
+    },
+    "remedies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "campaignRef", "kind", "summary", "sourceRef", "prerequisiteCriterionRefs", "deadlineAt", "state", "actionRefs", "entitlementDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "campaignRef": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["replacement", "refund", "repair", "return", "service", "information", "other-official-remedy"] },
+          "summary": { "$ref": "#/$defs/shortText" },
+          "sourceRef": { "$ref": "#/$defs/id" },
+          "prerequisiteCriterionRefs": { "$ref": "#/$defs/refArray" },
+          "deadlineAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "state": { "enum": ["published", "superseded", "withdrawn"] },
+          "actionRefs": { "$ref": "#/$defs/refArray" },
+          "entitlementDetermination": { "const": false }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "productRef", "campaignRef", "remedyRef", "kind", "ownerAuthorityRef", "state", "attemptedAt", "sourceRefs", "receiptSourceRef", "externalExecution", "agentExecuted"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "productRef": { "$ref": "#/$defs/id" },
+          "campaignRef": { "$ref": "#/$defs/id" },
+          "remedyRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "kind": { "enum": ["lookup", "register", "contact", "submit-request", "create-label", "ship", "return", "schedule-service", "authorize-repair", "accept-refund", "replace", "dispose", "purchase", "review-record", "other-owner-action"] },
+          "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+          "state": { "enum": ["planned", "attempted", "failed", "owner-completed-receipted", "blocked", "withdrawn", "superseded"] },
+          "attemptedAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+          "sourceRefs": { "$ref": "#/$defs/refArray" },
+          "receiptSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+          "externalExecution": { "const": "owner-only" },
+          "agentExecuted": { "const": false }
+        }
+      }
+    },
+    "outcomes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "productRef", "campaignRef", "actionRef", "kind", "state", "sourceRef", "correctionSufficiencyDetermination", "closureDetermination"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "productRef": { "$ref": "#/$defs/id" },
+          "campaignRef": { "$ref": "#/$defs/id" },
+          "actionRef": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["lookup-confirmed", "lookup-excluded", "replacement-received", "refund-received", "repair-receipted", "return-receipted", "disposal-receipted", "other-issuer-status"] },
+          "state": { "enum": ["independently-receipted", "issuer-reported", "pending", "disputed"] },
+          "sourceRef": { "$ref": "#/$defs/id" },
+          "correctionSufficiencyDetermination": { "const": false },
+          "closureDetermination": { "const": false }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "subjectRefs", "sourceRefs", "nextOwnerAuthorityRef", "state", "resolutionSourceRef"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "enum": ["missing-identity", "campaign-conflict", "stale-campaign", "superseded-instruction", "missing-receipt", "blocked-remedy", "deadline", "urgent-safety-question", "professional-question", "residual-product-state"] },
+          "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+          "sourceRefs": { "$ref": "#/$defs/refArray" },
+          "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+          "state": { "enum": ["open", "resolved"] },
+          "resolutionSourceRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asOf", "nextRevision", "nextOwnerAuthorityRef", "possibleApplicabilityRefs", "confirmedApplicabilityRefs", "unresolvedApplicabilityRefs", "correctedApplicabilityRefs", "openGapRefs", "deadlineRefs", "missingReceiptActionRefs", "urgentGapRefs", "portfolioClosureClaim", "safetyConclusion", "defectConclusion", "eligibilityConclusion", "correctionConclusion"],
+      "properties": {
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "nextRevision": { "type": "integer", "minimum": 2 },
+        "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+        "possibleApplicabilityRefs": { "$ref": "#/$defs/refArray" },
+        "confirmedApplicabilityRefs": { "$ref": "#/$defs/refArray" },
+        "unresolvedApplicabilityRefs": { "$ref": "#/$defs/refArray" },
+        "correctedApplicabilityRefs": { "$ref": "#/$defs/refArray" },
+        "openGapRefs": { "$ref": "#/$defs/refArray" },
+        "deadlineRefs": { "$ref": "#/$defs/refArray" },
+        "missingReceiptActionRefs": { "$ref": "#/$defs/refArray" },
+        "urgentGapRefs": { "$ref": "#/$defs/refArray" },
+        "portfolioClosureClaim": { "const": false },
+        "safetyConclusion": { "const": false },
+        "defectConclusion": { "const": false },
+        "eligibilityConclusion": { "const": false },
+        "correctionConclusion": { "const": false }
+      }
+    },
+    "prohibitedActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["diagnosis", "safetyAdvice", "legalAdvice", "consumerRightsAdvice", "contact", "registration", "submission", "labelCreation", "shipping", "transport", "return", "repair", "disable", "destruction", "disposal", "donation", "sale", "replacement", "purchase", "scheduling", "authorization", "acceptance", "disclosure", "payment", "closure"],
+      "properties": {
+        "diagnosis": { "const": false },
+        "safetyAdvice": { "const": false },
+        "legalAdvice": { "const": false },
+        "consumerRightsAdvice": { "const": false },
+        "contact": { "const": false },
+        "registration": { "const": false },
+        "submission": { "const": false },
+        "labelCreation": { "const": false },
+        "shipping": { "const": false },
+        "transport": { "const": false },
+        "return": { "const": false },
+        "repair": { "const": false },
+        "disable": { "const": false },
+        "destruction": { "const": false },
+        "disposal": { "const": false },
+        "donation": { "const": false },
+        "sale": { "const": false },
+        "replacement": { "const": false },
+        "purchase": { "const": false },
+        "scheduling": { "const": false },
+        "authorization": { "const": false },
+        "acceptance": { "const": false },
+        "disclosure": { "const": false },
+        "payment": { "const": false },
+        "closure": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "maxLength": 120, "pattern": "^[a-z0-9][a-z0-9._:-]*$" },
+    "redactedRef": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "shortText": { "type": "string", "minLength": 1, "maxLength": 600 },
+    "timestamp": { "type": "string", "format": "date-time", "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$" },
+    "refArray": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "nonEmptyRefArray": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
+  }
+}

@@ -1,0 +1,570 @@
+{
+  "schemaVersion": "awesomeClaws.contractObligationTracker.v1",
+  "artifactId": "artifact-contract-review-2026-09",
+  "round": {
+    "id": "round-2026-09",
+    "registerRef": "register-services",
+    "registerVersion": "v3",
+    "registerDigest": "sha256:267971059ac90017f3e1a1b273a73c646f3f8d5729a59d18177dd3e4c2d7273d",
+    "agreementVersionRefs": [
+      "agreement-services-v2"
+    ],
+    "authorityRosterRef": "roster-contract-owners",
+    "authorityRosterDigest": "sha256:7a62a8737b56659b741e4fddb1a685820f76dfd2b38aa70e483a363239189840",
+    "opensAt": "2026-09-01T00:00:00Z",
+    "closesAt": "2026-09-05T12:00:00Z",
+    "destination": "contract-owner-review-queue",
+    "destinationApproverRef": "principal-destination-approver",
+    "handoffOwnerRef": "principal-handoff-owner",
+    "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209"
+  },
+  "agreements": [
+    {
+      "id": "agreement-services-v2",
+      "agreementId": "agreement-services",
+      "version": "v2",
+      "executedAt": "2026-01-15T18:00:00Z",
+      "repositoryRef": "principal-agreement-system",
+      "contentDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "sourceEvidenceRef": "evidence-agreement-copy"
+    }
+  ],
+  "register": {
+    "id": "register-services",
+    "version": "v3",
+    "confirmedAt": "2026-08-31T20:00:00Z",
+    "confirmedByRef": "principal-register-owner",
+    "sourceSystemRef": "principal-register-system",
+    "agreementVersionRefs": [
+      "agreement-services-v2"
+    ],
+    "obligationRefs": [
+      "obligation-complete",
+      "obligation-owner-confirmation-pending",
+      "obligation-future",
+      "obligation-blocked"
+    ],
+    "contentDigest": "sha256:267971059ac90017f3e1a1b273a73c646f3f8d5729a59d18177dd3e4c2d7273d",
+    "evidenceRef": "evidence-register"
+  },
+  "obligations": [
+    {
+      "id": "obligation-complete",
+      "agreementVersionRef": "agreement-services-v2",
+      "responsibleOwnerRef": "principal-obligation-owner",
+      "clauseLocator": "S4.1",
+      "clauseDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "obligationDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "dueAt": "2026-09-02T12:00:00Z",
+      "performanceEvidenceSupplierRef": "principal-performance-supplier",
+      "requiredEvidenceRefs": [
+        "evidence-performance-complete"
+      ]
+    },
+    {
+      "id": "obligation-owner-confirmation-pending",
+      "agreementVersionRef": "agreement-services-v2",
+      "responsibleOwnerRef": "principal-obligation-owner",
+      "clauseLocator": "S4.2",
+      "clauseDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "obligationDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "dueAt": "2026-09-04T12:00:00Z",
+      "performanceEvidenceSupplierRef": "principal-performance-supplier",
+      "requiredEvidenceRefs": [
+        "evidence-performance-owner-confirmation-pending"
+      ]
+    },
+    {
+      "id": "obligation-future",
+      "agreementVersionRef": "agreement-services-v2",
+      "responsibleOwnerRef": "principal-obligation-owner",
+      "clauseLocator": "S7.1",
+      "clauseDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "obligationDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "dueAt": "2026-10-01T12:00:00Z",
+      "performanceEvidenceSupplierRef": "principal-performance-supplier",
+      "requiredEvidenceRefs": [
+        "evidence-performance-future"
+      ]
+    },
+    {
+      "id": "obligation-blocked",
+      "agreementVersionRef": "agreement-services-v2",
+      "responsibleOwnerRef": "principal-obligation-owner",
+      "clauseLocator": "S8.3",
+      "clauseDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "obligationDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "dueAt": "2026-09-03T12:00:00Z",
+      "performanceEvidenceSupplierRef": "principal-performance-supplier",
+      "requiredEvidenceRefs": [
+        "evidence-performance-blocked-missing"
+      ]
+    }
+  ],
+  "principals": [
+    {
+      "id": "principal-agreement-system",
+      "name": "Agreement Repository",
+      "kind": "owner-system",
+      "scopes": [
+        "agreement-source"
+      ]
+    },
+    {
+      "id": "principal-register-system",
+      "name": "Obligation Register",
+      "kind": "owner-system",
+      "scopes": [
+        "register-source"
+      ]
+    },
+    {
+      "id": "principal-register-owner",
+      "name": "Morgan Register",
+      "kind": "named-human",
+      "scopes": [
+        "obligation-register-owner"
+      ]
+    },
+    {
+      "id": "principal-obligation-owner",
+      "name": "Avery Owner",
+      "kind": "named-human",
+      "scopes": [
+        "obligation-owner"
+      ]
+    },
+    {
+      "id": "principal-roster-custodian",
+      "name": "Casey Custodian",
+      "kind": "named-human",
+      "scopes": [
+        "authority-roster-custodian"
+      ]
+    },
+    {
+      "id": "principal-grant-issuer",
+      "name": "Riley Authority",
+      "kind": "named-human",
+      "scopes": [
+        "authority-grant-issuer"
+      ]
+    },
+    {
+      "id": "principal-completion-owner",
+      "name": "Taylor Confirmer",
+      "kind": "named-human",
+      "scopes": [
+        "obligation-owner"
+      ]
+    },
+    {
+      "id": "principal-performance-supplier",
+      "name": "Parker Supplier",
+      "kind": "named-human",
+      "scopes": [
+        "performance-evidence-supplier"
+      ]
+    },
+    {
+      "id": "principal-destination-approver",
+      "name": "Dana Approver",
+      "kind": "named-human",
+      "scopes": [
+        "destination-approver"
+      ]
+    },
+    {
+      "id": "principal-handoff-owner",
+      "name": "Harper Reviewer",
+      "kind": "named-human",
+      "scopes": [
+        "handoff-recipient"
+      ]
+    }
+  ],
+  "authorityRoster": {
+    "id": "roster-contract-owners",
+    "version": "v1",
+    "issuedAt": "2026-08-31T21:00:00Z",
+    "custodianRef": "principal-roster-custodian",
+    "principalRefs": [
+      "principal-agreement-system",
+      "principal-register-system",
+      "principal-register-owner",
+      "principal-obligation-owner",
+      "principal-roster-custodian",
+      "principal-grant-issuer",
+      "principal-completion-owner",
+      "principal-performance-supplier",
+      "principal-destination-approver",
+      "principal-handoff-owner"
+    ],
+    "contentDigest": "sha256:7a62a8737b56659b741e4fddb1a685820f76dfd2b38aa70e483a363239189840",
+    "evidenceRef": "evidence-roster"
+  },
+  "authorityGrants": [
+    {
+      "id": "grant-complete-obligation",
+      "obligationRef": "obligation-complete",
+      "granteeRef": "principal-completion-owner",
+      "issuedByRef": "principal-grant-issuer",
+      "scope": "owner-completion-confirmation",
+      "activeFrom": "2026-09-01T00:00:00Z",
+      "activeUntil": "2026-09-05T23:59:59Z",
+      "rosterRef": "roster-contract-owners",
+      "rosterDigest": "sha256:7a62a8737b56659b741e4fddb1a685820f76dfd2b38aa70e483a363239189840",
+      "evidenceRef": "evidence-grant-complete",
+      "payloadDigest": "sha256:54c792052b61f1a6c86242617f7a46bbffded95c53eb69e14ac998cbebd9f41d"
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation-complete",
+      "obligationRef": "obligation-complete",
+      "agreementVersionRef": "agreement-services-v2",
+      "clauseDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "obligationDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "ownerRef": "principal-obligation-owner",
+      "state": "owner-confirmed-complete",
+      "dueState": "due",
+      "observedAt": "2026-09-04T10:00:00Z",
+      "reliedEvidenceRefs": [
+        "evidence-performance-complete"
+      ],
+      "observationEvidenceRef": "evidence-observation-complete",
+      "completion": {
+        "confirmedByRef": "principal-completion-owner",
+        "confirmedAt": "2026-09-04T10:00:00Z",
+        "authorityGrantRef": "grant-complete-obligation",
+        "confirmationEvidenceRef": "evidence-confirmation-complete"
+      }
+    },
+    {
+      "id": "observation-owner-confirmation-pending",
+      "obligationRef": "obligation-owner-confirmation-pending",
+      "agreementVersionRef": "agreement-services-v2",
+      "clauseDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "obligationDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "ownerRef": "principal-obligation-owner",
+      "state": "owner-confirmation-pending",
+      "dueState": "due",
+      "observedAt": "2026-09-05T09:00:00Z",
+      "reliedEvidenceRefs": [
+        "evidence-performance-owner-confirmation-pending"
+      ],
+      "observationEvidenceRef": "evidence-observation-owner-confirmation-pending",
+      "completion": null
+    },
+    {
+      "id": "observation-future",
+      "obligationRef": "obligation-future",
+      "agreementVersionRef": "agreement-services-v2",
+      "clauseDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "obligationDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "ownerRef": "principal-obligation-owner",
+      "state": "not-yet-due",
+      "dueState": "not-yet-due",
+      "observedAt": "2026-09-05T09:05:00Z",
+      "reliedEvidenceRefs": [],
+      "observationEvidenceRef": "evidence-observation-future",
+      "completion": null
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-missing-performance",
+      "obligationRef": "obligation-blocked",
+      "category": "source-evidence-missing",
+      "detectedAt": "2026-09-05T09:10:00Z",
+      "ownerRef": "principal-obligation-owner",
+      "exactMissingEvidenceRefs": [
+        "evidence-performance-blocked-missing"
+      ],
+      "evidenceRef": "evidence-blocker"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-agreement-copy",
+      "kind": "executed-agreement-copy",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-01-15T18:00:00Z",
+      "suppliedByRef": "principal-agreement-system",
+      "subjectRefs": [
+        "agreement-services-v2"
+      ],
+      "sourceRecordDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "payloadDigest": "sha256:f0041572654454a0707fb7bbfa3282211b04dfeff32e5a0431fb95183a15c8fe",
+      "recordDigest": "sha256:aa912a34be0d5e7cdc30a3ad12224ed539a47a289065e7524005557c0afa9acb"
+    },
+    {
+      "id": "evidence-register",
+      "kind": "obligation-register-export",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-08-31T20:00:00Z",
+      "suppliedByRef": "principal-register-owner",
+      "subjectRefs": [
+        "register-services",
+        "obligation-complete",
+        "obligation-owner-confirmation-pending",
+        "obligation-future",
+        "obligation-blocked"
+      ],
+      "sourceRecordDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "payloadDigest": "sha256:f43b094e0f3d47708d722cbb5374b9ec1449cfc997e28502e916942176cf9234",
+      "recordDigest": "sha256:0f7e5a632ac36e921e987ef207380c542b8acb0d13b6e65ededcbd3de283f374"
+    },
+    {
+      "id": "evidence-roster",
+      "kind": "authority-roster-export",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-08-31T21:00:00Z",
+      "suppliedByRef": "principal-roster-custodian",
+      "subjectRefs": [
+        "roster-contract-owners",
+        "principal-agreement-system",
+        "principal-register-system",
+        "principal-register-owner",
+        "principal-obligation-owner",
+        "principal-roster-custodian",
+        "principal-grant-issuer",
+        "principal-completion-owner",
+        "principal-performance-supplier",
+        "principal-destination-approver",
+        "principal-handoff-owner"
+      ],
+      "sourceRecordDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "payloadDigest": "sha256:c3974d3c4dd13e356c3148304265bc4cab64dce873e346102390af796e274605",
+      "recordDigest": "sha256:50f084a8d41d9d63b583de3bcf1a8482e3b07a0ed7b527fe8c3d59c0c8c9b9e6"
+    },
+    {
+      "id": "evidence-grant-complete",
+      "kind": "authority-grant-record",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-grant-issuer",
+      "subjectRefs": [
+        "grant-complete-obligation",
+        "obligation-complete",
+        "principal-completion-owner"
+      ],
+      "sourceRecordDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "payloadDigest": "sha256:54c792052b61f1a6c86242617f7a46bbffded95c53eb69e14ac998cbebd9f41d",
+      "recordDigest": "sha256:a69b7a0759d5c8871da561599f4634f271b3a803852998c1e6e044388eb6fdc4"
+    },
+    {
+      "id": "evidence-performance-complete",
+      "kind": "performance-evidence",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-08-15T16:00:00Z",
+      "suppliedByRef": "principal-performance-supplier",
+      "subjectRefs": [
+        "obligation-complete"
+      ],
+      "sourceRecordDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "payloadDigest": "sha256:a93f8a63a19b4fba22987fae290f57b5543ab9a1b8a13d9ab980630685daf8f1",
+      "recordDigest": "sha256:d334fe23acbb8daf3ddb230b5e8bf223911cd29a9d51743090ae394f6ccf33da"
+    },
+    {
+      "id": "evidence-performance-owner-confirmation-pending",
+      "kind": "performance-evidence",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-08-16T17:00:00Z",
+      "suppliedByRef": "principal-performance-supplier",
+      "subjectRefs": [
+        "obligation-owner-confirmation-pending"
+      ],
+      "sourceRecordDigest": "sha256:1717171717171717171717171717171717171717171717171717171717171717",
+      "payloadDigest": "sha256:a11c90b9992913cc24f217d81b2d7a124647da37f8eb486e264d302a9edd88cc",
+      "recordDigest": "sha256:e73ba0c5649726250c77cb01224e33c2a87ec948d8e3cbba354ff42024315755"
+    },
+    {
+      "id": "evidence-observation-complete",
+      "kind": "obligation-observation-record",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-09-04T10:00:00Z",
+      "suppliedByRef": "principal-obligation-owner",
+      "subjectRefs": [
+        "observation-complete",
+        "obligation-complete"
+      ],
+      "sourceRecordDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "payloadDigest": "sha256:4716b4e893131c506cada220e7a84648928bfeaa78d3cca3d9cab1fadf54f6cb",
+      "recordDigest": "sha256:79d40b6b28b1511be7c331224c4b9af3a00e28eeed0217cc7534393b24ddba06"
+    },
+    {
+      "id": "evidence-confirmation-complete",
+      "kind": "completion-confirmation",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-09-04T10:00:00Z",
+      "suppliedByRef": "principal-completion-owner",
+      "subjectRefs": [
+        "observation-complete",
+        "obligation-complete",
+        "principal-completion-owner"
+      ],
+      "sourceRecordDigest": "sha256:1010101010101010101010101010101010101010101010101010101010101010",
+      "payloadDigest": "sha256:7ee7c4703747039922ee1350eed708c05864a4abc6dabb834396ca699e5769a2",
+      "recordDigest": "sha256:ba8ea5541a45f5aa3a89a6b1f79b631219ebaa4642db09cdcc6046dd93dd5de3"
+    },
+    {
+      "id": "evidence-observation-owner-confirmation-pending",
+      "kind": "obligation-observation-record",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-09-05T09:00:00Z",
+      "suppliedByRef": "principal-obligation-owner",
+      "subjectRefs": [
+        "observation-owner-confirmation-pending",
+        "obligation-owner-confirmation-pending"
+      ],
+      "sourceRecordDigest": "sha256:1212121212121212121212121212121212121212121212121212121212121212",
+      "payloadDigest": "sha256:8baeab53f78ed2f2301a155920f03fdf8f7def4f72c61f7e9e9557d47831f9dc",
+      "recordDigest": "sha256:0b0e392bb4054b58154189ee2b602e60121511c0016adf2c3897c2be69d6fd46"
+    },
+    {
+      "id": "evidence-observation-future",
+      "kind": "obligation-observation-record",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-09-05T09:05:00Z",
+      "suppliedByRef": "principal-obligation-owner",
+      "subjectRefs": [
+        "observation-future",
+        "obligation-future"
+      ],
+      "sourceRecordDigest": "sha256:1313131313131313131313131313131313131313131313131313131313131313",
+      "payloadDigest": "sha256:ba6ab9f8bf3ce6185ef7d63e4c7523a8b5a27f838f5ba061e7512639cb7d8ce6",
+      "recordDigest": "sha256:2b1014cad644ec4e0936f56ef271a7e368e131682045386d283304dea5fe4025"
+    },
+    {
+      "id": "evidence-blocker",
+      "kind": "blocker-record",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-09-05T09:10:00Z",
+      "suppliedByRef": "principal-obligation-owner",
+      "subjectRefs": [
+        "blocker-missing-performance",
+        "obligation-blocked",
+        "evidence-performance-blocked-missing"
+      ],
+      "sourceRecordDigest": "sha256:1414141414141414141414141414141414141414141414141414141414141414",
+      "payloadDigest": "sha256:7a081ff3a28b0308003b17aa23f5a67cc7bb3c87127587ebe4743dcc63662f84",
+      "recordDigest": "sha256:794eaf011a00e6a9478e7d8e73e44b9c38096b3b7997acc94c166e70fccd6bb9"
+    },
+    {
+      "id": "evidence-destination",
+      "kind": "destination-approval-record",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-09-05T10:00:00Z",
+      "suppliedByRef": "principal-destination-approver",
+      "subjectRefs": [
+        "destination-approval",
+        "principal-destination-approver"
+      ],
+      "sourceRecordDigest": "sha256:1515151515151515151515151515151515151515151515151515151515151515",
+      "payloadDigest": "sha256:20f6b024e1451c39a836e81981f7ad7f180f960ba9e41d76639e7c66f89e4218",
+      "recordDigest": "sha256:cbade3369ee82339e8ad7fb29634909a26849475f8cc01ce8af9e39dce1594b6"
+    },
+    {
+      "id": "evidence-handoff",
+      "kind": "handoff-record",
+      "roundRef": "round-2026-09",
+      "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+      "observedAt": "2026-09-05T10:05:00Z",
+      "suppliedByRef": "principal-handoff-owner",
+      "subjectRefs": [
+        "handoff-owner-review",
+        "principal-handoff-owner"
+      ],
+      "sourceRecordDigest": "sha256:1616161616161616161616161616161616161616161616161616161616161616",
+      "payloadDigest": "sha256:99740a4ff2932b5becebdf448cb91fb06e37f86fb1bbb12e8a8c2e10d5efdcfe",
+      "recordDigest": "sha256:0b2c6291c1a5354ae8351f7842b3c421969cc168ed69dadb26f919779a7a3871"
+    }
+  ],
+  "coverage": {
+    "registerRef": "register-services",
+    "registerVersion": "v3",
+    "registerDigest": "sha256:267971059ac90017f3e1a1b273a73c646f3f8d5729a59d18177dd3e4c2d7273d",
+    "entries": [
+      {
+        "obligationRef": "obligation-complete",
+        "resolutionKind": "observation",
+        "resolutionRef": "observation-complete"
+      },
+      {
+        "obligationRef": "obligation-owner-confirmation-pending",
+        "resolutionKind": "observation",
+        "resolutionRef": "observation-owner-confirmation-pending"
+      },
+      {
+        "obligationRef": "obligation-future",
+        "resolutionKind": "observation",
+        "resolutionRef": "observation-future"
+      },
+      {
+        "obligationRef": "obligation-blocked",
+        "resolutionKind": "blocker",
+        "resolutionRef": "blocker-missing-performance"
+      }
+    ],
+    "contentDigest": "sha256:9de6c2103b14fe976f41158abde7f0ffd875bc02308802b69fb46fc64c4dd290"
+  },
+  "destinationApproval": {
+    "id": "destination-approval",
+    "roundRef": "round-2026-09",
+    "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+    "registerRef": "register-services",
+    "registerDigest": "sha256:267971059ac90017f3e1a1b273a73c646f3f8d5729a59d18177dd3e4c2d7273d",
+    "coverageDigest": "sha256:9de6c2103b14fe976f41158abde7f0ffd875bc02308802b69fb46fc64c4dd290",
+    "destination": "contract-owner-review-queue",
+    "approvedByRef": "principal-destination-approver",
+    "approvedAt": "2026-09-05T10:00:00Z",
+    "evidenceRef": "evidence-destination",
+    "payloadDigest": "sha256:20f6b024e1451c39a836e81981f7ad7f180f960ba9e41d76639e7c66f89e4218"
+  },
+  "handoff": {
+    "id": "handoff-owner-review",
+    "roundRef": "round-2026-09",
+    "roundDigest": "sha256:dfaa612cb4ab0161b24331a94dc1bb9647ed9cbe66637f6cf3a986aebd6b9209",
+    "registerRef": "register-services",
+    "registerDigest": "sha256:267971059ac90017f3e1a1b273a73c646f3f8d5729a59d18177dd3e4c2d7273d",
+    "coverageDigest": "sha256:9de6c2103b14fe976f41158abde7f0ffd875bc02308802b69fb46fc64c4dd290",
+    "destinationApprovalRef": "destination-approval",
+    "destinationApprovalDigest": "sha256:20f6b024e1451c39a836e81981f7ad7f180f960ba9e41d76639e7c66f89e4218",
+    "state": "blocked",
+    "nextOwnerRef": "principal-handoff-owner",
+    "handedOffAt": "2026-09-05T10:05:00Z",
+    "observationRefs": [
+      "observation-complete",
+      "observation-owner-confirmation-pending",
+      "observation-future"
+    ],
+    "blockerRefs": [
+      "blocker-missing-performance"
+    ],
+    "legalConclusionClaim": "not-claimed",
+    "performanceAcceptanceClaim": "not-claimed",
+    "complianceClaim": "not-claimed",
+    "auditClaim": "not-claimed",
+    "noticeSentClaim": "not-claimed",
+    "paymentMadeClaim": "not-claimed",
+    "amendmentClaim": "not-claimed",
+    "renewalClaim": "not-claimed",
+    "terminationClaim": "not-claimed",
+    "systemMutationClaim": "not-claimed",
+    "evidenceRef": "evidence-handoff",
+    "payloadDigest": "sha256:99740a4ff2932b5becebdf448cb91fb06e37f86fb1bbb12e8a8c2e10d5efdcfe"
+  }
+}

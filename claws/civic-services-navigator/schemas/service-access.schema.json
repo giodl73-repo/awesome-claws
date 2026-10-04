@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/civic-services-navigator/service-access.schema.json",
+  "title": "Civic Services Navigator service access packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "case", "sources", "jurisdictions", "localityClaims", "agencies", "routes", "criteria", "residentEvidence", "channels", "steps", "questions", "review", "prohibitedActions"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.civicServiceAccess.v1" },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "revision", "need", "asOf", "residentOwner", "privacy", "localityClaimRefs", "routeRefs", "nextRouteRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "need": { "type": "string", "minLength": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "residentOwner": { "$ref": "#/$defs/ownerId" },
+        "privacy": { "enum": ["owner-only", "delegate-approved"] },
+        "localityClaimRefs": { "$ref": "#/$defs/idList" },
+        "routeRefs": { "$ref": "#/$defs/idList" },
+        "nextRouteRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+      }
+    },
+    "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } },
+    "jurisdictions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/jurisdiction" } },
+    "localityClaims": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/localityClaim" } },
+    "agencies": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/agency" } },
+    "routes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/route" } },
+    "criteria": { "type": "array", "items": { "$ref": "#/$defs/criterion" } },
+    "residentEvidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } },
+    "channels": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/channel" } },
+    "steps": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/step" } },
+    "questions": { "type": "array", "items": { "$ref": "#/$defs/question" } },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asOf", "decision", "nextRevision", "conflictingLocalityClaimRefs", "unresolvedQuestionRefs", "nextOwner"],
+      "properties": {
+        "asOf": { "type": "string", "format": "date-time" },
+        "decision": { "enum": ["revise", "ready-for-resident-review", "blocked"] },
+        "nextRevision": { "type": "integer", "minimum": 2 },
+        "conflictingLocalityClaimRefs": { "$ref": "#/$defs/idList" },
+        "unresolvedQuestionRefs": { "$ref": "#/$defs/idList" },
+        "nextOwner": { "$ref": "#/$defs/ownerId" }
+      }
+    },
+    "prohibitedActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligibilityDetermined", "caseInitiated", "residentMaterialTransmitted", "agencyContacted", "appointmentBooked", "feePaid", "accountCreated", "professionalAdviceGiven"],
+      "properties": {
+        "eligibilityDetermined": { "const": false },
+        "caseInitiated": { "const": false },
+        "residentMaterialTransmitted": { "const": false },
+        "agencyContacted": { "const": false },
+        "appointmentBooked": { "const": false },
+        "feePaid": { "const": false },
+        "accountCreated": { "const": false },
+        "professionalAdviceGiven": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$" },
+    "ownerId": { "type": "string", "pattern": "^(?:resident|delegate)-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "idList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "sourceRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "publisher", "authorityRef", "controlledRef", "retrievedAt", "freshness"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["jurisdiction-locator", "agency-directory", "program-page", "criterion-text", "channel-description", "fee-schedule", "agency-response", "resident-record", "action-confirmation"] },
+        "publisher": { "type": "string", "minLength": 1 },
+        "authorityRef": { "$ref": "#/$defs/id" },
+        "controlledRef": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "retrievedAt": { "type": "string", "format": "date-time" },
+        "freshness": { "enum": ["current", "stale", "conflicting", "superseded"] }
+      }
+    },
+    "jurisdiction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "level", "sourceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "level": { "enum": ["city", "county", "regional", "state", "national", "tribal", "special-district"] },
+        "sourceRefs": { "$ref": "#/$defs/sourceRefs" }
+      }
+    },
+    "localityClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "jurisdictionRef", "claim", "state", "sourceRefs", "ownerConfirmed"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "jurisdictionRef": { "$ref": "#/$defs/id" },
+        "claim": { "type": "string", "minLength": 1 },
+        "state": { "enum": ["candidate", "confirmed", "conflicting", "excluded"] },
+        "sourceRefs": { "$ref": "#/$defs/sourceRefs" },
+        "ownerConfirmed": { "type": "boolean" }
+      }
+    },
+    "agency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "jurisdictionRef", "sourceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "jurisdictionRef": { "$ref": "#/$defs/id" },
+        "sourceRefs": { "$ref": "#/$defs/sourceRefs" }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "agencyRef", "jurisdictionRef", "programCode", "programRevision", "programSourceRef", "status", "ownerSelected", "sourceRefs", "criterionRefs", "channelRefs", "stepRefs", "questionRefs", "requiredMaterials", "timingWindows", "offices", "feeMinor", "currency", "feeSourceRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "agencyRef": { "$ref": "#/$defs/id" },
+        "jurisdictionRef": { "$ref": "#/$defs/id" },
+        "programCode": { "type": "string", "minLength": 1 },
+        "programRevision": { "type": "string", "minLength": 1 },
+        "programSourceRef": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["candidate", "preferred", "excluded", "unavailable"] },
+        "ownerSelected": { "type": "boolean" },
+        "sourceRefs": { "$ref": "#/$defs/sourceRefs" },
+        "criterionRefs": { "$ref": "#/$defs/idList" },
+        "channelRefs": { "$ref": "#/$defs/idList" },
+        "stepRefs": { "$ref": "#/$defs/idList" },
+        "questionRefs": { "$ref": "#/$defs/idList" },
+        "requiredMaterials": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "status", "sourceRef"],
+            "properties": {
+              "label": { "type": "string", "minLength": 1 },
+              "status": { "enum": ["confirmed", "conditional", "unknown", "not-applicable"] },
+              "sourceRef": { "$ref": "#/$defs/id" }
+            }
+          }
+        },
+        "timingWindows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "status", "opensAt", "closesAt", "sourceRef"],
+            "properties": {
+              "label": { "type": "string", "minLength": 1 },
+              "status": { "enum": ["confirmed", "unknown", "not-applicable"] },
+              "opensAt": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+              "closesAt": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+              "sourceRef": { "$ref": "#/$defs/id" }
+            }
+          }
+        },
+        "offices": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "status", "channelRef", "address", "sourceRef"],
+            "properties": {
+              "label": { "type": "string", "minLength": 1 },
+              "status": { "enum": ["confirmed", "unknown", "not-applicable"] },
+              "channelRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+              "address": { "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "null" }] },
+              "sourceRef": { "$ref": "#/$defs/id" }
+            }
+          }
+        },
+        "feeMinor": { "type": "integer", "minimum": 0 },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "feeSourceRef": { "$ref": "#/$defs/id" }
+      }
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "routeRef", "text", "sourceRefs", "evidenceState", "evidenceRef", "adjudicationState"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "routeRef": { "$ref": "#/$defs/id" },
+        "text": { "type": "string", "minLength": 1 },
+        "sourceRefs": { "$ref": "#/$defs/sourceRefs" },
+        "evidenceState": { "enum": ["self-attested", "document-backed", "agency-confirmed", "withheld", "unknown", "agency-review-needed"] },
+        "evidenceRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "adjudicationState": { "const": "not-claimed" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "criterionRef", "kind", "sourceRef", "observedAt", "privacy"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "criterionRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["self-attestation", "document-reference", "agency-confirmation"] },
+        "sourceRef": { "$ref": "#/$defs/id" },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "privacy": { "enum": ["owner-only", "delegate-approved", "agency-share-candidate"] }
+      }
+    },
+    "channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "routeRef", "kind", "status", "languageCodes", "accessibilityFeatures", "sourceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "routeRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["online", "in-person", "phone", "mail", "interpreter", "accessibility-support"] },
+        "status": { "enum": ["available", "unconfirmed", "unavailable"] },
+        "languageCodes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z]{2,3}(?:-[A-Z]{2})?$" } },
+        "accessibilityFeatures": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "sourceRefs": { "$ref": "#/$defs/sourceRefs" }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "routeRef", "sequence", "label", "prerequisiteRefs", "channelRef", "sourceRefs", "state", "owner", "externalActionRequired", "completionSourceRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "routeRef": { "$ref": "#/$defs/id" },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "prerequisiteRefs": { "$ref": "#/$defs/idList" },
+        "channelRef": { "$ref": "#/$defs/id" },
+        "sourceRefs": { "$ref": "#/$defs/sourceRefs" },
+        "state": { "enum": ["planned", "blocked", "owner-completed"] },
+        "owner": { "$ref": "#/$defs/ownerId" },
+        "externalActionRequired": { "type": "boolean" },
+        "completionSourceRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "routeRef", "kind", "subjectRef", "prompt", "owner", "status", "answerSourceRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "routeRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["jurisdiction", "criterion", "channel", "accommodation", "fee", "timing"] },
+        "subjectRef": { "$ref": "#/$defs/id" },
+        "prompt": { "type": "string", "minLength": 1 },
+        "owner": { "$ref": "#/$defs/id" },
+        "status": { "enum": ["open", "answered", "withdrawn"] },
+        "answerSourceRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+      }
+    }
+  }
+}

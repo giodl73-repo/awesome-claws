@@ -1,0 +1,1202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/backup-restore-verification.schema.json",
+  "title": "Backup Restore Verification Coordinator artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "round",
+    "resources",
+    "protectedResourceExport",
+    "recoveryPoints",
+    "recoveryPointExport",
+    "targets",
+    "selections",
+    "principals",
+    "authorityRoster",
+    "authorityGrants",
+    "providerJobs",
+    "validations",
+    "cleanups",
+    "evidence",
+    "blockers",
+    "coverage",
+    "destinationApproval",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.backupRestoreVerification.v1"
+    },
+    "artifactId": {
+      "$ref": "#/$defs/id"
+    },
+    "round": {
+      "$ref": "#/$defs/round"
+    },
+    "resources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/resource"
+      }
+    },
+    "protectedResourceExport": {
+      "$ref": "#/$defs/resourceExport"
+    },
+    "recoveryPoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/recoveryPoint"
+      }
+    },
+    "recoveryPointExport": {
+      "$ref": "#/$defs/recoveryPointExport"
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/target"
+      }
+    },
+    "selections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/selection"
+      }
+    },
+    "principals": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "$ref": "#/$defs/principal"
+      }
+    },
+    "authorityRoster": {
+      "$ref": "#/$defs/roster"
+    },
+    "authorityGrants": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "$ref": "#/$defs/grant"
+      }
+    },
+    "providerJobs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/job"
+      }
+    },
+    "validations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/validation"
+      }
+    },
+    "cleanups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cleanup"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "destinationApproval": {
+      "$ref": "#/$defs/destinationApproval"
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "idList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true
+    },
+    "round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "requestedAt",
+        "rpoMinutes",
+        "rtoMinutes",
+        "protectedResourceExportRef",
+        "protectedResourceExportDigest",
+        "recoveryPointExportRef",
+        "recoveryPointExportDigest",
+        "authorityRosterRef",
+        "authorityRosterDigest",
+        "destination",
+        "destinationApproverRef",
+        "handoffOwnerRef",
+        "planDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rpoMinutes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rtoMinutes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "protectedResourceExportRef": {
+          "$ref": "#/$defs/id"
+        },
+        "protectedResourceExportDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "recoveryPointExportRef": {
+          "$ref": "#/$defs/id"
+        },
+        "recoveryPointExportDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "authorityRosterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityRosterDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destination": {
+          "const": "resilience-owner-review-queue"
+        },
+        "destinationApproverRef": {
+          "$ref": "#/$defs/id"
+        },
+        "handoffOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "planDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ownerSystemRef",
+        "resourceClass",
+        "selectionState",
+        "exclusionReason",
+        "sourceRecordDigest",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "ownerSystemRef": {
+          "$ref": "#/$defs/id"
+        },
+        "resourceClass": {
+          "enum": [
+            "database",
+            "object-store",
+            "file-share",
+            "configuration-store",
+            "queue",
+            "search-index"
+          ]
+        },
+        "selectionState": {
+          "enum": [
+            "selected",
+            "excluded"
+          ]
+        },
+        "exclusionReason": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "owner-approved-out-of-scope",
+                "no-eligible-recovery-point"
+              ]
+            }
+          ]
+        },
+        "sourceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "resourceExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "exportedAt",
+        "suppliedByRef",
+        "resourceRefs",
+        "evidenceRef",
+        "contentDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "exportedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "resourceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "recoveryPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "resourceRef",
+        "providerRef",
+        "capturedAt",
+        "eligibility",
+        "sourceRecordDigest",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "resourceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "providerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "eligibility": {
+          "const": "owner-exported-eligible"
+        },
+        "sourceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "recoveryPointExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "exportedAt",
+        "cutoffAt",
+        "suppliedByRef",
+        "recoveryPointRefs",
+        "evidenceRef",
+        "contentDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "exportedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "cutoffAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "recoveryPointRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "providerRef",
+        "isolation",
+        "locatorDigest",
+        "sourceRecordDigest",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "providerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "isolation": {
+          "const": "isolated-temporary"
+        },
+        "locatorDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "sourceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "resourceRef",
+        "resourcePayloadDigest",
+        "recoveryPointRef",
+        "recoveryPointPayloadDigest",
+        "targetRef",
+        "targetPayloadDigest",
+        "selectedByRef",
+        "authorityGrantRef",
+        "selectedAt",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "resourceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "resourcePayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "recoveryPointRef": {
+          "$ref": "#/$defs/id"
+        },
+        "recoveryPointPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "targetRef": {
+          "$ref": "#/$defs/id"
+        },
+        "targetPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "selectedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "selectedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "scopes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 80
+        },
+        "kind": {
+          "enum": [
+            "named-human",
+            "owner-system",
+            "provider-system"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "resource-exporter",
+              "recovery-point-exporter",
+              "selection-coordinator",
+              "restore-provider",
+              "independent-validator",
+              "cleanup-owner",
+              "retention-approver",
+              "authority-roster-custodian",
+              "authority-grant-issuer",
+              "destination-approver",
+              "handoff-recipient"
+            ]
+          }
+        }
+      }
+    },
+    "roster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "issuedAt",
+        "custodianRef",
+        "principalRefs",
+        "evidenceRef",
+        "contentDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "custodianRef": {
+          "$ref": "#/$defs/id"
+        },
+        "principalRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "grant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "granteeRef",
+        "issuedByRef",
+        "scope",
+        "roundRef",
+        "activeFrom",
+        "activeUntil",
+        "rosterRef",
+        "rosterDigest",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "granteeRef": {
+          "$ref": "#/$defs/id"
+        },
+        "issuedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "enum": [
+            "select-recovery-triples",
+            "report-provider-jobs",
+            "report-independent-validation",
+            "report-cleanup",
+            "approve-temporary-retention",
+            "approve-destination",
+            "receive-handoff"
+          ]
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "activeFrom": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "activeUntil": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "rosterRef": {
+          "$ref": "#/$defs/id"
+        },
+        "rosterDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "selectionRef",
+        "selectionPayloadDigest",
+        "providerRef",
+        "providerJobRef",
+        "submittedAt",
+        "completedAt",
+        "outcome",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "selectionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "selectionPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "providerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "providerJobRef": {
+          "$ref": "#/$defs/id"
+        },
+        "submittedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "completedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "outcome": {
+          "enum": [
+            "succeeded",
+            "failed"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "selectionRef",
+        "selectionPayloadDigest",
+        "providerJobRef",
+        "providerJobPayloadDigest",
+        "validatorRef",
+        "startedAt",
+        "completedAt",
+        "outcome",
+        "checkCodes",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "selectionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "selectionPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "providerJobRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "providerJobPayloadDigest": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "validatorRef": {
+          "$ref": "#/$defs/id"
+        },
+        "startedAt": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completedAt": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-run"
+          ]
+        },
+        "checkCodes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "content-readable",
+              "application-open",
+              "record-count-match",
+              "integrity-check"
+            ]
+          }
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "selectionRef",
+        "selectionPayloadDigest",
+        "targetRef",
+        "targetPayloadDigest",
+        "ownerRef",
+        "requestedAt",
+        "completedAt",
+        "outcome",
+        "retentionReason",
+        "retentionUntil",
+        "retentionApprovedByRef",
+        "retentionApprovalEvidenceRef",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "selectionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "selectionPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "targetRef": {
+          "$ref": "#/$defs/id"
+        },
+        "targetPayloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "requestedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "completedAt": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "cleaned",
+            "pending",
+            "retained"
+          ]
+        },
+        "retentionReason": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "owner-approved-investigation",
+                "owner-approved-retest"
+              ]
+            }
+          ]
+        },
+        "retentionUntil": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retentionApprovedByRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retentionApprovalEvidenceRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "roundRef",
+        "observedAt",
+        "suppliedByRef",
+        "subjectRefs",
+        "sourceRecordDigest",
+        "payloadDigest",
+        "recordDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "resource-export",
+            "recovery-point-export",
+            "authority-roster-export",
+            "authority-grant-record",
+            "target-record",
+            "selection-record",
+            "provider-job-record",
+            "validation-record",
+            "cleanup-record",
+            "retention-approval-record",
+            "blocker-record",
+            "destination-approval-record",
+            "handoff-record"
+          ]
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "suppliedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "subjectRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "sourceRecordDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "recordDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "selectionRef",
+        "category",
+        "targetRefs",
+        "detectedAt",
+        "ownerRef",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "selectionRef": {
+          "$ref": "#/$defs/id"
+        },
+        "category": {
+          "enum": [
+            "rpo-violation",
+            "provider-job-missing",
+            "restore-failed",
+            "validation-missing",
+            "validation-failed",
+            "rto-violation",
+            "cleanup-pending",
+            "temporary-target-retained"
+          ]
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "detectedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "ownerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "roundRef",
+        "planDigest",
+        "resourceRefs",
+        "selectedResourceRefs",
+        "excludedResourceRefs",
+        "recoveryPointRefs",
+        "selectionRefs",
+        "targetRefs",
+        "providerJobRefs",
+        "validationRefs",
+        "cleanupRefs",
+        "blockerRefs",
+        "contentDigest"
+      ],
+      "properties": {
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "planDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "resourceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "selectedResourceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "excludedResourceRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "recoveryPointRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "selectionRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "targetRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "providerJobRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "validationRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "cleanupRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "contentDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "destinationApproval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "planDigest",
+        "coverageDigest",
+        "destination",
+        "approvedByRef",
+        "authorityGrantRef",
+        "approvedAt",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "planDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "coverageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destination": {
+          "const": "resilience-owner-review-queue"
+        },
+        "approvedByRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "approvedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "roundRef",
+        "planDigest",
+        "coverageDigest",
+        "destinationApprovalRef",
+        "destinationApprovalDigest",
+        "state",
+        "nextOwnerRef",
+        "authorityGrantRef",
+        "handedOffAt",
+        "selectedTripleRefs",
+        "providerJobRefs",
+        "validationRefs",
+        "cleanupRefs",
+        "blockerRefs",
+        "restoreExecutionClaim",
+        "validationExecutionClaim",
+        "cleanupExecutionClaim",
+        "productionReadinessClaim",
+        "recoverabilityClaim",
+        "complianceClaim",
+        "auditClaim",
+        "failoverClaim",
+        "deletionClaim",
+        "verificationCompletionClaim",
+        "evidenceRef",
+        "payloadDigest"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "roundRef": {
+          "$ref": "#/$defs/id"
+        },
+        "planDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "coverageDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "destinationApprovalRef": {
+          "$ref": "#/$defs/id"
+        },
+        "destinationApprovalDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "state": {
+          "enum": [
+            "blocked",
+            "ready-for-owner-review"
+          ]
+        },
+        "nextOwnerRef": {
+          "$ref": "#/$defs/id"
+        },
+        "authorityGrantRef": {
+          "$ref": "#/$defs/id"
+        },
+        "handedOffAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "selectedTripleRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "providerJobRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "validationRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "cleanupRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "blockerRefs": {
+          "$ref": "#/$defs/idList"
+        },
+        "restoreExecutionClaim": {
+          "const": "not-claimed"
+        },
+        "validationExecutionClaim": {
+          "const": "not-claimed"
+        },
+        "cleanupExecutionClaim": {
+          "const": "not-claimed"
+        },
+        "productionReadinessClaim": {
+          "const": "not-claimed"
+        },
+        "recoverabilityClaim": {
+          "const": "not-claimed"
+        },
+        "complianceClaim": {
+          "const": "not-claimed"
+        },
+        "auditClaim": {
+          "const": "not-claimed"
+        },
+        "failoverClaim": {
+          "const": "not-claimed"
+        },
+        "deletionClaim": {
+          "const": "not-claimed"
+        },
+        "verificationCompletionClaim": {
+          "const": "not-claimed"
+        },
+        "evidenceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "payloadDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    }
+  }
+}

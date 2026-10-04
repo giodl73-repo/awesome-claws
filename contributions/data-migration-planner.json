@@ -124,6 +124,16 @@
         "id": "api-integration-engineer",
         "overlap": "Both model a source-to-target field mapping/transform contract that must be complete and verified before an integration or migration can be considered ready.",
         "difference": "API integration engineer verifies request/response contract mappings against a live integration test suite, while data migration planner verifies row-level field mappings against reconciled batch counts and checksums for a one-time bulk migration; the two do not share an evidence or verification model."
+      },
+      {
+        "id": "backup-restore-verification-coordinator",
+        "overlap": "Both bind source and destination metadata, verify transfer-related evidence, and preserve failed or blocked rows.",
+        "difference": "Backup Restore Verification Coordinator verifies recovery metadata in disposable isolated targets and never plans a production migration, transformation, cutover, or promotion."
+      },
+      {
+        "id": "tls-certificate-rotation-verification-coordinator",
+        "overlap": "Both bind source and destination metadata, verify transfer-related evidence, preserve failed or blocked rows, and keep execution authority external.",
+        "difference": "TLS Certificate Rotation Verification verifies certificate rotation metadata in place and never promotes or cuts over any endpoint. This Claw plans a production data movement and cutover."
       }
     ]
   }

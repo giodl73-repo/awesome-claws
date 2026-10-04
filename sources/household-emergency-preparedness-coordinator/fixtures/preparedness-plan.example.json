@@ -1,0 +1,728 @@
+{
+  "schemaVersion": "awesomeClaws.householdEmergencyPreparedness.v1",
+  "plan": {
+    "id": "plan-ridge-household",
+    "revision": 3,
+    "asOf": "2026-09-25T18:00:00Z",
+    "owner": "household-owner",
+    "privacy": "owner-only",
+    "previousRevisionRef": "plan-ridge-household-revision-two",
+    "locationRefs": ["location-home-zone", "location-school-zone"],
+    "hazardRefs": ["hazard-earthquake", "hazard-wildfire", "hazard-smoke", "hazard-outage"],
+    "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child", "participant-dog"],
+    "dependencyRefs": ["dependency-building", "dependency-school", "dependency-helper", "dependency-accessible-transport", "dependency-utility", "dependency-alert-enrollment"],
+    "optionRefs": ["option-evacuation-primary", "option-shelter-home", "option-communication-checkin", "option-reunification-school", "option-accessible-transport", "option-animal-transport", "option-device-power", "option-document-access"],
+    "supplyRefs": ["supply-water", "supply-light", "supply-power-bank", "supply-dog-water", "supply-document-copy"],
+    "drillRefs": ["drill-september-tabletop"]
+  },
+  "sources": [
+    {
+      "id": "source-county-earthquake",
+      "kind": "official-hazard-guidance",
+      "publisher": "Example County emergency management",
+      "authorityRef": "authority-county-emergency",
+      "controlledRef": "official://example-county/earthquake/2026-08",
+      "revision": "2026-08",
+      "retrievedAt": "2026-09-20T16:00:00Z",
+      "expiresAt": null,
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "source-fire-wildfire",
+      "kind": "official-hazard-guidance",
+      "publisher": "Example Fire Authority",
+      "authorityRef": "authority-fire",
+      "controlledRef": "official://example-fire/wildfire/2026-09",
+      "revision": "2026-09",
+      "retrievedAt": "2026-09-21T16:00:00Z",
+      "expiresAt": null,
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "source-county-smoke",
+      "kind": "professional-guidance",
+      "publisher": "Example County public health",
+      "authorityRef": "authority-county-health",
+      "controlledRef": "official://example-county/smoke/2026-09",
+      "revision": "2026-09",
+      "retrievedAt": "2026-09-21T17:00:00Z",
+      "expiresAt": null,
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "source-utility-outage",
+      "kind": "utility-guidance",
+      "publisher": "Example Electric Utility",
+      "authorityRef": "authority-utility",
+      "controlledRef": "official://example-utility/outage-preparation/2026-07",
+      "revision": "2026-07",
+      "retrievedAt": "2026-09-21T18:00:00Z",
+      "expiresAt": null,
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "source-zone-map",
+      "kind": "evacuation-zone-map",
+      "publisher": "Example County emergency management",
+      "authorityRef": "authority-county-emergency",
+      "controlledRef": "official://example-county/zones/map-2026-09",
+      "revision": "2026-09",
+      "retrievedAt": "2026-09-22T16:00:00Z",
+      "expiresAt": "2027-03-01T00:00:00Z",
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "source-building-plan",
+      "kind": "building-plan",
+      "publisher": "Building safety owner",
+      "authorityRef": "authority-building",
+      "controlledRef": "workspace://building/egress-plan-revision-five",
+      "revision": "5",
+      "retrievedAt": "2026-09-22T17:00:00Z",
+      "expiresAt": "2027-01-15T00:00:00Z",
+      "freshness": "current",
+      "privacy": "owner-only"
+    },
+    {
+      "id": "source-school-plan",
+      "kind": "school-plan",
+      "publisher": "Example School",
+      "authorityRef": "authority-school",
+      "controlledRef": "workspace://school/family-reunification-2026-2027",
+      "revision": "2026-2027",
+      "retrievedAt": "2026-09-22T18:00:00Z",
+      "expiresAt": "2027-07-01T00:00:00Z",
+      "freshness": "current",
+      "privacy": "owner-only"
+    },
+    {
+      "id": "source-alert-reference",
+      "kind": "alert-enrollment-reference",
+      "publisher": "Example County emergency management",
+      "authorityRef": "authority-county-emergency",
+      "controlledRef": "official://example-county/alerts/enrollment",
+      "revision": "2026-09",
+      "retrievedAt": "2026-09-22T19:00:00Z",
+      "expiresAt": null,
+      "freshness": "current",
+      "privacy": "public"
+    },
+    {
+      "id": "source-household-record",
+      "kind": "owner-record",
+      "publisher": "Household owner",
+      "authorityRef": "household-owner",
+      "controlledRef": "workspace://household/private-needs-revision-three",
+      "revision": "3",
+      "retrievedAt": "2026-09-24T16:00:00Z",
+      "expiresAt": null,
+      "freshness": "current",
+      "privacy": "owner-only"
+    },
+    {
+      "id": "source-helper-ack",
+      "kind": "helper-acknowledgement",
+      "publisher": "Trusted helper",
+      "authorityRef": "helper-neighbor",
+      "controlledRef": "workspace://household/helper-ack-2026-03",
+      "revision": "2026-03",
+      "retrievedAt": "2026-03-05T18:00:00Z",
+      "expiresAt": "2026-10-15T00:00:00Z",
+      "freshness": "current",
+      "privacy": "trusted-helper-approved"
+    },
+    {
+      "id": "source-inventory",
+      "kind": "inventory-record",
+      "publisher": "Household owner",
+      "authorityRef": "household-owner",
+      "controlledRef": "workspace://household/preparedness-inventory-2026-09",
+      "revision": "2026-09",
+      "retrievedAt": "2026-09-24T17:00:00Z",
+      "expiresAt": null,
+      "freshness": "current",
+      "privacy": "owner-only"
+    },
+    {
+      "id": "source-drill-observation",
+      "kind": "drill-observation",
+      "publisher": "Household owner",
+      "authorityRef": "household-owner",
+      "controlledRef": "workspace://household/drills/2026-09-tabletop",
+      "revision": "1",
+      "retrievedAt": "2026-09-23T19:00:00Z",
+      "expiresAt": null,
+      "freshness": "current",
+      "privacy": "owner-only"
+    }
+  ],
+  "locations": [
+    {
+      "id": "location-home-zone",
+      "label": "Private home zone A",
+      "kind": "home",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-household-record", "source-zone-map", "source-building-plan"],
+      "hazardRefs": ["hazard-earthquake", "hazard-wildfire", "hazard-smoke", "hazard-outage"],
+      "optionRefs": ["option-evacuation-primary", "option-shelter-home", "option-communication-checkin", "option-accessible-transport", "option-animal-transport", "option-device-power", "option-document-access"]
+    },
+    {
+      "id": "location-school-zone",
+      "label": "Child school zone B",
+      "kind": "school",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-household-record", "source-school-plan", "source-zone-map"],
+      "hazardRefs": ["hazard-earthquake", "hazard-wildfire", "hazard-smoke", "hazard-outage"],
+      "optionRefs": ["option-communication-checkin", "option-reunification-school", "option-accessible-transport", "option-document-access"]
+    }
+  ],
+  "hazards": [
+    {
+      "id": "hazard-earthquake",
+      "kind": "earthquake",
+      "locationRefs": ["location-home-zone", "location-school-zone"],
+      "officialSourceRefs": ["source-county-earthquake"],
+      "optionRefs": ["option-evacuation-primary", "option-shelter-home", "option-communication-checkin", "option-reunification-school", "option-accessible-transport", "option-animal-transport", "option-device-power", "option-document-access"],
+      "guidanceState": "current",
+      "liveTriggerClaim": "not-claimed"
+    },
+    {
+      "id": "hazard-wildfire",
+      "kind": "wildfire",
+      "locationRefs": ["location-home-zone", "location-school-zone"],
+      "officialSourceRefs": ["source-fire-wildfire", "source-zone-map"],
+      "optionRefs": ["option-evacuation-primary", "option-communication-checkin", "option-reunification-school", "option-accessible-transport", "option-animal-transport", "option-document-access"],
+      "guidanceState": "current",
+      "liveTriggerClaim": "not-claimed"
+    },
+    {
+      "id": "hazard-smoke",
+      "kind": "smoke",
+      "locationRefs": ["location-home-zone", "location-school-zone"],
+      "officialSourceRefs": ["source-county-smoke"],
+      "optionRefs": ["option-shelter-home", "option-communication-checkin", "option-reunification-school", "option-accessible-transport", "option-animal-transport", "option-device-power"],
+      "guidanceState": "current",
+      "liveTriggerClaim": "not-claimed"
+    },
+    {
+      "id": "hazard-outage",
+      "kind": "outage",
+      "locationRefs": ["location-home-zone", "location-school-zone"],
+      "officialSourceRefs": ["source-utility-outage"],
+      "optionRefs": ["option-shelter-home", "option-communication-checkin", "option-reunification-school", "option-accessible-transport", "option-animal-transport", "option-device-power", "option-document-access"],
+      "guidanceState": "current",
+      "liveTriggerClaim": "not-claimed"
+    }
+  ],
+  "participants": [
+    {
+      "id": "participant-adult-a",
+      "kind": "adult",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-household-record"],
+      "needRefs": ["need-adult-a-communication"],
+      "optionRefs": ["option-evacuation-primary", "option-shelter-home", "option-communication-checkin", "option-reunification-school", "option-accessible-transport", "option-animal-transport", "option-device-power", "option-document-access"]
+    },
+    {
+      "id": "participant-adult-b",
+      "kind": "adult",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-household-record"],
+      "needRefs": ["need-adult-b-mobility", "need-adult-b-power"],
+      "optionRefs": ["option-evacuation-primary", "option-shelter-home", "option-communication-checkin", "option-accessible-transport", "option-device-power", "option-document-access"]
+    },
+    {
+      "id": "participant-child",
+      "kind": "child",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-household-record", "source-school-plan"],
+      "needRefs": ["need-child-supervision", "need-child-reunification"],
+      "optionRefs": ["option-evacuation-primary", "option-shelter-home", "option-communication-checkin", "option-reunification-school", "option-accessible-transport", "option-document-access"]
+    },
+    {
+      "id": "participant-dog",
+      "kind": "animal",
+      "privacy": "owner-only",
+      "sourceRefs": ["source-household-record"],
+      "needRefs": ["need-dog-transport"],
+      "optionRefs": ["option-evacuation-primary", "option-shelter-home", "option-communication-checkin", "option-animal-transport", "option-document-access"]
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-adult-a-communication",
+      "participantRef": "participant-adult-a",
+      "kind": "communication",
+      "sensitivity": "share-minimum",
+      "state": "gap",
+      "sourceRefs": ["source-household-record"],
+      "optionRefs": ["option-communication-checkin"]
+    },
+    {
+      "id": "need-adult-b-mobility",
+      "participantRef": "participant-adult-b",
+      "kind": "mobility",
+      "sensitivity": "private",
+      "state": "gap",
+      "sourceRefs": ["source-household-record"],
+      "optionRefs": ["option-accessible-transport"]
+    },
+    {
+      "id": "need-adult-b-power",
+      "participantRef": "participant-adult-b",
+      "kind": "medical-device-power",
+      "sensitivity": "private",
+      "state": "gap",
+      "sourceRefs": ["source-household-record", "source-utility-outage"],
+      "optionRefs": ["option-device-power"]
+    },
+    {
+      "id": "need-child-supervision",
+      "participantRef": "participant-child",
+      "kind": "supervision",
+      "sensitivity": "private",
+      "state": "covered",
+      "sourceRefs": ["source-household-record", "source-school-plan"],
+      "optionRefs": ["option-reunification-school"]
+    },
+    {
+      "id": "need-child-reunification",
+      "participantRef": "participant-child",
+      "kind": "custody",
+      "sensitivity": "private",
+      "state": "covered",
+      "sourceRefs": ["source-household-record", "source-school-plan"],
+      "optionRefs": ["option-reunification-school"]
+    },
+    {
+      "id": "need-dog-transport",
+      "participantRef": "participant-dog",
+      "kind": "animal-care",
+      "sensitivity": "owner-defined",
+      "state": "gap",
+      "sourceRefs": ["source-household-record"],
+      "optionRefs": ["option-animal-transport"]
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "dependency-building",
+      "kind": "building",
+      "owner": "household-owner",
+      "state": "acknowledged",
+      "sourceRefs": ["source-building-plan"],
+      "optionRefs": ["option-evacuation-primary", "option-shelter-home"]
+    },
+    {
+      "id": "dependency-school",
+      "kind": "school",
+      "owner": "household-owner",
+      "state": "acknowledged",
+      "sourceRefs": ["source-school-plan"],
+      "optionRefs": ["option-reunification-school", "option-communication-checkin"]
+    },
+    {
+      "id": "dependency-helper",
+      "kind": "helper",
+      "owner": "helper-neighbor",
+      "state": "unconfirmed",
+      "sourceRefs": ["source-helper-ack"],
+      "optionRefs": ["option-animal-transport", "option-communication-checkin"]
+    },
+    {
+      "id": "dependency-accessible-transport",
+      "kind": "transport",
+      "owner": "household-owner",
+      "state": "unconfirmed",
+      "sourceRefs": ["source-household-record"],
+      "optionRefs": ["option-accessible-transport", "option-evacuation-primary"]
+    },
+    {
+      "id": "dependency-utility",
+      "kind": "utility",
+      "owner": "household-owner",
+      "state": "acknowledged",
+      "sourceRefs": ["source-utility-outage"],
+      "optionRefs": ["option-device-power"]
+    },
+    {
+      "id": "dependency-alert-enrollment",
+      "kind": "alert-enrollment",
+      "owner": "household-owner",
+      "state": "unconfirmed",
+      "sourceRefs": ["source-alert-reference"],
+      "optionRefs": ["option-communication-checkin"]
+    }
+  ],
+  "options": [
+    {
+      "id": "option-evacuation-primary",
+      "kind": "evacuation",
+      "title": "Owner-approved primary departure option",
+      "status": "draft",
+      "ownerApproved": false,
+      "locationRefs": ["location-home-zone"],
+      "hazardRefs": ["hazard-earthquake", "hazard-wildfire"],
+      "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child", "participant-dog"],
+      "needRefs": [],
+      "dependencyRefs": ["dependency-building", "dependency-accessible-transport"],
+      "sourceRefs": ["source-county-earthquake", "source-fire-wildfire", "source-zone-map", "source-building-plan", "source-household-record"],
+      "stepRefs": ["step-evac-review", "step-evac-owner-approve"],
+      "liveInstruction": false
+    },
+    {
+      "id": "option-shelter-home",
+      "kind": "shelter",
+      "title": "Home shelter planning option",
+      "status": "owner-approved",
+      "ownerApproved": true,
+      "locationRefs": ["location-home-zone"],
+      "hazardRefs": ["hazard-earthquake", "hazard-smoke", "hazard-outage"],
+      "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child", "participant-dog"],
+      "needRefs": [],
+      "dependencyRefs": ["dependency-building"],
+      "sourceRefs": ["source-county-earthquake", "source-county-smoke", "source-utility-outage", "source-building-plan", "source-household-record"],
+      "stepRefs": ["step-shelter-review"],
+      "liveInstruction": false
+    },
+    {
+      "id": "option-communication-checkin",
+      "kind": "communication",
+      "title": "Private household check-in fallback",
+      "status": "draft",
+      "ownerApproved": false,
+      "locationRefs": ["location-home-zone", "location-school-zone"],
+      "hazardRefs": ["hazard-earthquake", "hazard-wildfire", "hazard-smoke", "hazard-outage"],
+      "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child", "participant-dog"],
+      "needRefs": ["need-adult-a-communication"],
+      "dependencyRefs": ["dependency-school", "dependency-helper", "dependency-alert-enrollment"],
+      "sourceRefs": ["source-household-record", "source-school-plan", "source-helper-ack", "source-alert-reference"],
+      "stepRefs": ["step-communication-review", "step-alert-owner-action"],
+      "liveInstruction": false
+    },
+    {
+      "id": "option-reunification-school",
+      "kind": "reunification",
+      "title": "School reunification handoff",
+      "status": "owner-approved",
+      "ownerApproved": true,
+      "locationRefs": ["location-school-zone"],
+      "hazardRefs": ["hazard-earthquake", "hazard-wildfire", "hazard-smoke", "hazard-outage"],
+      "participantRefs": ["participant-adult-a", "participant-child"],
+      "needRefs": ["need-child-supervision", "need-child-reunification"],
+      "dependencyRefs": ["dependency-school"],
+      "sourceRefs": ["source-school-plan", "source-household-record"],
+      "stepRefs": ["step-reunification-review"],
+      "liveInstruction": false
+    },
+    {
+      "id": "option-accessible-transport",
+      "kind": "transport",
+      "title": "Accessible transport fallback",
+      "status": "blocked",
+      "ownerApproved": false,
+      "locationRefs": ["location-home-zone", "location-school-zone"],
+      "hazardRefs": ["hazard-earthquake", "hazard-wildfire", "hazard-smoke", "hazard-outage"],
+      "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child"],
+      "needRefs": ["need-adult-b-mobility"],
+      "dependencyRefs": ["dependency-accessible-transport"],
+      "sourceRefs": ["source-household-record", "source-zone-map"],
+      "stepRefs": ["step-transport-owner-confirm"],
+      "liveInstruction": false
+    },
+    {
+      "id": "option-animal-transport",
+      "kind": "animal-support",
+      "title": "Dog transport and temporary care fallback",
+      "status": "blocked",
+      "ownerApproved": false,
+      "locationRefs": ["location-home-zone"],
+      "hazardRefs": ["hazard-earthquake", "hazard-wildfire", "hazard-smoke", "hazard-outage"],
+      "participantRefs": ["participant-adult-a", "participant-dog"],
+      "needRefs": ["need-dog-transport"],
+      "dependencyRefs": ["dependency-helper"],
+      "sourceRefs": ["source-household-record", "source-helper-ack"],
+      "stepRefs": ["step-animal-helper-confirm"],
+      "liveInstruction": false
+    },
+    {
+      "id": "option-device-power",
+      "kind": "power-continuity",
+      "title": "Owner-reviewed device power continuity option",
+      "status": "draft",
+      "ownerApproved": false,
+      "locationRefs": ["location-home-zone"],
+      "hazardRefs": ["hazard-earthquake", "hazard-smoke", "hazard-outage"],
+      "participantRefs": ["participant-adult-a", "participant-adult-b"],
+      "needRefs": ["need-adult-b-power"],
+      "dependencyRefs": ["dependency-utility"],
+      "sourceRefs": ["source-household-record", "source-utility-outage", "source-inventory"],
+      "stepRefs": ["step-power-specialist-review"],
+      "liveInstruction": false
+    },
+    {
+      "id": "option-document-access",
+      "kind": "document-access",
+      "title": "Private document-reference access",
+      "status": "owner-approved",
+      "ownerApproved": true,
+      "locationRefs": ["location-home-zone", "location-school-zone"],
+      "hazardRefs": ["hazard-earthquake", "hazard-wildfire", "hazard-outage"],
+      "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child", "participant-dog"],
+      "needRefs": [],
+      "dependencyRefs": [],
+      "sourceRefs": ["source-household-record", "source-inventory"],
+      "stepRefs": ["step-document-review"],
+      "liveInstruction": false
+    }
+  ],
+  "steps": [
+    {
+      "id": "step-evac-review",
+      "optionRef": "option-evacuation-primary",
+      "sequence": 1,
+      "label": "Owner reviews the official zone and building references outside any live incident.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-zone-map", "source-building-plan"],
+      "dependencyRefs": ["dependency-building"],
+      "state": "planned",
+      "externalActionRequired": false,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-evac-owner-approve",
+      "optionRef": "option-evacuation-primary",
+      "sequence": 2,
+      "label": "Owner decides whether the draft option and accessible transport dependency are acceptable.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-household-record"],
+      "dependencyRefs": ["dependency-accessible-transport"],
+      "state": "blocked",
+      "externalActionRequired": false,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-shelter-review",
+      "optionRef": "option-shelter-home",
+      "sequence": 1,
+      "label": "Owner retains the approved planning option and follows current officials during an incident.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-county-earthquake", "source-county-smoke", "source-utility-outage"],
+      "dependencyRefs": ["dependency-building"],
+      "state": "planned",
+      "externalActionRequired": false,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-communication-review",
+      "optionRef": "option-communication-checkin",
+      "sequence": 1,
+      "label": "Owner reviews privacy-minimized check-in and school fallback details.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-household-record", "source-school-plan"],
+      "dependencyRefs": ["dependency-school", "dependency-helper"],
+      "state": "planned",
+      "externalActionRequired": false,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-alert-owner-action",
+      "optionRef": "option-communication-checkin",
+      "sequence": 2,
+      "label": "Owner may review alert enrollment outside the workspace; no enrollment is submitted here.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-alert-reference"],
+      "dependencyRefs": ["dependency-alert-enrollment"],
+      "state": "blocked",
+      "externalActionRequired": true,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-reunification-review",
+      "optionRef": "option-reunification-school",
+      "sequence": 1,
+      "label": "Owner reviews the school's current family handoff procedure.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-school-plan", "source-household-record"],
+      "dependencyRefs": ["dependency-school"],
+      "state": "planned",
+      "externalActionRequired": false,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-transport-owner-confirm",
+      "optionRef": "option-accessible-transport",
+      "sequence": 1,
+      "label": "Owner confirms an accessible transport arrangement outside the workspace.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-household-record"],
+      "dependencyRefs": ["dependency-accessible-transport"],
+      "state": "blocked",
+      "externalActionRequired": true,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-animal-helper-confirm",
+      "optionRef": "option-animal-transport",
+      "sequence": 1,
+      "label": "Owner requests a fresh helper decision outside the workspace.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-helper-ack", "source-household-record"],
+      "dependencyRefs": ["dependency-helper"],
+      "state": "blocked",
+      "externalActionRequired": true,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-power-specialist-review",
+      "optionRef": "option-device-power",
+      "sequence": 1,
+      "label": "Owner seeks qualified device and utility guidance outside the workspace.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-utility-outage", "source-household-record"],
+      "dependencyRefs": ["dependency-utility"],
+      "state": "blocked",
+      "externalActionRequired": true,
+      "completionSourceRef": null
+    },
+    {
+      "id": "step-document-review",
+      "optionRef": "option-document-access",
+      "sequence": 1,
+      "label": "Owner reviews private references without transmitting documents.",
+      "owner": "household-owner",
+      "sourceRefs": ["source-household-record", "source-inventory"],
+      "dependencyRefs": [],
+      "state": "planned",
+      "externalActionRequired": false,
+      "completionSourceRef": null
+    }
+  ],
+  "supplies": [
+    {
+      "id": "supply-water",
+      "category": "water",
+      "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child"],
+      "owner": "household-owner",
+      "state": "current",
+      "expiresAt": "2027-02-01T00:00:00Z",
+      "sourceRefs": ["source-inventory"]
+    },
+    {
+      "id": "supply-light",
+      "category": "light",
+      "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child"],
+      "owner": "household-owner",
+      "state": "current",
+      "expiresAt": null,
+      "sourceRefs": ["source-inventory"]
+    },
+    {
+      "id": "supply-power-bank",
+      "category": "power",
+      "participantRefs": ["participant-adult-b"],
+      "owner": "household-owner",
+      "state": "expired",
+      "expiresAt": "2026-08-01T00:00:00Z",
+      "sourceRefs": ["source-inventory"]
+    },
+    {
+      "id": "supply-dog-water",
+      "category": "animal",
+      "participantRefs": ["participant-dog"],
+      "owner": "household-owner",
+      "state": "missing",
+      "expiresAt": null,
+      "sourceRefs": ["source-inventory"]
+    },
+    {
+      "id": "supply-document-copy",
+      "category": "document-copy",
+      "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child", "participant-dog"],
+      "owner": "household-owner",
+      "state": "current",
+      "expiresAt": null,
+      "sourceRefs": ["source-inventory"]
+    }
+  ],
+  "drills": [
+    {
+      "id": "drill-september-tabletop",
+      "occurredAt": "2026-09-23T18:00:00Z",
+      "optionRefs": ["option-evacuation-primary", "option-communication-checkin", "option-reunification-school", "option-accessible-transport", "option-animal-transport"],
+      "participantRefs": ["participant-adult-a", "participant-adult-b", "participant-child", "participant-dog"],
+      "result": "partial",
+      "sourceRefs": ["source-drill-observation"],
+      "findingRefs": ["finding-accessible-transport", "finding-helper-stale"]
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-accessible-transport",
+      "drillRef": "drill-september-tabletop",
+      "kind": "accessibility-barrier",
+      "state": "open",
+      "sourceRefs": ["source-drill-observation"],
+      "correctiveActionRefs": ["action-confirm-transport"]
+    },
+    {
+      "id": "finding-helper-stale",
+      "drillRef": "drill-september-tabletop",
+      "kind": "dependency-failure",
+      "state": "open",
+      "sourceRefs": ["source-drill-observation", "source-helper-ack"],
+      "correctiveActionRefs": ["action-refresh-helper"]
+    }
+  ],
+  "correctiveActions": [
+    {
+      "id": "action-confirm-transport",
+      "findingRef": "finding-accessible-transport",
+      "owner": "household-owner",
+      "dueAt": "2026-10-05T18:00:00Z",
+      "state": "planned",
+      "sourceRefs": ["source-drill-observation", "source-household-record"],
+      "completionSourceRef": null
+    },
+    {
+      "id": "action-refresh-helper",
+      "findingRef": "finding-helper-stale",
+      "owner": "household-owner",
+      "dueAt": "2026-10-05T18:00:00Z",
+      "state": "planned",
+      "sourceRefs": ["source-drill-observation", "source-helper-ack"],
+      "completionSourceRef": null
+    }
+  ],
+  "review": {
+    "asOf": "2026-09-25T18:00:00Z",
+    "decision": "revise",
+    "nextRevision": 4,
+    "gapNeedRefs": ["need-adult-a-communication", "need-adult-b-mobility", "need-adult-b-power", "need-dog-transport"],
+    "unconfirmedDependencyRefs": ["dependency-helper", "dependency-accessible-transport", "dependency-alert-enrollment"],
+    "expiredOrMissingSupplyRefs": ["supply-power-bank", "supply-dog-water"],
+    "openFindingRefs": ["finding-accessible-transport", "finding-helper-stale"],
+    "openCorrectiveActionRefs": ["action-confirm-transport", "action-refresh-helper"],
+    "nextOwner": "household-owner"
+  },
+  "prohibitedActions": {
+    "liveMonitoringPerformed": false,
+    "alertIssued": false,
+    "warningThresholdInterpreted": false,
+    "evacuationDeclared": false,
+    "emergencyDirectionGiven": false,
+    "personContacted": false,
+    "registrationSubmitted": false,
+    "purchaseMade": false,
+    "transportBooked": false,
+    "locationPublished": false,
+    "householdDataTransmitted": false,
+    "professionalAdviceGiven": false,
+    "readinessCertified": false
+  }
+}

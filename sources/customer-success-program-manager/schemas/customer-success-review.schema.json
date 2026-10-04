@@ -1,0 +1,611 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/customer-success-review.schema.json",
+  "title": "Customer success plan revision review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "review",
+    "principals",
+    "workloads",
+    "services",
+    "sources",
+    "metricDefinitions",
+    "metricObservations",
+    "serviceHealthObservations",
+    "milestones",
+    "milestoneReceipts",
+    "risksAndBlockers",
+    "actions",
+    "actionReceipts",
+    "decisions",
+    "cadence",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "awesomeClaws.customerSuccessReview.v1"},
+    "artifactId": {"$ref": "#/$defs/id"},
+    "review": {"$ref": "#/$defs/review"},
+    "principals": {"type": "array", "minItems": 4, "items": {"$ref": "#/$defs/principal"}},
+    "workloads": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/workload"}},
+    "services": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/service"}},
+    "sources": {"type": "array", "minItems": 4, "items": {"$ref": "#/$defs/source"}},
+    "metricDefinitions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/metricDefinition"}},
+    "metricObservations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/metricObservation"}},
+    "serviceHealthObservations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/serviceHealthObservation"}},
+    "milestones": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/milestone"}},
+    "milestoneReceipts": {"type": "array", "items": {"$ref": "#/$defs/milestoneReceipt"}},
+    "risksAndBlockers": {"type": "array", "items": {"$ref": "#/$defs/riskOrBlocker"}},
+    "actions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/action"}},
+    "actionReceipts": {"type": "array", "items": {"$ref": "#/$defs/actionReceipt"}},
+    "decisions": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/decision"}},
+    "cadence": {"$ref": "#/$defs/cadence"},
+    "handoff": {"$ref": "#/$defs/handoff"}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"},
+    "idList": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "sha256Digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "nullableId": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]},
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["customerRef", "tenantRef", "accountRef", "planRef", "planRevision"],
+      "properties": {
+        "customerRef": {"$ref": "#/$defs/id"},
+        "tenantRef": {"$ref": "#/$defs/id"},
+        "accountRef": {"$ref": "#/$defs/id"},
+        "planRef": {"$ref": "#/$defs/id"},
+        "planRevision": {"type": "integer", "minimum": 1}
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "customer",
+        "tenant",
+        "account",
+        "plan",
+        "periodStart",
+        "periodEnd",
+        "asOf",
+        "ownerRef",
+        "approvalDecisionRef",
+        "state"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "customer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "name"],
+          "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "name": {"$ref": "#/$defs/nonEmptyString"}
+          }
+        },
+        "tenant": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "customerRef"],
+          "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "customerRef": {"$ref": "#/$defs/id"}
+          }
+        },
+        "account": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "customerRef", "tenantRef"],
+          "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "customerRef": {"$ref": "#/$defs/id"},
+            "tenantRef": {"$ref": "#/$defs/id"}
+          }
+        },
+        "plan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "revision",
+            "approvedAt",
+            "approvedByRef",
+            "customerRef",
+            "tenantRef",
+            "accountRef"
+          ],
+          "properties": {
+            "id": {"$ref": "#/$defs/id"},
+            "revision": {"type": "integer", "minimum": 1},
+            "approvedAt": {"$ref": "#/$defs/timestamp"},
+            "approvedByRef": {"$ref": "#/$defs/id"},
+            "customerRef": {"$ref": "#/$defs/id"},
+            "tenantRef": {"$ref": "#/$defs/id"},
+            "accountRef": {"$ref": "#/$defs/id"}
+          }
+        },
+        "periodStart": {"$ref": "#/$defs/timestamp"},
+        "periodEnd": {"$ref": "#/$defs/timestamp"},
+        "asOf": {"$ref": "#/$defs/timestamp"},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "approvalDecisionRef": {"$ref": "#/$defs/id"},
+        "state": {"enum": ["blocked", "ready-for-owner-review"]}
+      }
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "role"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["human", "system"]},
+        "role": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "workload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "serviceRef", "binding"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "name": {"$ref": "#/$defs/nonEmptyString"},
+        "serviceRef": {"$ref": "#/$defs/id"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "binding"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "name": {"$ref": "#/$defs/nonEmptyString"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {"kind": {"const": "approved-plan"}},
+            "required": ["kind"]
+          },
+          "then": {
+            "properties": {
+              "verifiedContentDigests": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {"$ref": "#/$defs/sha256Digest"}
+              },
+              "verification": {"$ref": "#/$defs/approvedPlanVerification"}
+            },
+            "required": ["verifiedContentDigests", "verification"]
+          }
+        }
+      ],
+      "required": [
+        "id",
+        "kind",
+        "sourceUri",
+        "collectedAt",
+        "suppliedByRef",
+        "workloadRef",
+        "serviceRef",
+        "binding"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {
+          "enum": [
+            "approved-plan",
+            "adoption-export",
+            "service-health",
+            "milestone-acceptance",
+            "action-receipt",
+            "owner-decision"
+          ]
+        },
+        "sourceUri": {"type": "string", "pattern": "^controlled://.+"},
+        "collectedAt": {"$ref": "#/$defs/timestamp"},
+        "suppliedByRef": {"$ref": "#/$defs/id"},
+        "workloadRef": {"$ref": "#/$defs/nullableId"},
+        "serviceRef": {"$ref": "#/$defs/nullableId"},
+        "verifiedContentDigests": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/sha256Digest"}
+        },
+        "verification": {"$ref": "#/$defs/approvedPlanVerification"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "approvedPlanVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keyId", "signature"],
+      "properties": {
+        "keyId": {"$ref": "#/$defs/id"},
+        "signature": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]{86}==$"
+        }
+      }
+    },
+    "metricDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "workloadRef",
+        "serviceRef",
+        "definition",
+        "unit",
+        "aggregation",
+        "direction",
+        "target",
+        "windowStart",
+        "windowEnd",
+        "sourceRef",
+        "approvedPlanSourceRef",
+        "definitionDigest",
+        "binding"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "name": {"$ref": "#/$defs/nonEmptyString"},
+        "workloadRef": {"$ref": "#/$defs/id"},
+        "serviceRef": {"$ref": "#/$defs/id"},
+        "definition": {"$ref": "#/$defs/nonEmptyString"},
+        "unit": {"$ref": "#/$defs/nonEmptyString"},
+        "aggregation": {"enum": ["count", "ratio", "average", "sum"]},
+        "direction": {"enum": ["at-least", "at-most", "informational"]},
+        "target": {"type": ["number", "null"]},
+        "windowStart": {"$ref": "#/$defs/timestamp"},
+        "windowEnd": {"$ref": "#/$defs/timestamp"},
+        "sourceRef": {"$ref": "#/$defs/id"},
+        "approvedPlanSourceRef": {"$ref": "#/$defs/id"},
+        "definitionDigest": {"$ref": "#/$defs/sha256Digest"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "metricObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "metricRef",
+        "workloadRef",
+        "serviceRef",
+        "sourceRef",
+        "windowStart",
+        "windowEnd",
+        "observedAt",
+        "value",
+        "status",
+        "binding"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "metricRef": {"$ref": "#/$defs/id"},
+        "workloadRef": {"$ref": "#/$defs/id"},
+        "serviceRef": {"$ref": "#/$defs/id"},
+        "sourceRef": {"$ref": "#/$defs/id"},
+        "windowStart": {"$ref": "#/$defs/timestamp"},
+        "windowEnd": {"$ref": "#/$defs/timestamp"},
+        "observedAt": {"$ref": "#/$defs/timestamp"},
+        "value": {"type": "number"},
+        "status": {"enum": ["on-target", "below-target", "above-threshold", "informational"]},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "serviceHealthObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "workloadRef",
+        "serviceRef",
+        "sourceRef",
+        "windowStart",
+        "windowEnd",
+        "observedAt",
+        "status",
+        "incidentRef",
+        "binding"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "workloadRef": {"$ref": "#/$defs/id"},
+        "serviceRef": {"$ref": "#/$defs/id"},
+        "sourceRef": {"$ref": "#/$defs/id"},
+        "windowStart": {"$ref": "#/$defs/timestamp"},
+        "windowEnd": {"$ref": "#/$defs/timestamp"},
+        "observedAt": {"$ref": "#/$defs/timestamp"},
+        "status": {"enum": ["healthy", "degraded", "unavailable", "unknown"]},
+        "incidentRef": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 1}]},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "acceptanceCriterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "metricRef",
+        "observationRef",
+        "evidenceRef"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "description": {"$ref": "#/$defs/nonEmptyString"},
+        "metricRef": {"$ref": "#/$defs/nullableId"},
+        "observationRef": {"$ref": "#/$defs/nullableId"},
+        "evidenceRef": {"$ref": "#/$defs/id"}
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "workloadRef",
+        "serviceRef",
+        "ownerRef",
+        "dueAt",
+        "acceptanceCriteria",
+        "state",
+        "receiptRefs",
+        "binding"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "name": {"$ref": "#/$defs/nonEmptyString"},
+        "workloadRef": {"$ref": "#/$defs/id"},
+        "serviceRef": {"$ref": "#/$defs/id"},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "dueAt": {"$ref": "#/$defs/timestamp"},
+        "acceptanceCriteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/acceptanceCriterion"}
+        },
+        "state": {"enum": ["planned", "at-risk", "blocked", "accepted"]},
+        "receiptRefs": {"$ref": "#/$defs/idList"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "milestoneReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "milestoneRef",
+        "criterionRef",
+        "workloadRef",
+        "serviceRef",
+        "sourceRef",
+        "acceptedByRef",
+        "acceptedAt",
+        "decisionRef",
+        "binding"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "milestoneRef": {"$ref": "#/$defs/id"},
+        "criterionRef": {"$ref": "#/$defs/id"},
+        "workloadRef": {"$ref": "#/$defs/id"},
+        "serviceRef": {"$ref": "#/$defs/id"},
+        "sourceRef": {"$ref": "#/$defs/id"},
+        "acceptedByRef": {"$ref": "#/$defs/id"},
+        "acceptedAt": {"$ref": "#/$defs/timestamp"},
+        "decisionRef": {"$ref": "#/$defs/id"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "riskOrBlocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "summary",
+        "severity",
+        "status",
+        "ownerRef",
+        "evidenceRefs",
+        "actionRefs",
+        "binding"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["risk", "blocker"]},
+        "summary": {"$ref": "#/$defs/nonEmptyString"},
+        "severity": {"enum": ["low", "medium", "high", "critical"]},
+        "status": {"enum": ["open", "mitigating", "escalated", "closed"]},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "evidenceRefs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "actionRefs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "summary",
+        "workloadRef",
+        "serviceRef",
+        "ownerRef",
+        "dueAt",
+        "status",
+        "evidenceRefs",
+        "receiptRefs",
+        "binding"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "summary": {"$ref": "#/$defs/nonEmptyString"},
+        "workloadRef": {"$ref": "#/$defs/id"},
+        "serviceRef": {"$ref": "#/$defs/id"},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "dueAt": {"$ref": "#/$defs/timestamp"},
+        "status": {"enum": ["open", "in-progress", "blocked", "complete"]},
+        "evidenceRefs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "receiptRefs": {"$ref": "#/$defs/idList"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "actionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "actionRef",
+        "workloadRef",
+        "serviceRef",
+        "sourceRef",
+        "recordedByRef",
+        "recordedAt",
+        "outcome",
+        "binding"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "actionRef": {"$ref": "#/$defs/id"},
+        "workloadRef": {"$ref": "#/$defs/id"},
+        "serviceRef": {"$ref": "#/$defs/id"},
+        "sourceRef": {"$ref": "#/$defs/id"},
+        "recordedByRef": {"$ref": "#/$defs/id"},
+        "recordedAt": {"$ref": "#/$defs/timestamp"},
+        "outcome": {"enum": ["completed", "partial", "failed"]},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "madeByRef", "madeAt", "evidenceRefs", "result", "binding"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {
+          "enum": [
+            "plan-approval",
+            "milestone-acceptance",
+            "review-classification",
+            "renewal-handoff",
+            "escalation-route"
+          ]
+        },
+        "madeByRef": {"$ref": "#/$defs/id"},
+        "madeAt": {"$ref": "#/$defs/timestamp"},
+        "evidenceRefs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "result": {"$ref": "#/$defs/nonEmptyString"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "cadence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frequency", "timezone", "priorReviewAt", "nextReviewAt", "ownerRef", "binding"],
+      "properties": {
+        "frequency": {"enum": ["weekly", "monthly", "quarterly"]},
+        "timezone": {"type": "string", "pattern": "^[A-Za-z_]+(?:/[A-Za-z_+-]+)+$"},
+        "priorReviewAt": {"$ref": "#/$defs/timestamp"},
+        "nextReviewAt": {"$ref": "#/$defs/timestamp"},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    },
+    "renewalHandoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "ownerRef", "evidenceRefs"],
+      "properties": {
+        "state": {"enum": ["not-assessed", "owner-review-required"]},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "evidenceRefs": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "escalationHandoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "ownerRef", "riskRefs"],
+      "properties": {
+        "state": {"enum": ["not-required", "owner-review-required"]},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "riskRefs": {"$ref": "#/$defs/idList"}
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "ownerRef",
+        "generatedAt",
+        "decisionNeeded",
+        "dueAt",
+        "renewal",
+        "escalation",
+        "prohibitedActions",
+        "summary",
+        "binding"
+      ],
+      "properties": {
+        "state": {"enum": ["blocked", "ready-for-owner-review"]},
+        "ownerRef": {"$ref": "#/$defs/id"},
+        "generatedAt": {"$ref": "#/$defs/timestamp"},
+        "decisionNeeded": {"$ref": "#/$defs/nonEmptyString"},
+        "dueAt": {"$ref": "#/$defs/timestamp"},
+        "renewal": {"$ref": "#/$defs/renewalHandoff"},
+        "escalation": {"$ref": "#/$defs/escalationHandoff"},
+        "prohibitedActions": {
+          "type": "array",
+          "minItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "contact-customer",
+              "send-message",
+              "change-workload",
+              "change-tenant",
+              "mutate-account",
+              "mutate-service",
+              "mutate-support-case",
+              "make-commercial-promise",
+              "change-pricing",
+              "change-contract",
+              "commit-renewal",
+              "accept-risk",
+              "claim-customer-success"
+            ]
+          }
+        },
+        "summary": {"$ref": "#/$defs/nonEmptyString"},
+        "binding": {"$ref": "#/$defs/binding"}
+      }
+    }
+  }
+}

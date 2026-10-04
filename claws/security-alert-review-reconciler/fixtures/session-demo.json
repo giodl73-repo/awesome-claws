@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "security-alert-review-reconciler",
+  "scenario": "Reconcile the complete owner-authenticated alert export for 2026-09-16 across code scanning, secret scanning, and dependency alerts. Preserve muted, suppressed, unknown-asset, self-suppression, and revised-alert states; record only authorized human outcomes; and do not query the SIEM, infer correlation or severity, mutate alerts, declare an incident, create tickets, or accept risk.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the complete owner-authenticated alert export for 2026-09-16 across code scanning, secret scanning, and dependency alerts. Preserve muted, suppressed, unknown-asset, self-suppression, and revised-alert states; record only authorized human outcomes; and do not query the SIEM, infer correlation or severity, mutate alerts, declare an incident, create tickets, or accept risk."
+    },
+    {
+      "role": "agent",
+      "text": "I verified the signed source manifest and exact source bytes, the complete eight-alert snapshot, independently supplied trust, current and historical policy revisions, typed grants, and controlled evidence before reconciling any review result."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/security-alert-review.html with the matching outputs/security-alert-review.md fallback, preserving three authorized human dispositions, five exact non-decisions, owner-declared duplicate membership, revision invalidation, and every no-authority boundary."
+    }
+  ],
+  "report": {
+    "title": "Security alert review reconciler session handoff",
+    "summary": "An X4 revision-exact review ledger covering all eight native alerts with three authorized human dispositions, five exact non-decisions, one owner-declared duplicate group, one revision-invalidated prior decision, and one incident-owner review request that declares no incident.",
+    "output": "outputs/security-alert-review.md",
+    "items": [
+      {
+        "title": "Owner-authenticated source, snapshot, public trust, policy-revision, principal, grant, and controlled-evidence ledgers",
+        "summary": "The owner signature, source identities and versions, exact byte digests, normalized alert universe, and snapshot completeness root all verify against independently supplied trust",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Complete native-alert coverage index keyed by source, native alert id, and revision",
+        "summary": "Every native alert key appears exactly once in coverage and has exactly one current human disposition or exact non-decision",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Authorized human disposition and exact non-decision ledger with historical revision invalidation",
+        "summary": "Every grant and decision binds the policy revision effective at its original time, while current reviews bind the current policy and historical digests remain immutable",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-declared duplicate and incident-owner review-request records with no correlation or declaration effect",
+        "summary": "Public trust is independently supplied, query-free, approved-domain, and context-only; unsafe URLs, malformed trust, omissions, substitutions, stale replay, and authority overclaim fail closed",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "X4 security alert review visual with equivalent Markdown handoff and explicit authority non-claims",
+        "summary": "The X4 and Markdown handoff make no SIEM, correlation, severity, suppression, containment, incident, ticket, risk, compliance, remediation, or security claim",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

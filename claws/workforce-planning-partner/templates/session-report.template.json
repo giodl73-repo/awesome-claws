@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Workforce planning partner session report",
+  "output": "outputs/workforce-plan-handoff.md",
+  "sections": [
+    "request",
+    "exact_plan_revision",
+    "privacy_and_evidence_scope",
+    "demand_funding_position_reconciliation",
+    "aggregate_scenarios",
+    "capability_succession_location_gaps",
+    "owner_actions",
+    "manager_decision_checkpoints",
+    "blocked_authority"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+}

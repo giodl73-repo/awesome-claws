@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/household-emergency-preparedness-coordinator/preparedness-plan.schema.json",
+  "title": "Household emergency preparedness plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "plan", "sources", "locations", "hazards", "participants", "needs", "dependencies", "options", "steps", "supplies", "drills", "findings", "correctiveActions", "review", "prohibitedActions"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.householdEmergencyPreparedness.v1" },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "revision", "asOf", "owner", "privacy", "previousRevisionRef", "locationRefs", "hazardRefs", "participantRefs", "dependencyRefs", "optionRefs", "supplyRefs", "drillRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "asOf": { "type": "string", "format": "date-time" },
+        "owner": { "$ref": "#/$defs/ownerId" },
+        "privacy": { "enum": ["owner-only", "trusted-helper-approved"] },
+        "previousRevisionRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "locationRefs": { "$ref": "#/$defs/idList" },
+        "hazardRefs": { "$ref": "#/$defs/idList" },
+        "participantRefs": { "$ref": "#/$defs/idList" },
+        "dependencyRefs": { "$ref": "#/$defs/idList" },
+        "optionRefs": { "$ref": "#/$defs/idList" },
+        "supplyRefs": { "$ref": "#/$defs/idList" },
+        "drillRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/source" } },
+    "locations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/location" } },
+    "hazards": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/hazard" } },
+    "participants": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/participant" } },
+    "needs": { "type": "array", "items": { "$ref": "#/$defs/need" } },
+    "dependencies": { "type": "array", "items": { "$ref": "#/$defs/dependency" } },
+    "options": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/option" } },
+    "steps": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/step" } },
+    "supplies": { "type": "array", "items": { "$ref": "#/$defs/supply" } },
+    "drills": { "type": "array", "items": { "$ref": "#/$defs/drill" } },
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "correctiveActions": { "type": "array", "items": { "$ref": "#/$defs/correctiveAction" } },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asOf", "decision", "nextRevision", "gapNeedRefs", "unconfirmedDependencyRefs", "expiredOrMissingSupplyRefs", "openFindingRefs", "openCorrectiveActionRefs", "nextOwner"],
+      "properties": {
+        "asOf": { "type": "string", "format": "date-time" },
+        "decision": { "enum": ["revise", "ready-for-owner-review", "blocked"] },
+        "nextRevision": { "type": "integer", "minimum": 2 },
+        "gapNeedRefs": { "$ref": "#/$defs/idList" },
+        "unconfirmedDependencyRefs": { "$ref": "#/$defs/idList" },
+        "expiredOrMissingSupplyRefs": { "$ref": "#/$defs/idList" },
+        "openFindingRefs": { "$ref": "#/$defs/idList" },
+        "openCorrectiveActionRefs": { "$ref": "#/$defs/idList" },
+        "nextOwner": { "$ref": "#/$defs/ownerId" }
+      }
+    },
+    "prohibitedActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["liveMonitoringPerformed", "alertIssued", "warningThresholdInterpreted", "evacuationDeclared", "emergencyDirectionGiven", "personContacted", "registrationSubmitted", "purchaseMade", "transportBooked", "locationPublished", "householdDataTransmitted", "professionalAdviceGiven", "readinessCertified"],
+      "properties": {
+        "liveMonitoringPerformed": { "const": false },
+        "alertIssued": { "const": false },
+        "warningThresholdInterpreted": { "const": false },
+        "evacuationDeclared": { "const": false },
+        "emergencyDirectionGiven": { "const": false },
+        "personContacted": { "const": false },
+        "registrationSubmitted": { "const": false },
+        "purchaseMade": { "const": false },
+        "transportBooked": { "const": false },
+        "locationPublished": { "const": false },
+        "householdDataTransmitted": { "const": false },
+        "professionalAdviceGiven": { "const": false },
+        "readinessCertified": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$" },
+    "ownerId": { "type": "string", "pattern": "^(?:household|helper)-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "idList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "nonEmptyIdList": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "publisher", "authorityRef", "controlledRef", "revision", "retrievedAt", "expiresAt", "freshness", "privacy"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["official-hazard-guidance", "evacuation-zone-map", "shelter-guidance", "building-plan", "school-plan", "utility-guidance", "alert-enrollment-reference", "professional-guidance", "owner-record", "helper-acknowledgement", "inventory-record", "drill-observation", "action-confirmation"] },
+        "publisher": { "type": "string", "minLength": 1 },
+        "authorityRef": { "type": "string", "pattern": "^(?:authority|household|helper)-[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "controlledRef": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "retrievedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+        "freshness": { "enum": ["current", "stale", "conflicting", "superseded"] },
+        "privacy": { "enum": ["public", "owner-only", "trusted-helper-approved"] }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "kind", "privacy", "sourceRefs", "hazardRefs", "optionRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["home", "school", "workplace", "regular-destination", "meeting-area"] },
+        "privacy": { "enum": ["owner-only", "trusted-helper-approved", "public-generalized"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "hazardRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "optionRefs": { "$ref": "#/$defs/nonEmptyIdList" }
+      }
+    },
+    "hazard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "locationRefs", "officialSourceRefs", "optionRefs", "guidanceState", "liveTriggerClaim"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["earthquake", "wildfire", "smoke", "outage", "flood", "storm", "extreme-heat", "extreme-cold", "other-officially-defined"] },
+        "locationRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "officialSourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "optionRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "guidanceState": { "enum": ["current", "stale", "conflicting", "missing"] },
+        "liveTriggerClaim": { "const": "not-claimed" }
+      }
+    },
+    "participant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "privacy", "sourceRefs", "needRefs", "optionRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["adult", "child", "dependent-adult", "animal"] },
+        "privacy": { "enum": ["owner-only", "trusted-helper-approved"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "needRefs": { "$ref": "#/$defs/idList" },
+        "optionRefs": { "$ref": "#/$defs/nonEmptyIdList" }
+      }
+    },
+    "need": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "participantRef", "kind", "sensitivity", "state", "sourceRefs", "optionRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "participantRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["mobility", "communication", "language", "medical-device-power", "medication-continuity", "supervision", "custody", "transport", "animal-care", "other-owner-defined"] },
+        "sensitivity": { "enum": ["private", "share-minimum", "owner-defined"] },
+        "state": { "enum": ["covered", "gap", "not-applicable"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "optionRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "owner", "state", "sourceRefs", "optionRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["helper", "transport", "utility", "school", "workplace", "building", "pet-facility", "medical-device", "alert-enrollment", "document-access"] },
+        "owner": { "$ref": "#/$defs/ownerId" },
+        "state": { "enum": ["acknowledged", "unconfirmed", "unavailable", "superseded"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "optionRefs": { "$ref": "#/$defs/nonEmptyIdList" }
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "status", "ownerApproved", "locationRefs", "hazardRefs", "participantRefs", "needRefs", "dependencyRefs", "sourceRefs", "stepRefs", "liveInstruction"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["evacuation", "shelter", "communication", "reunification", "transport", "animal-support", "power-continuity", "document-access"] },
+        "title": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["owner-approved", "draft", "blocked", "superseded"] },
+        "ownerApproved": { "type": "boolean" },
+        "locationRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "hazardRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "participantRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "needRefs": { "$ref": "#/$defs/idList" },
+        "dependencyRefs": { "$ref": "#/$defs/idList" },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "stepRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "liveInstruction": { "const": false }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "optionRef", "sequence", "label", "owner", "sourceRefs", "dependencyRefs", "state", "externalActionRequired", "completionSourceRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "optionRef": { "$ref": "#/$defs/id" },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "owner": { "$ref": "#/$defs/ownerId" },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "dependencyRefs": { "$ref": "#/$defs/idList" },
+        "state": { "enum": ["planned", "blocked", "owner-completed"] },
+        "externalActionRequired": { "type": "boolean" },
+        "completionSourceRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+      }
+    },
+    "supply": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "participantRefs", "owner", "state", "expiresAt", "sourceRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "category": { "enum": ["water", "food", "light", "power", "communication", "first-aid", "medication-record", "mobility", "animal", "sanitation", "document-copy", "other-owner-defined"] },
+        "participantRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "owner": { "$ref": "#/$defs/ownerId" },
+        "state": { "enum": ["current", "expired", "missing", "unverified"] },
+        "expiresAt": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" }
+      }
+    },
+    "drill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "occurredAt", "optionRefs", "participantRefs", "result", "sourceRefs", "findingRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "occurredAt": { "type": "string", "format": "date-time" },
+        "optionRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "participantRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "result": { "enum": ["completed", "partial", "blocked"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "findingRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "drillRef", "kind", "state", "sourceRefs", "correctiveActionRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "drillRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["coverage-gap", "timing-observation", "dependency-failure", "accessibility-barrier", "communication-failure", "supply-gap", "privacy-exposure"] },
+        "state": { "enum": ["open", "resolved", "owner-accepted-gap"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "correctiveActionRefs": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "correctiveAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "findingRef", "owner", "dueAt", "state", "sourceRefs", "completionSourceRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "findingRef": { "$ref": "#/$defs/id" },
+        "owner": { "$ref": "#/$defs/ownerId" },
+        "dueAt": { "type": "string", "format": "date-time" },
+        "state": { "enum": ["planned", "blocked", "owner-completed", "owner-accepted-gap"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyIdList" },
+        "completionSourceRef": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }
+      }
+    }
+  }
+}

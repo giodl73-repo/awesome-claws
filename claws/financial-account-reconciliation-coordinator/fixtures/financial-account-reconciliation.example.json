@@ -1,0 +1,971 @@
+{
+  "schemaVersion": "awesomeClaws.financialAccountReconciliation.v1",
+  "round": {
+    "id": "round-operating-2026-08",
+    "priorRoundRef": "prior-round:recon-2026-07",
+    "accountId": "operating-001",
+    "currency": "USD",
+    "period": {
+      "startsOn": "2026-08-01",
+      "endsOn": "2026-08-31"
+    },
+    "cutoffAt": "2026-09-01T01:00:00Z",
+    "reviewWindow": {
+      "opensAt": "2026-09-01T01:00:00Z",
+      "closesAt": "2026-09-10T23:59:59Z"
+    },
+    "destination": {
+      "id": "destination-approval-operating-2026-08",
+      "roundRef": "round-operating-2026-08",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "controlledRef": "controlled://finance-reconciliation/operating-001/2026-08",
+      "visibility": "private",
+      "approvedByRef": "principal-iris-tanaka",
+      "approvedAt": "2026-09-01T02:40:00Z",
+      "authorityRosterDigest": "sha256:7e3b879de301a32bc0ad16e475373397ffa9eb5d59e3f5fd9567d23b3b3d1464",
+      "authorityGrantRef": "grant-iris-destination-approval",
+      "authorityGrantPayloadDigest": "sha256:0c2b5cd6063edd635375bc8e08e1d8337f02d928935ba692bdaa64bae4e63488",
+      "authorityGrantEvidenceRef": "evidence-grant-iris-destination",
+      "authorityGrantEvidenceDigest": "sha256:5257c737cf29ef363f34e780003b85fd8d3ecb9774b5204131955d8581b5e392",
+      "authorityGrantEvidenceControlledRef": "controlled://finance-reconciliation/authority-grant-record@sha256-5257c737cf29ef363f34e780003b85fd8d3ecb9774b5204131955d8581b5e392",
+      "roundRootDigest": "sha256:4edbff51e82aa98e260fd4204506fdeb51b4223f838c11833b015f4830e87b96",
+      "evidenceRef": "evidence-destination-approval"
+    },
+    "authorityRosterRef": "roster-operating-2026-08",
+    "balanceConvention": "owner-normalized-account-balance-effect",
+    "roundRootDigest": "sha256:4edbff51e82aa98e260fd4204506fdeb51b4223f838c11833b015f4830e87b96"
+  },
+  "authorityRoster": {
+    "id": "roster-operating-2026-08",
+    "roundRef": "round-operating-2026-08",
+    "accountId": "operating-001",
+    "currency": "USD",
+    "custodianRef": "principal-hana-bello",
+    "principalRefs": [
+      "principal-iris-tanaka",
+      "principal-mara-quinn",
+      "principal-ruth-abara",
+      "principal-hana-bello",
+      "principal-ledger-export-system",
+      "principal-statement-export-system"
+    ],
+    "issuedAt": "2026-09-01T00:00:00Z",
+    "rosterDigest": "sha256:7e3b879de301a32bc0ad16e475373397ffa9eb5d59e3f5fd9567d23b3b3d1464",
+    "controlledRef": "controlled://finance-reconciliation/authority-roster-record@sha256-85a432cf18a65be06d69cad94cffbb01db1c9f2ebfe3fd2cb108e7efac2f7194",
+    "evidenceRef": "evidence-authority-roster"
+  },
+  "principals": [
+    {
+      "id": "principal-iris-tanaka",
+      "name": "Iris Tanaka",
+      "kind": "named-human",
+      "scopes": [
+        "reconciliation-authority-issuer",
+        "destination-approver"
+      ]
+    },
+    {
+      "id": "principal-mara-quinn",
+      "name": "Mara Quinn",
+      "kind": "named-human",
+      "scopes": [
+        "reconciliation-review"
+      ]
+    },
+    {
+      "id": "principal-ruth-abara",
+      "name": "Ruth Abara",
+      "kind": "named-human",
+      "scopes": [
+        "owner-handoff"
+      ]
+    },
+    {
+      "id": "principal-hana-bello",
+      "name": "Hana Bello",
+      "kind": "named-human",
+      "scopes": [
+        "reconciliation-authority-issuer"
+      ]
+    },
+    {
+      "id": "principal-ledger-export-system",
+      "name": "Ledger export system",
+      "kind": "system",
+      "scopes": [
+        "ledger-export-supplier"
+      ]
+    },
+    {
+      "id": "principal-statement-export-system",
+      "name": "Statement export system",
+      "kind": "system",
+      "scopes": [
+        "statement-export-supplier"
+      ]
+    }
+  ],
+  "authorityGrants": [
+    {
+      "id": "grant-mara-operating-review",
+      "roundRef": "round-operating-2026-08",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "authorityRosterRef": "roster-operating-2026-08",
+      "authorityRosterDigest": "sha256:7e3b879de301a32bc0ad16e475373397ffa9eb5d59e3f5fd9567d23b3b3d1464",
+      "authorityRosterEvidenceRef": "evidence-authority-roster",
+      "authorityRosterEvidenceDigest": "sha256:85a432cf18a65be06d69cad94cffbb01db1c9f2ebfe3fd2cb108e7efac2f7194",
+      "authorityRosterEvidenceControlledRef": "controlled://finance-reconciliation/authority-roster-record@sha256-85a432cf18a65be06d69cad94cffbb01db1c9f2ebfe3fd2cb108e7efac2f7194",
+      "granteeRef": "principal-mara-quinn",
+      "granteePrincipalDigest": "sha256:a5db953da1d62bfd87766523e8ec07ae49bf1e7e7ca96aecad9a70dbff4c851e",
+      "issuedByRef": "principal-iris-tanaka",
+      "issuerPrincipalDigest": "sha256:ad9a444c7bfd2084861cc4536efa4b96f7f3af868b5e8d81e499044f2349d581",
+      "scopes": [
+        "reconciliation-review"
+      ],
+      "issuedAt": "2026-09-01T00:30:00Z",
+      "activeFrom": "2026-09-01T01:00:00Z",
+      "activeUntil": "2026-09-10T23:59:59Z",
+      "evidenceRef": "evidence-grant-mara"
+    },
+    {
+      "id": "grant-ruth-owner-handoff",
+      "roundRef": "round-operating-2026-08",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "authorityRosterRef": "roster-operating-2026-08",
+      "authorityRosterDigest": "sha256:7e3b879de301a32bc0ad16e475373397ffa9eb5d59e3f5fd9567d23b3b3d1464",
+      "authorityRosterEvidenceRef": "evidence-authority-roster",
+      "authorityRosterEvidenceDigest": "sha256:85a432cf18a65be06d69cad94cffbb01db1c9f2ebfe3fd2cb108e7efac2f7194",
+      "authorityRosterEvidenceControlledRef": "controlled://finance-reconciliation/authority-roster-record@sha256-85a432cf18a65be06d69cad94cffbb01db1c9f2ebfe3fd2cb108e7efac2f7194",
+      "granteeRef": "principal-ruth-abara",
+      "granteePrincipalDigest": "sha256:db7f51ddca58b68bd08b58232b6359f8952ddfe0784e8f6d14f8ac09a6b2db78",
+      "issuedByRef": "principal-iris-tanaka",
+      "issuerPrincipalDigest": "sha256:ad9a444c7bfd2084861cc4536efa4b96f7f3af868b5e8d81e499044f2349d581",
+      "scopes": [
+        "owner-handoff"
+      ],
+      "issuedAt": "2026-09-01T00:31:00Z",
+      "activeFrom": "2026-09-01T01:00:00Z",
+      "activeUntil": "2026-09-10T23:59:59Z",
+      "evidenceRef": "evidence-grant-ruth-handoff"
+    },
+    {
+      "id": "grant-iris-destination-approval",
+      "roundRef": "round-operating-2026-08",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "authorityRosterRef": "roster-operating-2026-08",
+      "authorityRosterDigest": "sha256:7e3b879de301a32bc0ad16e475373397ffa9eb5d59e3f5fd9567d23b3b3d1464",
+      "authorityRosterEvidenceRef": "evidence-authority-roster",
+      "authorityRosterEvidenceDigest": "sha256:85a432cf18a65be06d69cad94cffbb01db1c9f2ebfe3fd2cb108e7efac2f7194",
+      "authorityRosterEvidenceControlledRef": "controlled://finance-reconciliation/authority-roster-record@sha256-85a432cf18a65be06d69cad94cffbb01db1c9f2ebfe3fd2cb108e7efac2f7194",
+      "granteeRef": "principal-iris-tanaka",
+      "granteePrincipalDigest": "sha256:ad9a444c7bfd2084861cc4536efa4b96f7f3af868b5e8d81e499044f2349d581",
+      "issuedByRef": "principal-hana-bello",
+      "issuerPrincipalDigest": "sha256:edd5f5b867bb39b5ae5228385d9f034e71792440f4afeb6e5b2ed7735a8c1618",
+      "scopes": [
+        "destination-approver"
+      ],
+      "issuedAt": "2026-09-01T00:32:00Z",
+      "activeFrom": "2026-09-01T01:00:00Z",
+      "activeUntil": "2026-09-10T23:59:59Z",
+      "evidenceRef": "evidence-grant-iris-destination"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-authority-roster",
+      "kind": "authority-roster-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "authority-roster-record",
+      "controlledRef": "controlled://finance-reconciliation/authority-roster-record@sha256-85a432cf18a65be06d69cad94cffbb01db1c9f2ebfe3fd2cb108e7efac2f7194",
+      "payloadDigest": "sha256:41087e320fabd2627c788fb3a3e92dc788b7d61c18a45c50c8feeaf34e9657c9",
+      "recordDigest": "sha256:85a432cf18a65be06d69cad94cffbb01db1c9f2ebfe3fd2cb108e7efac2f7194",
+      "observedAt": "2026-09-01T00:00:00Z",
+      "suppliedByRef": "principal-hana-bello",
+      "subjectRefs": [
+        "roster-operating-2026-08",
+        "principal-iris-tanaka",
+        "principal-mara-quinn",
+        "principal-ruth-abara",
+        "principal-hana-bello",
+        "principal-ledger-export-system",
+        "principal-statement-export-system"
+      ]
+    },
+    {
+      "id": "evidence-grant-mara",
+      "kind": "authority-grant-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "authority-grant-record",
+      "controlledRef": "controlled://finance-reconciliation/authority-grant-record@sha256-fe78063d7c4d4f0f6e295b14ddea64512d451f9fe26a242902d9bb326a48a816",
+      "payloadDigest": "sha256:36c0cd23f4a3d5edb9ee0a7efa5fde679ffdb04ba89bd6f6615431fa18278841",
+      "recordDigest": "sha256:fe78063d7c4d4f0f6e295b14ddea64512d451f9fe26a242902d9bb326a48a816",
+      "observedAt": "2026-09-01T00:30:00Z",
+      "suppliedByRef": "principal-iris-tanaka",
+      "subjectRefs": [
+        "grant-mara-operating-review",
+        "principal-mara-quinn",
+        "principal-iris-tanaka",
+        "roster-operating-2026-08"
+      ]
+    },
+    {
+      "id": "evidence-grant-ruth-handoff",
+      "kind": "authority-grant-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "authority-grant-record",
+      "controlledRef": "controlled://finance-reconciliation/authority-grant-record@sha256-848503eb0d75f2992ea2872871ce585bf9fc5e07374401e4e40ff156cac815aa",
+      "payloadDigest": "sha256:657b58180ecb43fb69385d27330b4bd28f07774b1b86d1aa9a0ff5a9fb0f173a",
+      "recordDigest": "sha256:848503eb0d75f2992ea2872871ce585bf9fc5e07374401e4e40ff156cac815aa",
+      "observedAt": "2026-09-01T00:31:00Z",
+      "suppliedByRef": "principal-iris-tanaka",
+      "subjectRefs": [
+        "grant-ruth-owner-handoff",
+        "principal-ruth-abara",
+        "principal-iris-tanaka",
+        "roster-operating-2026-08"
+      ]
+    },
+    {
+      "id": "evidence-grant-iris-destination",
+      "kind": "authority-grant-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "authority-grant-record",
+      "controlledRef": "controlled://finance-reconciliation/authority-grant-record@sha256-5257c737cf29ef363f34e780003b85fd8d3ecb9774b5204131955d8581b5e392",
+      "payloadDigest": "sha256:d67bdf8a81d4ba890d46efc59e1a2c635e05b624147661752a37c8213b6d0018",
+      "recordDigest": "sha256:5257c737cf29ef363f34e780003b85fd8d3ecb9774b5204131955d8581b5e392",
+      "observedAt": "2026-09-01T00:32:00Z",
+      "suppliedByRef": "principal-hana-bello",
+      "subjectRefs": [
+        "grant-iris-destination-approval",
+        "principal-iris-tanaka",
+        "principal-hana-bello",
+        "roster-operating-2026-08"
+      ]
+    },
+    {
+      "id": "evidence-ledger-export",
+      "kind": "ledger-export-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "ledger-export-record",
+      "controlledRef": "controlled://finance-reconciliation/ledger-export-record@sha256-51d4ff0bec4aee075c5dd9e387c5f2cbe81373c847c52a2e2fe0dcf233ccf6c4",
+      "payloadDigest": "sha256:72433bc3578b1e747461b55fca0f8447725b9c1541ba1716283524548bc31b3f",
+      "recordDigest": "sha256:51d4ff0bec4aee075c5dd9e387c5f2cbe81373c847c52a2e2fe0dcf233ccf6c4",
+      "observedAt": "2026-09-01T00:15:00Z",
+      "suppliedByRef": "principal-ledger-export-system",
+      "subjectRefs": [
+        "export-ledger-operating-2026-08",
+        "ledger-row-deposit",
+        "ledger-row-fee",
+        "ledger-row-batch-a",
+        "ledger-row-batch-b",
+        "ledger-row-residual"
+      ]
+    },
+    {
+      "id": "evidence-statement-export",
+      "kind": "statement-export-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "statement-export-record",
+      "controlledRef": "controlled://finance-reconciliation/statement-export-record@sha256-bbc3db0ecc6eb328e53dace31dc288e1ecbd4f38fac6ea35dbea0c3959913dd0",
+      "payloadDigest": "sha256:055d4dfced8a69e06b8f0c793742f4d50a888c0b4ff9ae092b1dd89ef787777a",
+      "recordDigest": "sha256:bbc3db0ecc6eb328e53dace31dc288e1ecbd4f38fac6ea35dbea0c3959913dd0",
+      "observedAt": "2026-09-01T00:20:00Z",
+      "suppliedByRef": "principal-statement-export-system",
+      "subjectRefs": [
+        "export-statement-operating-2026-08",
+        "statement-row-deposit-a",
+        "statement-row-deposit-b",
+        "statement-row-fee",
+        "statement-row-batch",
+        "statement-row-residual"
+      ]
+    },
+    {
+      "id": "evidence-ledger-row-deposit",
+      "kind": "ledger-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "ledger-row-record",
+      "controlledRef": "controlled://finance-reconciliation/ledger-row-record@sha256-afba71996763e657475cf22debdb713c048c989b0858963992f676bba9f49f55",
+      "payloadDigest": "sha256:fce8f4edd60aa2b585c5a4b2cf016548b635eb4a7ba7b69da354955be03b6e1f",
+      "recordDigest": "sha256:afba71996763e657475cf22debdb713c048c989b0858963992f676bba9f49f55",
+      "observedAt": "2026-09-01T00:15:00Z",
+      "suppliedByRef": "principal-ledger-export-system",
+      "subjectRefs": [
+        "ledger-row-deposit"
+      ]
+    },
+    {
+      "id": "evidence-ledger-row-fee",
+      "kind": "ledger-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "ledger-row-record",
+      "controlledRef": "controlled://finance-reconciliation/ledger-row-record@sha256-dee18406359a6ae2a0658443322a6bedf02d53a2fc4e39acce0e064357adee43",
+      "payloadDigest": "sha256:e79d770051a649a9d1f0086b92e0e10197328be539f885c1b1143f8c5d1d769f",
+      "recordDigest": "sha256:dee18406359a6ae2a0658443322a6bedf02d53a2fc4e39acce0e064357adee43",
+      "observedAt": "2026-09-01T00:15:00Z",
+      "suppliedByRef": "principal-ledger-export-system",
+      "subjectRefs": [
+        "ledger-row-fee"
+      ]
+    },
+    {
+      "id": "evidence-ledger-row-batch-a",
+      "kind": "ledger-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "ledger-row-record",
+      "controlledRef": "controlled://finance-reconciliation/ledger-row-record@sha256-0845143420ad2ae42df833b2e9e1b6f8388e46817124d13913977598f5191c2f",
+      "payloadDigest": "sha256:7466c83005c4132149db4b04cac3254aa9eb76c0b74bb867a6da6bc8ebade50d",
+      "recordDigest": "sha256:0845143420ad2ae42df833b2e9e1b6f8388e46817124d13913977598f5191c2f",
+      "observedAt": "2026-09-01T00:15:00Z",
+      "suppliedByRef": "principal-ledger-export-system",
+      "subjectRefs": [
+        "ledger-row-batch-a"
+      ]
+    },
+    {
+      "id": "evidence-ledger-row-batch-b",
+      "kind": "ledger-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "ledger-row-record",
+      "controlledRef": "controlled://finance-reconciliation/ledger-row-record@sha256-c4de1e9a73cd5a4a3dfaf3c5aa33fcf1d2c3e8007468df974849b723a6ffcde9",
+      "payloadDigest": "sha256:d075d051221165a8694a35761c31f0672cb4c1e8626b4d79cb7bdc101bbf4c01",
+      "recordDigest": "sha256:c4de1e9a73cd5a4a3dfaf3c5aa33fcf1d2c3e8007468df974849b723a6ffcde9",
+      "observedAt": "2026-09-01T00:15:00Z",
+      "suppliedByRef": "principal-ledger-export-system",
+      "subjectRefs": [
+        "ledger-row-batch-b"
+      ]
+    },
+    {
+      "id": "evidence-ledger-row-residual",
+      "kind": "ledger-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "ledger-row-record",
+      "controlledRef": "controlled://finance-reconciliation/ledger-row-record@sha256-8ad147e5f30a342ae9edf4785a7611aaa7056563195b2e19600916b3665966fe",
+      "payloadDigest": "sha256:9b8722a62a3312b097fb10b17f3085589f33e56e4c8c973af7804aaaa5b5ee0b",
+      "recordDigest": "sha256:8ad147e5f30a342ae9edf4785a7611aaa7056563195b2e19600916b3665966fe",
+      "observedAt": "2026-09-01T00:15:00Z",
+      "suppliedByRef": "principal-ledger-export-system",
+      "subjectRefs": [
+        "ledger-row-residual"
+      ]
+    },
+    {
+      "id": "evidence-statement-row-deposit-a",
+      "kind": "statement-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "statement-row-record",
+      "controlledRef": "controlled://finance-reconciliation/statement-row-record@sha256-5ecff08f214b9295ccc381c5e69ac2b6f634d035fe23d5efaeb3347f15c4992c",
+      "payloadDigest": "sha256:b8ac7dee22ed8f25a4001b12f9f6b024fff611fe834158790e60a65ce6f9e303",
+      "recordDigest": "sha256:5ecff08f214b9295ccc381c5e69ac2b6f634d035fe23d5efaeb3347f15c4992c",
+      "observedAt": "2026-09-01T00:20:00Z",
+      "suppliedByRef": "principal-statement-export-system",
+      "subjectRefs": [
+        "statement-row-deposit-a"
+      ]
+    },
+    {
+      "id": "evidence-statement-row-deposit-b",
+      "kind": "statement-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "statement-row-record",
+      "controlledRef": "controlled://finance-reconciliation/statement-row-record@sha256-802159922ba43995c7d4f9cec92cf3374c04de3bd5559a2bc2487ff0c4c34be7",
+      "payloadDigest": "sha256:a7080012001639cc30ff1c885848526d57131ec937fc6cd3ffadaabe04129a78",
+      "recordDigest": "sha256:802159922ba43995c7d4f9cec92cf3374c04de3bd5559a2bc2487ff0c4c34be7",
+      "observedAt": "2026-09-01T00:20:00Z",
+      "suppliedByRef": "principal-statement-export-system",
+      "subjectRefs": [
+        "statement-row-deposit-b"
+      ]
+    },
+    {
+      "id": "evidence-statement-row-fee",
+      "kind": "statement-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "statement-row-record",
+      "controlledRef": "controlled://finance-reconciliation/statement-row-record@sha256-565727f07ab0f08401c4d0767943404c88f5c5630e49fcd807343b42e5713b96",
+      "payloadDigest": "sha256:0575e476e174a1fc0c7aa94e27e8fa16b1b625efb5898c9d6abce60558fb5ed8",
+      "recordDigest": "sha256:565727f07ab0f08401c4d0767943404c88f5c5630e49fcd807343b42e5713b96",
+      "observedAt": "2026-09-01T00:20:00Z",
+      "suppliedByRef": "principal-statement-export-system",
+      "subjectRefs": [
+        "statement-row-fee"
+      ]
+    },
+    {
+      "id": "evidence-statement-row-batch",
+      "kind": "statement-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "statement-row-record",
+      "controlledRef": "controlled://finance-reconciliation/statement-row-record@sha256-30e4efcec1c19f79a6fd0eec5e9f88b0f373d48eaa62eff5dfbc8726112630f7",
+      "payloadDigest": "sha256:041bc3800003e3d7ad5e3b5518db5a92523b2d5f984394cf20813037115d3801",
+      "recordDigest": "sha256:30e4efcec1c19f79a6fd0eec5e9f88b0f373d48eaa62eff5dfbc8726112630f7",
+      "observedAt": "2026-09-01T00:20:00Z",
+      "suppliedByRef": "principal-statement-export-system",
+      "subjectRefs": [
+        "statement-row-batch"
+      ]
+    },
+    {
+      "id": "evidence-statement-row-residual",
+      "kind": "statement-row-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "statement-row-record",
+      "controlledRef": "controlled://finance-reconciliation/statement-row-record@sha256-6d31bdc32bcf26a59d329d77daf79969b7364a905be5fb2aec4e786c119675b1",
+      "payloadDigest": "sha256:626dd30c7c8543148f031d2d599962e661861405a4e623d4f795d77a919d0fd4",
+      "recordDigest": "sha256:6d31bdc32bcf26a59d329d77daf79969b7364a905be5fb2aec4e786c119675b1",
+      "observedAt": "2026-09-01T00:20:00Z",
+      "suppliedByRef": "principal-statement-export-system",
+      "subjectRefs": [
+        "statement-row-residual"
+      ]
+    },
+    {
+      "id": "evidence-decision-deposit",
+      "kind": "match-decision-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "match-decision-record",
+      "controlledRef": "controlled://finance-reconciliation/match-decision-record@sha256-77e73e1c6ad6a4d932bcb4a87a41c1311b270f3b94fa4596ae4ded67d79fe860",
+      "payloadDigest": "sha256:580d632633aab61163f1a2be2aefb4f8b80ca02a4a7d2b2da3d8d527a6e49c04",
+      "recordDigest": "sha256:77e73e1c6ad6a4d932bcb4a87a41c1311b270f3b94fa4596ae4ded67d79fe860",
+      "observedAt": "2026-09-01T02:00:00Z",
+      "suppliedByRef": "principal-mara-quinn",
+      "subjectRefs": [
+        "group-deposit-split",
+        "decision-deposit-split",
+        "grant-mara-operating-review",
+        "roster-operating-2026-08"
+      ]
+    },
+    {
+      "id": "evidence-decision-fee",
+      "kind": "match-decision-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "match-decision-record",
+      "controlledRef": "controlled://finance-reconciliation/match-decision-record@sha256-1ab1be31ea4105797380f64f4f44937ebd7643b4a9502c8c640aa3381e17d630",
+      "payloadDigest": "sha256:3ff0b9533edbdb0524bc345ffb1d6ff0840d14b6a08558431d422caed46f98b6",
+      "recordDigest": "sha256:1ab1be31ea4105797380f64f4f44937ebd7643b4a9502c8c640aa3381e17d630",
+      "observedAt": "2026-09-01T02:10:00Z",
+      "suppliedByRef": "principal-mara-quinn",
+      "subjectRefs": [
+        "group-fee-exact",
+        "decision-fee-exact",
+        "grant-mara-operating-review",
+        "roster-operating-2026-08"
+      ]
+    },
+    {
+      "id": "evidence-decision-batch",
+      "kind": "match-decision-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "match-decision-record",
+      "controlledRef": "controlled://finance-reconciliation/match-decision-record@sha256-96d9384506e7d53009e2a96a2a5ab2e4c22acf6b54411532b66d08cb0e936fd8",
+      "payloadDigest": "sha256:6f3c816a15259473c99ab822c39280df75570102016a7fa3cf54a924072a1e52",
+      "recordDigest": "sha256:96d9384506e7d53009e2a96a2a5ab2e4c22acf6b54411532b66d08cb0e936fd8",
+      "observedAt": "2026-09-01T02:20:00Z",
+      "suppliedByRef": "principal-mara-quinn",
+      "subjectRefs": [
+        "group-batch-combined",
+        "decision-batch-combined",
+        "grant-mara-operating-review",
+        "roster-operating-2026-08"
+      ]
+    },
+    {
+      "id": "evidence-residual-ledger",
+      "kind": "residual-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "residual-record",
+      "controlledRef": "controlled://finance-reconciliation/residual-record@sha256-a32eb02d721bb819a3ea320dd59fc57edf293bc1b6200b3742f941abccde1af3",
+      "payloadDigest": "sha256:588075f5c9ab36e2b82d78e8df44a12e604da031d1d917ffd920ffd1d263865e",
+      "recordDigest": "sha256:a32eb02d721bb819a3ea320dd59fc57edf293bc1b6200b3742f941abccde1af3",
+      "observedAt": "2026-09-01T02:30:00Z",
+      "suppliedByRef": "principal-mara-quinn",
+      "subjectRefs": [
+        "residual-ledger-review",
+        "ledger-row-residual",
+        "export-ledger-operating-2026-08",
+        "export-statement-operating-2026-08"
+      ]
+    },
+    {
+      "id": "evidence-residual-statement",
+      "kind": "residual-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "residual-record",
+      "controlledRef": "controlled://finance-reconciliation/residual-record@sha256-9a2058d7b9679990fff60fabfc6d12ef4cd949d776f808f3990c4ea3ca8f76fc",
+      "payloadDigest": "sha256:63181feb2e3b1eb7a1a2a183bff3ba426b6b957bf14c1a5f2348f4f6b18ec38f",
+      "recordDigest": "sha256:9a2058d7b9679990fff60fabfc6d12ef4cd949d776f808f3990c4ea3ca8f76fc",
+      "observedAt": "2026-09-01T02:30:00Z",
+      "suppliedByRef": "principal-mara-quinn",
+      "subjectRefs": [
+        "residual-statement-timing",
+        "statement-row-residual",
+        "export-ledger-operating-2026-08",
+        "export-statement-operating-2026-08"
+      ]
+    },
+    {
+      "id": "evidence-destination-approval",
+      "kind": "destination-approval-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "destination-approval-record",
+      "controlledRef": "controlled://finance-reconciliation/destination-approval-record@sha256-e91cd1c68d9751d5f6e0635b08cdf0b489df83e488aa9cc30171021a8c69a2a2",
+      "payloadDigest": "sha256:4641a8fa1ca97b386aa879ca6383b1a386317cee57c142dd5f5700c8075c2e5c",
+      "recordDigest": "sha256:e91cd1c68d9751d5f6e0635b08cdf0b489df83e488aa9cc30171021a8c69a2a2",
+      "observedAt": "2026-09-01T02:40:00Z",
+      "suppliedByRef": "principal-iris-tanaka",
+      "subjectRefs": [
+        "destination-approval-operating-2026-08",
+        "principal-iris-tanaka",
+        "grant-iris-destination-approval",
+        "roster-operating-2026-08"
+      ]
+    },
+    {
+      "id": "evidence-handoff",
+      "kind": "handoff-record",
+      "controlledSource": "finance-reconciliation",
+      "controlledPurpose": "handoff-record",
+      "controlledRef": "controlled://finance-reconciliation/handoff-record@sha256-e72dfa4a9bb255a352cd7398589356cd5c6c299940738c0171fc57d289953592",
+      "payloadDigest": "sha256:7873caba2fd577a23871482c3e4504bd3421975f380a07282333c670790a46fb",
+      "recordDigest": "sha256:e72dfa4a9bb255a352cd7398589356cd5c6c299940738c0171fc57d289953592",
+      "observedAt": "2026-09-01T03:00:00Z",
+      "suppliedByRef": "principal-ruth-abara",
+      "subjectRefs": [
+        "handoff-operating-2026-08",
+        "destination-approval-operating-2026-08",
+        "principal-ruth-abara",
+        "grant-ruth-owner-handoff",
+        "export-ledger-operating-2026-08",
+        "export-statement-operating-2026-08"
+      ]
+    }
+  ],
+  "ledgerExport": {
+    "id": "export-ledger-operating-2026-08",
+    "roundRef": "round-operating-2026-08",
+    "side": "ledger",
+    "sourceSystemRef": "owner-ledger-001",
+    "accountId": "operating-001",
+    "currency": "USD",
+    "period": {
+      "startsOn": "2026-08-01",
+      "endsOn": "2026-08-31"
+    },
+    "cutoffAt": "2026-09-01T01:00:00Z",
+    "exportedAt": "2026-09-01T00:15:00Z",
+    "rowRefs": [
+      "ledger-row-deposit",
+      "ledger-row-fee",
+      "ledger-row-batch-a",
+      "ledger-row-batch-b",
+      "ledger-row-residual"
+    ],
+    "rowManifestDigest": "sha256:2c53e2d41cfeb8f883b79d93b112037e363be13707d95f83c7836a605db59f0a",
+    "evidenceRef": "evidence-ledger-export",
+    "sourceEvidenceRootDigest": "sha256:478748e38c7423b0ef676a91524a3c0f9124c148a2d5824de8c14214417b85b8"
+  },
+  "statementExport": {
+    "id": "export-statement-operating-2026-08",
+    "roundRef": "round-operating-2026-08",
+    "side": "statement",
+    "sourceSystemRef": "owner-statement-001",
+    "accountId": "operating-001",
+    "currency": "USD",
+    "period": {
+      "startsOn": "2026-08-01",
+      "endsOn": "2026-08-31"
+    },
+    "cutoffAt": "2026-09-01T01:00:00Z",
+    "exportedAt": "2026-09-01T00:20:00Z",
+    "rowRefs": [
+      "statement-row-deposit-a",
+      "statement-row-deposit-b",
+      "statement-row-fee",
+      "statement-row-batch",
+      "statement-row-residual"
+    ],
+    "rowManifestDigest": "sha256:7c53fe81ba1d5130f06f7e8ee6e82d0f88606faec6b4036153c4ad0069fea072",
+    "evidenceRef": "evidence-statement-export",
+    "sourceEvidenceRootDigest": "sha256:37ea9a1a1b59288497766cf5e0837ec09e141cc740b25ce7239f133237ff4784"
+  },
+  "ledgerRows": [
+    {
+      "id": "ledger-row-deposit",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-ledger-operating-2026-08",
+      "side": "ledger",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "gl-aug-1001",
+      "effectiveDate": "2026-08-05",
+      "minorUnits": "10000",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:1e91e68e3445b7e544fd9ae5b0d40bca492468960bb03ec370ca9604983d04b8",
+      "evidenceRef": "evidence-ledger-row-deposit"
+    },
+    {
+      "id": "ledger-row-fee",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-ledger-operating-2026-08",
+      "side": "ledger",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "gl-aug-1002",
+      "effectiveDate": "2026-08-07",
+      "minorUnits": "-2500",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:acf01b6f83d217a60376ccd6d057849d632c55904d25b7ffef04fc4e11faa1fa",
+      "evidenceRef": "evidence-ledger-row-fee"
+    },
+    {
+      "id": "ledger-row-batch-a",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-ledger-operating-2026-08",
+      "side": "ledger",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "gl-aug-1003",
+      "effectiveDate": "2026-08-12",
+      "minorUnits": "-3000",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:40f088d88e838ef0f5a47604e7123d727b1e4d325b035a0077bf03c4537ddce7",
+      "evidenceRef": "evidence-ledger-row-batch-a"
+    },
+    {
+      "id": "ledger-row-batch-b",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-ledger-operating-2026-08",
+      "side": "ledger",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "gl-aug-1004",
+      "effectiveDate": "2026-08-12",
+      "minorUnits": "-7000",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:5cd8a215536d05472907e7c01b8c30fe785a36c6546ae016277fde76335d1372",
+      "evidenceRef": "evidence-ledger-row-batch-b"
+    },
+    {
+      "id": "ledger-row-residual",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-ledger-operating-2026-08",
+      "side": "ledger",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "gl-aug-1005",
+      "effectiveDate": "2026-08-31",
+      "minorUnits": "125",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:5c36222f3542c98c4636ea3c8e0145f692d3e38f7f512ba02deef50cf00247cd",
+      "evidenceRef": "evidence-ledger-row-residual"
+    }
+  ],
+  "statementRows": [
+    {
+      "id": "statement-row-deposit-a",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-statement-operating-2026-08",
+      "side": "statement",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "bank-aug-2001",
+      "effectiveDate": "2026-08-05",
+      "minorUnits": "4000",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:176d8366e59a9d6c9e8915979cf70c7f4502a8fa3ff9a10c3a3cf5b27af13611",
+      "evidenceRef": "evidence-statement-row-deposit-a"
+    },
+    {
+      "id": "statement-row-deposit-b",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-statement-operating-2026-08",
+      "side": "statement",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "bank-aug-2002",
+      "effectiveDate": "2026-08-05",
+      "minorUnits": "6000",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:5fa1f125f3eaebcbb74944fce8f80e9149a5d089c759ebe28a248a813fd8ee19",
+      "evidenceRef": "evidence-statement-row-deposit-b"
+    },
+    {
+      "id": "statement-row-fee",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-statement-operating-2026-08",
+      "side": "statement",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "bank-aug-2003",
+      "effectiveDate": "2026-08-07",
+      "minorUnits": "-2500",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:2b77d3a1255dc18e79080384a8237932dec5df09e74ed3662249e29720801150",
+      "evidenceRef": "evidence-statement-row-fee"
+    },
+    {
+      "id": "statement-row-batch",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-statement-operating-2026-08",
+      "side": "statement",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "bank-aug-2004",
+      "effectiveDate": "2026-08-12",
+      "minorUnits": "-10000",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:5a26de1737730833b6a6abcedf96ac0d021f6e5c6055e150deb3d3ebb89c29c3",
+      "evidenceRef": "evidence-statement-row-batch"
+    },
+    {
+      "id": "statement-row-residual",
+      "roundRef": "round-operating-2026-08",
+      "exportRef": "export-statement-operating-2026-08",
+      "side": "statement",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "sourceNativeId": "bank-aug-2005",
+      "effectiveDate": "2026-08-31",
+      "minorUnits": "-90",
+      "balanceConvention": "owner-normalized-account-balance-effect",
+      "rowDigest": "sha256:b4db2d65cd66417d046bf346118bf4d521bece1b1607ef5ddc1b12c350cd590b",
+      "evidenceRef": "evidence-statement-row-residual"
+    }
+  ],
+  "matchGroups": [
+    {
+      "id": "group-deposit-split",
+      "roundRef": "round-operating-2026-08",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "cardinality": "1:n",
+      "ledgerRowRefs": [
+        "ledger-row-deposit"
+      ],
+      "statementRowRefs": [
+        "statement-row-deposit-a",
+        "statement-row-deposit-b"
+      ],
+      "decision": {
+        "id": "decision-deposit-split",
+        "roundRef": "round-operating-2026-08",
+        "decidedByRef": "principal-mara-quinn",
+        "decidedAt": "2026-09-01T02:00:00Z",
+        "authorityGrantRef": "grant-mara-operating-review",
+        "authorityGrantPayloadDigest": "sha256:0078f975c6445914ebd6b485bff644c1bac0310fa7a30afbae674c52be8f5d9b",
+        "authorityGrantEvidenceRef": "evidence-grant-mara",
+        "authorityGrantEvidenceDigest": "sha256:fe78063d7c4d4f0f6e295b14ddea64512d451f9fe26a242902d9bb326a48a816",
+        "authorityGrantEvidenceControlledRef": "controlled://finance-reconciliation/authority-grant-record@sha256-fe78063d7c4d4f0f6e295b14ddea64512d451f9fe26a242902d9bb326a48a816",
+        "authorityRosterDigest": "sha256:7e3b879de301a32bc0ad16e475373397ffa9eb5d59e3f5fd9567d23b3b3d1464",
+        "ledgerManifestDigest": "sha256:2c53e2d41cfeb8f883b79d93b112037e363be13707d95f83c7836a605db59f0a",
+        "statementManifestDigest": "sha256:7c53fe81ba1d5130f06f7e8ee6e82d0f88606faec6b4036153c4ad0069fea072",
+        "roundRootDigest": "sha256:4edbff51e82aa98e260fd4204506fdeb51b4223f838c11833b015f4830e87b96",
+        "evidenceRef": "evidence-decision-deposit"
+      }
+    },
+    {
+      "id": "group-fee-exact",
+      "roundRef": "round-operating-2026-08",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "cardinality": "1:1",
+      "ledgerRowRefs": [
+        "ledger-row-fee"
+      ],
+      "statementRowRefs": [
+        "statement-row-fee"
+      ],
+      "decision": {
+        "id": "decision-fee-exact",
+        "roundRef": "round-operating-2026-08",
+        "decidedByRef": "principal-mara-quinn",
+        "decidedAt": "2026-09-01T02:10:00Z",
+        "authorityGrantRef": "grant-mara-operating-review",
+        "authorityGrantPayloadDigest": "sha256:0078f975c6445914ebd6b485bff644c1bac0310fa7a30afbae674c52be8f5d9b",
+        "authorityGrantEvidenceRef": "evidence-grant-mara",
+        "authorityGrantEvidenceDigest": "sha256:fe78063d7c4d4f0f6e295b14ddea64512d451f9fe26a242902d9bb326a48a816",
+        "authorityGrantEvidenceControlledRef": "controlled://finance-reconciliation/authority-grant-record@sha256-fe78063d7c4d4f0f6e295b14ddea64512d451f9fe26a242902d9bb326a48a816",
+        "authorityRosterDigest": "sha256:7e3b879de301a32bc0ad16e475373397ffa9eb5d59e3f5fd9567d23b3b3d1464",
+        "ledgerManifestDigest": "sha256:2c53e2d41cfeb8f883b79d93b112037e363be13707d95f83c7836a605db59f0a",
+        "statementManifestDigest": "sha256:7c53fe81ba1d5130f06f7e8ee6e82d0f88606faec6b4036153c4ad0069fea072",
+        "roundRootDigest": "sha256:4edbff51e82aa98e260fd4204506fdeb51b4223f838c11833b015f4830e87b96",
+        "evidenceRef": "evidence-decision-fee"
+      }
+    },
+    {
+      "id": "group-batch-combined",
+      "roundRef": "round-operating-2026-08",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "cardinality": "n:1",
+      "ledgerRowRefs": [
+        "ledger-row-batch-a",
+        "ledger-row-batch-b"
+      ],
+      "statementRowRefs": [
+        "statement-row-batch"
+      ],
+      "decision": {
+        "id": "decision-batch-combined",
+        "roundRef": "round-operating-2026-08",
+        "decidedByRef": "principal-mara-quinn",
+        "decidedAt": "2026-09-01T02:20:00Z",
+        "authorityGrantRef": "grant-mara-operating-review",
+        "authorityGrantPayloadDigest": "sha256:0078f975c6445914ebd6b485bff644c1bac0310fa7a30afbae674c52be8f5d9b",
+        "authorityGrantEvidenceRef": "evidence-grant-mara",
+        "authorityGrantEvidenceDigest": "sha256:fe78063d7c4d4f0f6e295b14ddea64512d451f9fe26a242902d9bb326a48a816",
+        "authorityGrantEvidenceControlledRef": "controlled://finance-reconciliation/authority-grant-record@sha256-fe78063d7c4d4f0f6e295b14ddea64512d451f9fe26a242902d9bb326a48a816",
+        "authorityRosterDigest": "sha256:7e3b879de301a32bc0ad16e475373397ffa9eb5d59e3f5fd9567d23b3b3d1464",
+        "ledgerManifestDigest": "sha256:2c53e2d41cfeb8f883b79d93b112037e363be13707d95f83c7836a605db59f0a",
+        "statementManifestDigest": "sha256:7c53fe81ba1d5130f06f7e8ee6e82d0f88606faec6b4036153c4ad0069fea072",
+        "roundRootDigest": "sha256:4edbff51e82aa98e260fd4204506fdeb51b4223f838c11833b015f4830e87b96",
+        "evidenceRef": "evidence-decision-batch"
+      }
+    }
+  ],
+  "residuals": [
+    {
+      "id": "residual-ledger-review",
+      "roundRef": "round-operating-2026-08",
+      "side": "ledger",
+      "rowRef": "ledger-row-residual",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "reason": "owner-review-needed",
+      "recordedByRef": "principal-mara-quinn",
+      "recordedAt": "2026-09-01T02:30:00Z",
+      "nextOwnerRef": "principal-ruth-abara",
+      "ledgerManifestDigest": "sha256:2c53e2d41cfeb8f883b79d93b112037e363be13707d95f83c7836a605db59f0a",
+      "statementManifestDigest": "sha256:7c53fe81ba1d5130f06f7e8ee6e82d0f88606faec6b4036153c4ad0069fea072",
+      "roundRootDigest": "sha256:4edbff51e82aa98e260fd4204506fdeb51b4223f838c11833b015f4830e87b96",
+      "evidenceRef": "evidence-residual-ledger"
+    },
+    {
+      "id": "residual-statement-timing",
+      "roundRef": "round-operating-2026-08",
+      "side": "statement",
+      "rowRef": "statement-row-residual",
+      "accountId": "operating-001",
+      "currency": "USD",
+      "reason": "timing-difference",
+      "recordedByRef": "principal-mara-quinn",
+      "recordedAt": "2026-09-01T02:30:00Z",
+      "nextOwnerRef": "principal-ruth-abara",
+      "ledgerManifestDigest": "sha256:2c53e2d41cfeb8f883b79d93b112037e363be13707d95f83c7836a605db59f0a",
+      "statementManifestDigest": "sha256:7c53fe81ba1d5130f06f7e8ee6e82d0f88606faec6b4036153c4ad0069fea072",
+      "roundRootDigest": "sha256:4edbff51e82aa98e260fd4204506fdeb51b4223f838c11833b015f4830e87b96",
+      "evidenceRef": "evidence-residual-statement"
+    }
+  ],
+  "coverage": {
+    "id": "coverage-operating-2026-08",
+    "roundRef": "round-operating-2026-08",
+    "ledgerRowRefs": [
+      "ledger-row-deposit",
+      "ledger-row-fee",
+      "ledger-row-batch-a",
+      "ledger-row-batch-b",
+      "ledger-row-residual"
+    ],
+    "statementRowRefs": [
+      "statement-row-deposit-a",
+      "statement-row-deposit-b",
+      "statement-row-fee",
+      "statement-row-batch",
+      "statement-row-residual"
+    ],
+    "matchedLedgerRowRefs": [
+      "ledger-row-deposit",
+      "ledger-row-fee",
+      "ledger-row-batch-a",
+      "ledger-row-batch-b"
+    ],
+    "matchedStatementRowRefs": [
+      "statement-row-deposit-a",
+      "statement-row-deposit-b",
+      "statement-row-fee",
+      "statement-row-batch"
+    ],
+    "residualLedgerRowRefs": [
+      "ledger-row-residual"
+    ],
+    "residualStatementRowRefs": [
+      "statement-row-residual"
+    ],
+    "groupRefs": [
+      "group-deposit-split",
+      "group-fee-exact",
+      "group-batch-combined"
+    ],
+    "residualRefs": [
+      "residual-ledger-review",
+      "residual-statement-timing"
+    ]
+  },
+  "blockers": [],
+  "handoff": {
+    "id": "handoff-operating-2026-08",
+    "roundRef": "round-operating-2026-08",
+    "destinationRef": "controlled://finance-reconciliation/operating-001/2026-08",
+    "destinationVisibility": "private",
+    "destinationApprovalRef": "destination-approval-operating-2026-08",
+    "destinationApprovalEvidenceRef": "evidence-destination-approval",
+    "destinationApprovalEvidenceDigest": "sha256:e91cd1c68d9751d5f6e0635b08cdf0b489df83e488aa9cc30171021a8c69a2a2",
+    "destinationApprovalEvidenceControlledRef": "controlled://finance-reconciliation/destination-approval-record@sha256-e91cd1c68d9751d5f6e0635b08cdf0b489df83e488aa9cc30171021a8c69a2a2",
+    "state": "ready-for-owner-review",
+    "nextOwnerRef": "principal-ruth-abara",
+    "ledgerManifestDigest": "sha256:2c53e2d41cfeb8f883b79d93b112037e363be13707d95f83c7836a605db59f0a",
+    "statementManifestDigest": "sha256:7c53fe81ba1d5130f06f7e8ee6e82d0f88606faec6b4036153c4ad0069fea072",
+    "roundRootDigest": "sha256:4edbff51e82aa98e260fd4204506fdeb51b4223f838c11833b015f4830e87b96",
+    "counts": {
+      "ledgerRows": 5,
+      "statementRows": 5,
+      "matchedLedgerRows": 4,
+      "matchedStatementRows": 4,
+      "groups": 3,
+      "ledgerResiduals": 1,
+      "statementResiduals": 1,
+      "blockers": 0
+    },
+    "indexes": {
+      "ledgerRowRefs": [
+        "ledger-row-deposit",
+        "ledger-row-fee",
+        "ledger-row-batch-a",
+        "ledger-row-batch-b",
+        "ledger-row-residual"
+      ],
+      "statementRowRefs": [
+        "statement-row-deposit-a",
+        "statement-row-deposit-b",
+        "statement-row-fee",
+        "statement-row-batch",
+        "statement-row-residual"
+      ],
+      "groupRefs": [
+        "group-deposit-split",
+        "group-fee-exact",
+        "group-batch-combined"
+      ],
+      "residualRefs": [
+        "residual-ledger-review",
+        "residual-statement-timing"
+      ],
+      "blockerRefs": []
+    },
+    "authorityGrantRef": "grant-ruth-owner-handoff",
+    "authorityGrantPayloadDigest": "sha256:f2057d233f2bc2364a0d3fa230002d5239cc7bf2d0a8a61f0ae29dd271fabc2c",
+    "authorityGrantEvidenceRef": "evidence-grant-ruth-handoff",
+    "authorityGrantEvidenceDigest": "sha256:848503eb0d75f2992ea2872871ce585bf9fc5e07374401e4e40ff156cac815aa",
+    "authorityGrantEvidenceControlledRef": "controlled://finance-reconciliation/authority-grant-record@sha256-848503eb0d75f2992ea2872871ce585bf9fc5e07374401e4e40ff156cac815aa",
+    "handedOffAt": "2026-09-01T03:00:00Z",
+    "evidenceRef": "evidence-handoff",
+    "partitionEvidenceRootDigest": "sha256:4324b970df4179558302f8de531ea30a3925b5c15f5741112d8059d7fd19f35f"
+  }
+}

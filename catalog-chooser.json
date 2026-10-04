@@ -168,6 +168,40 @@
       }
     },
     {
+      "id": "backup-restore-verification-coordinator",
+      "name": "Backup Restore Verification Coordinator",
+      "description": "Coordinates one bounded metadata-only restore-verification round over an exact owner-supplied protected-resource universe, proving selected recovery points were restored to isolated targets, independently validated, and explicitly cleaned or retained while backup owners retain all backup, restore, deletion, production, and compliance authority.",
+      "audience": "Authorized resilience, disaster-recovery, platform, infrastructure, application, and data-service owners verifying owner-supplied backup metadata in a controlled workspace without exposing backup contents or granting provider execution.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-09"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "benefits-open-enrollment-planner",
       "name": "Benefits and open enrollment planner",
       "description": "Organizes owner-supplied benefits packets, plan options, enrollment windows, dependent documents, payroll impact notes, coverage-change evidence, and review questions without choosing benefits, submitting elections, changing payroll, filing claims, or giving medical, legal, tax, financial, or insurance advice.",
@@ -198,6 +232,81 @@
         "level": "standard",
         "reasons": [
           "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "benefits-realization-manager",
+      "name": "Benefits realization manager",
+      "description": "Closes one owner-approved benefits-plan revision against exact KPI observations, allocation rules, disbenefits, and source evidence without claiming causality or exercising benefit, metric, finance, or source-system authority.",
+      "audience": "Benefits owners, transformation offices, finance partners, portfolio teams, and accountable metric owners reviewing a bounded realization period.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-16"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "business-continuity-program-manager",
+      "name": "Business Continuity Program Manager",
+      "description": "Maintains one exact owner-supplied critical-process universe through recurring business-impact analysis, owner-approved recovery requirements, dependency mapping, continuity-plan revisions, exercises, findings, corrective actions, exceptions, and independent recertification without declaring disasters, invoking plans, executing recovery, accepting risk, or certifying readiness.",
+      "audience": "Business continuity program managers, resilience governance leads, critical-process owners, dependency owners, exercise coordinators, and independent recertifiers maintaining an evidence-bound continuity program.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "medium",
+        "reasons": [
+          "1 scheduled job"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "cron",
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "heightened",
+        "reasons": [
+          "scheduled execution"
         ]
       }
     },
@@ -417,6 +526,40 @@
       }
     },
     {
+      "id": "civic-services-navigator",
+      "name": "Civic services navigator",
+      "description": "Translates one resident-stated need into a jurisdiction-resolved map of official public-service routes, preserving program-version provenance, criterion-level unknowns, channel accommodations, and an agency-question docket while leaving adjudication and case initiation outside the workspace.",
+      "audience": "Residents and authorized community navigators who know the need but not the responsible jurisdiction, agency program, intake route, or published qualification path.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "cloud-cost-analyst",
       "name": "Cloud cost analyst",
       "description": "Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources.",
@@ -428,6 +571,43 @@
           "@giodl73-repo"
         ],
         "lastVerified": "2026-08-19"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "commercial-deal-desk-coordinator",
+      "name": "Commercial Deal Desk Coordinator",
+      "description": "Reconciles one exact immutable seller quote revision across approved configuration, pricing, discount, margin, licensing, legal deviations, dependencies, validity, approvals, and order-readiness handoff.",
+      "audience": "Authorized seller-side deal-desk, sales operations, pricing, finance, licensing, legal operations, product operations, and order-management owners reviewing one exact opportunity and quote revision.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
       },
       "setup": {
         "level": "low",
@@ -525,17 +705,17 @@
       }
     },
     {
-      "id": "content-operations",
-      "name": "Content operations",
-      "description": "Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it.",
-      "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update who need exact claim, review, and handoff state.",
+      "id": "consumer-product-recall-coordinator",
+      "name": "Consumer product recall coordinator",
+      "description": "Maintains a private, evidence-bound consumer-product recall ledger across supplied owned-item identity, official campaign revisions, exact applicability evidence, issuer instructions, remedy options, owner-executed actions, independent receipts, replacement or return state, and unresolved exposure without diagnosing hazards, deciding eligibility, or taking external action.",
+      "audience": "Households, caregivers, renters, homeowners, and small offices reconciling official recall or corrective-action campaigns across diverse consumer products while regulators, manufacturers, retailers, qualified specialists, and the owner retain authority.",
       "category": "operations",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-31"
+        "lastVerified": "2026-09-25"
       },
       "setup": {
         "level": "low",
@@ -555,6 +735,111 @@
         "level": "standard",
         "reasons": [
           "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "content-operations",
+      "name": "Content operations",
+      "description": "Produces source-backed briefs and versioned editorial drafts with an evidence- and approval-bound readiness record, without publishing them.",
+      "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update who need exact claim, review, and handoff state.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "contract-obligation-tracker",
+      "name": "Contract Obligation Tracker",
+      "description": "Tracks one exact owner-confirmed obligation-register version for a bounded review round, proving every registered obligation appears exactly once and receives one current evidence-bound observation or one exact blocker, while contract owners retain all interpretation, acceptance, notice, payment, amendment, renewal, termination, dispute, and system authority.",
+      "audience": "Authorized contract operations, procurement operations, legal operations, finance operations, and accountable business owners reviewing owner-confirmed post-execution obligations from approved agreement, register, roster, grant, and performance-evidence exports in a controlled workspace.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-09"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "customer-success-program-manager",
+      "name": "Customer success program manager",
+      "description": "Reconciles one customer's approved success-plan revision into an evidence-bound owner handoff without contacting the customer or changing customer, service, support, or commercial state.",
+      "audience": "Customer success program owners running a recurring internal review for one exact customer, tenant, and account against one approved success-plan revision.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
         ]
       }
     },
@@ -615,7 +900,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "low",
@@ -806,6 +1091,77 @@
           "@giodl73-repo"
         ],
         "lastVerified": "2026-08-27"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "enterprise-license-entitlement-reconciler",
+      "name": "Enterprise License Entitlement Reconciler",
+      "description": "Reconciles one organization's versioned owner-supplied license rights and SKU mapping against assigned entitlements and measured consumption for one agreement, license program, fixed period, cutoff, and review round without interpreting contracts or changing licenses or accounts.",
+      "audience": "Authorized software-asset, licensing-operations, procurement-operations, finance-operations, and business owners preparing a bounded license-position review from approved exports.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-15"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "estate-administration-coordinator",
+      "name": "Estate administration coordinator",
+      "description": "Maintains one already-open decedent-estate administration ledger across supplied appointment authority, court and professional records, assets, liabilities, notices, creditor claims, deadlines, proposed distributions, independent receipts, and unresolved questions without interpreting law, tax, title, entitlement, priority, solvency, or taking estate action.",
+      "audience": "Court-appointed or otherwise documented personal representatives, executors, administrators, and authorized support teams reconciling one already-open decedent estate under named legal, tax, valuation, financial-institution, and court authority.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
       },
       "setup": {
         "level": "low",
@@ -1107,6 +1463,40 @@
         "level": "heightened",
         "reasons": [
           "scheduled execution"
+        ]
+      }
+    },
+    {
+      "id": "financial-account-reconciliation-coordinator",
+      "name": "Financial account reconciliation coordinator",
+      "description": "Reconciles one exact owner-supplied ledger transaction export against one exact owner-supplied statement transaction export for a bounded account and period, partitioning every row exactly once into an evidence-bound 1:1, 1:n, or n:1 match group or an explicit residual, without reaching financial systems, posting entries, moving money, or claiming the account or books are closed.",
+      "audience": "Authorized accounting operations, controllership support, treasury operations, and finance-system owners performing periodic account reconciliation from approved exports in a controlled workspace while ledgers, banks, payment systems, accounting policy, approvers, and posting systems remain authoritative.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-08"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
         ]
       }
     },
@@ -1438,6 +1828,40 @@
       }
     },
     {
+      "id": "home-purchase-transaction-coordinator",
+      "name": "Home purchase transaction coordinator",
+      "description": "Maintains a private, evidence-bound home-purchase transaction ledger across supplied representation authority, offer and contract revisions, contingencies, inspections, financing, appraisal, title, insurance, funds, closing conditions, owner actions, and independent receipts without interpreting documents, negotiating, transmitting, paying, signing, waiving, or claiming readiness or ownership.",
+      "audience": "Prospective residential buyers and explicitly authorized helpers coordinating one accepted-offer purchase while licensed real-estate, lending, inspection, title, insurance, tax, legal, and closing professionals retain authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-26"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "home-repair-coordinator",
       "name": "Home repair coordinator",
       "description": "Coordinates evidence-bound household troubleshooting, low-risk owner repairs, hazardous-condition escalation, and explicitly approved specialist appointments.",
@@ -1506,6 +1930,40 @@
       }
     },
     {
+      "id": "household-emergency-preparedness-coordinator",
+      "name": "Household emergency preparedness coordinator",
+      "description": "Maintains an owner-controlled household preparedness plan across official hazard guidance, occupants and dependents, evacuation and shelter options, communication and reunification, essential supplies, drills, and corrective actions without replacing live alerts or directing an emergency response.",
+      "audience": "Households, caregivers, renters, homeowners, and trusted helpers preparing together for location-relevant emergencies before an incident occurs.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "household-steward",
       "name": "Household steward",
       "description": "Coordinates a multi-person household's priorities, responsibilities, specialist-Claw handoffs, shared constraints, and explicitly authorized external actions without becoming the household decision-maker.",
@@ -1542,17 +2000,51 @@
       }
     },
     {
+      "id": "identity-theft-recovery-coordinator",
+      "name": "Identity theft recovery coordinator",
+      "description": "Maintains a private, evidence-bound identity-theft recovery ledger across suspected events, affected identity surfaces, official recovery routes, deadlines, owner actions, independent receipts, disputes, and residual gaps without determining fraud or contacting, filing with, authenticating to, or changing any external system.",
+      "audience": "Individuals, caregivers, and explicitly authorized helpers organizing recovery after suspected identity theft, impersonation, account takeover, or misuse of personal identifiers.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "incident-response",
       "name": "Incident response",
-      "description": "Coordinates incidents with one rule: ground ownership and recovery decisions in evidence.",
-      "audience": "On-call engineers and incident commanders handling a live service degradation or security event.",
+      "description": "Coordinates evidence-bound Technical DRI and Incident Manager loops through service recovery, owner-controlled closure, and durable compliance follow-up.",
+      "audience": "Technical DRIs, Incident Managers, service owners, incident authorities, and communication owners handling a live service degradation or security event.",
       "category": "engineering",
       "maintenance": {
         "status": "active",
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-09-14"
       },
       "setup": {
         "level": "medium",
@@ -1682,6 +2174,40 @@
       }
     },
     {
+      "id": "invoice-draft-producer",
+      "name": "Invoice draft producer",
+      "description": "Turns approved billable work, rates, expenses, and billing terms into an itemized invoice draft with checked calculations and a source-linked billing workpaper, without issuing invoices or posting to accounting systems.",
+      "audience": "Small-business owners, service administrators, and bookkeepers preparing one customer invoice for owner review before issuance.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "job-application-tracker",
       "name": "Job application tracker",
       "description": "Organizes owner-supplied job postings, application materials, recruiter notes, interview schedules, follow-up drafts, status evidence, and offer questions into a private job-search pipeline without applying to jobs, fabricating credentials, contacting employers, changing accounts, accepting offers, negotiating commitments, or giving legal, immigration, tax, financial, or career advice.",
@@ -1693,6 +2219,40 @@
           "@giodl73-repo"
         ],
         "lastVerified": "2026-08-28"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "job-estimate-producer",
+      "name": "Job estimate producer",
+      "description": "Builds a source-backed job cost estimate and customer quote draft from an owner-defined scope, checked quantities, labor allowances, and current supplier prices without bidding, committing prices, or making engineering judgments.",
+      "audience": "Small and midsize contractors and service businesses pricing a defined customer job before owner approval.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "low",
@@ -1776,6 +2336,77 @@
         "installed"
       ],
       "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "learning-plan-coordinator",
+      "name": "Learning plan coordinator",
+      "description": "Maintains one learner-controlled competency plan from a stated goal through prerequisite evidence, practice checkpoints, and revision without enrolling, purchasing, grading, or awarding credentials.",
+      "audience": "Independent learners and authorized coaches managing a durable, evidence-based learning path.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "learning-program-manager",
+      "name": "Learning program manager",
+      "description": "Converts an approved aggregate capability-gap revision into evidence-bound curriculum releases, cohort assignments, delivery readiness, completion and assessment evidence, effectiveness review, refresh decisions, and owner handoff.",
+      "audience": "Learning program owners coordinating approved workforce learning programs without making individual employment or credential decisions.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -2079,6 +2710,40 @@
       }
     },
     {
+      "id": "medication-regimen-coordinator",
+      "name": "Medication regimen coordinator",
+      "description": "Maintains a private, evidence-bound medication regimen ledger across supplied clinician or pharmacist orders, exact medication identity and directions, regimen revisions, owner-recorded administration observations, supply and expiry state, refill attempts, independent dispensing receipts, attributed warnings, discrepancies, and unresolved questions without diagnosing, interpreting, recommending, dispensing, administering, or changing medication.",
+      "audience": "Individuals, authorized caregivers, households, and care coordinators reconciling an owner-approved medication regimen from supplied clinician, pharmacist, pharmacy, package, and observation evidence while patients, guardians, prescribers, pharmacists, dispensers, and emergency professionals retain authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "meeting-intelligence",
       "name": "Meeting intelligence",
       "description": "Turns a consented meeting recording into a consent-bound transcript, decision, and action record with a reviewable document draft.",
@@ -2299,6 +2964,77 @@
       }
     },
     {
+      "id": "partner-business-manager",
+      "name": "Partner business manager",
+      "description": "Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority.",
+      "audience": "Partner business managers, alliance leads, co-sell leads, and accountable program owners reviewing one partner's exact joint-business-plan revision for a declared period.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "payroll-review-preparer",
+      "name": "Payroll review preparer",
+      "description": "Prepares a private pre-release payroll comparison and exception workpaper from minimized draft registers, approved change inputs, and supplied review rules without calculating statutory entitlements or releasing payroll.",
+      "audience": "Payroll administrators and payroll review owners checking one employer, pay group, currency, and pay period before provider or finance release.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "personal-archive-curator",
       "name": "Personal archive curator",
       "description": "Organizes supplied personal files, notes, links, receipts, photos, warranties, and memories into a privacy-labeled retrieval index without deleting, moving, sharing, uploading, training memory, or inferring sensitive facts.",
@@ -2482,6 +3218,82 @@
       }
     },
     {
+      "id": "problem-known-error-coordinator",
+      "name": "Problem and known-error coordinator",
+      "description": "Coordinates an owner-signed cross-incident problem record through competing hypothesis tests, an expiring owner-approved workaround, an owner-declared known error, an owner-executed change, and later recurrence without inferring correlation or root cause or exercising approval, publication, execution, closure, or risk authority.",
+      "audience": "Problem owners, reliability investigators, service owners, QA owners, change owners, and known-error authorities coordinating recurring production incidents.",
+      "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-17"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual",
+        "workspace-execution"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "procure-to-pay-three-way-match-exception-reconciler",
+      "name": "Procure-to-Pay Three-Way Match Exception Reconciler",
+      "description": "Reconciles one exact owner-approved purchase-order revision against complete receipt and invoice line exports, partitioning every line into an authorized exact three-sided group or a typed side-specific residual.",
+      "audience": "Authorized procurement operations, receiving operations, accounts-payable operations, and accountable finance owners reviewing purchase-order matching exceptions from approved exports.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-16"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual",
+        "workspace-execution"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "procurement-evaluator",
       "name": "Procurement evaluator",
       "description": "Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions.",
@@ -2593,6 +3405,40 @@
       }
     },
     {
+      "id": "project-document-controller",
+      "name": "Project document controller",
+      "description": "Produces an exact-revision project document register, submittal and RFI follow-up package, and draft transmittal manifest from supplied project records without issuing documents or authorizing construction.",
+      "audience": "Project document controllers and engineering or construction teams reviewing a bounded project's drawings, specifications, submittals, RFIs, and transmittals.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "project-manager",
       "name": "Project manager",
       "description": "Keeps projects aligned through milestones, dependencies, decisions, and accountable execution.",
@@ -2626,6 +3472,40 @@
         "level": "guarded",
         "reasons": [
           "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "property-insurance-claim-coordinator",
+      "name": "Property insurance claim coordinator",
+      "description": "Maintains a private, evidence-bound property-insurance claim ledger across owner-reported loss, affected property, official claim requirements, deadlines, owner-executed actions, independent receipts, estimates, carrier-issued positions, payments, repairs, and unresolved scope without deciding coverage, cause, value, liability, or settlement or taking external action.",
+      "audience": "Homeowners, renters, caregivers, and explicitly authorized household or small-office helpers organizing a property-insurance claim after a supplied loss event while carriers, adjusters, qualified specialists, repair providers, and the owner retain their authority.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
         ]
       }
     },
@@ -2864,6 +3744,44 @@
       }
     },
     {
+      "id": "recurring-third-party-review-evidence-reconciler",
+      "name": "Recurring Third-Party Review Evidence Reconciler",
+      "description": "Reconciles one approved recurring third-party review cycle over an exact owner-declared vendor-service requirement-cell index, verifies signed source receipts, derives evidence freshness and predecessor reopening, preserves typed human decisions, and produces a blocked or owner-review handoff without interpreting requirements or taking supplier, contract, risk, or lifecycle action.",
+      "audience": "Authorized third-party governance, compliance-operations, vendor-management, and service owners reviewing supplied vendor-service evidence while requirement, source, remediation, exception, risk, and supplier decisions remain with their named owners.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-17"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual",
+        "workspace-execution"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "release-coordinator",
       "name": "Release coordinator",
       "description": "Coordinates a repository release from verified GitHub state to an approval-bound communication handoff.",
@@ -2911,6 +3829,119 @@
         "reasons": [
           "pinned skill",
           "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "rental-housing-coordinator",
+      "name": "Rental housing coordinator",
+      "description": "Maintains a private, evidence-bound rental-housing ledger across supplied lease terms, premises condition, obligations, notices, maintenance episodes, owner-executed actions, receipts, payments, access events, and move-in or move-out state without interpreting legal rights or contacting, paying, scheduling, or submitting anything.",
+      "audience": "Renters, household members, caregivers, and explicitly authorized helpers organizing one residential tenancy while landlords, property managers, housing authorities, qualified professionals, and the renter retain authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-25"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "repository-compliance-program-manager",
+      "name": "Repository Compliance Program Manager",
+      "description": "Runs a recurring vendor-neutral security and compliance remediation program by reconciling approved signals and control revisions into deduplicated repository issues, accountable ownership, SLA state, exceptions, escalations, and independently verified closure without changing code, suppressing findings, approving exceptions, or accepting risk.",
+      "audience": "Security program managers, engineering compliance leads, and repository owners coordinating recurring remediation obligations across repositories and services.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "high",
+        "reasons": [
+          "1 MCP connection"
+        ]
+      },
+      "externalDependencies": [
+        {
+          "kind": "mcp",
+          "id": "issue_tracker",
+          "url": "https://api.githubcopilot.com/mcp/",
+          "auth": "oauth"
+        }
+      ],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "dependency-live"
+      ],
+      "capabilityClasses": [
+        "oauth-mcp"
+      ],
+      "boundaryAttention": {
+        "level": "heightened",
+        "reasons": [
+          "network MCP connection",
+          "full tool profile"
+        ]
+      }
+    },
+    {
+      "id": "repository-operations-manager",
+      "name": "Repository Operations Manager",
+      "description": "Supervises an approved repository portfolio by reconciling pull requests, head-bound reviews and checks, builds, release trains, cross-repository dependencies, human approval decisions, and trusted system deadline observations without making owner decisions or performing repository mutations.",
+      "audience": "Engineering managers, staff engineers, release owners, and maintainers supervising recurring delivery across multiple repositories.",
+      "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-13"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
         ]
       }
     },
@@ -3111,6 +4142,40 @@
       }
     },
     {
+      "id": "rfp-response-producer",
+      "name": "RFP response producer",
+      "description": "Produces a source-backed commercial RFP or RFI response draft from a buyer's request, amendments, and authorized seller material, with complete question coverage, explicit capability gaps, attachment checks, and specialist review requests without submitting or making commitments.",
+      "audience": "Proposal managers, bid teams, sales engineers, and subject-matter contributors preparing one seller response to a commercial buyer's RFP or RFI.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "sales-operations",
       "name": "Sales operations",
       "description": "Improves pipeline decisions through clean definitions, evidence, and accountable follow-up.",
@@ -3179,6 +4244,44 @@
       }
     },
     {
+      "id": "security-alert-review-reconciler",
+      "name": "Security alert review reconciler",
+      "description": "Reconciles one complete owner-authenticated security-alert snapshot so every exact source, native alert id, and revision receives one authorized human disposition or exact non-decision without querying a SIEM, inferring correlation or severity, mutating source state, declaring an incident, creating a ticket, or accepting risk.",
+      "audience": "Security governance owners and authorized alert reviewers reconciling complete native alert exports across code analysis, secret exposure, vulnerability, identity, configuration, and behavior detectors.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-17"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual",
+        "workspace-execution"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "security-analyst",
       "name": "Security analyst",
       "description": "Assesses security questions with explicit trust boundaries and reproducible evidence.",
@@ -3226,7 +4329,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-30"
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "high",
@@ -3266,6 +4369,43 @@
           "native extension",
           "network MCP connection",
           "full tool profile"
+        ]
+      }
+    },
+    {
+      "id": "solution-architecture-decision-advisor",
+      "name": "Solution architecture decision advisor",
+      "description": "Turns one exact approved workload requirements revision into evidence-comparable architecture options, validation experiments, ADR chronology, and an accountable owner decision.",
+      "audience": "Solution architects, engineering leads, service owners, and accountable architecture decision owners evaluating a bounded workload revision.",
+      "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
         ]
       }
     },
@@ -3314,7 +4454,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-29"
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "medium",
@@ -3415,6 +4555,77 @@
       }
     },
     {
+      "id": "supplier-capacity-assurance-manager",
+      "name": "Supplier capacity assurance manager",
+      "description": "Reconciles an exact approved demand-plan revision against supplier commits, qualified capacity, inventory, quality, and inbound logistics evidence to prepare shortage and recovery decisions.",
+      "audience": "Supply assurance, planning, procurement, quality, logistics, and operations owners reviewing constrained external supply for a bounded part and time-bucket horizon.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "supplier-onboarding-preparer",
+      "name": "Supplier onboarding preparer",
+      "description": "Prepares one selected supplier's setup packet from authorized intake and owner-supplied onboarding rules, reconciling identity, required evidence, specialist routes, and outstanding questions without activating the supplier.",
+      "audience": "Procurement operations and supplier onboarding teams preparing a selected supplier for accountable finance and diligence review.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "tax-document-organizer",
       "name": "Tax document organizer",
       "description": "Organizes supplied tax-season documents, income forms, deduction evidence, deadlines, missing-item questions, and preparer handoff packets without preparing returns, giving tax or legal advice, filing, contacting institutions, changing accounts, or moving money.",
@@ -3426,6 +4637,40 @@
           "@giodl73-repo"
         ],
         "lastVerified": "2026-08-26"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "tls-certificate-rotation-verification-coordinator",
+      "name": "TLS Certificate Rotation Verification Coordinator",
+      "description": "Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority.",
+      "audience": "Authorized platform, infrastructure, security-engineering, PKI, and service owners verifying owner-supplied TLS certificate rotation metadata in a controlled workspace without exposing private keys or certificate bodies or granting issuance, deployment, or revocation execution.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-09-10"
       },
       "setup": {
         "level": "low",
@@ -3967,6 +5212,43 @@
         "level": "heightened",
         "reasons": [
           "plugin runtime"
+        ]
+      }
+    },
+    {
+      "id": "workforce-planning-partner",
+      "name": "Workforce planning partner",
+      "description": "Reconciles an exact approved organization-plan revision against funded role demand and aggregate workforce scenarios without making personnel or headcount decisions.",
+      "audience": "Workforce planners, finance partners, HR partners, and organization leaders preparing an evidence-bound workforce plan decision.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-14"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X4",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed",
+        "visual"
+      ],
+      "capabilityClasses": [
+        "visual"
+      ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
         ]
       }
     }

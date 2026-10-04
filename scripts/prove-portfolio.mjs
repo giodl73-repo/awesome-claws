@@ -54,6 +54,7 @@ const upgradeFixtures = new Map([
   [
     "executive-assistant",
     {
+      agentId: "executive-assistant",
       previousSource: join(
         root,
         "scripts",
@@ -84,6 +85,50 @@ const upgradeFixtures = new Map([
       removedPath: "templates/legacy-follow-up.md",
       agentChanges: 1,
       capabilityChanges: 3,
+      unchangedActions: 1,
+    },
+  ],
+  [
+    "repository-compliance-program-manager",
+    {
+      agentId: "repository-compliance-program-manager",
+      previousSource: join(
+        root,
+        "scripts",
+        "fixtures",
+        "upgrades",
+        "repository-compliance-program-manager-v0.0.1",
+      ),
+      previousVersion: "0.0.1",
+      targetVersion: "0.1.0",
+      changedPaths: [
+        "AGENTS.md",
+        "SOUL.md",
+        "fixtures/session-demo.json",
+        "templates/session-report.template.json",
+        "templates/session-handoff.md",
+      ],
+      directlySourcedChangedPaths: [
+        ["AGENTS.md", "workspace/AGENTS.md"],
+        ["fixtures/session-demo.json", "fixtures/session-demo.json"],
+        ["templates/session-report.template.json", "templates/session-report.template.json"],
+        ["templates/session-handoff.md", "templates/session-handoff.md"],
+      ],
+      addedPaths: [
+        "schemas/repository-compliance-program.schema.json",
+        "fixtures/repository-compliance-program.example.json",
+        "templates/repository-compliance-program.md",
+        "references/issue-writer-capability-contract.md",
+      ],
+      removedPath: "references/legacy-issue-writer-capability.md",
+      agentChanges: 0,
+      capabilityChanges: 0,
+      unchangedActions: 2,
+      reinstall: true,
+      doctorChecks: [
+        "core/doctor/claws-state",
+        "core/doctor/final-config-validation",
+      ],
     },
   ],
 ]);
@@ -179,11 +224,11 @@ function assertUpdatePlan(plan, fixture, direction, label) {
     plan.mutationAllowed !== false ||
     typeof plan.planIntegrity !== "string" ||
     plan.summary?.totalActions !==
-      expectedAdded + expectedChanged + expectedRemoved + 1 ||
+      expectedAdded + expectedChanged + expectedRemoved + fixture.unchangedActions ||
     plan.summary?.added !== expectedAdded ||
     plan.summary?.changed !== expectedChanged ||
     plan.summary?.removed !== expectedRemoved ||
-    plan.summary?.unchanged !== 1 ||
+    plan.summary?.unchanged !== fixture.unchangedActions ||
     plan.summary?.blocked !== 0 ||
     plan.summary?.capabilityChanges !== fixture.capabilityChanges ||
     plan.summary?.capabilityEscalations !== expectedCapabilityEscalations ||
@@ -221,15 +266,15 @@ function assertUpdatePlan(plan, fixture, direction, label) {
       throw new Error(`${label} omitted workspace ${action} action for ${id}.`);
     }
   }
-  const agentChange = plan.actions?.some(
+  const agentAction = plan.actions?.some(
     (candidate) =>
       candidate.kind === "agent" &&
-      candidate.action === "change" &&
-      candidate.id === "executive-assistant" &&
+      candidate.action === (fixture.agentChanges === 0 ? "unchanged" : "change") &&
+      candidate.id === fixture.agentId &&
       candidate.blocked === false,
   );
-  if (!agentChange) {
-    throw new Error(`${label} omitted the owned executive-assistant agent change.`);
+  if (!agentAction) {
+    throw new Error(`${label} omitted the owned ${fixture.agentId} agent state.`);
   }
   const expectedVersion =
     direction === "forward" ? fixture.targetVersion : fixture.previousVersion;
@@ -480,7 +525,10 @@ async function stopGateway(gateway) {
     return;
   }
   if (gateway.child.exitCode !== null) {
-    if (gateway.logFd !== undefined) closeSync(gateway.logFd);
+    if (gateway.logFd !== undefined) {
+      closeSync(gateway.logFd);
+      gateway.logFd = undefined;
+    }
     return;
   }
   const signal = (name) => {
@@ -523,7 +571,10 @@ async function stopGateway(gateway) {
       throw new Error(`Child process ${gateway.child.pid ?? "unknown"} did not terminate.`);
     }
   }
-  if (gateway.logFd !== undefined) closeSync(gateway.logFd);
+  if (gateway.logFd !== undefined) {
+    closeSync(gateway.logFd);
+    gateway.logFd = undefined;
+  }
 }
 
 async function startMockOpenAi(baseEnv, evidenceRoot, entry, marker) {
@@ -916,6 +967,14 @@ for (const entry of entries) {
       userOwnedState = { path, content };
       result.bootstrapState = "synthetic-user-owned-preferences-created";
     }
+    if (gateway) {
+      await stopGateway(gateway);
+      gateway = undefined;
+      gateway = await startGateway(openClawEntry, env, entry.id, evidenceRoot);
+      env = gateway.env;
+      result.gateway.port = gateway.port;
+      result.gateway.restartAfterAdd = "completed";
+    }
 
     const applicationTurn = visualRuntimeProof
       ? await recordAsyncPhase(phases, "application-scenario", () =>
@@ -969,11 +1028,7 @@ for (const entry of entries) {
       if (typeof workspace !== "string" || workspace.length === 0) {
         throw new Error(`${entry.id} upgrade proof requires an installed workspace.`);
       }
-      const priorLegacy = join(
-        upgradeFixture.previousSource,
-        "templates",
-        "legacy-follow-up.md",
-      );
+      const priorLegacy = join(upgradeFixture.previousSource, upgradeFixture.removedPath);
       for (const [path, sourcePath] of upgradeFixture.directlySourcedChangedPaths) {
         await assertFileMatches(
           join(workspace, path),
@@ -1310,10 +1365,14 @@ for (const entry of entries) {
       result.bootstrapState = "synthetic-user-owned-preferences-preserved-after-update";
     }
 
+    const doctorArgs = ["doctor", "--lint"];
+    for (const check of upgradeFixture?.doctorChecks ?? []) {
+      doctorArgs.push("--only", check);
+    }
     const doctor = recordPhase(phases, "doctor", () =>
       runOpenClaw(
         openClawEntry,
-        ["doctor", "--lint"],
+        doctorArgs,
         env,
         `${entry.id} doctor`,
         [0, 1],
@@ -1416,7 +1475,7 @@ for (const entry of entries) {
       result.bootstrapState = "synthetic-user-owned-preferences-preserved-after-remove";
     }
 
-    const finalStatus = assertSchema(
+    let finalStatus = assertSchema(
       recordPhase(phases, "final-status", () =>
         runOpenClaw(openClawEntry, ["claws", "status"], env, `${entry.id} final status`),
       ),
@@ -1425,6 +1484,107 @@ for (const entry of entries) {
     );
     if (finalStatus.summary?.claws !== 0) {
       throw new Error(`${entry.id} left a Claw lifecycle record after removal.`);
+    }
+    if (upgradeFixture?.reinstall) {
+      const reinstallWorkspace = join(proof.packageRoot, "reinstall-workspace");
+      const reinstallPlan = assertAddPreview(
+        recordPhase(phases, "reinstall-preview", () =>
+          runOpenClaw(
+            openClawEntry,
+            ["claws", "add", source, "--dry-run", "--workspace", reinstallWorkspace],
+            env,
+            `${entry.id} reinstall preview`,
+          ),
+        ),
+      );
+      const reinstalled = assertSchema(
+        recordPhase(phases, "reinstall-apply", () =>
+          runOpenClaw(
+            openClawEntry,
+            [
+              "claws",
+              "add",
+              source,
+              "--yes",
+              "--plan-integrity",
+              reinstallPlan.planIntegrity,
+              "--workspace",
+              reinstallWorkspace,
+            ],
+            env,
+            `${entry.id} reinstall apply`,
+          ),
+        ),
+        "openclaw.clawAddResult.v1",
+        `${entry.id} reinstall`,
+      );
+      if (reinstalled.status !== "complete" || reinstalled.agent?.finalId !== entry.id) {
+        throw new Error(`${entry.id} reinstall did not complete.`);
+      }
+      assertInstalledCapabilities(entry, reinstallPlan, reinstalled);
+      const reinstalledStatus = assertSchema(
+        recordPhase(phases, "reinstall-status", () =>
+          runOpenClaw(
+            openClawEntry,
+            ["claws", "status", entry.id],
+            env,
+            `${entry.id} reinstall status`,
+          ),
+        ),
+        "openclaw.clawStatus.v1",
+        `${entry.id} reinstall status`,
+      );
+      assertInstalledVersion(
+        reinstalledStatus,
+        upgradeFixture.targetVersion,
+        `${entry.id} reinstall status`,
+      );
+      const secondRemovePlan = assertSchema(
+        recordPhase(phases, "reinstall-remove-preview", () =>
+          runOpenClaw(
+            openClawEntry,
+            ["claws", "remove", entry.id, "--dry-run", "--remove-unused"],
+            env,
+            `${entry.id} reinstall remove preview`,
+          ),
+        ),
+        "openclaw.clawRemovePlan.v1",
+        `${entry.id} reinstall remove preview`,
+      );
+      const secondRemoved = assertSchema(
+        recordPhase(phases, "reinstall-remove-apply", () =>
+          runOpenClaw(
+            openClawEntry,
+            [
+              "claws",
+              "remove",
+              entry.id,
+              "--yes",
+              "--remove-unused",
+              "--plan-integrity",
+              secondRemovePlan.planIntegrity,
+            ],
+            env,
+            `${entry.id} reinstall remove apply`,
+          ),
+        ),
+        "openclaw.clawRemoveResult.v1",
+        `${entry.id} reinstall removal`,
+      );
+      if (secondRemoved.status !== "complete" || secondRemoved.agentRemoved !== true) {
+        throw new Error(`${entry.id} second removal did not complete.`);
+      }
+      finalStatus = assertSchema(
+        recordPhase(phases, "reinstall-final-status", () =>
+          runOpenClaw(openClawEntry, ["claws", "status"], env, `${entry.id} final status`),
+        ),
+        "openclaw.clawStatus.v1",
+        `${entry.id} reinstall final status`,
+      );
+      if (finalStatus.summary?.claws !== 0) {
+        throw new Error(`${entry.id} left a lifecycle record after reinstall removal.`);
+      }
+      result.upgradeProof.reinstall = "passed-with-second-removal";
     }
     result.status = "lifecycle-passed";
   } catch (error) {
@@ -1458,7 +1618,8 @@ const summary = {
   packageCount: results.length,
   evidenceClaims: {
     materialization: "byte-for-byte generated-output check",
-    lifecycle: "isolated local inspect/add/status/export/remove",
+    lifecycle:
+      "isolated local inspect/add/status/update/rollback/export/remove with declared reinstall proof",
     applicationRuntime: "deterministic OpenAI-compatible fixture",
     providerLive: false,
   },
