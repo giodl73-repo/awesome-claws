@@ -116,8 +116,11 @@
           }
         },
         "blockers": { "type": "array", "items": {
-          "type": "object", "additionalProperties": false, "required": ["id", "reason"],
-          "properties": { "id": { "$ref": "#/$defs/text" }, "reason": { "$ref": "#/$defs/text" } }
+          "type": "object", "additionalProperties": false, "required": ["id", "code", "reason"],
+          "properties": {
+            "id": { "$ref": "#/$defs/text" }, "reason": { "$ref": "#/$defs/text" },
+            "code": { "enum": ["history-coverage", "billing-policy", "purchase-order", "zero-work", "item-scope", "service-period", "source-current", "item-disposition", "billing-approval", "completion-evidence", "billing-description", "tax-treatment", "balance-authorization", "balance-total", "empty-invoice"] }
+          }
         } }
       }
     },

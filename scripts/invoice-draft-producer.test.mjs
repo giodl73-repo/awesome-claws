@@ -16,6 +16,31 @@ const validate = ajv.compile(schema);
 const clone = () => structuredClone(fixture);
 const refresh = (record) => { record.result = deriveInvoiceDraft(record); return record; };
 
+test("invoice: blocker explanations and order may vary without changing evidence", () => {
+  const value = clone(); value.rules.poRequired = true; value.scope.purchaseOrder = null; refresh(value);
+  assert(value.result.blockers.length > 1);
+  value.result.blockers.find((blocker) => blocker.code === "purchase-order").reason = "Owner: please supply the customer purchase order.";
+  value.result.blockers.reverse();
+  assert.equal(validate(value), true, JSON.stringify(validate.errors));
+  assert.deepEqual(invoiceDraftFindings(value), []);
+  assert.deepEqual(validateArtifactSemantics("invoice-draft-producer", value), []);
+  assert.match(renderInvoiceDraft(value).workpaper, /Owner: please supply the customer purchase order/);
+});
+
+for (const [name, mutate] of [
+  ["missing code", (rows) => { delete rows[0].code; }],
+  ["wrong code", (rows) => { rows[0].code = rows[0].code === "tax-treatment" ? "billing-approval" : "tax-treatment"; }],
+  ["wrong id", (rows) => { rows[0].id = "UNRELATED"; }],
+  ["hidden blocker", (rows) => { rows.pop(); }],
+  ["duplicate blocker", (rows) => { rows.push({ ...rows[0] }); }],
+  ["blank explanation", (rows) => { rows[0].reason = " \t"; }],
+  ["extra assertion", (rows) => { rows[0].approved = true; }],
+]) test(`invoice: rejects blocker mutation: ${name}`, () => {
+  const value = clone(); mutate(value.result.blockers);
+  assert(invoiceDraftFindings(value).length > 0);
+  assert.throws(() => renderInvoiceDraft(value));
+});
+
 test("invoice: packaged digest recipe computes the exact current input fingerprint", async () => {
   const reference = await readFile(new URL("references/billing-contract.md", root), "utf8");
   const code = reference.match(/```js\r?\n([\s\S]*?)\r?\n```/)[1];
