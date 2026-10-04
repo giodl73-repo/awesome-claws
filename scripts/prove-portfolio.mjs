@@ -18,7 +18,11 @@ import {
 } from "./openclaw-proof-lib.mjs";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
+<<<<<<< HEAD
 import { requiresPortfolioGateway } from "./portfolio-proof-policy.mjs";
+=======
+import { selectApplicationRequest } from "./portfolio-application-request.mjs";
+>>>>>>> f9ad9a3 (fix(proof): distinguish activity recaps from application requests)
 
 const { cliEntry, openClawEntry } = resolveProofConfig();
 const openClawRoot = dirname(openClawEntry);
@@ -718,7 +722,7 @@ async function assertApplicationTurn({ entry, marker, requestLog, turn }) {
     .split("\n")
     .filter(Boolean)
     .map((line) => JSON.parse(line));
-  const request = requestLines.find((item) => item.path === "/v1/responses");
+  const request = selectApplicationRequest(requestLines);
   if (!request || typeof request.body !== "string") {
     throw new Error(`${entry.id} agent turn did not reach the OpenAI-compatible runtime.`);
   }
@@ -1422,6 +1426,19 @@ for (const entry of entries) {
       exportedOpenClawInspection.manifest?.agent?.id !== entry.id
     ) {
       throw new Error(`${entry.id} exported OpenClaw inspection lost package identity.`);
+    }
+
+    if (!gateway) {
+      gateway = await recordAsyncPhase(phases, "remove-gateway-start", () =>
+        startGateway(openClawEntry, env, entry.id, evidenceRoot),
+      );
+      env = gateway.env;
+      result.gateway = {
+        mode: "local",
+        port: gateway.port,
+        purpose: "monitor-removal-owner",
+        log: relative(proofRoot, gateway.logPath).replaceAll("\\", "/"),
+      };
     }
 
     const removePlan = assertSchema(
