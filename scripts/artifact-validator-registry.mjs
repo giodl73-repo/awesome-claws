@@ -6,6 +6,7 @@ import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { root } from "./catalog-source.mjs";
 
 export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
+  "service-dispatch-planner": "service-dispatch.schema.json",
   "invoice-draft-producer": "invoice-draft.schema.json",
   "job-estimate-producer": "job-estimate.schema.json",
   "payroll-review-preparer": "payroll-review.schema.json",

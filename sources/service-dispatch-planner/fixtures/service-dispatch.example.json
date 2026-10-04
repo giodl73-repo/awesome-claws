@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "awesomeClaws.serviceDispatch.v1",
+  "scope": {
+    "date": "2026-10-05",
+    "timeZone": "America/Chicago",
+    "revision": "dispatch-r1",
+    "owner": "Maya Chen",
+    "priorityRule": "Keep fixed appointments; consider lower priority numbers first. Explain unassigned work for dispatcher review."
+  },
+  "technicians": [
+    {
+      "id": "TECH-A",
+      "sourceRef": "ROSTER-A",
+      "revision": "r1",
+      "skills": [
+        "HVAC"
+      ],
+      "startSite": "DEPOT",
+      "endSite": "DEPOT",
+      "shift": {
+        "start": "2026-10-05T08:00-05:00",
+        "end": "2026-10-05T17:00-05:00"
+      },
+      "breaks": [
+        {
+          "id": "BREAK-A",
+          "site": "DEPOT",
+          "start": "2026-10-05T12:00-05:00",
+          "end": "2026-10-05T12:30-05:00"
+        }
+      ]
+    },
+    {
+      "id": "TECH-B",
+      "sourceRef": "ROSTER-B",
+      "revision": "r1",
+      "skills": [
+        "PLUMBING"
+      ],
+      "startSite": "DEPOT",
+      "endSite": "DEPOT",
+      "shift": {
+        "start": "2026-10-05T08:00-05:00",
+        "end": "2026-10-05T17:00-05:00"
+      },
+      "breaks": [
+        {
+          "id": "BREAK-B",
+          "site": "DEPOT",
+          "start": "2026-10-05T12:00-05:00",
+          "end": "2026-10-05T12:30-05:00"
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "id": "JOB-1",
+      "sourceRef": "WORK-1",
+      "revision": "r1",
+      "site": "SITE-A",
+      "skill": "HVAC",
+      "priority": 1,
+      "durationMinutes": 60,
+      "window": {
+        "start": "2026-10-05T09:00-05:00",
+        "end": "2026-10-05T10:00-05:00"
+      },
+      "readiness": "ready",
+      "readinessReason": "Supplied owner confirmation: access, parts and required permit checks ready.",
+      "locked": {
+        "technicianId": "TECH-A",
+        "start": "2026-10-05T09:00-05:00"
+      }
+    },
+    {
+      "id": "JOB-2",
+      "sourceRef": "WORK-2",
+      "revision": "r1",
+      "site": "SITE-B",
+      "skill": "HVAC",
+      "priority": 2,
+      "durationMinutes": 60,
+      "window": {
+        "start": "2026-10-05T10:30-05:00",
+        "end": "2026-10-05T11:30-05:00"
+      },
+      "readiness": "ready",
+      "readinessReason": "Supplied owner confirmation: access, parts and required permit checks ready.",
+      "locked": null
+    },
+    {
+      "id": "JOB-3",
+      "sourceRef": "WORK-3",
+      "revision": "r1",
+      "site": "SITE-C",
+      "skill": "PLUMBING",
+      "priority": 3,
+      "durationMinutes": 45,
+      "window": {
+        "start": "2026-10-05T08:00-05:00",
+        "end": "2026-10-05T16:00-05:00"
+      },
+      "readiness": "held",
+      "readinessReason": "Required replacement part has not arrived.",
+      "locked": null
+    }
+  ],
+  "travel": {
+    "sourceRef": "TRAVEL-TABLE",
+    "revision": "r1",
+    "validOn": "2026-10-05",
+    "bufferMinutes": 0,
+    "legs": [
+      {
+        "from": "DEPOT",
+        "to": "DEPOT",
+        "minutes": 0
+      },
+      {
+        "from": "DEPOT",
+        "to": "SITE-A",
+        "minutes": 20
+      },
+      {
+        "from": "SITE-A",
+        "to": "SITE-B",
+        "minutes": 30
+      },
+      {
+        "from": "SITE-B",
+        "to": "DEPOT",
+        "minutes": 20
+      }
+    ]
+  },
+  "plan": {
+    "inputDigest": "sha256:7221caa1924148e0e0f108ae275f0d859ead7b260aeef1e27b9e1f5cc1c0dddc",
+    "status": "draft",
+    "approved": false,
+    "dispatched": false,
+    "assignments": [
+      {
+        "jobId": "JOB-1",
+        "technicianId": "TECH-A",
+        "start": "2026-10-05T09:00-05:00",
+        "end": "2026-10-05T10:00-05:00"
+      },
+      {
+        "jobId": "JOB-2",
+        "technicianId": "TECH-A",
+        "start": "2026-10-05T10:30-05:00",
+        "end": "2026-10-05T11:30-05:00"
+      }
+    ],
+    "unassigned": [
+      {
+        "jobId": "JOB-3",
+        "code": "readiness",
+        "reason": "Replacement part unavailable; retain the job for human rescheduling."
+      }
+    ]
+  }
+}

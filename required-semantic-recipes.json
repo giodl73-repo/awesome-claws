@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 141,
-    "coveredCount": 141,
-    "recipeCount": 389,
-    "findingCodeCount": 531
+    "validatorCount": 142,
+    "coveredCount": 142,
+    "recipeCount": 392,
+    "findingCodeCount": 534
   },
   "entries": [
     {
@@ -6150,6 +6150,49 @@
           "replacement": "job-estimate-producer",
           "expectedCodes": [
             "estimate_input"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "service-dispatch-planner",
+      "recipes": [
+        {
+          "id": "semantic-dispatch-input-1",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "timeZone"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dispatch_input"
+          ]
+        },
+        {
+          "id": "semantic-dispatch-revision-2",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "revision"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "dispatch_revision"
+          ]
+        },
+        {
+          "id": "semantic-dispatch-duration-3",
+          "operator": "replace",
+          "path": [
+            "jobs",
+            "0",
+            "durationMinutes"
+          ],
+          "replacement": 61,
+          "expectedCodes": [
+            "dispatch_duration",
+            "dispatch_revision"
           ]
         }
       ]
