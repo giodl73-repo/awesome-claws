@@ -17,6 +17,26 @@ const clone = () => structuredClone(fixture);
 const refresh = (value) => { value.result = deriveJobEstimate(value); return value; };
 const output = (value) => value.result.scenarios[0];
 
+test("estimate: packaged digest recipe computes the exact current input fingerprint", async () => {
+  const reference = await readFile(new URL("references/estimating-contract.md", root), "utf8");
+  const code = reference.match(/```js\r?\n([\s\S]*?)\r?\n```/)[1];
+  const { computeEstimateInputDigest } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
+  for (const change of [() => {}, (value) => { value.scenarios[0].lines[0].sourceRef = "SOURCE-CHANGED"; }, (value) => { value.scope.owner = "\u00c9lodie"; }, (value) => { value.scope = Object.fromEntries(Object.entries(value.scope).reverse()); }]) {
+    const value = clone(); change(value);
+    assert.equal(computeEstimateInputDigest(value), deriveJobEstimate(value).inputDigest);
+  }
+});
+
+test("estimate: normalized agent identities cannot stand in for the human owner", () => {
+  for (const owner of ["Job estimate producer", " job-estimate-producer ", "job_estimate_producer", "JOB   ESTIMATE PRODUCER", " assistant ", "\uff41ssistant"]) {
+    const value = clone(); value.scope.owner = owner;
+    assert.throws(() => deriveJobEstimate(value), /human estimating owner/);
+    assert(jobEstimateFindings(value).some((finding) => finding.code === "estimate_input"));
+  }
+  const value = clone(); value.scope.owner = "Assistant manager Maya"; refresh(value);
+  assert.deepEqual(jobEstimateFindings(value), []);
+});
+
 test("estimate: generated runtime contract declares the structured state and private handoff", async () => {
   const catalog = JSON.parse(await readFile(new URL("../catalog.json", import.meta.url), "utf8"));
   const entry = catalog.entries.find((item) => item.id === "job-estimate-producer");

@@ -32,7 +32,8 @@ export function deriveJobEstimate(record) {
   const { scope, scopeItems, scenarios } = record;
   require(record.schemaVersion === "awesomeClaws.jobEstimate.v1", "Unknown estimate contract");
   for (const key of ["job", "revision", "quoteRef", "quoteRevision", "customer", "customerScope", "owner", "privateDestination", "terms"]) require(text(scope[key]), `Missing scope ${key}`);
-  require(!/^(agent|assistant|job-estimate-producer)$/i.test(scope.owner), "A human estimating owner is required");
+  const owner = scope.owner.normalize("NFKC").trim().toLowerCase().replace(/[\s_-]+/gu, " ");
+  require(!/^(agent|assistant|job estimate producer)$/.test(owner), "A human estimating owner is required");
   require(/^[A-Z]{3}$/.test(scope.currency) && amount(scope.minorDigits) && scope.minorDigits <= 4, "Invalid currency precision");
   date(scope.asOf); date(scope.validUntil);
   unique(scopeItems, (item) => item.id);
