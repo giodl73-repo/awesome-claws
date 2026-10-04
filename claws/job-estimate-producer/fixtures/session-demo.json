@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "job-estimate-producer",
+  "scenario": "Price an approved job with eight labor hours at USD 50 cost/hour, USD 300 materials, USD 100 equipment, and owner policy of 25 percent markup on direct cost. Keep tax pending because no treatment was supplied.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Price an approved job with eight labor hours at USD 50 cost/hour, USD 300 materials, USD 100 equipment, and owner policy of 25 percent markup on direct cost. Keep tax pending because no treatment was supplied."
+    },
+    {
+      "role": "agent",
+      "text": "The synthetic SCOPE-2 evidence maps installation to labor and materials, equipment to an explicit allowance, and extra work to an exclusion. Direct cost is USD 800. A 25 percent markup gives USD 1,000 before tax and a 20 percent gross margin."
+    },
+    {
+      "role": "user",
+      "text": "Prepare separate customer and owner drafts. Keep internal rates, supplier references and margin out of the customer quote. Do not infer tax or send anything."
+    },
+    {
+      "role": "agent",
+      "text": "The quote and private workpaper below are synthetic reference artifacts, not a live model or accounting-system run. The final total remains pending tax instructions; no quote, bid, purchase or customer contact was issued."
+    }
+  ],
+  "report": {
+    "title": "Demo installation quote and private estimate",
+    "summary": "Synthetic reference fixture; not live model or accounting execution. Customer draft follows; private cost details remain in the separate owner workpaper.\n\n# QUOTE DRAFT - NOT A BINDING OFFER\n\nQuote DEMO-QUOTE-12 revision 1\n\nCustomer: Demo Studio. Job: DEMO-JOB-12; scope revision 2.\n\nOne installation visit with approved labor, listed materials and equipment under SCOPE-2.\n\n## Included scope\n\n- Installation labor and agreed materials\n\n- Equipment rental allowance (owner-defined allowance)\n\n## Exclusions\n\n- Additional work and items outside the agreed installation scope\n\nProposed validity: 2026-10-09. Terms: Owner review required; no acceptance, mobilization or completion date is promised.\n\n## Proposed installation\n\nWhole-job proposed pre-tax price: **USD 1000.00**.\n\nTax under supplied instructions: Pending owner input.\n\n**Final total: Pending owner input**.\n\n**BLOCKED WORKING DRAFT**: unresolved inputs or owner decisions remain.\n\nNo quote was issued, bid submitted, price approved, supplier selected, purchase placed or customer contacted. This draft promises no mobilization or completion date.\n",
+    "output": "outputs/job-estimate-producer-handoff.md",
+    "items": [
+      {
+        "title": "Private workpaper: cost build-up",
+        "summary": "Owner-only: labor 8 hours x USD 50 = USD 400; materials USD 300; equipment allowance USD 100. Complete direct cost USD 800. Explicit overhead and contingency both USD 0. Source references and revisions are retained in fixtures/workpaper.example.md.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Private workpaper: price and margin",
+        "summary": "Owner policy: 25 percent markup on direct cost. Proposed pre-tax price USD 1,000; actual gross margin 20 percent, not 25 percent. No equivalent-scope alternative was requested or inferred.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Allowance, exclusion, and missing-price register",
+        "summary": "INSTALL requires both LABOR and MATERIAL cost slots; RENTAL requires the EQUIPMENT allowance. EXTRA is explicitly excluded. Supplier evidence must remain valid through October 9. Missing tax treatment keeps the final total unknown.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Next owner: review the exact revision",
+        "summary": "The estimating owner must supply tax instructions and review DEMO-QUOTE-12 revision 1 before any separate authorized issuance. Scope or cost changes require recalculation and fresh review. No binding quote, submitted bid, selected supplier, purchase or customer contact is claimed.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

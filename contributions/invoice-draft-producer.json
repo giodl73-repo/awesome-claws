@@ -120,6 +120,11 @@
     "proofPlan": "After admission, prove an actual X3 invoice plus separate workpaper in ordinary Control UI chat. Verify time-and-materials, fixed-fee, and owner-defined recurring-period cases. Recompute all amounts and test duplicate or previously billed work, missing completion, missing tax treatment, changed rates, customer or currency mismatch, over-applied deposits, stale credits, mixed currencies, source revisions, disclosure leakage, and unapproved issue/send attempts. Require current screenshot, contribution and regression contracts, generated agreement, npm run check, and semantic mutations. Synthetic arithmetic examples are not live accounting or tax proof.",
     "existingAlternatives": [
       {
+        "id": "job-estimate-producer",
+        "overlap": "Closest match in the combined catalog; both produce customer-facing amount drafts and separate private source workpapers.",
+        "difference": "Job Estimate Producer prices planned scope from supplied costs and markup or target margin before approval. Invoice Draft Producer requires billable work and terms, reconciles prior billing, discounts, tax inputs and proposed credit/deposit use. An estimate or quote is not completed-work evidence or permission to invoice."
+      },
+      {
         "id": "invoice-payment-followup",
         "overlap": "Both handle invoice amounts, customer evidence, credits, and owner-controlled financial communication.",
         "difference": "The existing owner inventories already supplied invoices and drafts reminders. This proposal constructs the itemized invoice from unbilled work and terms, with quantity coverage, prior-billing checks, and calculation rules. The handoff occurs only after separate owner issuance evidence."
@@ -141,7 +146,7 @@
       },
       {
         "id": "payroll-review-preparer",
-        "overlap": "Nearest lexical match; both use private amount workpapers, explicit periods, change evidence, and a release boundary.",
+        "overlap": "A top-five lexical match; both use private amount workpapers, explicit periods, change evidence, and a release boundary.",
         "difference": "Payroll Review checks provider-calculated employee pay against approved changes. Invoice Draft Producer constructs customer billable lines, supplied tax and credit calculations, and a customer-facing invoice from unbilled work, without employee-pay processing."
       },
       {

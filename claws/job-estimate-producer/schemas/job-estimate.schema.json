@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/job-estimate.schema.json",
+  "title": "Job cost estimate and nonbinding customer quote draft",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "scope", "scopeItems", "scenarios", "result", "authority"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.jobEstimate.v1" },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["job", "revision", "quoteRef", "quoteRevision", "customer", "customerScope", "owner", "privateDestination", "terms", "asOf", "validUntil", "currency", "minorDigits", "reviewed", "disclosureApproved"],
+      "properties": {
+        "job": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" }, "quoteRef": { "$ref": "#/$defs/text" }, "quoteRevision": { "$ref": "#/$defs/text" },
+        "customer": { "$ref": "#/$defs/text" }, "customerScope": { "$ref": "#/$defs/text" }, "owner": { "$ref": "#/$defs/text" },
+        "privateDestination": { "$ref": "#/$defs/text" }, "terms": { "$ref": "#/$defs/text" },
+        "asOf": { "$ref": "#/$defs/date" }, "validUntil": { "$ref": "#/$defs/date" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }, "minorDigits": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "reviewed": { "type": "boolean" }, "disclosureApproved": { "type": "boolean" }
+      }
+    },
+    "scopeItems": { "type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false, "required": ["id", "description", "disposition", "decisionRef", "disclosureApproved", "costLineIds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/text" }, "description": { "$ref": "#/$defs/text" },
+        "costLineIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+        "disposition": { "enum": ["priced", "allowance", "excluded", "blocked"] },
+        "decisionRef": { "$ref": "#/$defs/optionalText" }, "disclosureApproved": { "type": "boolean" }
+      }
+    } },
+    "scenarios": { "type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false, "required": ["id", "label", "scopeRevision", "equivalentScope", "decisionRef", "pricing", "lines"],
+      "properties": {
+        "id": { "$ref": "#/$defs/text" }, "label": { "$ref": "#/$defs/text" }, "scopeRevision": { "$ref": "#/$defs/text" },
+        "equivalentScope": { "type": "boolean" }, "decisionRef": { "$ref": "#/$defs/optionalText" },
+        "pricing": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sourceRef", "revision", "confirmed", "rounding", "method", "basis", "bps", "overheadMinor", "contingencyMinor", "taxBps", "maxPreTaxMinor"],
+          "properties": {
+            "sourceRef": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" }, "confirmed": { "type": "boolean" },
+            "rounding": { "$ref": "#/$defs/optionalText" }, "method": { "enum": ["markup", "target-margin"] },
+            "basis": { "enum": ["direct-cost", "total-estimated-cost"] }, "bps": { "type": "integer", "minimum": 0, "maximum": 100000 },
+            "overheadMinor": { "$ref": "#/$defs/nullableAmount" }, "contingencyMinor": { "$ref": "#/$defs/nullableAmount" },
+            "taxBps": { "type": ["integer", "null"], "minimum": 0, "maximum": 10000 }, "maxPreTaxMinor": { "$ref": "#/$defs/nullableAmount" }
+          }
+        },
+        "lines": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "scopeId", "sourceRef", "sourceRevision", "job", "scopeRevision", "customer", "currency", "category", "quantity", "quantityUnit", "rateMinor", "rateUnit", "conversion", "conversionRef", "observedOn", "validThrough", "approved", "current", "approvalRef", "allowance"],
+          "properties": {
+            "id": { "$ref": "#/$defs/text" }, "scopeId": { "$ref": "#/$defs/text" }, "sourceRef": { "$ref": "#/$defs/text" }, "sourceRevision": { "$ref": "#/$defs/text" },
+            "job": { "$ref": "#/$defs/text" }, "scopeRevision": { "$ref": "#/$defs/text" }, "customer": { "$ref": "#/$defs/text" }, "currency": { "$ref": "#/$defs/text" },
+            "category": { "enum": ["labor", "material", "subcontractor", "equipment", "expense"] },
+            "quantity": { "$ref": "#/$defs/nullableDecimal" }, "quantityUnit": { "$ref": "#/$defs/text" },
+            "rateMinor": { "$ref": "#/$defs/nullableAmount" }, "rateUnit": { "$ref": "#/$defs/text" },
+            "conversion": { "$ref": "#/$defs/nullableDecimal" }, "conversionRef": { "$ref": "#/$defs/optionalText" },
+            "observedOn": { "$ref": "#/$defs/date" }, "validThrough": { "$ref": "#/$defs/date" },
+            "approved": { "type": "boolean" }, "current": { "type": "boolean" }, "approvalRef": { "$ref": "#/$defs/optionalText" }, "allowance": { "type": "boolean" }
+          }
+        } }
+      }
+    } },
+    "result": {
+      "type": "object", "additionalProperties": false, "required": ["inputDigest", "quoteRevision", "scenarios", "comparisons"],
+      "properties": {
+        "inputDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }, "quoteRevision": { "$ref": "#/$defs/text" },
+        "scenarios": { "type": "array", "minItems": 1, "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "state", "costs", "coverage", "knownCost", "directCost", "totalCost", "preTax", "tax", "total", "grossMarginBps", "blockers"],
+          "properties": {
+            "id": { "$ref": "#/$defs/text" }, "state": { "enum": ["blocked", "ready-for-owner-review"] },
+            "costs": { "type": "array", "items": {
+              "type": "object", "additionalProperties": false, "required": ["id", "scopeId", "sourceRevision", "cost", "state"],
+              "properties": {
+                "id": { "$ref": "#/$defs/text" }, "scopeId": { "$ref": "#/$defs/text" }, "sourceRevision": { "$ref": "#/$defs/text" },
+                "cost": { "$ref": "#/$defs/nullableAmount" }, "state": { "enum": ["priced", "allowance", "blocked"] }
+              }
+            } },
+            "coverage": { "type": "array", "items": {
+              "type": "object", "additionalProperties": false, "required": ["scopeId", "disposition", "lineIds"],
+              "properties": {
+                "scopeId": { "$ref": "#/$defs/text" }, "disposition": { "enum": ["priced", "allowance", "excluded", "blocked"] },
+                "lineIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/text" } }
+              }
+            } },
+            "knownCost": { "$ref": "#/$defs/amount" }, "directCost": { "$ref": "#/$defs/nullableAmount" }, "totalCost": { "$ref": "#/$defs/nullableAmount" },
+            "preTax": { "$ref": "#/$defs/nullableAmount" }, "tax": { "$ref": "#/$defs/nullableAmount" }, "total": { "$ref": "#/$defs/nullableAmount" },
+            "grossMarginBps": { "type": ["integer", "null"], "minimum": 0, "maximum": 10000 },
+            "blockers": { "type": "array", "items": {
+              "type": "object", "additionalProperties": false, "required": ["id", "reason"],
+              "properties": { "id": { "$ref": "#/$defs/text" }, "reason": { "$ref": "#/$defs/text" } }
+            } }
+          }
+        } },
+        "comparisons": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "baselineId", "costDelta", "preTaxDelta"],
+          "properties": {
+            "id": { "$ref": "#/$defs/text" }, "baselineId": { "$ref": "#/$defs/text" },
+            "costDelta": { "$ref": "#/$defs/delta" }, "preTaxDelta": { "$ref": "#/$defs/delta" }
+          }
+        } }
+      }
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false, "required": ["quote", "bid", "purchase", "contact", "price"],
+      "properties": {
+        "quote": { "const": "draft-not-binding" }, "bid": { "const": "not-submitted" }, "purchase": { "const": "not-placed" },
+        "contact": { "const": "not-performed" }, "price": { "const": "not-approved" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "optionalText": { "type": ["string", "null"], "minLength": 1, "pattern": "\\S" },
+    "date": { "type": "string", "format": "date" },
+    "amount": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "nullableAmount": { "type": ["integer", "null"], "minimum": 0, "maximum": 9007199254740991 },
+    "delta": { "type": ["integer", "null"], "minimum": -9007199254740991, "maximum": 9007199254740991 },
+    "nullableDecimal": { "type": ["string", "null"], "pattern": "^(0|[1-9][0-9]{0,8})(\\.[0-9]{1,6})?$" }
+  }
+}
