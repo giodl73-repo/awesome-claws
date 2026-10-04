@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (142)
+### Active (143)
 
 | Claw | Detail |
 | --- | --- |
@@ -93,6 +93,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | @giodl73; last verified 2026-08-29 |
 | [Music organizer](claws/music-organizer) | @giodl73-repo; last verified 2026-08-22 |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | @giodl73-repo; last verified 2026-08-27 |
+| [Order Fulfillment Reconciler](claws/order-fulfillment-reconciler) | @giodl73-repo; last verified 2026-10-04 |
 | [Partner business manager](claws/partner-business-manager) | @giodl73; last verified 2026-09-14 |
 | [Payroll review preparer](claws/payroll-review-preparer) | @giodl73-repo; last verified 2026-10-02 |
 | [Personal archive curator](claws/personal-archive-curator) | @giodl73-repo; last verified 2026-08-22 |
@@ -169,7 +170,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (110)
+### Low setup (111)
 
 | Claw | Detail |
 | --- | --- |
@@ -238,6 +239,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | no bootstrap, external dependency, or schedule |
 | [Music organizer](claws/music-organizer) | no bootstrap, external dependency, or schedule |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | no bootstrap, external dependency, or schedule |
+| [Order Fulfillment Reconciler](claws/order-fulfillment-reconciler) | no bootstrap, external dependency, or schedule |
 | [Partner business manager](claws/partner-business-manager) | no bootstrap, external dependency, or schedule |
 | [Payroll review preparer](claws/payroll-review-preparer) | no bootstrap, external dependency, or schedule |
 | [Personal archive curator](claws/personal-archive-curator) | no bootstrap, external dependency, or schedule |
@@ -330,7 +332,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (119)
+### No external dependencies (120)
 
 | Claw | Detail |
 | --- | --- |
@@ -407,6 +409,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | None |
 | [Music organizer](claws/music-organizer) | None |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | None |
+| [Order Fulfillment Reconciler](claws/order-fulfillment-reconciler) | None |
 | [Partner business manager](claws/partner-business-manager) | None |
 | [Payroll review preparer](claws/payroll-review-preparer) | None |
 | [Personal archive curator](claws/personal-archive-curator) | None |
@@ -486,7 +489,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (103)
+### X3 (104)
 
 | Claw | Detail |
 | --- | --- |
@@ -550,6 +553,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
 | [Music organizer](claws/music-organizer) | Organizes a personal or household music library, playlists, listening history, favorites, and source-backed streaming availability without account mutation, purchases, public sharing, playlist publishing, or rights bypassing. |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | Tracks neighborhood-impacting trash and recycling schedules, road closures, permit notices, utility work, local meetings, school board items, and public notices from approved sources without filing complaints, calling agencies, posting publicly, changing accounts, or claiming safety certainty. |
+| [Order Fulfillment Reconciler](claws/order-fulfillment-reconciler) | Reconciles seller order lines with supplied shipment and delivery evidence into a draft open-order and exception handoff without releasing goods or contacting customers. |
 | [Payroll review preparer](claws/payroll-review-preparer) | Prepares a private pre-release payroll comparison and exception workpaper from minimized draft registers, approved change inputs, and supplied review rules without calculating statutory entitlements or releasing payroll. |
 | [Personal archive curator](claws/personal-archive-curator) | Organizes supplied personal files, notes, links, receipts, photos, warranties, and memories into a privacy-labeled retrieval index without deleting, moving, sharing, uploading, training memory, or inferring sensitive facts. |
 | [Pet care coordinator](claws/pet-care-coordinator) | Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
@@ -709,7 +713,7 @@ Categories come directly from the catalog entry.
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
-### Operations (37)
+### Operations (38)
 
 | Claw | Detail |
 | --- | --- |
@@ -732,6 +736,7 @@ Categories come directly from the catalog entry.
 | [Job estimate producer](claws/job-estimate-producer) | X3; Builds a source-backed job cost estimate and customer quote draft from an owner-defined scope, checked quantities, labor allowances, and current supplier prices without bidding, committing prices, or making engineering judgments. |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | X5; Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence. |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | X3; Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
+| [Order Fulfillment Reconciler](claws/order-fulfillment-reconciler) | X3; Reconciles seller order lines with supplied shipment and delivery evidence into a draft open-order and exception handoff without releasing goods or contacting customers. |
 | [Partner business manager](claws/partner-business-manager) | X4; Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority. |
 | [Payroll review preparer](claws/payroll-review-preparer) | X3; Prepares a private pre-release payroll comparison and exception workpaper from minimized draft registers, approved change inputs, and supplied review rules without calculating statutory entitlements or releasing payroll. |
 | [Pet care coordinator](claws/pet-care-coordinator) | X3; Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
@@ -823,7 +828,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (71)
+### Standard attention (72)
 
 | Claw | Detail |
 | --- | --- |
@@ -873,6 +878,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | portable workspace artifacts only |
 | [Music organizer](claws/music-organizer) | portable workspace artifacts only |
 | [Neighborhood operations watcher](claws/neighborhood-operations-watcher) | portable workspace artifacts only |
+| [Order Fulfillment Reconciler](claws/order-fulfillment-reconciler) | portable workspace artifacts only |
 | [Personal archive curator](claws/personal-archive-curator) | portable workspace artifacts only |
 | [Pet care coordinator](claws/pet-care-coordinator) | portable workspace artifacts only |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | portable workspace artifacts only |

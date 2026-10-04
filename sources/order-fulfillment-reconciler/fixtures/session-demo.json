@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "order-fulfillment-reconciler",
+  "scenario": "Reconcile two orders for the same SKU. A ordered ten and cancelled two; six shipped and four are delivery-confirmed. B ordered eight; all eight shipped and are delivery-confirmed.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile two orders for the same SKU. A ordered ten and cancelled two; six shipped and four are delivery-confirmed. B ordered eight; all eight shipped and are delivery-confirmed."
+    },
+    {
+      "role": "agent",
+      "text": "Using the synthetic snapshot in fixtures/fulfillment-input.example.json: ORDER-A / ITEM-1 has 8 EA net ordered, 6 departed and 4 delivery-confirmed. That leaves 2 without departure evidence and 2 departed without delivery confirmation. ORDER-B / ITEM-1 has 8 departed and 8 delivery-confirmed; its totals cannot offset A."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "The example handoff records ORDERS r2, SHIPMENTS r1 and DELIVERIES r1, captured at 16:00Z, with a 17:00Z cutoff on 2026-10-04. COORDINATOR-LEE must check A's missing evidence and review customer wording. A is past its supplied promise without full delivery evidence; B's promise is unknown. Nothing was shipped, changed or sent by this Claw."
+    }
+  ],
+  "report": {
+    "title": "Order Fulfillment Reconciler session handoff",
+    "summary": "A has two not shipped and two shipped without delivery confirmation; B has no outstanding quantity. Aggregate totals do not erase A's exception, and no shipment or customer contact is performed.",
+    "output": "outputs/order-fulfillment-reconciler-handoff.md",
+    "items": [
+      {
+        "title": "Order-line fulfillment reconciliation with separate shipment and delivery balances",
+        "summary": "ORDER-A: 8 net ordered, 6 departed, 4 delivery-confirmed, 2 not evidenced shipped and 2 shipped without confirmation. ORDER-B: 8 net ordered, 8 departed and 8 delivery-confirmed.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source-linked shipment and delivery register",
+        "summary": "LOAD-1 is shared, but SHIP-A and SHIP-B retain separate order-line allocations in EA. Source register: ORDERS r2, SHIPMENTS r1, DELIVERIES r1.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Missing, conflicting, held and overdue evidence exception queue",
+        "summary": "COORDINATOR-LEE owns A's departure and delivery evidence gaps. A is past its supplied promise at the cutoff; B has no supplied promise. No holds were supplied; this is not release approval.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Draft operational handoff and customer-status wording for owner review",
+        "summary": "Draft for A: supplied records show 6 of 8 EA departed and 4 delivery-confirmed. The owner must review before contact. The JSON and Markdown examples agree; no new delivery promise or external action is authorized.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
