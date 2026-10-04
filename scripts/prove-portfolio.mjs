@@ -18,6 +18,7 @@ import {
 } from "./openclaw-proof-lib.mjs";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
+import { selectApplicationRequest } from "./portfolio-application-request.mjs";
 
 const { cliEntry, openClawEntry } = resolveProofConfig();
 const openClawRoot = dirname(openClawEntry);
@@ -717,7 +718,7 @@ async function assertApplicationTurn({ entry, marker, requestLog, turn }) {
     .split("\n")
     .filter(Boolean)
     .map((line) => JSON.parse(line));
-  const request = requestLines.find((item) => item.path === "/v1/responses");
+  const request = selectApplicationRequest(requestLines);
   if (!request || typeof request.body !== "string") {
     throw new Error(`${entry.id} agent turn did not reach the OpenAI-compatible runtime.`);
   }
