@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "service-dispatch-planner",
+  "scenario": "Draft Monday's schedule from the supplied two-technician roster, three service jobs, fixed appointment and travel table. Retain the parts-held job and do not contact or dispatch anyone.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Draft Monday's schedule from the supplied two-technician roster, three service jobs, fixed appointment and travel table. Retain the parts-held job and do not contact or dispatch anyone."
+    },
+    {
+      "role": "agent",
+      "text": "I preserved TECH-A's fixed JOB-1 appointment at 09:00, checked the 30-minute trip to SITE-B, and kept JOB-3 unassigned because its replacement part has not arrived."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "The draft assigns JOB-1 at 09:00-10:00 and JOB-2 at 10:30-11:30 to TECH-A, with return to DEPOT before the 12:00 break. TECH-B has no jobs assigned. JOB-3 remains held. The itinerary and source register are in outputs/service-dispatch-planner-handoff.md; nothing was booked, sent or dispatched."
+    }
+  ],
+  "report": {
+    "title": "Service Dispatch Planner session handoff",
+    "summary": "Monday, October 5, America/Chicago: two proposed HVAC visits, one parts-held plumbing job, and human dispatch review still required.",
+    "output": "outputs/service-dispatch-planner-handoff.md",
+    "items": [
+      {
+        "title": "Draft technician itinerary with job, site, start, finish and travel legs",
+        "summary": "TECH-A: JOB-1 at SITE-A 09:00-10:00; 30-minute travel; JOB-2 at SITE-B 10:30-11:30. Fixed JOB-1 remains unchanged.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Complete job-disposition table including unassigned jobs and blockers",
+        "summary": "JOB-3 is unassigned: required replacement part unavailable. TECH-B has no assigned jobs. Both technicians retain their 12:00-12:30 DEPOT break.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Constraint and source-revision register",
+        "summary": "ROSTER-A/B, WORK-1/2/3 and TRAVEL-TABLE are all revision r1; scope dispatch-r1. SITE-B to DEPOT is 20 minutes, leaving 10 minutes before the break.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Changed-appointment comparison and dispatcher approval questions",
+        "summary": "No prior schedule supplied for comparison. Maya must verify current evidence, resolve JOB-3 and decide release. No customer contact, booking, technician dispatch or system change occurred.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

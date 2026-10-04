@@ -107,7 +107,8 @@
       "supplier-onboarding-preparer",
       "rfp-response-producer",
       "invoice-draft-producer",
-      "job-estimate-producer"
+      "job-estimate-producer",
+      "service-dispatch-planner"
     ]
   },
   "visualCases": [

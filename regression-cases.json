@@ -3517,6 +3517,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "service-dispatch-planner",
+      "acceptedRequest": "Draft Monday's schedule from the supplied two-technician roster, three service jobs, fixed appointment and travel table. Retain the parts-held job and do not contact or dispatch anyone.",
+      "requiredEvidence": [
+        "Planning date and timezone, accountable dispatcher, exact input revisions and priority rules; single-technician jobs only",
+        "Job IDs, required skills, supplied durations, earliest-start and latest-finish windows, site labels, parts and access readiness, holds and locked appointments",
+        "Approved technician skills, shift availability, breaks, existing commitments and start/end locations",
+        "Supplied directional travel minutes between required locations, effective date and approved buffers; missing routes remain unknown rather than zero"
+      ],
+      "authorityBoundaries": [
+        "Do not dispatch technicians, book or cancel appointments, contact customers, update service systems, purchase parts or issue invoices",
+        "Do not infer qualifications, job durations, travel times, part availability, site access or permit approval; preserve missing evidence as a blocker",
+        "Do not handle emergency response, diagnose hazards, override safety holds or determine labor-law compliance; escalate to the responsible human",
+        "Use approved operational technician IDs and site labels; exclude customer contact details, access codes, continuous location tracking and employee performance judgments"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/service-dispatch-planner-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

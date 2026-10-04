@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (141)
+### Active (142)
 
 | Claw | Detail |
 | --- | --- |
@@ -129,6 +129,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [School coordinator](claws/school-coordinator) | @giodl73-repo; last verified 2026-08-23 |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | @giodl73-repo; last verified 2026-09-17 |
 | [Security analyst](claws/security-analyst) | @giodl73-repo; last verified 2026-08-19 |
+| [Service Dispatch Planner](claws/service-dispatch-planner) | @giodl73-repo; last verified 2026-10-04 |
 | [Software maintainer](claws/software-maintainer) | @giodl73-repo; last verified 2026-10-02 |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | @giodl73-repo; last verified 2026-09-14 |
 | [Sports team watcher](claws/sports-team-watcher) | @giodl73-repo; last verified 2026-08-21 |
@@ -168,7 +169,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (109)
+### Low setup (110)
 
 | Claw | Detail |
 | --- | --- |
@@ -265,6 +266,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [School coordinator](claws/school-coordinator) | no bootstrap, external dependency, or schedule |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | no bootstrap, external dependency, or schedule |
 | [Security analyst](claws/security-analyst) | no bootstrap, external dependency, or schedule |
+| [Service Dispatch Planner](claws/service-dispatch-planner) | no bootstrap, external dependency, or schedule |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | no bootstrap, external dependency, or schedule |
 | [Sports team watcher](claws/sports-team-watcher) | no bootstrap, external dependency, or schedule |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | no bootstrap, external dependency, or schedule |
@@ -328,7 +330,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (118)
+### No external dependencies (119)
 
 | Claw | Detail |
 | --- | --- |
@@ -434,6 +436,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [School coordinator](claws/school-coordinator) | None |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | None |
 | [Security analyst](claws/security-analyst) | None |
+| [Service Dispatch Planner](claws/service-dispatch-planner) | None |
 | [Solution architecture decision advisor](claws/solution-architecture-decision-advisor) | None |
 | [Sports team watcher](claws/sports-team-watcher) | None |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | None |
@@ -483,7 +486,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (102)
+### X3 (103)
 
 | Claw | Detail |
 | --- | --- |
@@ -570,6 +573,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [RFP response producer](claws/rfp-response-producer) | Produces a source-backed commercial RFP or RFI response draft from a buyer's request, amendments, and authorized seller material, with complete question coverage, explicit capability gaps, attachment checks, and specialist review requests without submitting or making commitments. |
 | [Sales operations](claws/sales-operations) | Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
 | [School coordinator](claws/school-coordinator) | Tracks assignments, forms, teacher notes, school calendars, supply lists, events, accommodations, and parent review questions from approved sources without submitting forms, messaging teachers, changing enrollment, or making education, medical, legal, or payment decisions. |
+| [Service Dispatch Planner](claws/service-dispatch-planner) | Builds a feasible draft technician appointment schedule from supplied job, availability, skill, travel and readiness constraints without dispatching anyone. |
 | [Software maintainer](claws/software-maintainer) | Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority. |
 | [Sports team watcher](claws/sports-team-watcher) | Tracks favorite teams across leagues and prepares sourced schedule, result, standings, roster, and watch-item digests without betting, ticketing, or claiming live completeness. |
 | [Spreadsheet analyst](claws/spreadsheet-analyst) | Audits and transforms spreadsheets while preserving formulas, lineage, and reviewability. |
@@ -705,7 +709,7 @@ Categories come directly from the catalog entry.
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
-### Operations (36)
+### Operations (37)
 
 | Claw | Detail |
 | --- | --- |
@@ -739,6 +743,7 @@ Categories come directly from the catalog entry.
 | [Recruiting coordinator](claws/recruiting-coordinator) | X3; Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
 | [RFP response producer](claws/rfp-response-producer) | X3; Produces a source-backed commercial RFP or RFI response draft from a buyer's request, amendments, and authorized seller material, with complete question coverage, explicit capability gaps, attachment checks, and specialist review requests without submitting or making commitments. |
 | [Sales operations](claws/sales-operations) | X3; Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
+| [Service Dispatch Planner](claws/service-dispatch-planner) | X3; Builds a feasible draft technician appointment schedule from supplied job, availability, skill, travel and readiness constraints without dispatching anyone. |
 | [Supplier capacity assurance manager](claws/supplier-capacity-assurance-manager) | X4; Reconciles an exact approved demand-plan revision against supplier commits, qualified capacity, inventory, quality, and inbound logistics evidence to prepare shortage and recovery decisions. |
 | [Supplier onboarding preparer](claws/supplier-onboarding-preparer) | X3; Prepares one selected supplier's setup packet from authorized intake and owner-supplied onboarding rules, reconciling identity, required evidence, specialist routes, and outstanding questions without activating the supplier. |
 | [Vehicle service coordinator](claws/vehicle-service-coordinator) | X3; Coordinates evidence-bound vehicle troubleshooting, safe escalation, repair preparation, and explicitly approved service appointments without authorizing repairs or controlling a vehicle. |
@@ -818,7 +823,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (70)
+### Standard attention (71)
 
 | Claw | Detail |
 | --- | --- |
@@ -882,6 +887,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Resume portfolio curator](claws/resume-portfolio-curator) | portable workspace artifacts only |
 | [Sales operations](claws/sales-operations) | portable workspace artifacts only |
 | [School coordinator](claws/school-coordinator) | portable workspace artifacts only |
+| [Service Dispatch Planner](claws/service-dispatch-planner) | portable workspace artifacts only |
 | [Sports team watcher](claws/sports-team-watcher) | portable workspace artifacts only |
 | [Stock portfolio monitor](claws/stock-portfolio-monitor) | portable workspace artifacts only |
 | [Subscription manager](claws/subscription-manager) | portable workspace artifacts only |
