@@ -78,7 +78,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["inputDigest", "state", "draftRevision", "dueDate", "rulesRevision", "historyRevision", "lines", "coverage", "applications", "totals", "blockers"],
       "properties": {
-        "inputDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "inputDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$", "description": "Compute from current inputs using references/billing-contract.md#structured-input-digest; never reuse the example digest." },
         "state": { "enum": ["blocked", "ready-for-owner-review"] }, "draftRevision": { "$ref": "#/$defs/text" },
         "dueDate": { "type": "string", "format": "date" }, "rulesRevision": { "$ref": "#/$defs/text" }, "historyRevision": { "$ref": "#/$defs/text" },
         "lines": { "type": "array", "items": {

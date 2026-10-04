@@ -16,6 +16,26 @@ const validate = ajv.compile(schema);
 const clone = () => structuredClone(fixture);
 const refresh = (record) => { record.result = deriveInvoiceDraft(record); return record; };
 
+test("invoice: packaged digest recipe computes the exact current input fingerprint", async () => {
+  const reference = await readFile(new URL("references/billing-contract.md", root), "utf8");
+  const code = reference.match(/```js\r?\n([\s\S]*?)\r?\n```/)[1];
+  const { computeInvoiceInputDigest } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
+  for (const change of [() => {}, (value) => { value.items[0].sourceRef = "SOURCE-CHANGED"; }, (value) => { value.scope.reviewer = "\u00c9lodie"; }, (value) => { value.scope = Object.fromEntries(Object.entries(value.scope).reverse()); }]) {
+    const value = clone(); change(value);
+    assert.equal(computeInvoiceInputDigest(value), deriveInvoiceDraft(value).inputDigest);
+  }
+});
+
+test("invoice: normalized agent identities cannot stand in for the human reviewer", () => {
+  for (const reviewer of ["Invoice draft producer", " invoice-draft-producer ", "invoice_draft_producer", "INVOICE   DRAFT PRODUCER", " assistant ", "\uff41ssistant"]) {
+    const value = clone(); value.scope.reviewer = reviewer;
+    assert.throws(() => deriveInvoiceDraft(value), /human reviewer/);
+    assert(invoiceDraftFindings(value).some((finding) => finding.code === "invoice_input"));
+  }
+  const value = clone(); value.scope.reviewer = "Assistant manager Maya"; refresh(value);
+  assert.deepEqual(invoiceDraftFindings(value), []);
+});
+
 test("invoice: accepted example produces the actual invoice and separate blocked workpaper", async () => {
   assert.equal(validate(fixture), true, JSON.stringify(validate.errors));
   assert.deepEqual(invoiceDraftFindings(fixture), []);

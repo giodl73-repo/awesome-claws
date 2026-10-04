@@ -26,7 +26,7 @@
     },
     {
       "name": "schema-portfolio",
-      "canonicalDigest": "sha256:018478c1579284aa4248f0c397e64d8e9361d51f927e0a144f68315bd0b333f0",
+      "canonicalDigest": "sha256:c2cb4634c78312d30247f5ff04c476eecbd27dd7dbd452522757e40f13513b4a",
       "clawCount": 140,
       "caseCount": 52578,
       "controlsPassed": 980,
@@ -40,7 +40,7 @@
     },
     {
       "name": "semantic-portfolio",
-      "canonicalDigest": "sha256:c42628fec305d276f53be75cb61c59b65bb2fdc7bb02493a218763b1f9608699",
+      "canonicalDigest": "sha256:e800ad649229c6abdb00b1f3b0443150e3661cce82a3345ba3c43ddc7c88ddff",
       "clawCount": 140,
       "caseCount": 2207,
       "controlsPassed": 980,
@@ -54,7 +54,7 @@
     },
     {
       "name": "lifecycle-portfolio",
-      "canonicalDigest": "sha256:e6beeba5321157ea44f580865cb2a76686b3223f720be3db8df08ed39ed38ca5",
+      "canonicalDigest": "sha256:2c0a055dca479f921e6dcb1d7bde434538951f841a1ffeb71d0a5827ef3f15bc",
       "clawCount": 140,
       "caseCount": 2613,
       "controlsPassed": 980,
@@ -75,5 +75,5 @@
     "mutantsSurvived": 0,
     "safetyBlockers": 0
   },
-  "profileDigest": "sha256:afd213ceb14662264806b3a1826bf515373ccf516f036895660c5dc9660f8a54"
+  "profileDigest": "sha256:5851a7149da36d57fc73ad1a3f4a59a0d4259fef0a05a47398e14a128789bd60"
 }

@@ -48,7 +48,8 @@ export function deriveInvoiceDraft(record) {
     require(text(scope[key]), `Missing scope ${key}`);
   }
   require(/^[A-Z]{3}$/.test(scope.currency) && integer(scope.minorDigits) && scope.minorDigits <= 4, "Invalid currency precision");
-  require(!/^(agent|assistant|invoice-draft-producer)$/i.test(scope.reviewer), "A human reviewer is required");
+  const reviewer = scope.reviewer.normalize("NFKC").trim().toLowerCase().replace(/[\s_-]+/gu, " ");
+  require(!/^(agent|assistant|invoice draft producer)$/.test(reviewer), "A human reviewer is required");
   date(scope.invoiceDate);
   require(date(scope.periodStart) <= date(scope.periodEnd), "Reversed service period");
   require(date(scope.periodEnd) <= date(scope.invoiceDate), "Completion period is after invoice date");
