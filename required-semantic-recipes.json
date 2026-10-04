@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 142,
-    "coveredCount": 142,
-    "recipeCount": 392,
-    "findingCodeCount": 534
+    "validatorCount": 143,
+    "coveredCount": 143,
+    "recipeCount": 393,
+    "findingCodeCount": 535
   },
   "entries": [
     {
@@ -6193,6 +6193,24 @@
           "expectedCodes": [
             "dispatch_duration",
             "dispatch_revision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "seller-return-reconciler",
+      "recipes": [
+        {
+          "id": "semantic-seller-return-report-1",
+          "operator": "replace",
+          "path": [
+            "input",
+            "scope",
+            "batchId"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "seller_return_report"
           ]
         }
       ]

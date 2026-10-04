@@ -3541,6 +3541,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "seller-return-reconciler",
+      "acceptedRequest": "Review a return line with five units authorized, three evidenced received and two received units with recorded human disposition. Prepare the return backlog without authorizing refunds or replacements.",
+      "requiredEvidence": [
+        "Bounded return batch, as-of timestamp, accountable coordinator and exact source revisions",
+        "Supplied human-authorized return lines with stable identities, quantities, units and accepted amendments",
+        "Physical receipt records linked to return lines, including partial receipts, voids, corrections and unmatched goods",
+        "Recorded human disposition evidence linked to received units or lots, supplied holds and repair or replacement handoff status"
+      ],
+      "authorityBoundaries": [
+        "Do not authorize or deny returns, decide warranty coverage, inspect or diagnose products, choose a disposition, or declare goods safe or resalable; escalate supplied recall or safety holds to the accountable human",
+        "Do not issue credit memos or refunds, adjust customer accounts or inventory, create shipping labels, book carriers, ship replacements, contact customers or write to an ERP",
+        "Use approved customer and product aliases; exclude addresses, payment details, credentials, raw serial numbers and unrestricted customer records"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/seller-return-reconciler-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
