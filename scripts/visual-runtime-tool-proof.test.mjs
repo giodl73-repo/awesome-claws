@@ -25,3 +25,25 @@ test("tool errors and invalid results cannot be hidden by a later valid result",
     assert.throws(() => assertWidgetToolResult([emitted, response(output), response(JSON.stringify(canvas))]));
   }
 });
+
+test("unwraps the successful deferred widget result with exact call identity", () => {
+  const deferred = { ...emitted, emittedFunction: "tool_call" };
+  const wrapped = { tool: { id: "openclaw:core:show_widget", name: "show_widget", source: "openclaw" }, result: { content: [{ type: "text", text: JSON.stringify(canvas) }], details: canvas } };
+  assert.deepEqual(assertWidgetToolResult([deferred, response(JSON.stringify(wrapped))]), canvas);
+  assert.throws(() => assertWidgetToolResult([deferred, response(JSON.stringify(wrapped), "other-call")]), /no matching/);
+  assert.throws(() => assertWidgetToolResult([deferred, response(JSON.stringify(canvas))]), /wrong tool identity/);
+  assert.throws(() => assertWidgetToolResult([emitted, response(JSON.stringify(wrapped))]), /inline hosted canvas/);
+  for (const invalid of [
+    { ...wrapped, tool: { ...wrapped.tool, name: "write" } },
+    { ...wrapped, tool: { ...wrapped.tool, source: "mcp" } },
+    { ...wrapped, status: "failed" },
+    { ...wrapped, result: { ...wrapped.result, isError: true } },
+    { ...wrapped, result: { ...wrapped.result, details: { ...canvas, status: "blocked" } } },
+    { ...wrapped, result: { ...wrapped.result, details: { ...canvas, ok: false } } },
+    { ...wrapped, result: { ...wrapped.result, details: { ...canvas, error: "denied" } } },
+    { ...wrapped, result: { content: wrapped.result.content } },
+    { ...wrapped, result: { details: { ...canvas, view: { id: "cv_test", url: "https://example.com/" } } } },
+  ]) {
+    assert.throws(() => assertWidgetToolResult([deferred, response(JSON.stringify(invalid)), response(JSON.stringify(wrapped))]));
+  }
+});
