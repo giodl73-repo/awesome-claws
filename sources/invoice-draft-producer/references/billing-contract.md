@@ -80,6 +80,37 @@ invoice and its issuance evidence. The current draft is not a receivable.
 Progress certification, statutory e-invoicing, retainage, trust accounting,
 currency conversion and legal/tax conclusions are outside this base contract.
 
+## Structured blockers
+
+Report every applicable blocker using the affected `id` and stable `code`
+below. Keep a nonempty, human-readable `reason` explaining the missing evidence
+or owner decision. Wording and blocker order may vary; the `(id, code)` pairs
+and their multiplicity must match the current inputs. Explanations do not
+grant authority or replace evidence. Keep them in the private workpaper.
+
+| Code | Affected id | Condition |
+| --- | --- | --- |
+| `history-coverage` | History source and each item | Prior-billing coverage is not confirmed complete. |
+| `billing-policy` | Rules source; each item being evaluated for billing | Rules are unconfirmed or rounding is not half-up per line. |
+| `purchase-order` | Rules source | Required customer purchase order is missing. |
+| `zero-work` | Item | A bill decision has zero source quantity. |
+| `item-scope` | Item | Customer or currency differs. |
+| `service-period` | Item | Source dates are reversed or outside the billing period. |
+| `source-current` | Item | Source revision is not current. |
+| `item-disposition` | Item | Deferral or rejection lacks the owner's decision reference. |
+| `billing-approval` | Item being evaluated for billing | Billing approval or agreement/rate reference is missing. |
+| `completion-evidence` | Item being evaluated for billing | Completion or acceptance evidence is missing. |
+| `billing-description` | Item being evaluated for billing | Disclosure approval or customer description is missing. |
+| `tax-treatment` | Item being evaluated for billing | Explicit tax rate is missing. |
+| `balance-authorization` | Balance | Current state, customer/currency scope, available amount or exact-draft authorization is invalid. |
+| `balance-total` | Draft | Included proposed balances exceed the supported invoice total. |
+| `empty-invoice` | Draft | No supported invoice lines remain. |
+
+An item is evaluated for billing when its decision is `bill`, except when its
+quantity is fully billed and its initial quantity/scope/date/freshness/history
+checks are clear. Deferred and rejected items still require those initial
+checks, plus the owner's disposition reference.
+
 ## Structured input digest
 
 `result.inputDigest` is a deterministic freshness check, not an approval or

@@ -70,10 +70,10 @@ export function deriveInvoiceDraft(record) {
     quantity(row.quantity);
   }
   const blockers = [];
-  const add = (id, reason) => blockers.push({ id, reason });
-  if (!history.complete) add(history.sourceRef, "Owner must confirm complete prior-billing coverage.");
-  if (!rules.confirmed || rules.rounding !== "half-up-per-line") add(rules.sourceRef, "Supply current approved rules and supported explicit rounding.");
-  if (rules.poRequired && !text(scope.purchaseOrder)) add(rules.sourceRef, "Supply the required customer PO.");
+  const add = (id, code, reason) => blockers.push({ id, code, reason });
+  if (!history.complete) add(history.sourceRef, "history-coverage", "Owner must confirm complete prior-billing coverage.");
+  if (!rules.confirmed || rules.rounding !== "half-up-per-line") add(rules.sourceRef, "billing-policy", "Supply current approved rules and supported explicit rounding.");
+  if (rules.poRequired && !text(scope.purchaseOrder)) add(rules.sourceRef, "purchase-order", "Supply the required customer PO.");
   const lines = [];
   const coverage = [];
   for (const item of items) {
@@ -88,23 +88,24 @@ export function deriveInvoiceDraft(record) {
     const remaining = total - billed;
     let disposition = "blocked";
     const reasons = [];
-    if (total === 0n && item.decision === "bill") reasons.push("Supply a positive billable quantity or an explicit owner deferral/rejection; zero work is not already billed.");
-    if (item.customer !== scope.customer || item.currency !== scope.currency) reasons.push("Resolve customer or currency mismatch.");
+    const reject = (code, reason) => reasons.push({ code, reason });
+    if (total === 0n && item.decision === "bill") reject("zero-work", "Supply a positive billable quantity or an explicit owner deferral/rejection; zero work is not already billed.");
+    if (item.customer !== scope.customer || item.currency !== scope.currency) reject("item-scope", "Resolve customer or currency mismatch.");
     if (date(item.periodStart) > date(item.periodEnd) || date(item.periodStart) < date(scope.periodStart)
-      || date(item.periodEnd) > date(scope.periodEnd)) reasons.push("Resolve source service-period mismatch.");
-    if (!item.current) reasons.push("Supply the current source revision.");
-    if (!history.complete) reasons.push("Confirm complete prior billing before calculating unbilled work.");
+      || date(item.periodEnd) > date(scope.periodEnd)) reject("service-period", "Resolve source service-period mismatch.");
+    if (!item.current) reject("source-current", "Supply the current source revision.");
+    if (!history.complete) reject("history-coverage", "Confirm complete prior billing before calculating unbilled work.");
     if (item.decision !== "bill") {
-      if (!text(item.decisionRef)) reasons.push("Supply the owner's explicit deferral or rejection.");
+      if (!text(item.decisionRef)) reject("item-disposition", "Supply the owner's explicit deferral or rejection.");
       if (!reasons.length) disposition = item.decision === "defer" ? "deferred" : "rejected";
     } else if (remaining === 0n && !reasons.length) {
       disposition = "already-billed";
     } else {
-      if (!item.approved || !text(item.approvalRef)) reasons.push("Supply billing approval and the current agreement/rate reference.");
-      if (!item.completed || !text(item.completionRef)) reasons.push("Supply completion and any required acceptance evidence.");
-      if (!item.disclosureApproved || !text(item.description)) reasons.push("Supply a disclosure-approved billing description.");
-      if (item.taxBps === null) reasons.push("Supply explicit tax treatment, including zero where applicable.");
-      if (!rules.confirmed || rules.rounding !== "half-up-per-line") reasons.push("Resolve billing and rounding instructions.");
+      if (!item.approved || !text(item.approvalRef)) reject("billing-approval", "Supply billing approval and the current agreement/rate reference.");
+      if (!item.completed || !text(item.completionRef)) reject("completion-evidence", "Supply completion and any required acceptance evidence.");
+      if (!item.disclosureApproved || !text(item.description)) reject("billing-description", "Supply a disclosure-approved billing description.");
+      if (item.taxBps === null) reject("tax-treatment", "Supply explicit tax treatment, including zero where applicable.");
+      if (!rules.confirmed || rules.rounding !== "half-up-per-line") reject("billing-policy", "Resolve billing and rounding instructions.");
       if (!reasons.length) {
         const gross = rounded(remaining * BigInt(item.rateMinor), SCALE);
         require(item.discountMinor <= gross, "Discount exceeds supported gross amount");
@@ -116,7 +117,7 @@ export function deriveInvoiceDraft(record) {
         disposition = "included";
       }
     }
-    for (const reason of reasons) add(item.id, reason);
+    for (const { code, reason } of reasons) add(item.id, code, reason);
     coverage.push({ sourceId: item.id, revision: item.revision, totalQuantity: decimal(total),
       billedQuantity: decimal(billed), proposedQuantity: disposition === "included" ? decimal(remaining) : "0", disposition });
   }
@@ -132,13 +133,13 @@ export function deriveInvoiceDraft(record) {
       && balance.customer === scope.customer && balance.currency === scope.currency
       && balance.draftRef === scope.draftRef && balance.draftRevision === scope.revision
       && balance.proposed <= balance.remaining;
-    if (!valid) add(balance.id, "Resolve balance scope, freshness, available amount and exact-draft authorization.");
+    if (!valid) add(balance.id, "balance-authorization", "Resolve balance scope, freshness, available amount and exact-draft authorization.");
     applications.push({ id: balance.id, revision: balance.revision, kind: balance.kind,
       proposed: balance.proposed, included: valid ? balance.proposed : 0, state: valid ? "proposed" : "blocked" });
   }
   const applied = safe(applications.reduce((sum, application) => sum + BigInt(application.included), 0n));
-  if (applied > totals.total) add(scope.draftRef, "Proposed balances exceed the supported invoice total; obtain revised applications.");
-  if (lines.length === 0) add(scope.draftRef, "No supported invoice lines are available.");
+  if (applied > totals.total) add(scope.draftRef, "balance-total", "Proposed balances exceed the supported invoice total; obtain revised applications.");
+  if (lines.length === 0) add(scope.draftRef, "empty-invoice", "No supported invoice lines are available.");
   const dueDate = date(scope.invoiceDate);
   dueDate.setUTCDate(dueDate.getUTCDate() + rules.netDays);
   // Detect stale derived output, not source authenticity or external approval.
@@ -152,7 +153,11 @@ export function invoiceDraftFindings(record) {
   try {
     const expected = deriveInvoiceDraft(record);
     const findings = [];
-    if (canonical(record.result) !== canonical(expected)) findings.push({ code: "invoice_result", path: "result", message: "Recompute the complete draft and coverage from current evidence; do not preserve stale totals or readiness." });
+    const evidence = (result) => ({ ...result, blockers: result.blockers.map(({ reason, ...identity }) => {
+      require(text(reason), "Every blocker needs an explanation.");
+      return canonical(identity);
+    }).sort() });
+    if (canonical(evidence(record.result)) !== canonical(evidence(expected))) findings.push({ code: "invoice_result", path: "result", message: "Recompute the complete draft and coverage from current evidence; do not preserve stale totals or readiness." });
     const authority = { invoice: "draft-not-issued", sending: "not-performed", numbering: "not-reserved", ledger: "not-changed", payment: "not-collected", balances: "not-applied" };
     if (canonical(record.authority) !== canonical(authority)) findings.push({ code: "invoice_authority", path: "authority", message: "All external invoice and accounting actions remain unperformed." });
     return findings;
@@ -199,7 +204,7 @@ export function renderInvoiceDraft(record) {
     "## Proposed balances", ...record.balances.map((balance) => `- ${escape(balance.id)}/${escape(balance.revision)}: ${escape(balance.sourceRef)}; remaining ${balanceMoney(balance.remaining, balance.currency)}; proposed ${balanceMoney(balance.proposed, balance.currency)}; authorization ${escape(balance.authorizationRef ?? "missing")} for ${escape(balance.draftRef)}/${escape(balance.draftRevision)}.`),
     "## Calculations", ...r.lines.map((line) => `- ${escape(line.sourceId)}: ${line.quantity} x ${money(line.rateMinor)} = ${money(line.gross)}; discount ${money(line.discount)}; net ${money(line.net)}; ${line.taxBps / 100}% tax ${money(line.tax)}; total ${money(line.total)}.`),
     `Invoice total ${money(r.totals.total)}; proposed applications ${money(r.totals.applications)}; proposed due ${money(r.totals.due)}.`,
-    "## Owner questions", ...(r.blockers.length ? r.blockers.map((blocker) => `- ${escape(blocker.id)}: ${escape(blocker.reason)}`) : ["No input blockers remain; the owner must review this exact draft revision."]),
+    "## Owner questions", ...(r.blockers.length ? r.blockers.map((blocker) => `- ${escape(blocker.id)} [${escape(blocker.code)}]: ${escape(blocker.reason)}`) : ["No input blockers remain; the owner must review this exact draft revision."]),
     "Recalculate after source changes. Nothing was issued, sent, numbered, posted, paid or applied. Require the owner's actual issued invoice before handoff to Invoice and payment follow-up."].join("\n\n") + "\n";
   return { draft, workpaper };
 }

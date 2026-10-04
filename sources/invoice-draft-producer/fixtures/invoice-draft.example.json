@@ -311,10 +311,12 @@
     "blockers": [
       {
         "id": "WORK-102",
+        "code": "billing-approval",
         "reason": "Supply billing approval and the current agreement/rate reference."
       },
       {
         "id": "WORK-102",
+        "code": "billing-description",
         "reason": "Supply a disclosure-approved billing description."
       }
     ]

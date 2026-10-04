@@ -48,8 +48,8 @@ Invoice total USD 914.40; proposed applications USD 250.00; proposed due USD 664
 
 ## Owner questions
 
-- WORK-102: Supply billing approval and the current agreement/rate reference.
+- WORK-102 [billing-approval]: Supply billing approval and the current agreement/rate reference.
 
-- WORK-102: Supply a disclosure-approved billing description.
+- WORK-102 [billing-description]: Supply a disclosure-approved billing description.
 
 Recalculate after source changes. Nothing was issued, sent, numbered, posted, paid or applied. Require the owner's actual issued invoice before handoff to Invoice and payment follow-up.
