@@ -37,7 +37,8 @@ async function waitForHealth(child, url, timeoutMs = 10_000) {
   throw new Error(`Visual runtime mock did not become healthy within ${timeoutMs}ms.`);
 }
 
-test("the visual runtime fixture preserves writes and widget steps around background recaps", async () => {
+for (const widgetTool of ["show_widget", "tool_call"]) {
+test(`the visual runtime fixture preserves steps around recaps with ${widgetTool}`, async () => {
   await mkdir(join(root, ".tmp"), { recursive: true });
   const temp = await mkdtemp(join(root, ".tmp", "visual-mock-test-"));
   const requestLog = join(temp, "requests.jsonl");
@@ -73,14 +74,17 @@ test("the visual runtime fixture preserves writes and widget steps around backgr
       const response = await fetch(`http://127.0.0.1:${port}/v1/responses`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ stream: false, input: [] }),
+        body: JSON.stringify({ stream: false, input: [], tools: [{ type: "function", name: widgetTool }] }),
       });
       assert.equal(response.status, 200);
       outputs.push((await response.json()).output[0]);
     }
     assert.equal(outputs[0].name, "write");
     assert.equal(JSON.parse(outputs[0].arguments).path, "outputs/analysis-state.json");
-    assert.equal(outputs[3].name, "show_widget");
+    assert.equal(outputs[3].name, widgetTool);
+    const widgetArgs = JSON.parse(outputs[3].arguments);
+    if (widgetTool === "tool_call") assert.equal(widgetArgs.id, "show_widget");
+    assert.equal((widgetArgs.args ?? widgetArgs).title, "Data Analyst current readout");
     assert.equal(outputs[4].type, "message");
     assert.match(outputs[4].content[0].text, /VISUAL_RUNTIME_OK/u);
     const records = (await readFile(requestLog, "utf8"))
@@ -95,6 +99,9 @@ test("the visual runtime fixture preserves writes and widget steps around backgr
     const recaps = records.filter((record) => record.inferenceFacts?.purpose === "activity-recap");
     assert.equal(recaps.length, 5);
     assert.ok(recaps.every((record) => record.step === undefined && record.emittedTool === undefined));
+    const widgetRecord = records.find((record) => record.emittedTool === "show_widget");
+    assert.equal(widgetRecord.emittedFunction, widgetTool);
+    assert.equal(widgetRecord.emittedCallId, outputs[3].call_id);
   } finally {
     child.kill();
     await new Promise((resolve) => {
@@ -107,3 +114,4 @@ test("the visual runtime fixture preserves writes and widget steps around backgr
     await rm(temp, { recursive: true, force: true });
   }
 });
+}
