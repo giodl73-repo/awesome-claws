@@ -106,7 +106,8 @@
       "project-document-controller",
       "supplier-onboarding-preparer",
       "rfp-response-producer",
-      "invoice-draft-producer"
+      "invoice-draft-producer",
+      "job-estimate-producer"
     ]
   },
   "visualCases": [
