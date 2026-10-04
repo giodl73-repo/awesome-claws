@@ -62,7 +62,7 @@
     "result": {
       "type": "object", "additionalProperties": false, "required": ["inputDigest", "quoteRevision", "scenarios", "comparisons"],
       "properties": {
-        "inputDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }, "quoteRevision": { "$ref": "#/$defs/text" },
+        "inputDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$", "description": "Compute from current inputs using references/estimating-contract.md#structured-input-digest; never reuse the example digest." }, "quoteRevision": { "$ref": "#/$defs/text" },
         "scenarios": { "type": "array", "minItems": 1, "items": {
           "type": "object", "additionalProperties": false,
           "required": ["id", "state", "costs", "coverage", "knownCost", "directCost", "totalCost", "preTax", "tax", "total", "grossMarginBps", "blockers"],

@@ -32,7 +32,8 @@ export function deriveJobEstimate(record) {
   const { scope, scopeItems, scenarios } = record;
   require(record.schemaVersion === "awesomeClaws.jobEstimate.v1", "Unknown estimate contract");
   for (const key of ["job", "revision", "quoteRef", "quoteRevision", "customer", "customerScope", "owner", "privateDestination", "terms"]) require(text(scope[key]), `Missing scope ${key}`);
-  require(!/^(agent|assistant|job-estimate-producer)$/i.test(scope.owner), "A human estimating owner is required");
+  const owner = scope.owner.normalize("NFKC").trim().toLowerCase().replace(/[\s_-]+/gu, " ");
+  require(!/^(agent|assistant|job estimate producer)$/.test(owner), "A human estimating owner is required");
   require(/^[A-Z]{3}$/.test(scope.currency) && amount(scope.minorDigits) && scope.minorDigits <= 4, "Invalid currency precision");
   date(scope.asOf); date(scope.validUntil);
   unique(scopeItems, (item) => item.id);
@@ -152,6 +153,8 @@ export function renderJobEstimate(record) {
   require(findings.length === 0, JSON.stringify(findings));
   const { scope: s, result: r } = record;
   const money = (value) => value === null ? "Pending owner input" : `${s.currency} ${new D(value).div(new D(10).pow(s.minorDigits)).toFixed(s.minorDigits)}`;
+  const sourceRate = (line) => line.rateMinor === null || line.currency === s.currency ? money(line.rateMinor)
+    : `${escape(line.currency)} ${line.rateMinor} minor units (source precision not supplied; not converted)`;
   const quote = ["# QUOTE DRAFT - NOT A BINDING OFFER", `Quote ${escape(s.quoteRef)} revision ${escape(s.quoteRevision)}`,
     `Customer: ${escape(s.customer)}. Job: ${escape(s.job)}; scope revision ${escape(s.revision)}.`,
     s.disclosureApproved ? escape(s.customerScope) : "Customer scope wording pending owner approval.",
@@ -159,26 +162,28 @@ export function renderJobEstimate(record) {
       ? `- ${escape(item.description)}${item.disposition === "allowance" ? " (owner-defined allowance)" : item.disposition === "blocked" ? " (scope pending)" : ""}` : "- Scope wording pending approval."),
     "## Exclusions", ...record.scopeItems.filter((item) => item.disposition === "excluded").map((item) => item.disclosureApproved ? `- ${escape(item.description)}` : "- Exclusion wording pending approval."),
     `Proposed validity: ${s.validUntil}. Terms: ${escape(s.terms)}.`,
-    ...r.scenarios.flatMap((output) => [`## ${escape(record.scenarios.find((item) => item.id === output.id).label)}`,
+    ...r.scenarios.flatMap((output, index) => [`## Proposed option ${index + 1}`,
       `Whole-job proposed pre-tax price: **${money(output.preTax)}**.`, `Tax under supplied instructions: ${money(output.tax)}.`,
       `**Final total: ${money(output.total)}**.`, output.state === "blocked" ? "**BLOCKED WORKING DRAFT**: unresolved inputs or owner decisions remain." : "Ready for owner review only."]),
     "No quote was issued, bid submitted, price approved, supplier selected, purchase placed or customer contacted. This draft promises no mobilization or completion date."].join("\n\n") + "\n";
   const workpaper = ["# Private job estimate workpaper", `Owner: ${escape(s.owner)}. Private destination: ${escape(s.privateDestination)}.`,
     `Job ${escape(s.job)}, scope ${escape(s.revision)}, quote ${escape(s.quoteRef)} revision ${escape(s.quoteRevision)}; as of ${s.asOf}.`,
-    ...r.scenarios.flatMap((output) => {
+    ...r.scenarios.flatMap((output, index) => {
       const scenario = record.scenarios.find((item) => item.id === output.id);
-      return [`## ${escape(scenario.label)}: ${output.state}`,
+      return [`## Option ${index + 1}: ${escape(scenario.label)} (${output.state})`,
         `Equivalent scope decision: ${escape(scenario.decisionRef ?? "missing")}. Pricing ${escape(scenario.pricing.sourceRef)}/${escape(scenario.pricing.revision)}: ${scenario.pricing.bps / 100}% ${scenario.pricing.method} on ${scenario.pricing.basis}.`,
         "| Cost source/revision | Scope | Quantity | Conversion to rate unit | Rate | Cost | State |\n| --- | --- | --- | --- | ---: | ---: | --- |\n"
         + output.costs.map((cost) => {
           const line = scenario.lines.find((item) => item.id === cost.id);
-          return `| ${escape(line.sourceRef)}/${escape(line.sourceRevision)} | ${escape(cost.scopeId)} | ${line.quantity ?? "unknown"} ${escape(line.quantityUnit)} | ${line.conversion ?? "unknown"} ${escape(line.rateUnit)} | ${money(line.rateMinor)} | ${money(cost.cost)} | ${cost.state} |`;
+          return `| ${escape(line.sourceRef)}/${escape(line.sourceRevision)} | ${escape(cost.scopeId)} | ${line.quantity ?? "unknown"} ${escape(line.quantityUnit)} | ${line.conversion ?? "unknown"} ${escape(line.rateUnit)} | ${sourceRate(line)} | ${money(cost.cost)} | ${cost.state} |`;
         }).join("\n"),
         ...scenario.lines.map((line) => `- ${escape(line.id)}: owner evidence ${escape(line.approvalRef ?? "missing")}; observed ${line.observedOn}, valid through ${line.validThrough}; conversion evidence ${escape(line.conversionRef ?? "same-unit factor")}.`),
         ...output.coverage.map((item) => `- Scope ${escape(item.scopeId)}: ${item.disposition}; required cost slots ${record.scopeItems.find((scopeItem) => scopeItem.id === item.scopeId).costLineIds.map(escape).join(", ") || "none"}; actual cost rows ${item.lineIds.map(escape).join(", ") || "none"}.`),
         `Known cost subtotal: ${money(output.knownCost)}; complete direct cost: ${money(output.directCost)}.`,
         `Overhead: ${money(scenario.pricing.overheadMinor)}; contingency: ${money(scenario.pricing.contingencyMinor)}; total estimated cost: ${money(output.totalCost)}.`,
         `Proposed pre-tax price: ${money(output.preTax)}; gross margin: ${output.grossMarginBps === null ? "undefined or unknown" : `${output.grossMarginBps / 100}%`}. Markup is not gross margin.`,
+        `Tax instruction: ${scenario.pricing.taxBps === null ? "Pending owner input" : `${scenario.pricing.taxBps / 100}% of whole-job pre-tax price`}; rounding policy: ${escape(scenario.pricing.rounding ?? "pending")}.`,
+        `Calculated tax: ${money(output.tax)}; final quote total: ${money(output.total)}.`,
         ...output.blockers.map((blocker) => `- Owner question ${escape(blocker.id)}: ${escape(blocker.reason)}`)];
     }),
     "## Equivalent-scope alternatives", ...(r.comparisons.length ? r.comparisons.map((comparison) => `- ${escape(comparison.id)} versus ${escape(comparison.baselineId)}: cost delta ${money(comparison.costDelta)}; pre-tax price delta ${money(comparison.preTaxDelta)}.`) : ["No alternative was requested or inferred."]),

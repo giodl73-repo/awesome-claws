@@ -4,7 +4,7 @@ Owner: Demo estimating owner. Private destination: Owner-only estimating workspa
 
 Job DEMO-JOB-12, scope 2, quote DEMO-QUOTE-12 revision 1; as of 2026-10-02.
 
-## Proposed installation: blocked
+## Option 1: Proposed installation (blocked)
 
 Equivalent scope decision: SCOPE-2. Pricing PRICING-2/2: 25% markup on direct-cost.
 
@@ -31,6 +31,10 @@ Known cost subtotal: USD 800.00; complete direct cost: USD 800.00.
 Overhead: USD 0.00; contingency: USD 0.00; total estimated cost: USD 800.00.
 
 Proposed pre-tax price: USD 1000.00; gross margin: 20%. Markup is not gross margin.
+
+Tax instruction: Pending owner input; rounding policy: half-up-per-line.
+
+Calculated tax: Pending owner input; final quote total: Pending owner input.
 
 - Owner question PRICING-2: Supply explicit tax treatment; final quote total remains unknown.
 

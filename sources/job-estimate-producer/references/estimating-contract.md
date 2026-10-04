@@ -70,6 +70,12 @@ Internal line costs, rates, margins, supplier terms, source IDs and owner
 questions belong only in the private workpaper unless explicitly approved for
 disclosure. Do not put the internal workpaper into customer copy. Customer
 scope and exclusion wording must both be disclosure-approved.
+Use neutral numbered option headings in customer copy; scenario labels stay
+private because they may contain internal pricing details. Keep the same option
+numbers in the workpaper, with each supplied tax basis/rate, rounding policy,
+calculated tax and final quote total so both artifacts can be reconciled.
+For blocked foreign-currency cost rates without supplied precision, preserve
+the actual currency and raw minor units; never relabel them as quote currency.
 
 ## Completion and authority
 
@@ -85,3 +91,37 @@ tax conclusions, or promise mobilization/completion dates. Owner-issued quotes
 can later go to Deal Desk for the separate commercial approval job. Completed,
 approved work can later support an invoice; an estimate alone is not billable
 delivery or permission to collect payment.
+
+## Structured input digest
+
+`result.inputDigest` checks freshness, not source authenticity or approval.
+Hash exactly `{ scope, scopeItems, scenarios }`, excluding `schemaVersion`,
+`result` and `authority`. Sort object keys recursively using JavaScript's
+default case-sensitive `sort()`, preserve array order and supplied values,
+and serialize with `JSON.stringify` without indentation or a trailing newline.
+Hash the UTF-8 bytes with SHA-256 and prefix the lowercase hexadecimal result
+with `sha256:`. The portable Node.js reference below defines the calculation.
+
+Use an already authorized computation tool with the built-in crypto module,
+or obtain its result for these exact inputs from the owner. No repository or
+package installation is needed. This reference grants no execution permission.
+If calculation is unavailable, retain the Markdown quote and private workpaper
+as unverified working artifacts and request the digest; do not fabricate a
+valid structured result or carry over the example's digest.
+
+```js
+import { createHash } from "node:crypto";
+
+export function computeEstimateInputDigest(record) {
+  const { scope, scopeItems, scenarios } = record;
+  const serialized = JSON.stringify({ scope, scopeItems, scenarios }, (_, value) =>
+    value && !Array.isArray(value) && typeof value === "object"
+      ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, value[key]]))
+      : value);
+  return `sha256:${createHash("sha256").update(serialized, "utf8").digest("hex")}`;
+}
+```
+
+Recompute after any input change, including private destinations, scope decisions,
+source references or the owner. Matching a digest does not verify cost coverage,
+arithmetic, disclosure, tax, engineering or authority; check those separately.

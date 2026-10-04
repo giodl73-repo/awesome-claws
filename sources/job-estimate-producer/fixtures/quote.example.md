@@ -18,7 +18,7 @@ One installation visit with approved labor, listed materials and equipment under
 
 Proposed validity: 2026-10-09. Terms: Owner review required; no acceptance, mobilization or completion date is promised.
 
-## Proposed installation
+## Proposed option 1
 
 Whole-job proposed pre-tax price: **USD 1000.00**.
 
