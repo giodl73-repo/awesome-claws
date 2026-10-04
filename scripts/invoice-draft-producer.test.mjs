@@ -136,6 +136,13 @@ test("invoice: partial prior billing subtracts quantities before calculating the
   assert.equal(value.result.totals.due, 66440);
 });
 
+test("invoice: zero work cannot be labeled already billed without any billing history", () => {
+  const value = clone(); value.items[0].quantity = "0"; refresh(value);
+  assert.equal(value.result.coverage[0].disposition, "blocked");
+  assert(value.result.blockers.some((blocker) => blocker.reason.includes("zero work")));
+  assert(!value.result.lines.some((line) => line.sourceId === "WORK-101"));
+});
+
 for (const [name, unit, description] of [["fixed-fee", "milestone", "Completed installation milestone"], ["recurring", "period", "October service period"]]) test(`invoice: owner-defined ${name} billing creates a real line and checks prior coverage`, () => {
   const value = clone();
   value.items = [{ ...value.items[0], id: "FEE", quantity: "1", unit, description, rateMinor: 100000, discountMinor: 0 }];

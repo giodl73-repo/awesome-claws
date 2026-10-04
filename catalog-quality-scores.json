@@ -4970,7 +4970,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 5,
+        "comparedAlternatives": 6,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,

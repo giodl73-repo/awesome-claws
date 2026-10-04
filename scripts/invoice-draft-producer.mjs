@@ -87,6 +87,7 @@ export function deriveInvoiceDraft(record) {
     const remaining = total - billed;
     let disposition = "blocked";
     const reasons = [];
+    if (total === 0n && item.decision === "bill") reasons.push("Supply a positive billable quantity or an explicit owner deferral/rejection; zero work is not already billed.");
     if (item.customer !== scope.customer || item.currency !== scope.currency) reasons.push("Resolve customer or currency mismatch.");
     if (item.periodStart !== scope.periodStart || item.periodEnd !== scope.periodEnd) reasons.push("Resolve source service-period mismatch.");
     if (!item.current) reasons.push("Supply the current source revision.");
