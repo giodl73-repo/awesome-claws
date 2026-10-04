@@ -1,0 +1,127 @@
+{
+  "input": {
+    "scope": {
+      "batchId": "BATCH-RETURNS",
+      "revision": "r1",
+      "asOf": "2026-10-04T17:00:00Z",
+      "owner": {
+        "id": "COORDINATOR-LEE",
+        "kind": "human"
+      }
+    },
+    "sources": [
+      {
+        "id": "AUTHORIZATIONS",
+        "revision": "r2",
+        "capturedAt": "2026-10-04T16:00:00Z"
+      },
+      {
+        "id": "RECEIPTS",
+        "revision": "r1",
+        "capturedAt": "2026-10-04T16:00:00Z"
+      },
+      {
+        "id": "DISPOSITIONS",
+        "revision": "r1",
+        "capturedAt": "2026-10-04T16:00:00Z"
+      }
+    ],
+    "lines": [
+      {
+        "id": "RETURN-A-1",
+        "returnId": "RETURN-A",
+        "returnLine": "ITEM-1",
+        "product": "PRODUCT-X",
+        "unit": "EA",
+        "authorizedQuantity": 5,
+        "authorized": true,
+        "authorizedBy": {
+          "id": "AUTHORIZER-PAT",
+          "kind": "human"
+        },
+        "authorizedAt": "2026-10-02T09:00:00Z",
+        "holds": [],
+        "sourceRef": "AUTHORIZATIONS",
+        "sourceRevision": "r2",
+        "sourceRecord": "ROW-A"
+      }
+    ],
+    "receipts": [
+      {
+        "id": "RECEIPT-A",
+        "lineId": "RETURN-A-1",
+        "receivingId": "INBOUND-1",
+        "lotId": "LOT-A",
+        "product": "PRODUCT-X",
+        "unit": "EA",
+        "quantity": 3,
+        "status": "received",
+        "replacedBy": null,
+        "receivedAt": "2026-10-03T10:00:00Z",
+        "sourceRef": "RECEIPTS",
+        "sourceRevision": "r1",
+        "sourceRecord": "ROW-R1"
+      }
+    ],
+    "dispositions": [
+      {
+        "id": "DECISION-A",
+        "receiptId": "RECEIPT-A",
+        "unitRanges": [
+          {
+            "first": 1,
+            "last": 2
+          }
+        ],
+        "decision": "repair",
+        "decidedBy": {
+          "id": "REVIEWER-SAM",
+          "kind": "human"
+        },
+        "decidedAt": "2026-10-04T10:00:00Z",
+        "status": "recorded",
+        "replacedBy": null,
+        "sourceRef": "DISPOSITIONS",
+        "sourceRevision": "r1",
+        "sourceRecord": "ROW-D1"
+      }
+    ]
+  },
+  "report": {
+    "schemaVersion": "awesomeClaws.sellerReturnReport.v1",
+    "inputDigest": "sha256:78c318777a6389962dbc2ecc922105851bca9546b0bc5a197f7dcdbe2b8854ee",
+    "status": "draft",
+    "owner": {
+      "id": "COORDINATOR-LEE",
+      "kind": "human"
+    },
+    "asOf": "2026-10-04T17:00:00Z",
+    "approved": false,
+    "externalActionsPerformed": false,
+    "balances": [
+      {
+        "lineId": "RETURN-A-1",
+        "authorized": 5,
+        "received": 3,
+        "dispositionEvidenced": 2,
+        "notEvidencedReceived": 2,
+        "awaitingDisposition": 1,
+        "holds": [],
+        "dispositionHolds": [],
+        "status": "open"
+      }
+    ],
+    "exceptions": [],
+    "coverage": {
+      "lines": [
+        "RETURN-A-1"
+      ],
+      "receipts": [
+        "RECEIPT-A"
+      ],
+      "dispositions": [
+        "DECISION-A"
+      ]
+    }
+  }
+}

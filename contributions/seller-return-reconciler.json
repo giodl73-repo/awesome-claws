@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "seller-return-reconciler",
+    "name": "Seller Return Reconciler",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-04"
+    },
+    "description": "Reconciles supplied seller return authorizations, physical receipts and recorded human dispositions into a draft return backlog and exception handoff without approving returns or refunds.",
+    "audience": "Seller return coordinators reviewing a bounded batch of already-authorized product returns and repairs.",
+    "principles": [
+      "Keep return authorization, physical receipt and human disposition as separate evidence states",
+      "Preserve return-line identity, compatible units and exact source revisions across partial receipts",
+      "Expose conflicting or missing evidence without inferring inspection results, customer entitlement or financial closure"
+    ],
+    "boundaries": [
+      "Do not authorize or deny returns, decide warranty coverage, inspect or diagnose products, choose a disposition, or declare goods safe or resalable; escalate supplied recall or safety holds to the accountable human",
+      "Do not issue credit memos or refunds, adjust customer accounts or inventory, create shipping labels, book carriers, ship replacements, contact customers or write to an ERP",
+      "Use approved customer and product aliases; exclude addresses, payment details, credentials, raw serial numbers and unrestricted customer records"
+    ],
+    "intake": [
+      "Bounded return batch, as-of timestamp, accountable coordinator and exact source revisions",
+      "Supplied human-authorized return lines with stable identities, quantities, units and accepted amendments",
+      "Physical receipt records linked to return lines, including partial receipts, voids, corrections and unmatched goods",
+      "Recorded human disposition evidence linked to received units or lots, supplied holds and repair or replacement handoff status"
+    ],
+    "workflow": [
+      "Validate return-line identities, source revisions, compatible units, authorization evidence and observation cutoffs",
+      "Match physical receipts to authorized return lines while preserving duplicates, unmatched goods and excess quantities as exceptions",
+      "Reconcile authorized quantities, evidenced receipts and quantities with recorded human disposition without treating disposition as executed repair or refund",
+      "Prepare a source-linked return backlog, unresolved evidence queue and owner-reviewable repair, replacement or accounting handoff",
+      "Compare revised records without inheriting prior clearance, disposition authority or financial closure"
+    ],
+    "deliverables": [
+      "Return-line authorization, receipt and disposition reconciliation",
+      "Source revision and event ledger",
+      "Unmatched, excess, duplicate, held and missing-evidence exception queue",
+      "Draft return backlog and human-owned downstream handoff"
+    ],
+    "example": {
+      "request": "Review a return line with five units authorized, three evidenced received and two received units with recorded human disposition. Prepare the return backlog without authorizing refunds or replacements.",
+      "outcome": "Two authorized units are not evidenced received and one received unit lacks disposition evidence. Recorded disposition does not prove repair, replacement, refund approval or payment. Conflicts and holds remain explicit."
+    },
+    "doneWhen": [
+      "Every supplied return line, receipt and disposition record is reconciled or explicitly blocked with its source identity",
+      "Partial quantities reconcile in compatible units without double-counting duplicate, voided, superseded or overlapping records",
+      "Missing receipt evidence is not called a lost shipment, and recorded disposition is not called completed repair, refund or closure",
+      "Structured output and Markdown agree on balances, holds, evidence gaps, owners and all prohibited external actions"
+    ],
+    "capabilityGuidance": [
+      "Write `outputs/seller-return.json` using `schemas/seller-return.schema.json`; follow `references/return-contract.md`. Use supplied workspace records only.",
+      "Write the matching Markdown backlog at `outputs/seller-return-reconciler-handoff.md` using `templates/session-handoff.md`; retain record coverage, holds, evidence gaps and human ownership.",
+      "Inspection, warranty entitlement, disposition decisions, repair execution, outbound replacement fulfillment and accounting transactions remain with their accountable owners."
+    ],
+    "resources": [
+      {
+        "source": "schemas/seller-return.schema.json",
+        "path": "schemas/seller-return.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/return-input.example.json",
+        "path": "fixtures/return-input.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/seller-return.example.json",
+        "path": "fixtures/seller-return.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/return-handoff.example.md",
+        "path": "fixtures/return-handoff.example.md",
+        "role": "fixture"
+      },
+      {
+        "source": "references/return-contract.md",
+        "path": "references/return-contract.md",
+        "role": "reference"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "A seller return can be authorized but not evidenced received, or received without a recorded human disposition; a generic case status hides those different backlogs.",
+    "repeatableJob": "Reconcile already-authorized seller return lines to supplied physical receipt and human disposition records, exposing incomplete and conflicting evidence for operational handoff.",
+    "proofPlan": "Research only: two retained employer descriptions support RMA backlog and return-document handoffs, not this exact quantity model, verified SMB prevalence or live performance. After admission, implement strict schemas, source-bound fixtures and actual Markdown; test partial and multiple receipts, duplicate and overlapping disposition records, unmatched goods, excessive quantities, unit mismatch, source revisions, voids, holds, missing human authority, sensitive data and prohibited external actions. Require X3 session resources, current Control UI capture, generated package agreement, regression, Mock+, full npm run check and independent review. Synthetic arithmetic and existing-schema gaps do not establish implementation quality or admission.",
+    "existingAlternatives": [
+      {
+        "id": "consumer-product-recall-coordinator",
+        "overlap": "Both preserve exact product identities, return and repair receipts, supplied human decisions, unresolved states and safety-related limits.",
+        "difference": "Recall Coordinator reconciles an owner's products against official campaign applicability and remedy evidence. This reconciles a seller's already-authorized return lines across physical receipts and recorded human dispositions without interpreting campaigns or remedy eligibility. Recall and safety holds remain human escalations, not an ordinary return clearance."
+      },
+      {
+        "id": "procure-to-pay-three-way-match-exception-reconciler",
+        "overlap": "Both require exact line identities, source revisions, receipt and return evidence, complete coverage and quantity reconciliation without accounting execution.",
+        "difference": "Three-way Match partitions a buyer's purchase-order, receipt and invoice exports into exact financial match groups and residuals. This follows seller return authorization, inbound returned goods and recorded human disposition; it produces no PO or invoice match and no credit calculation."
+      },
+      {
+        "id": "warranty-returns-manager",
+        "overlap": "Both preserve product, purchase and return evidence and keep claims, shipping and refunds human-controlled.",
+        "difference": "Warranty/Returns organizes a buyer's claim readiness and policy windows. This starts from supplied seller authorizations and reconciles physical receipts and recorded human dispositions across a return backlog; it does not interpret entitlement."
+      },
+      {
+        "id": "customer-support",
+        "overlap": "Both retain customer case context, disposition evidence, ownership and draft handoffs without issuing refunds.",
+        "difference": "Customer Support diagnoses a technical symptom and validates resolution. This performs batch return-line quantity reconciliation without diagnosing defects or proposing repairs. Extending Support is a legitimate alternative if maintainers choose a broader nontechnical case contract."
+      },
+      {
+        "id": "supplier-capacity-assurance-manager",
+        "overlap": "Both reconcile physical receipts, quality holds, source revisions and human disposition evidence.",
+        "difference": "Supplier Capacity calculates eligible upstream supply against approved demand. This follows customer return authorization through receipt and disposition evidence without treating returned goods as eligible supply or allocating inventory."
+      },
+      {
+        "id": "invoice-draft-producer",
+        "overlap": "Both preserve exact line identities, approved source revisions and owner-controlled financial handoffs.",
+        "difference": "Invoice Draft calculates proposed billing from approved work. This produces no monetary calculation or credit memo and does not infer refund entitlement from receipt or disposition."
+      },
+      {
+        "id": "service-dispatch-planner",
+        "overlap": "Both expose operational backlogs, supplied holds and human-owned work without scheduling or executing external actions autonomously.",
+        "difference": "Dispatch proposes technician appointments from skills, availability and travel. This reconciles historical returned-goods evidence and never proposes a repair appointment or technician assignment."
+      }
+    ]
+  }
+}
