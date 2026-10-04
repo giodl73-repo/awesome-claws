@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/invoice-draft.schema.json",
+  "title": "Draft invoice and private billing workpaper",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "scope", "rules", "history", "items", "balances", "result", "authority"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.invoiceDraft.v1" },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["seller", "sellerBilling", "customer", "customerBilling", "currency", "minorDigits", "draftRef", "revision", "reviewer", "privateDestination", "invoiceDate", "periodStart", "periodEnd", "purchaseOrder"],
+      "properties": {
+        "seller": { "$ref": "#/$defs/text" }, "sellerBilling": { "$ref": "#/$defs/text" },
+        "customer": { "$ref": "#/$defs/text" }, "customerBilling": { "$ref": "#/$defs/text" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "minorDigits": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "draftRef": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" },
+        "reviewer": { "$ref": "#/$defs/text" }, "privateDestination": { "$ref": "#/$defs/text" },
+        "invoiceDate": { "type": "string", "format": "date" },
+        "periodStart": { "type": "string", "format": "date" }, "periodEnd": { "type": "string", "format": "date" },
+        "purchaseOrder": { "$ref": "#/$defs/optionalText" }
+      }
+    },
+    "rules": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sourceRef", "revision", "confirmed", "rounding", "netDays", "poRequired"],
+      "properties": {
+        "sourceRef": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" },
+        "confirmed": { "type": "boolean" }, "rounding": { "$ref": "#/$defs/optionalText" },
+        "netDays": { "type": "integer", "minimum": 0, "maximum": 365 }, "poRequired": { "type": "boolean" }
+      }
+    },
+    "history": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sourceRef", "revision", "complete", "rows"],
+      "properties": {
+        "sourceRef": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" }, "complete": { "type": "boolean" },
+        "rows": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sourceId", "quantity", "unit", "invoiceRef", "customer", "currency"],
+          "properties": {
+            "sourceId": { "$ref": "#/$defs/text" }, "quantity": { "$ref": "#/$defs/quantity" },
+            "unit": { "$ref": "#/$defs/text" }, "invoiceRef": { "$ref": "#/$defs/text" },
+            "customer": { "$ref": "#/$defs/text" }, "currency": { "$ref": "#/$defs/text" }
+          }
+        } }
+      }
+    },
+    "items": { "type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "revision", "sourceRef", "customer", "currency", "periodStart", "periodEnd", "current", "approved", "approvalRef", "completed", "completionRef", "disclosureApproved", "description", "unit", "quantity", "rateMinor", "discountMinor", "taxBps", "decision", "decisionRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" }, "sourceRef": { "$ref": "#/$defs/text" },
+        "customer": { "$ref": "#/$defs/text" }, "currency": { "$ref": "#/$defs/text" },
+        "periodStart": { "type": "string", "format": "date" }, "periodEnd": { "type": "string", "format": "date" },
+        "current": { "type": "boolean" }, "approved": { "type": "boolean" }, "approvalRef": { "$ref": "#/$defs/optionalText" },
+        "completed": { "type": "boolean" }, "completionRef": { "$ref": "#/$defs/optionalText" },
+        "disclosureApproved": { "type": "boolean" }, "description": { "$ref": "#/$defs/optionalText" },
+        "unit": { "$ref": "#/$defs/text" }, "quantity": { "$ref": "#/$defs/quantity" },
+        "rateMinor": { "$ref": "#/$defs/amount" }, "discountMinor": { "$ref": "#/$defs/amount" },
+        "taxBps": { "type": ["integer", "null"], "minimum": 0, "maximum": 10000 },
+        "decision": { "enum": ["bill", "defer", "reject"] }, "decisionRef": { "$ref": "#/$defs/optionalText" }
+      }
+    } },
+    "balances": { "type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "revision", "sourceRef", "kind", "customer", "currency", "remaining", "proposed", "current", "authorized", "authorizationRef", "draftRef", "draftRevision"],
+      "properties": {
+        "id": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" }, "sourceRef": { "$ref": "#/$defs/text" },
+        "kind": { "enum": ["deposit", "credit"] }, "customer": { "$ref": "#/$defs/text" }, "currency": { "$ref": "#/$defs/text" },
+        "remaining": { "$ref": "#/$defs/amount" }, "proposed": { "$ref": "#/$defs/amount" },
+        "current": { "type": "boolean" }, "authorized": { "type": "boolean" }, "authorizationRef": { "$ref": "#/$defs/optionalText" },
+        "draftRef": { "$ref": "#/$defs/text" }, "draftRevision": { "$ref": "#/$defs/text" }
+      }
+    } },
+    "result": {
+      "type": "object", "additionalProperties": false,
+      "required": ["inputDigest", "state", "draftRevision", "dueDate", "rulesRevision", "historyRevision", "lines", "coverage", "applications", "totals", "blockers"],
+      "properties": {
+        "inputDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$", "description": "Compute from current inputs using references/billing-contract.md#structured-input-digest; never reuse the example digest." },
+        "state": { "enum": ["blocked", "ready-for-owner-review"] }, "draftRevision": { "$ref": "#/$defs/text" },
+        "dueDate": { "type": "string", "format": "date" }, "rulesRevision": { "$ref": "#/$defs/text" }, "historyRevision": { "$ref": "#/$defs/text" },
+        "lines": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sourceId", "revision", "description", "unit", "quantity", "rateMinor", "gross", "discount", "net", "taxBps", "tax", "total"],
+          "properties": {
+            "sourceId": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" }, "description": { "$ref": "#/$defs/text" }, "unit": { "$ref": "#/$defs/text" },
+            "quantity": { "$ref": "#/$defs/quantity" }, "rateMinor": { "$ref": "#/$defs/amount" }, "gross": { "$ref": "#/$defs/amount" },
+            "discount": { "$ref": "#/$defs/amount" }, "net": { "$ref": "#/$defs/amount" }, "taxBps": { "type": "integer", "minimum": 0, "maximum": 10000 },
+            "tax": { "$ref": "#/$defs/amount" }, "total": { "$ref": "#/$defs/amount" }
+          }
+        } },
+        "coverage": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sourceId", "revision", "totalQuantity", "billedQuantity", "proposedQuantity", "disposition"],
+          "properties": {
+            "sourceId": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" },
+            "totalQuantity": { "$ref": "#/$defs/quantity" }, "billedQuantity": { "$ref": "#/$defs/quantity" }, "proposedQuantity": { "$ref": "#/$defs/quantity" },
+            "disposition": { "enum": ["included", "already-billed", "deferred", "rejected", "blocked"] }
+          }
+        } },
+        "applications": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "revision", "kind", "proposed", "included", "state"],
+          "properties": {
+            "id": { "$ref": "#/$defs/text" }, "revision": { "$ref": "#/$defs/text" }, "kind": { "enum": ["deposit", "credit"] },
+            "proposed": { "$ref": "#/$defs/amount" }, "included": { "$ref": "#/$defs/amount" }, "state": { "enum": ["proposed", "blocked"] }
+          }
+        } },
+        "totals": {
+          "type": "object", "additionalProperties": false, "required": ["gross", "discount", "net", "tax", "total", "applications", "due"],
+          "properties": {
+            "gross": { "$ref": "#/$defs/amount" }, "discount": { "$ref": "#/$defs/amount" }, "net": { "$ref": "#/$defs/amount" },
+            "tax": { "$ref": "#/$defs/amount" }, "total": { "$ref": "#/$defs/amount" }, "applications": { "$ref": "#/$defs/amount" },
+            "due": { "type": ["integer", "null"], "minimum": 0, "maximum": 9007199254740991 }
+          }
+        },
+        "blockers": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "code", "reason"],
+          "properties": {
+            "id": { "$ref": "#/$defs/text" }, "reason": { "$ref": "#/$defs/text" },
+            "code": { "enum": ["history-coverage", "billing-policy", "purchase-order", "zero-work", "item-scope", "service-period", "source-current", "item-disposition", "billing-approval", "completion-evidence", "billing-description", "tax-treatment", "balance-authorization", "balance-total", "empty-invoice"] }
+          }
+        } }
+      }
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false, "required": ["invoice", "sending", "numbering", "ledger", "payment", "balances"],
+      "properties": {
+        "invoice": { "const": "draft-not-issued" }, "sending": { "const": "not-performed" }, "numbering": { "const": "not-reserved" },
+        "ledger": { "const": "not-changed" }, "payment": { "const": "not-collected" }, "balances": { "const": "not-applied" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "optionalText": { "type": ["string", "null"], "minLength": 1, "pattern": "\\S" },
+    "amount": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "quantity": { "type": "string", "pattern": "^(0|[1-9][0-9]{0,8})(\\.[0-9]{1,6})?$" }
+  }
+}
