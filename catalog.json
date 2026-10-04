@@ -14757,6 +14757,11 @@
           "role": "template"
         },
         {
+          "source": "templates/customer-invoice.md",
+          "path": "templates/customer-invoice.md",
+          "role": "template"
+        },
+        {
           "source": "schemas/invoice-draft.schema.json",
           "path": "schemas/invoice-draft.schema.json",
           "role": "schema"

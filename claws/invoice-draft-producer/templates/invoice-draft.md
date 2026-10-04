@@ -1,41 +1,52 @@
-# DRAFT - NOT ISSUED
+# Private billing workpaper
 
-Draft reference and revision: <draft only>
+## Scope
 
-Status: <blocked working draft / ready for owner review; never issued>
+- Seller, customer, currency and service period:
+- Human reviewer and private review destination:
+- Draft reference, revision and proposed invoice date:
+- Agreement, billing rules and prior-history revisions:
+- Owner-declared complete history and required PO decision:
 
-Seller: <supplied billing identity>
+## Actual invoice draft
 
-Bill to: <supplied customer billing identity>
+Write the separate customer-facing `outputs/invoice-draft.md` using
+`templates/customer-invoice.md`. Keep private workpaper content out of that file.
+Show an actual itemized invoice, even when supported portions remain blocked
+pending owner input. Never fill missing amounts with invented zeroes.
 
-Currency: <supplied currency>
+## Work coverage
 
-Proposed date: <date> | Service period: <start through end>
+| Source ID/revision | Completion and approval evidence | Total quantity/unit | Previously billed/reference | Proposed quantity | Disposition | Owner question |
+| --- | --- | ---: | --- | ---: | --- | --- |
 
-Customer PO: <supplied reference or explicit not-required decision>
+Account for every proposed source item once, including prior-billed, rejected,
+deferred and blocked items. Reconcile partial billing, not just whole records.
 
-Terms: <supplied terms> | Proposed due date: <checked date>
+## Calculation workpaper
 
-| Description | Quantity and unit | Rate | Gross | Discount | Net | Supplied tax | Total |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| <approved billing description> | <quantity and unit> | <rate> | <gross> | <discount> | <net> | <tax> | <total> |
+| Line/source | Quantity x rate | Gross | Approved discount | Net | Supplied tax basis/rate/rounding | Tax | Total |
+| --- | --- | ---: | ---: | ---: | --- | ---: | ---: |
 
-Gross charges: <amount>
+Show recomputed subtotals, date arithmetic and agreement with the invoice.
+Missing tax/rounding instructions block readiness, not silently imply zero.
 
-Approved discounts: <amount>
+## Deposits and credits
 
-Net charges: <amount>
+| Source/revision | Customer/currency | Remaining balance | Exact-draft authorization | Proposed application | Remaining after proposal |
+| --- | --- | ---: | --- | ---: | ---: |
 
-Tax under supplied instructions: <amount and basis>
+These are proposed calculations, not ledger actions or consumed balances.
 
-Invoice total: <amount>
+## Owner handoff
 
-Proposed deposit application: <amount>
+- State: <blocked / ready-for-owner-review>
+- Exact draft revision:
+- Unresolved items and specific owner questions:
+- Changed-source impact and required recalculation:
+- Invoice artifact: `outputs/invoice-draft.md`
+- Private workpaper: `outputs/invoice-draft-producer-handoff.md`
 
-Proposed credit application: <amount>
-
-Proposed amount due: <amount>
-
-This draft is not a request for payment. No invoice has been issued, sent or
-posted, and no deposit or credit has been consumed. Payment instructions and
-official numbering remain with the issuing owner.
+No invoice issuance, sending, official numbering, posting, customer contact,
+balance application or collection occurred. Do not hand a draft to collections
+as an issued receivable. Require the owner's actual issuance evidence first.
