@@ -1,0 +1,41 @@
+{
+  "synthetic": true,
+  "owner": "Alex, merchant operations owner",
+  "caseId": "CASE-17",
+  "paymentId": "PAY-17",
+  "orderId": "ORDER-17",
+  "currency": "USD",
+  "notices": [
+    { "ref": "NOTICE-1-V1", "revision": "v1", "stage": "first-response", "disputedMinor": 12000, "deadline": "2026-10-12T17:00:00-04:00", "timezone": "America/New_York", "state": "historical", "requirements": ["transaction-link", "delivery", "correspondence", "refund-status"] },
+    { "ref": "NOTICE-1-V2", "revision": "v2", "stage": "revised-response", "disputedMinor": 12000, "deadline": "2026-10-13T17:00:00-04:00", "timezone": "America/New_York", "state": "supplied-current-unreviewed", "requirements": ["transaction-link", "delivery", "correspondence", "executed-refund-evidence"] }
+  ],
+  "currentNoticeRef": "NOTICE-1-V2",
+  "priorReview": { "ref": "REVIEW-V1", "noticeRef": "NOTICE-1-V1", "state": "historical" },
+  "carryForwardRule": null,
+  "ownerTaskDate": "2026-10-13",
+  "records": [
+    { "ref": "ORDER-17-V1", "kind": "order-link", "paymentId": "PAY-17", "orderId": "ORDER-17", "amountMinor": 12000, "assessment": "supplied-link-awaiting-owner-confirmation" },
+    { "ref": "DELIVERY-17-V1", "kind": "carrier-report", "orderId": "ORDER-17", "date": "2026-10-01", "assessment": "reports-delivered-not-proof-of-customer-receipt" },
+    { "ref": "MESSAGE-17-V1", "kind": "customer-statement", "orderId": "ORDER-17", "date": "2026-10-02", "assessment": "reports-nonreceipt-conflicts-with-carrier-report" },
+    { "ref": "REFUND-REQUEST-17-V1", "kind": "refund-request", "paymentId": "PAY-17", "amountMinor": 12000, "date": "2026-10-03", "assessment": "requested-not-executed" },
+    { "ref": "REFUND-17-V1", "kind": "processor-refund-record", "paymentId": "PAY-17", "amountMinor": 4000, "date": "2026-10-04", "assessment": "supplied-executed-refund-not-case-resolution" },
+    { "ref": "RETURN-17-V1", "kind": "return-authorization", "orderId": "ORDER-17", "assessment": "authorized-physical-receipt-not-supplied" }
+  ],
+  "requirements": [
+    { "id": "transaction-link", "refs": ["ORDER-17-V1"], "question": "Confirm case/payment/order linkage; do not infer identity." },
+    { "id": "delivery", "refs": ["DELIVERY-17-V1", "MESSAGE-17-V1", "RETURN-17-V1"], "question": "Retain the conflicting statements and distinguish return authorization from receipt." },
+    { "id": "correspondence", "refs": ["MESSAGE-17-V1"], "question": "Review permitted disclosure and redaction before sharing." },
+    { "id": "executed-refund-evidence", "refs": ["REFUND-REQUEST-17-V1", "REFUND-17-V1"], "question": "Reconcile the notice amount and executed-refund evidence without automatic netting." }
+  ],
+  "attachmentConstraints": { "sourceRef": "NOTICE-1-V2", "format": "PDF", "maxFiles": 4, "maxBytesEach": 2097152, "actualBytesSupplied": false, "disclosureApproved": false },
+  "proposedAttachments": [
+    { "name": "transaction.pdf", "requirement": "transaction-link", "sourceRefs": ["ORDER-17-V1"] },
+    { "name": "delivery.pdf", "requirement": "delivery", "sourceRefs": ["DELIVERY-17-V1", "MESSAGE-17-V1", "RETURN-17-V1"] },
+    { "name": "correspondence.pdf", "requirement": "correspondence", "sourceRefs": ["MESSAGE-17-V1"] },
+    { "name": "refund.pdf", "requirement": "executed-refund-evidence", "sourceRefs": ["REFUND-REQUEST-17-V1", "REFUND-17-V1"] }
+  ],
+  "handoffState": "blocked-private-unsubmitted",
+  "reconciledDisputeMinor": null,
+  "submissionPerformed": false,
+  "refundPerformed": false
+}
