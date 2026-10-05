@@ -83,6 +83,36 @@
         "source": "templates/invoice-receivables.md",
         "path": "templates/invoice-receivables.md",
         "role": "template"
+      },
+      {
+        "source": "schemas/receipt-workpaper.schema.json",
+        "path": "schemas/receipt-workpaper.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "schemas/receipt-legacy-map.schema.json",
+        "path": "schemas/receipt-legacy-map.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "references/receipt-workpaper.md",
+        "path": "references/receipt-workpaper.md",
+        "role": "reference"
+      },
+      {
+        "source": "fixtures/receipt-workpaper.example.json",
+        "path": "fixtures/receipt-workpaper.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/receipt-application.example.json",
+        "path": "fixtures/receipt-application.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/receipt-legacy-map.example.json",
+        "path": "fixtures/receipt-legacy-map.example.json",
+        "role": "fixture"
       }
     ]
   },

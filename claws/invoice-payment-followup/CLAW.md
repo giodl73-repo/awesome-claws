@@ -29,6 +29,12 @@ workspace:
       path: schemas/receipt-legacy-map.schema.json
     - source: references/receipt-workpaper.md
       path: references/receipt-workpaper.md
+    - source: fixtures/receipt-workpaper.example.json
+      path: fixtures/receipt-workpaper.example.json
+    - source: fixtures/receipt-application.example.json
+      path: fixtures/receipt-application.example.json
+    - source: fixtures/receipt-legacy-map.example.json
+      path: fixtures/receipt-legacy-map.example.json
 packages: []
 mcpServers: {}
 cronJobs: []

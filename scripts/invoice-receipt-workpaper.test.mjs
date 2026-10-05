@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import example from "../sources/invoice-payment-followup/fixtures/receipt-workpaper.example.json" with { type: "json" };
 import { reconcileInvoiceReceipts, renderInvoiceReceiptWorkpaper } from "./invoice-receipt-workpaper.mjs";
 
 const at = "2026-10-04T10:00:00Z";
@@ -15,6 +16,11 @@ function input() {
       id, identityRef: `ALLOCATION-${id}`, receiptRef: "R1", invoiceRef, sourceRef: "REMIT", sourceRevision: "V1", sourceRecord: id, at,
       currency: "USD", amountMinor, basis: "remittance", status: "current" })) };
 }
+
+test("packaged example is the tested partial-remittance input", () => {
+  assert.deepEqual(example, input());
+  assert.equal(reconcileInvoiceReceipts(example).receipts[0].unallocatedMinor, 10000);
+});
 
 test("conserves a partial receipt without upgrading remittance to applied payment", () => {
   const value = input();

@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import fixture from "../sources/invoice-payment-followup/fixtures/invoice-receivables.example.json" with { type: "json" };
+import applicationExample from "../sources/invoice-payment-followup/fixtures/receipt-application.example.json" with { type: "json" };
+import mappingExample from "../sources/invoice-payment-followup/fixtures/receipt-legacy-map.example.json" with { type: "json" };
 import { legacyAmountMinor, reconcileLegacyReceiptPayments, renderLegacyReceiptReview } from "./invoice-receipt-legacy-map.mjs";
 
 function input() {
@@ -44,6 +46,13 @@ test("legacy payment equivalence does not double count cash or change existing u
   assert.equal(report.accountingEntriesPosted, false);
   assert.deepEqual(value, before);
   assert.deepEqual(report.evidence, value);
+});
+
+test("packaged linked examples match the tested whole-payment mapping", () => {
+  const value = input();
+  assert.deepEqual(applicationExample, value.receiptInput);
+  assert.deepEqual(mappingExample, value.mapping);
+  assert.equal(reconcileLegacyReceiptPayments({ legacy: fixture, receiptInput: applicationExample, mapping: mappingExample }).state, "ready-for-owner-review");
 });
 
 test("one legacy payment can identify multiple whole allocation rows exactly once", () => {

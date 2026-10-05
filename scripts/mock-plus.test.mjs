@@ -44,7 +44,7 @@ test("inventory derives the current portfolio oracle surface", async () => {
     inventory.entries.filter((entry) => entry.fixtureResources.length > 0)
       .length,
   );
-  assert.equal(inventory.summary.packagedSchemaCount, 153);
+  assert.equal(inventory.summary.packagedSchemaCount, 155);
   assert.equal(
     inventory.summary.schemaFixturePairClawCount,
     inventory.entries.filter((entry) =>
