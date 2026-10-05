@@ -1,0 +1,1044 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "scope",
+    "coverage",
+    "sources",
+    "periods",
+    "lines",
+    "changes",
+    "installed",
+    "lots",
+    "history",
+    "cash",
+    "attachments"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.progressBillingInput.v1"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "application",
+        "revision",
+        "period",
+        "periodStart",
+        "periodEnd",
+        "asOf",
+        "currency",
+        "minorDigits",
+        "reviewer",
+        "privateDestination"
+      ],
+      "properties": {
+        "contract": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "\\S"
+        },
+        "application": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "\\S"
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "\\S"
+        },
+        "period": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120
+        },
+        "periodStart": {
+          "type": "string",
+          "format": "date"
+        },
+        "periodEnd": {
+          "type": "string",
+          "format": "date"
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "minorDigits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "\\S"
+        },
+        "privateDestination": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "sourceRef",
+        "sourceRevision",
+        "nativeId",
+        "lines",
+        "lots",
+        "complete",
+        "historyComplete",
+        "cashComplete",
+        "checklistComplete",
+        "rulesComplete",
+        "noDuplicateCoverage",
+        "disclosureApproved",
+        "unresolvedCorrections"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "\\S"
+        },
+        "sourceRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "\\S"
+        },
+        "sourceRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "\\S"
+        },
+        "nativeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "\\S"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 200
+        },
+        "lots": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "maxItems": 200
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "historyComplete": {
+          "type": "boolean"
+        },
+        "cashComplete": {
+          "type": "boolean"
+        },
+        "checklistComplete": {
+          "type": "boolean"
+        },
+        "rulesComplete": {
+          "type": "boolean"
+        },
+        "noDuplicateCoverage": {
+          "type": "boolean"
+        },
+        "disclosureApproved": {
+          "type": "boolean"
+        },
+        "unresolvedCorrections": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "maxItems": 200
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "revision",
+          "currentRevision",
+          "contract",
+          "capturedAt",
+          "approved"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "currentRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "contract": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "capturedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "approved": {
+            "type": "boolean"
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 200
+    },
+    "periods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "sourceRevision",
+          "nativeId",
+          "number",
+          "start",
+          "end",
+          "applicationRevision"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "nativeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "number": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 120
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "end": {
+            "type": "string",
+            "format": "date"
+          },
+          "applicationRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 120
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "sourceRevision",
+          "nativeId",
+          "baseScheduled",
+          "installedOpening",
+          "installedClosing",
+          "storedOpening",
+          "storedClosing",
+          "workedRate",
+          "storedRate",
+          "rounding",
+          "rulesRef",
+          "negativeAdjustmentRef"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "nativeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "baseScheduled": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "installedOpening": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "installedClosing": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "storedOpening": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "storedClosing": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "workedRate": {
+            "type": "string",
+            "pattern": "^(0(\\.[0-9]{1,6})?|1(\\.0{1,6})?)$",
+            "maxLength": 8
+          },
+          "storedRate": {
+            "type": "string",
+            "pattern": "^(0(\\.[0-9]{1,6})?|1(\\.0{1,6})?)$",
+            "maxLength": 8
+          },
+          "rounding": {
+            "enum": [
+              "half-up-per-component",
+              "half-even-per-component",
+              "unsupported"
+            ]
+          },
+          "rulesRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "negativeAdjustmentRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 200
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "sourceRevision",
+          "nativeId",
+          "line",
+          "amount",
+          "state",
+          "approvalRef"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "nativeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "line": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "state": {
+            "enum": [
+              "approved",
+              "pending",
+              "rejected"
+            ]
+          },
+          "approvalRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "maxItems": 200
+    },
+    "installed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "sourceRevision",
+          "nativeId",
+          "line",
+          "kind",
+          "amount",
+          "authorizationRef"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "nativeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "line": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "kind": {
+            "enum": [
+              "new-work",
+              "stored-transfer",
+              "adjustment"
+            ]
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "authorizationRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "maxItems": 200
+    },
+    "lots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "sourceRevision",
+          "nativeId",
+          "line",
+          "opening",
+          "additions",
+          "removals",
+          "closing",
+          "eligible",
+          "eligibilityRef",
+          "movementRef",
+          "transfers"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "nativeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "line": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "opening": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "additions": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "removals": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "closing": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "eligibilityRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "movementRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "transfers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "installedRef",
+                "amount"
+              ],
+              "properties": {
+                "installedRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160,
+                  "pattern": "\\S"
+                },
+                "amount": {
+                  "type": "string",
+                  "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+                  "maxLength": 18
+                }
+              }
+            },
+            "maxItems": 200
+          }
+        }
+      },
+      "maxItems": 200
+    },
+    "history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "applications",
+        "certificates"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "cumulative-snapshot",
+            "period-certification"
+          ]
+        },
+        "applications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sourceRef",
+              "sourceRevision",
+              "nativeId",
+              "line",
+              "period",
+              "applicationRevision",
+              "installed",
+              "stored"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "sourceRef": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "sourceRevision": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "nativeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "line": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "period": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 120
+              },
+              "applicationRevision": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "installed": {
+                "type": "string",
+                "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+                "maxLength": 18
+              },
+              "stored": {
+                "type": "string",
+                "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+                "maxLength": 18
+              }
+            }
+          },
+          "maxItems": 200
+        },
+        "certificates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "sourceRef",
+              "sourceRevision",
+              "nativeId",
+              "line",
+              "period",
+              "applicationRevision",
+              "kind",
+              "amount",
+              "supersedes",
+              "replacementApprovalRef",
+              "correctionResolved"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "sourceRef": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "sourceRevision": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "nativeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "line": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "period": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 120
+              },
+              "applicationRevision": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              "kind": {
+                "enum": [
+                  "cumulative-snapshot",
+                  "period-certification"
+                ]
+              },
+              "amount": {
+                "type": "string",
+                "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+                "maxLength": 18
+              },
+              "supersedes": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160,
+                    "pattern": "\\S"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "replacementApprovalRef": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160,
+                    "pattern": "\\S"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "correctionResolved": {
+                "type": "boolean"
+              }
+            }
+          },
+          "maxItems": 200
+        }
+      }
+    },
+    "cash": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "sourceRevision",
+          "nativeId",
+          "line",
+          "amount",
+          "at",
+          "basis",
+          "throughPeriod",
+          "ownerConfirmed",
+          "applicationRef"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "nativeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "line": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]{0,11})(\\.[0-9]{1,4})?$",
+            "maxLength": 18
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "basis": {
+            "enum": [
+              "applied-to-prior-certificates",
+              "advance",
+              "unresolved"
+            ]
+          },
+          "throughPeriod": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 119
+          },
+          "ownerConfirmed": {
+            "type": "boolean"
+          },
+          "applicationRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "maxItems": 200
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "sourceRevision",
+          "nativeId",
+          "requiredRevision",
+          "suppliedRevision",
+          "permitted"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "sourceRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "nativeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "requiredRevision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "pattern": "\\S"
+          },
+          "suppliedRevision": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "\\S"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "permitted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "maxItems": 200
+    }
+  }
+}

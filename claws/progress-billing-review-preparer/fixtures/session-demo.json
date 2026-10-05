@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "progress-billing-review-preparer",
+  "scenario": "Review current cumulative installed value of USD 35,000 and eligible stored value of USD 5,000 against prior USD 20,000 installed and USD 10,000 stored. USD 5,000 moved from stored to installed. Apply the supplied 10% retainage rule and subtract USD 27,000 previously certified, not USD 20,000 cash paid. Include line B: USD 60,000 cumulative installed, 5% worked/stored retainage and USD 47,500 prior certified; keep the owner's complete prior-period snapshots.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Review current cumulative installed value of USD 35,000 and eligible stored value of USD 5,000 against prior USD 20,000 installed and USD 10,000 stored. USD 5,000 moved from stored to installed. Apply the supplied 10% retainage rule and subtract USD 27,000 previously certified, not USD 20,000 cash paid. Include line B: USD 60,000 cumulative installed, 5% worked/stored retainage and USD 47,500 prior certified; keep the owner's complete prior-period snapshots."
+    },
+    {
+      "role": "agent",
+      "text": "The synthetic owner pack reconciles A: USD 9000.00 and B: USD 9500.00. Cumulative certificates are snapshots, never additive. The partial stored transfer is counted once."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "Private draft total USD 18500.00; prior certified unpaid USD 7000.00 remains separate. Authorized replacement of A's prior certificate with USD 26000.00 changes A to USD 10000.00 and requires fresh review. No certification, submission or accounting action occurred."
+    }
+  ],
+  "report": {
+    "title": "Progress Billing Review Preparer session handoff",
+    "summary": "Private draft total USD 18500.00; prior certified unpaid USD 7000.00 remains separate. Authorized replacement of A's prior certificate with USD 26000.00 changes A to USD 10000.00 and requires fresh review. No certification, submission or accounting action occurred.",
+    "output": "outputs/progress-billing-review-preparer-handoff.md",
+    "items": [
+      {
+        "title": "Original private application",
+        "summary": "A USD 9000.00 + B USD 9500.00 = USD 18500.00; worked/stored retainage is calculated separately by line.",
+        "tags": [
+          "draft",
+          "owner-review"
+        ]
+      },
+      {
+        "title": "Stored and certificate workpaper",
+        "summary": "LOT-A: 10000 + 0 - 5000 - 0 = 5000. Prior A snapshot 27000, not 9000 + 27000; cash 20000 does not replace certification.",
+        "tags": [
+          "evidence",
+          "reconciled"
+        ]
+      },
+      {
+        "title": "Revision and authority handoff",
+        "summary": "Review fixtures/progress-billing.example.json, application.example.md and workpaper.example.md. Missing history or attachments blocks totals. All examples are synthetic deterministic fixtures.",
+        "tags": [
+          "handoff",
+          "private"
+        ]
+      }
+    ]
+  }
+}

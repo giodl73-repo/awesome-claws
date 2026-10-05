@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 144,
-    "coveredCount": 144,
-    "recipeCount": 394,
-    "findingCodeCount": 536
+    "validatorCount": 145,
+    "coveredCount": 145,
+    "recipeCount": 395,
+    "findingCodeCount": 537
   },
   "entries": [
     {
@@ -6229,6 +6229,24 @@
           "replacement": "mock-plus-missing",
           "expectedCodes": [
             "seller_return_report"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "progress-billing-review-preparer",
+      "recipes": [
+        {
+          "id": "semantic-progress-billing-result-1",
+          "operator": "replace",
+          "path": [
+            "input",
+            "scope",
+            "contract"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "progress_billing_result"
           ]
         }
       ]

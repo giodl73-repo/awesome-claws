@@ -3,6 +3,7 @@ import { dispatchFindings } from "./service-dispatch-planner.mjs";
 import { fulfillmentFindings } from "./order-fulfillment-reconciler.mjs";
 import { sellerReturnFindings } from "./seller-return-reconciler.mjs";
 import { invoiceDraftFindings } from "./invoice-draft-producer.mjs";
+import { progressBillingFindings } from "./progress-billing-review-preparer.mjs";
 import { jobEstimateFindings } from "./job-estimate-producer.mjs";
 import { payrollReviewFindings } from "./payroll-review-preparer.mjs";
 import { documentControlFindings } from "./project-document-controller.mjs";
@@ -53343,6 +53344,7 @@ const validators = {
   "project-manager": projectFindings,
   "payroll-review-preparer": payrollReviewFindings,
   "invoice-draft-producer": invoiceDraftFindings,
+  "progress-billing-review-preparer": progressBillingFindings,
   "job-estimate-producer": jobEstimateFindings,
   "service-dispatch-planner": dispatchFindings,
   "order-fulfillment-reconciler": fulfillmentFindings,

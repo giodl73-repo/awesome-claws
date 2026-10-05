@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (144)
+### Active (145)
 
 | Claw | Detail |
 | --- | --- |
@@ -106,6 +106,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Procurement evaluator](claws/procurement-evaluator) | @giodl73-repo; last verified 2026-08-19 |
 | [Product manager](claws/product-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Professional networking follow-up](claws/professional-networking-followup) | @giodl73-repo; last verified 2026-08-28 |
+| [Progress Billing Review Preparer](claws/progress-billing-review-preparer) | @giodl73-repo; last verified 2026-10-05 |
 | [Project document controller](claws/project-document-controller) | @giodl73-repo; last verified 2026-10-02 |
 | [Project manager](claws/project-manager) | @giodl73-repo; last verified 2026-08-19 |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | @giodl73-repo; last verified 2026-09-25 |
@@ -171,7 +172,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (112)
+### Low setup (113)
 
 | Claw | Detail |
 | --- | --- |
@@ -251,6 +252,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Procure-to-Pay Three-Way Match Exception Reconciler](claws/procure-to-pay-three-way-match-exception-reconciler) | no bootstrap, external dependency, or schedule |
 | [Product manager](claws/product-manager) | no bootstrap, external dependency, or schedule |
 | [Professional networking follow-up](claws/professional-networking-followup) | no bootstrap, external dependency, or schedule |
+| [Progress Billing Review Preparer](claws/progress-billing-review-preparer) | no bootstrap, external dependency, or schedule |
 | [Project document controller](claws/project-document-controller) | no bootstrap, external dependency, or schedule |
 | [Project manager](claws/project-manager) | no bootstrap, external dependency, or schedule |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | no bootstrap, external dependency, or schedule |
@@ -334,7 +336,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (121)
+### No external dependencies (122)
 
 | Claw | Detail |
 | --- | --- |
@@ -423,6 +425,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Procurement evaluator](claws/procurement-evaluator) | None |
 | [Product manager](claws/product-manager) | None |
 | [Professional networking follow-up](claws/professional-networking-followup) | None |
+| [Progress Billing Review Preparer](claws/progress-billing-review-preparer) | None |
 | [Project document controller](claws/project-document-controller) | None |
 | [Project manager](claws/project-manager) | None |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | None |
@@ -492,7 +495,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (105)
+### X3 (106)
 
 | Claw | Detail |
 | --- | --- |
@@ -563,6 +566,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
 | [Presentation producer](claws/presentation-producer) | Produces a template-faithful review-copy PPTX plus an exact-version evidence manifest whose canonical digests bind authority, source-use review, every material slide text item and claim, visual provenance, render, QA record, control, and human review without distributing the deck. |
 | [Professional networking follow-up](claws/professional-networking-followup) | Organizes owner-supplied professional contacts, meeting notes, event context, introduction requests, follow-up drafts, relationship tags, and reminder questions into a private networking ledger without sending messages, making introductions, scheduling meetings, changing accounts, scraping contacts, committing referrals, or giving career, legal, financial, recruiting, or sales advice. |
+| [Progress Billing Review Preparer](claws/progress-billing-review-preparer) | Reconciles cumulative construction pay-application evidence, stored-material transitions, retainage and prior certificates into a private review draft without certifying work or submitting claims. |
 | [Project document controller](claws/project-document-controller) | Produces an exact-revision project document register, submittal and RFI follow-up package, and draft transmittal manifest from supplied project records without issuing documents or authorizing construction. |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | Maintains a private, evidence-bound property-insurance claim ledger across owner-reported loss, affected property, official claim requirements, deadlines, owner-executed actions, independent receipts, estimates, carrier-issued positions, payments, repairs, and unresolved scope without deciding coverage, cause, value, liability, or settlement or taking external action. |
 | [Public company watcher](claws/public-company-watcher) | Reconciles filed public-company disclosures against a declared issuer baseline and produces a private, owner-materiality delta ledger without holdings, quotes, portfolio analysis, advice, trading, issuer contact, or publication. |
@@ -717,7 +721,7 @@ Categories come directly from the catalog entry.
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
-### Operations (39)
+### Operations (40)
 
 | Claw | Detail |
 | --- | --- |
@@ -746,6 +750,7 @@ Categories come directly from the catalog entry.
 | [Pet care coordinator](claws/pet-care-coordinator) | X3; Coordinates evidence-bound routine pet care, symptom triage, medication-safe handoffs, and explicitly approved veterinary appointments. |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | X3; Coordinates evidence-bound ornamental pond and waterfall planning, installation readiness, recirculating-system care, aquatic-habitat monitoring, and explicitly approved specialist appointments. |
 | [Procurement evaluator](claws/procurement-evaluator) | X5; Builds a traceable vendor evaluation from approved requirements, evidence, risks, and accountable purchasing decisions. |
+| [Progress Billing Review Preparer](claws/progress-billing-review-preparer) | X3; Reconciles cumulative construction pay-application evidence, stored-material transitions, retainage and prior certificates into a private review draft without certifying work or submitting claims. |
 | [Project document controller](claws/project-document-controller) | X3; Produces an exact-revision project document register, submittal and RFI follow-up package, and draft transmittal manifest from supplied project records without issuing documents or authorizing construction. |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | X3; Maintains a private, evidence-bound property-insurance claim ledger across owner-reported loss, affected property, official claim requirements, deadlines, owner-executed actions, independent receipts, estimates, carrier-issued positions, payments, repairs, and unresolved scope without deciding coverage, cause, value, liability, or settlement or taking external action. |
 | [Public safety monitor](claws/public-safety-monitor) | X3; Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
@@ -833,7 +838,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (73)
+### Standard attention (74)
 
 | Claw | Detail |
 | --- | --- |
@@ -888,6 +893,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Pet care coordinator](claws/pet-care-coordinator) | portable workspace artifacts only |
 | [Pond and water feature coordinator](claws/pond-water-feature-coordinator) | portable workspace artifacts only |
 | [Professional networking follow-up](claws/professional-networking-followup) | portable workspace artifacts only |
+| [Progress Billing Review Preparer](claws/progress-billing-review-preparer) | portable workspace artifacts only |
 | [Property insurance claim coordinator](claws/property-insurance-claim-coordinator) | portable workspace artifacts only |
 | [Purchase researcher](claws/purchase-researcher) | portable workspace artifacts only |
 | [Records retention and disposition coordinator](claws/records-retention-disposition-coordinator) | portable workspace artifacts only |

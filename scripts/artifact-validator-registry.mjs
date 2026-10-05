@@ -11,6 +11,7 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "seller-return-reconciler": "seller-return.schema.json",
   "service-dispatch-planner": "service-dispatch.schema.json",
   "invoice-draft-producer": "invoice-draft.schema.json",
+  "progress-billing-review-preparer": "progress-billing.schema.json",
   "job-estimate-producer": "job-estimate.schema.json",
   "payroll-review-preparer": "payroll-review.schema.json",
   "project-document-controller": "project-document-control.schema.json",
