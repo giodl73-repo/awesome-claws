@@ -1,0 +1,401 @@
+{
+  "schemaVersion": "awesomeClaws.progressBilling.v1",
+  "input": {
+    "schemaVersion": "awesomeClaws.progressBillingInput.v1",
+    "scope": {
+      "contract": "Contract-Alias",
+      "application": "APP-3",
+      "revision": "r2",
+      "period": 3,
+      "periodStart": "2026-10-01",
+      "periodEnd": "2026-10-05",
+      "asOf": "2026-10-05T18:00:00Z",
+      "currency": "USD",
+      "minorDigits": 2,
+      "reviewer": "Owner billing reviewer",
+      "privateDestination": "private/owner-review"
+    },
+    "coverage": {
+      "id": "coverage",
+      "sourceRef": "owner-pack",
+      "sourceRevision": "r1",
+      "nativeId": "coverage",
+      "lines": [
+        "A",
+        "B"
+      ],
+      "lots": [
+        "LOT-A"
+      ],
+      "complete": true,
+      "historyComplete": true,
+      "cashComplete": true,
+      "checklistComplete": true,
+      "rulesComplete": true,
+      "noDuplicateCoverage": true,
+      "disclosureApproved": true,
+      "unresolvedCorrections": []
+    },
+    "sources": [
+      {
+        "id": "owner-pack",
+        "revision": "r1",
+        "currentRevision": "r1",
+        "contract": "Contract-Alias",
+        "capturedAt": "2026-10-05T17:00:00Z",
+        "approved": true
+      }
+    ],
+    "periods": [
+      {
+        "id": "period-1",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "period-1",
+        "number": 1,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "applicationRevision": "r1"
+      },
+      {
+        "id": "period-2",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "period-2",
+        "number": 2,
+        "start": "2026-09-01",
+        "end": "2026-09-30",
+        "applicationRevision": "r1"
+      },
+      {
+        "id": "period-3",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "period-3",
+        "number": 3,
+        "start": "2026-10-01",
+        "end": "2026-10-05",
+        "applicationRevision": "r2"
+      }
+    ],
+    "lines": [
+      {
+        "id": "A",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "A",
+        "baseScheduled": "100000",
+        "installedOpening": "20000",
+        "installedClosing": "35000",
+        "storedOpening": "10000",
+        "storedClosing": "5000",
+        "workedRate": "0.10",
+        "storedRate": "0.10",
+        "rounding": "half-up-per-component",
+        "rulesRef": "owner-rules-A-r1",
+        "negativeAdjustmentRef": null
+      },
+      {
+        "id": "B",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "B",
+        "baseScheduled": "100000",
+        "installedOpening": "50000",
+        "installedClosing": "60000",
+        "storedOpening": "0",
+        "storedClosing": "0",
+        "workedRate": "0.05",
+        "storedRate": "0.05",
+        "rounding": "half-up-per-component",
+        "rulesRef": "owner-rules-B-r1",
+        "negativeAdjustmentRef": null
+      }
+    ],
+    "changes": [
+      {
+        "id": "change-approved",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "change-approved",
+        "line": "A",
+        "amount": "10000",
+        "state": "approved",
+        "approvalRef": "owner-change-1"
+      },
+      {
+        "id": "change-pending",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "change-pending",
+        "line": "A",
+        "amount": "7000",
+        "state": "pending",
+        "approvalRef": null
+      }
+    ],
+    "installed": [
+      {
+        "id": "installed-A-new",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "installed-A-new",
+        "line": "A",
+        "kind": "new-work",
+        "amount": "10000",
+        "authorizationRef": "owner-progress-A"
+      },
+      {
+        "id": "installed-A-transfer",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "installed-A-transfer",
+        "line": "A",
+        "kind": "stored-transfer",
+        "amount": "5000",
+        "authorizationRef": "owner-install-LOT-A"
+      },
+      {
+        "id": "installed-B-new",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "installed-B-new",
+        "line": "B",
+        "kind": "new-work",
+        "amount": "10000",
+        "authorizationRef": "owner-progress-B"
+      }
+    ],
+    "lots": [
+      {
+        "id": "LOT-A",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "LOT-A",
+        "line": "A",
+        "opening": "10000",
+        "additions": "0",
+        "removals": "0",
+        "closing": "5000",
+        "eligible": true,
+        "eligibilityRef": "owner-eligibility-A",
+        "movementRef": "owner-lot-ledger-r1",
+        "transfers": [
+          {
+            "installedRef": "installed-A-transfer",
+            "amount": "5000"
+          }
+        ]
+      }
+    ],
+    "history": {
+      "mode": "cumulative-snapshot",
+      "applications": [
+        {
+          "id": "app-A-1",
+          "sourceRef": "owner-pack",
+          "sourceRevision": "r1",
+          "nativeId": "app-A-1",
+          "line": "A",
+          "period": 1,
+          "applicationRevision": "r1",
+          "installed": "10000",
+          "stored": "0"
+        },
+        {
+          "id": "app-B-1",
+          "sourceRef": "owner-pack",
+          "sourceRevision": "r1",
+          "nativeId": "app-B-1",
+          "line": "B",
+          "period": 1,
+          "applicationRevision": "r1",
+          "installed": "20000",
+          "stored": "0"
+        },
+        {
+          "id": "app-A-2",
+          "sourceRef": "owner-pack",
+          "sourceRevision": "r1",
+          "nativeId": "app-A-2",
+          "line": "A",
+          "period": 2,
+          "applicationRevision": "r1",
+          "installed": "20000",
+          "stored": "10000"
+        },
+        {
+          "id": "app-B-2",
+          "sourceRef": "owner-pack",
+          "sourceRevision": "r1",
+          "nativeId": "app-B-2",
+          "line": "B",
+          "period": 2,
+          "applicationRevision": "r1",
+          "installed": "50000",
+          "stored": "0"
+        }
+      ],
+      "certificates": [
+        {
+          "id": "cert-A-1",
+          "sourceRef": "owner-pack",
+          "sourceRevision": "r1",
+          "nativeId": "cert-A-1",
+          "line": "A",
+          "period": 1,
+          "applicationRevision": "r1",
+          "kind": "cumulative-snapshot",
+          "amount": "9000",
+          "supersedes": null,
+          "replacementApprovalRef": null,
+          "correctionResolved": true
+        },
+        {
+          "id": "cert-B-1",
+          "sourceRef": "owner-pack",
+          "sourceRevision": "r1",
+          "nativeId": "cert-B-1",
+          "line": "B",
+          "period": 1,
+          "applicationRevision": "r1",
+          "kind": "cumulative-snapshot",
+          "amount": "19000",
+          "supersedes": null,
+          "replacementApprovalRef": null,
+          "correctionResolved": true
+        },
+        {
+          "id": "cert-A-2",
+          "sourceRef": "owner-pack",
+          "sourceRevision": "r1",
+          "nativeId": "cert-A-2",
+          "line": "A",
+          "period": 2,
+          "applicationRevision": "r1",
+          "kind": "cumulative-snapshot",
+          "amount": "27000",
+          "supersedes": null,
+          "replacementApprovalRef": null,
+          "correctionResolved": true
+        },
+        {
+          "id": "cert-B-2",
+          "sourceRef": "owner-pack",
+          "sourceRevision": "r1",
+          "nativeId": "cert-B-2",
+          "line": "B",
+          "period": 2,
+          "applicationRevision": "r1",
+          "kind": "cumulative-snapshot",
+          "amount": "47500",
+          "supersedes": null,
+          "replacementApprovalRef": null,
+          "correctionResolved": true
+        },
+        {
+          "id": "cert-A-2-corrected",
+          "sourceRef": "owner-pack",
+          "sourceRevision": "r1",
+          "nativeId": "cert-A-2-corrected",
+          "line": "A",
+          "period": 2,
+          "applicationRevision": "r1",
+          "kind": "cumulative-snapshot",
+          "amount": "26000",
+          "supersedes": "cert-A-2",
+          "replacementApprovalRef": "owner-replacement-approval",
+          "correctionResolved": true
+        }
+      ]
+    },
+    "cash": [
+      {
+        "id": "cash-A",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "cash-A",
+        "line": "A",
+        "amount": "20000",
+        "at": "2026-10-03T12:00:00Z",
+        "basis": "applied-to-prior-certificates",
+        "throughPeriod": 2,
+        "ownerConfirmed": true,
+        "applicationRef": "owner-cash-application-A"
+      },
+      {
+        "id": "cash-B",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "cash-B",
+        "line": "B",
+        "amount": "47500",
+        "at": "2026-10-03T12:00:00Z",
+        "basis": "applied-to-prior-certificates",
+        "throughPeriod": 2,
+        "ownerConfirmed": true,
+        "applicationRef": "owner-cash-application-B"
+      }
+    ],
+    "attachments": [
+      {
+        "id": "backup-checklist",
+        "sourceRef": "owner-pack",
+        "sourceRevision": "r1",
+        "nativeId": "backup-checklist",
+        "requiredRevision": "r1",
+        "suppliedRevision": "r1",
+        "permitted": true
+      }
+    ]
+  },
+  "result": {
+    "inputDigest": "sha256:4cd81a4cfe989e8c39d2eda2189b1ffdca2e16a9432fbe725e3bf2acadcc033c",
+    "state": "ready-for-owner-review",
+    "lines": [
+      {
+        "id": "A",
+        "scheduled": "110000.00",
+        "installed": "35000.00",
+        "stored": "5000.00",
+        "workedRetainage": "3500.00",
+        "storedRetainage": "500.00",
+        "entitlement": "36000.00",
+        "priorCertified": "26000.00",
+        "current": "10000.00",
+        "priorUnpaid": "6000.00",
+        "effectiveCertificates": [
+          "cert-A-2-corrected"
+        ],
+        "negativeAdjustment": false
+      },
+      {
+        "id": "B",
+        "scheduled": "100000.00",
+        "installed": "60000.00",
+        "stored": "0.00",
+        "workedRetainage": "3000.00",
+        "storedRetainage": "0.00",
+        "entitlement": "57000.00",
+        "priorCertified": "47500.00",
+        "current": "9500.00",
+        "priorUnpaid": "0.00",
+        "effectiveCertificates": [
+          "cert-B-2"
+        ],
+        "negativeAdjustment": false
+      }
+    ],
+    "total": "19500.00",
+    "priorUnpaid": "6000.00",
+    "blockers": []
+  },
+  "authority": {
+    "certification": "not-performed",
+    "submission": "not-performed",
+    "invoice": "not-performed",
+    "accounting": "not-performed",
+    "waiver": "not-performed",
+    "eligibilityDetermination": "not-performed"
+  }
+}

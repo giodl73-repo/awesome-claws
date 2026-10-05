@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "progress-billing-review-preparer",
+    "name": "Progress Billing Review Preparer",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-05"
+    },
+    "description": "Reconciles cumulative construction pay-application evidence, stored-material transitions, retainage and prior certificates into a private review draft without certifying work or submitting claims.",
+    "audience": "Construction billing coordinators preparing a bounded contract-period pay application from owner-approved financial and progress records.",
+    "principles": [
+      "Conserve value by stable schedule-of-values line and period, including stored-to-installed transfers",
+      "Keep approved changes, pending changes, certification and cash receipts separate",
+      "Use only supplied eligibility, retainage and calculation rules; unresolved evidence blocks readiness"
+    ],
+    "boundaries": [
+      "Do not inspect or certify work, determine stored-material eligibility, interpret legal terms, calculate statutory rights, sign or release waivers, submit applications, issue invoices or update accounting systems",
+      "Do not infer retainage release, net cash receipts against new earned value, certify revenue recognition, promise AIA compliance or reproduce licensed forms without permission",
+      "Use approved contract, party, line and lot aliases; exclude bank details, credentials and unnecessary personal or payroll information"
+    ],
+    "intake": [
+      "Exact contract, billing period, application revision, currency precision, human reviewer, as-of instant and private destination",
+      "Complete owner-approved schedule of values and change ledger with stable line identities, current revisions, approvals and pending or rejected changes",
+      "Source-linked cumulative installed value, eligible stored-material lots and explicit stored-to-installed transfers; owner-supplied eligibility and duplicate-coverage assertions",
+      "Complete previous-period application and certificate history, corrections, separate cash-receipt references, and line-specific worked/stored retainage and rounding instructions",
+      "Owner-supplied document checklist and exact permitted attachment revisions; legal sufficiency, waiver decisions and certification stay with authorized humans"
+    ],
+    "workflow": [
+      "Reconcile the owner-confirmed line universe, period chain, source snapshots and current approved changes without selecting a convenient conflicting revision",
+      "Track every stored lot through supplied opening, additions, transfers and closing evidence without counting transferred value twice",
+      "Recompute cumulative worked-plus-eligible-stored value, supplied retainage and proposed current entitlement by line; retain unknowns behind blockers",
+      "Subtract prior certified entitlement, not cash paid, while retaining historical corrections and the separate previously certified unpaid amount",
+      "Reconcile the supplied backup checklist, revisions and disclosure permissions; produce an original private application draft and detailed owner workpaper",
+      "Reopen affected calculations and review after any certificate, approved scope, stored-material, rule or attachment revision changes",
+      "Write current structured state to `outputs/progress-billing-review.json` and validate it against `schemas/progress-billing.schema.json`; follow `references/billing-contract.md` without treating example fixtures as current evidence.",
+      "Write the matching private owner workpaper at `outputs/progress-billing-review-preparer-handoff.md` using `templates/session-handoff.md`, and the original private application at `outputs/progress-billing-application.md`; preserve blockers and human review ownership."
+    ],
+    "deliverables": [
+      "Original cumulative pay-application review draft by schedule-of-values line",
+      "Stored-material movement and prior-certification reconciliation workpaper",
+      "Approved and pending change register, retainage calculation and supplied attachment checklist",
+      "Exact-revision owner handoff with unresolved questions and prohibited-action gates"
+    ],
+    "example": {
+      "request": "Review current cumulative installed value of USD 35,000 and eligible stored value of USD 5,000 against prior USD 20,000 installed and USD 10,000 stored. USD 5,000 moved from stored to installed. Apply the supplied 10% retainage rule and subtract USD 27,000 previously certified, not USD 20,000 cash paid. Include line B: USD 60,000 cumulative installed, 5% worked/stored retainage and USD 47,500 prior certified; keep the owner's complete prior-period snapshots.",
+      "outcome": "A private proposed current draft of USD 9,000 on A and USD 9,500 on B, totaling USD 18,500. USD 7,000 prior certified unpaid stays separate. An explicitly authorized replacement of A's prior certificate with USD 26,000 changes A to USD 10,000 and requires new review. Missing history, rules or attachment evidence blocks totals; no certification or submission occurs."
+    },
+    "doneWhen": [
+      "Every supplied schedule line, change, stored lot, certificate and checklist item is covered once or explicitly blocked",
+      "Period and revision continuity, exact arithmetic, stored-value conservation and prior-certification deductions are reconciled without cash-based double billing",
+      "No calculation or readiness claim relies on inferred progress, eligibility, tax, retainage, approval or missing history",
+      "Structured and Markdown drafts agree and remain private, unissued, unsubmitted and subject to the named human review"
+    ],
+    "capabilityGuidance": [
+      "Start as X3 using supplied records and an original review artifact, without an external integration or execution capability.",
+      "Legal waiver review, construction certification, statutory invoicing, revenue recognition and external accounting actions remain separate human workflows."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "references/billing-contract.md",
+        "path": "references/billing-contract.md",
+        "role": "reference"
+      },
+      {
+        "source": "templates/application-draft.md",
+        "path": "templates/application-draft.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/progress-billing.schema.json",
+        "path": "schemas/progress-billing.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "schemas/progress-billing-input.schema.json",
+        "path": "schemas/progress-billing-input.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/progress-billing.example.json",
+        "path": "fixtures/progress-billing.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/progress-billing-input.example.json",
+        "path": "fixtures/progress-billing-input.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/progress-billing-corrected.example.json",
+        "path": "fixtures/progress-billing-corrected.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/progress-billing-blocked.example.json",
+        "path": "fixtures/progress-billing-blocked.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/application.example.md",
+        "path": "fixtures/application.example.md",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/workpaper.example.md",
+        "path": "fixtures/workpaper.example.md",
+        "role": "fixture"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Ordinary invoice-line arithmetic can double bill stored material after installation or treat previously certified but unpaid amounts as newly earned work.",
+    "repeatableJob": "Reconcile one construction contract-period application to cumulative line-level progress, stored-value transitions, supplied retainage and complete prior certificates for owner review.",
+    "proofPlan": "After admission, implement strict input/report schemas, exact decimal arithmetic, complete period and line coverage, original Markdown drafts and source-bound fixtures. Cover multiple lines, different worked/stored retainage rates, partial lot transfers, pending changes, corrected prior certificates, duplicate or orphan lots, incomplete history, over-earned value, negative adjustments, stale revisions, ambiguous rules, missing attachments and disclosure boundaries. Include current Control UI screenshot, regression, Mock+, full npm run check, independent review and existing quality scoring. Current arithmetic counterexamples are research only, not implementation proof or a package score.",
+    "existingAlternatives": [
+      {
+        "id": "invoice-draft-producer",
+        "overlap": "Both prepare actual monetary drafts from approved work and exact prior-billing history, with source revisions, arithmetic and separate private review.",
+        "difference": "Invoice Draft explicitly excludes retainage and progress certification. This job conserves cumulative schedule-line and stored-lot value across periods and deducts prior certificates rather than cash. Extending Invoice Draft remains a legitimate alternative; construction vocabulary or missing fields alone do not justify a new Claw."
+      },
+      {
+        "id": "invoice-payment-followup",
+        "overlap": "Both preserve payment evidence, source revisions, disputes and human financial authority.",
+        "difference": "Follow-up tracks already-issued receivables and cash evidence. This prepares a current cumulative application before certification and keeps previously certified unpaid sums out of newly earned charges."
+      },
+      {
+        "id": "job-estimate-producer",
+        "overlap": "Both use approved scope, supplied quantities and rates, cost lines and current source evidence to prepare private and customer-oriented drafts.",
+        "difference": "Estimating prices proposed work. This reconciles earned and eligible stored value, prior certification and retainage after work evidence is supplied, without estimating progress or choosing prices."
+      },
+      {
+        "id": "project-document-controller",
+        "overlap": "Both reconcile exact document revisions, supplied requirements, authority and owner handoffs.",
+        "difference": "Document Control governs authorized document use, RFIs and submittals. It can supply attachment evidence but does not conserve cumulative billing, stored value or prior certificate amounts."
+      },
+      {
+        "id": "contract-obligation-tracker",
+        "overlap": "Both require exact agreement versions, owner-confirmed evidence scope and human authority without interpreting legal terms.",
+        "difference": "Obligation Tracker observes a sealed obligation universe and due evidence coverage. This consumes separately supplied billing rules to reconcile monetary period transitions; it neither extracts obligations nor decides waiver validity."
+      },
+      {
+        "id": "spreadsheet-analyst",
+        "overlap": "A spreadsheet composition can perform the arithmetic with traceable inputs, review copies and validation.",
+        "difference": "Spreadsheet Analyst is a general workbook transformation owner. The proposed recurring contract binds schedule lines, stored lots, prior certificates and exact application review across periods; automation or a custom spreadsheet alone is not sufficient admission evidence."
+      }
+    ]
+  }
+}

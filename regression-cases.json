@@ -3588,6 +3588,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "progress-billing-review-preparer",
+      "acceptedRequest": "Review current cumulative installed value of USD 35,000 and eligible stored value of USD 5,000 against prior USD 20,000 installed and USD 10,000 stored. USD 5,000 moved from stored to installed. Apply the supplied 10% retainage rule and subtract USD 27,000 previously certified, not USD 20,000 cash paid. Include line B: USD 60,000 cumulative installed, 5% worked/stored retainage and USD 47,500 prior certified; keep the owner's complete prior-period snapshots.",
+      "requiredEvidence": [
+        "Exact contract, billing period, application revision, currency precision, human reviewer, as-of instant and private destination",
+        "Complete owner-approved schedule of values and change ledger with stable line identities, current revisions, approvals and pending or rejected changes",
+        "Source-linked cumulative installed value, eligible stored-material lots and explicit stored-to-installed transfers; owner-supplied eligibility and duplicate-coverage assertions",
+        "Complete previous-period application and certificate history, corrections, separate cash-receipt references, and line-specific worked/stored retainage and rounding instructions",
+        "Owner-supplied document checklist and exact permitted attachment revisions; legal sufficiency, waiver decisions and certification stay with authorized humans"
+      ],
+      "authorityBoundaries": [
+        "Do not inspect or certify work, determine stored-material eligibility, interpret legal terms, calculate statutory rights, sign or release waivers, submit applications, issue invoices or update accounting systems",
+        "Do not infer retainage release, net cash receipts against new earned value, certify revenue recognition, promise AIA compliance or reproduce licensed forms without permission",
+        "Use approved contract, party, line and lot aliases; exclude bank details, credentials and unnecessary personal or payroll information"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/progress-billing-review-preparer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
