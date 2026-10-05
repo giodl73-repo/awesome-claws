@@ -1,0 +1,38 @@
+{
+  "synthetic": true,
+  "worker": "H-17",
+  "asOf": "2026-10-08T16:00:00Z",
+  "acceptance": { "ref": "O-17", "state": "accepted", "owner": "Hiring owner" },
+  "plans": [
+    { "ref": "PLAN-V1", "revision": "v1", "startDate": "2026-10-05", "role": "Operations associate", "location": "Remote", "timezone": "America/Chicago", "state": "superseded" },
+    { "ref": "PLAN-V2", "revision": "v2", "startDate": "2026-10-12", "role": "Operations associate", "location": "Remote", "timezone": "America/Chicago", "state": "owner-approved", "owner": "Onboarding owner" }
+  ],
+  "impactRules": [
+    { "ref": "CHANGE-RULE-1", "from": "v1", "to": "v2", "change": "startDate", "prerequisite": "ACCESS", "effect": "reconfirm", "owner": "IT owner" }
+  ],
+  "prerequisites": [
+    { "id": "EQUIPMENT", "owner": "Equipment owner", "evidence": [{ "ref": "REQUEST-17", "planRevision": "v2", "state": "requested" }], "assessment": "delivery-evidence-missing", "impactRuleRef": null },
+    { "id": "ACCESS", "owner": "IT owner", "evidence": [{ "ref": "IT-V1", "planRevision": "v1", "state": "confirmed" }], "assessment": "historical-reconfirmation-required", "impactRuleRef": "CHANGE-RULE-1" },
+    { "id": "HR", "owner": "HR owner", "evidence": [{ "ref": "HR-STATUS-17", "planRevision": "v2", "state": "pending-owner-review" }], "assessment": "pending", "impactRuleRef": null },
+    { "id": "WORKSPACE", "owner": "Facilities owner", "evidence": [{ "ref": "WORKSPACE-V1", "planRevision": "v1", "state": "confirmed" }], "assessment": "historical-applicability-unresolved", "impactRuleRef": null },
+    { "id": "ORIENTATION", "owner": "Orientation owner", "evidence": [{ "ref": "ORIENTATION-17", "planRevision": "v2", "state": "arrangement-confirmed" }], "assessment": "arranged-not-attended", "impactRuleRef": null }
+  ],
+  "workerPermittedFacts": {
+    "worker": "H-17",
+    "planRevision": "v2",
+    "startDate": "2026-10-12",
+    "location": "Remote",
+    "timezone": "America/Chicago",
+    "orientation": "2026-10-12 09:00 America/Chicago; arrangement confirmed, not attendance",
+    "contact": "Onboarding owner"
+  },
+  "publication": "owner-review-pending",
+  "ownerSuppliedDeadlines": {
+    "EQUIPMENT": "2026-10-12",
+    "ACCESS": "2026-10-12",
+    "HR": "2026-10-12",
+    "WORKSPACE": "2026-10-12",
+    "ORIENTATION": "2026-10-12",
+    "HANDOFF": "2026-10-12"
+  }
+}
