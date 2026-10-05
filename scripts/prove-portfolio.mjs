@@ -859,16 +859,15 @@ for (const entry of entries) {
     const marker = `OPENCLAW_E2E_APPLICATION_${entry.id.replaceAll("-", "_").toUpperCase()}`;
     mockOpenAi = await startMockOpenAi(env, evidenceRoot, entry, marker);
     env = await configureMockModel(env, mockOpenAi.port);
-    if ((entry.cronJobs?.length ?? 0) > 0 || visualRuntimeProof) {
-      gateway = await startGateway(openClawEntry, env, entry.id, evidenceRoot);
-      env = gateway.env;
-      result.gateway = {
-        mode: "local",
-        port: gateway.port,
-        purpose: "canonical-cron-owner",
-        log: relative(proofRoot, gateway.logPath).replaceAll("\\", "/"),
-      };
-    }
+    // Removal consults Gateway-owned monitors even for plain artifact Claws.
+    gateway = await startGateway(openClawEntry, env, entry.id, evidenceRoot);
+    env = gateway.env;
+    result.gateway = {
+      mode: "local",
+      port: gateway.port,
+      purpose: "canonical-lifecycle-owner",
+      log: relative(proofRoot, gateway.logPath).replaceAll("\\", "/"),
+    };
     const standaloneInspection = assertStandaloneSuccess(
       recordPhase(phases, "standalone-inspect", () =>
         runStandalone(cliEntry, ["inspect", installSource], env, `${entry.id} standalone inspect`),

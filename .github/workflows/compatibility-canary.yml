@@ -7,6 +7,10 @@ on:
         description: Exact OpenClaw branch, tag, or SHA to exercise
         required: true
         default: main
+      portfolio_only:
+        description: Optional comma-separated diagnostic subset; omitted Claws remain not-run
+        required: false
+        default: ""
   schedule:
     - cron: "41 10 * * 1"
 
@@ -49,6 +53,7 @@ jobs:
         env:
           CLAWS_CLI_ENTRY: ${{ github.workspace }}/claws-cli/packages/cli/dist/cli.mjs
           OPENCLAW_CLI_ENTRY: ${{ github.workspace }}/openclaw/openclaw.mjs
+          PORTFOLIO_ONLY: ${{ inputs.portfolio_only || '' }}
         run: npm run proof:compatibility
       - name: Track persistent scheduled drift
         if: failure() && github.event_name == 'schedule'
