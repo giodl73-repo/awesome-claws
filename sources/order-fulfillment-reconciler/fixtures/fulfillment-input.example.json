@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "awesomeClaws.fulfillmentInput.v1",
+  "scope": {"owner": "COORDINATOR-LEE", "asOf": "2026-10-04T17:00:00Z", "revision": "batch-r1"},
+  "sources": [
+    {"id": "ORDERS", "revision": "r2", "capturedAt": "2026-10-04T16:00:00Z"},
+    {"id": "SHIPMENTS", "revision": "r1", "capturedAt": "2026-10-04T16:00:00Z"},
+    {"id": "DELIVERIES", "revision": "r1", "capturedAt": "2026-10-04T16:00:00Z"}
+  ],
+  "lines": [
+    {"id": "LINE-A", "orderId": "ORDER-A", "orderLine": "ITEM-1", "sku": "SKU-X", "unit": "EA", "ordered": 10, "cancelled": 2, "cancellationAuthorized": true, "accepted": true, "promisedAt": "2026-10-04T12:00:00-04:00", "holds": [], "sourceRef": "ORDERS", "sourceRevision": "r2", "sourceRecord": "ROW-A"},
+    {"id": "LINE-B", "orderId": "ORDER-B", "orderLine": "ITEM-1", "sku": "SKU-X", "unit": "EA", "ordered": 8, "cancelled": 0, "cancellationAuthorized": true, "accepted": true, "promisedAt": null, "holds": [], "sourceRef": "ORDERS", "sourceRevision": "r2", "sourceRecord": "ROW-B"}
+  ],
+  "shipments": [
+    {"id": "SHIP-A", "shipmentId": "LOAD-1", "lineId": "LINE-A", "sku": "SKU-X", "unit": "EA", "quantity": 6, "status": "departed", "occurredAt": "2026-10-03T09:00:00Z", "replacedBy": null, "sourceRef": "SHIPMENTS", "sourceRevision": "r1", "sourceRecord": "ROW-A"},
+    {"id": "SHIP-B", "shipmentId": "LOAD-1", "lineId": "LINE-B", "sku": "SKU-X", "unit": "EA", "quantity": 8, "status": "departed", "occurredAt": "2026-10-03T09:00:00Z", "replacedBy": null, "sourceRef": "SHIPMENTS", "sourceRevision": "r1", "sourceRecord": "ROW-B"}
+  ],
+  "deliveries": [
+    {"id": "DELIVERY-A", "shipmentLineId": "SHIP-A", "unit": "EA", "quantity": 4, "confirmedAt": "2026-10-04T10:00:00Z", "sourceRef": "DELIVERIES", "sourceRevision": "r1", "sourceRecord": "ROW-A"},
+    {"id": "DELIVERY-B", "shipmentLineId": "SHIP-B", "unit": "EA", "quantity": 8, "confirmedAt": "2026-10-04T10:00:00Z", "sourceRef": "DELIVERIES", "sourceRevision": "r1", "sourceRecord": "ROW-B"}
+  ]
+}

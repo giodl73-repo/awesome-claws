@@ -13,12 +13,12 @@
     "stewardship": 5
   },
   "summary": {
-    "entryCount": 142,
-    "average": 99.1,
+    "entryCount": 144,
+    "average": 99,
     "median": 100,
-    "qualifiedCount": 142,
+    "qualifiedCount": 144,
     "bands": {
-      "exemplary": 142,
+      "exemplary": 144,
       "strong": 0,
       "solid": 0,
       "needs-uplift": 0,
@@ -34,10 +34,10 @@
       "stewardship": 5
     },
     "evidenceCoverage": {
-      "contributionRecords": 131,
-      "schemas": 142,
-      "semanticValidators": 142,
-      "screenshots": 142
+      "contributionRecords": 133,
+      "schemas": 144,
+      "semanticValidators": 144,
+      "screenshots": 144
     }
   },
   "scores": [
@@ -364,7 +364,7 @@
         "maintenanceAgeDays": 44
       },
       "recommendations": [],
-      "rank": 120
+      "rank": 122
     },
     {
       "id": "case-continuity-coordinator",
@@ -401,7 +401,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 121
+      "rank": 123
     },
     {
       "id": "certification-renewal-planner",
@@ -475,7 +475,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 122
+      "rank": 124
     },
     {
       "id": "child-activity-manager",
@@ -549,7 +549,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 141
+      "rank": 143
     },
     {
       "id": "cloud-cost-analyst",
@@ -879,7 +879,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 135
+      "rank": 137
     },
     {
       "id": "data-governance-steward",
@@ -992,7 +992,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 123
+      "rank": 125
     },
     {
       "id": "document-intake-analyst",
@@ -1029,7 +1029,7 @@
         "maintenanceAgeDays": 36
       },
       "recommendations": [],
-      "rank": 136
+      "rank": 138
     },
     {
       "id": "document-renewal-tracker",
@@ -1214,7 +1214,7 @@
         "maintenanceAgeDays": 34
       },
       "recommendations": [],
-      "rank": 124
+      "rank": 126
     },
     {
       "id": "experimentation-lead",
@@ -1362,7 +1362,7 @@
         "maintenanceAgeDays": 35
       },
       "recommendations": [],
-      "rank": 125
+      "rank": 127
     },
     {
       "id": "financial-account-reconciliation-coordinator",
@@ -1507,7 +1507,7 @@
         "maintenanceAgeDays": 36
       },
       "recommendations": [],
-      "rank": 126
+      "rank": 128
     },
     {
       "id": "games-backlog-manager",
@@ -2364,7 +2364,7 @@
         "maintenanceAgeDays": 36
       },
       "recommendations": [],
-      "rank": 127
+      "rank": 129
     },
     {
       "id": "medical-appointment-prep",
@@ -2791,7 +2791,7 @@
         "maintenanceAgeDays": 33
       },
       "recommendations": [],
-      "rank": 128
+      "rank": 130
     },
     {
       "id": "privacy-request-coordinator",
@@ -2981,7 +2981,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 137
+      "rank": 139
     },
     {
       "id": "professional-networking-followup",
@@ -3055,7 +3055,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 138
+      "rank": 140
     },
     {
       "id": "public-company-watcher",
@@ -3093,7 +3093,7 @@
         "maintenanceAgeDays": 35
       },
       "recommendations": [],
-      "rank": 129
+      "rank": 131
     },
     {
       "id": "public-safety-monitor",
@@ -3133,7 +3133,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 142
+      "rank": 144
     },
     {
       "id": "purchase-researcher",
@@ -3277,7 +3277,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 139
+      "rank": 141
     },
     {
       "id": "recurring-third-party-review-evidence-reconciler",
@@ -3464,7 +3464,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 130
+      "rank": 132
     },
     {
       "id": "research-monitor",
@@ -3502,7 +3502,7 @@
         "maintenanceAgeDays": 35
       },
       "recommendations": [],
-      "rank": 131
+      "rank": 133
     },
     {
       "id": "research-scout",
@@ -3540,7 +3540,7 @@
         "maintenanceAgeDays": 36
       },
       "recommendations": [],
-      "rank": 132
+      "rank": 134
     },
     {
       "id": "restaurant-venue-scout",
@@ -3647,7 +3647,7 @@
       "recommendations": [
         "Add a retrospective contribution record with a proof plan and at least three specific alternatives."
       ],
-      "rank": 140
+      "rank": 142
     },
     {
       "id": "school-coordinator",
@@ -3905,7 +3905,7 @@
         "maintenanceAgeDays": 2
       },
       "recommendations": [],
-      "rank": 133
+      "rank": 135
     },
     {
       "id": "stock-portfolio-monitor",
@@ -4195,7 +4195,7 @@
         "maintenanceAgeDays": 35
       },
       "recommendations": [],
-      "rank": 134
+      "rank": 136
     },
     {
       "id": "ux-research-synthesizer",
@@ -5190,6 +5190,76 @@
       },
       "recommendations": [],
       "rank": 95
+    },
+    {
+      "id": "order-fulfillment-reconciler",
+      "name": "Order Fulfillment Reconciler",
+      "category": "operations",
+      "total": 97,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 17,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 9,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 0
+      },
+      "recommendations": [],
+      "rank": 120
+    },
+    {
+      "id": "seller-return-reconciler",
+      "name": "Seller Return Reconciler",
+      "category": "operations",
+      "total": 97,
+      "band": "exemplary",
+      "dimensions": {
+        "distinctness": 15,
+        "operatingContract": 20,
+        "evidenceModel": 17,
+        "authoritySafety": 20,
+        "experience": 10,
+        "verificationPortability": 10,
+        "stewardship": 5
+      },
+      "gates": {
+        "regressionCase": true,
+        "experienceCase": true,
+        "sourcePackage": true,
+        "resourcesPresent": true,
+        "qualified": true
+      },
+      "evidence": {
+        "contributionRecord": true,
+        "comparedAlternatives": 7,
+        "schema": true,
+        "semanticValidator": true,
+        "screenshot": true,
+        "experienceTarget": 3,
+        "capabilityClasses": [],
+        "maintenanceAgeDays": 0
+      },
+      "recommendations": [],
+      "rank": 121
     }
   ]
 }

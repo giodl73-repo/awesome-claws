@@ -2964,6 +2964,40 @@
       }
     },
     {
+      "id": "order-fulfillment-reconciler",
+      "name": "Order Fulfillment Reconciler",
+      "description": "Reconciles seller order lines with supplied shipment and delivery evidence into a draft open-order and exception handoff without releasing goods or contacting customers.",
+      "audience": "Seller operations coordinators reconciling a bounded batch of customer orders after order acceptance.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-04"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "partner-business-manager",
       "name": "Partner business manager",
       "description": "Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority.",
@@ -4315,6 +4349,40 @@
         "level": "guarded",
         "reasons": [
           "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "seller-return-reconciler",
+      "name": "Seller Return Reconciler",
+      "description": "Reconciles supplied seller return authorizations, physical receipts and recorded human dispositions into a draft return backlog and exception handoff without approving returns or refunds.",
+      "audience": "Seller return coordinators reviewing a bounded batch of already-authorized product returns and repairs.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-04"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
         ]
       }
     },

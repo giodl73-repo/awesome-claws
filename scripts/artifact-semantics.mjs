@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
 import { dispatchFindings } from "./service-dispatch-planner.mjs";
+import { fulfillmentFindings } from "./order-fulfillment-reconciler.mjs";
+import { sellerReturnFindings } from "./seller-return-reconciler.mjs";
 import { invoiceDraftFindings } from "./invoice-draft-producer.mjs";
 import { jobEstimateFindings } from "./job-estimate-producer.mjs";
 import { payrollReviewFindings } from "./payroll-review-preparer.mjs";
@@ -53343,6 +53345,8 @@ const validators = {
   "invoice-draft-producer": invoiceDraftFindings,
   "job-estimate-producer": jobEstimateFindings,
   "service-dispatch-planner": dispatchFindings,
+  "order-fulfillment-reconciler": fulfillmentFindings,
+  "seller-return-reconciler": sellerReturnFindings,
   "project-document-controller": documentControlFindings,
   "product-manager": productFindings,
   "presentation-producer": presentationEvidenceManifestFindings,

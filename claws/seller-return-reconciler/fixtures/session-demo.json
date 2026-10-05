@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "seller-return-reconciler",
+  "scenario": "Review a return line with five units authorized, three evidenced received and two received units with recorded human disposition. Prepare the return backlog without authorizing refunds or replacements.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Review a return line with five units authorized, three evidenced received and two received units with recorded human disposition. Prepare the return backlog without authorizing refunds or replacements."
+    },
+    {
+      "role": "agent",
+      "text": "Using the synthetic snapshot in fixtures/return-input.example.json: RETURN-A / ITEM-1 has 5 EA authorized, 3 evidenced received and 2 with recorded human disposition. Two authorized units lack receipt evidence; one received unit lacks disposition evidence."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "The matching JSON and Markdown examples retain AUTHORIZATIONS r2, RECEIPTS r1 and DISPOSITIONS r1. REVIEWER-SAM's recorded repair decision covers only units 1-2 of RECEIPT-A. COORDINATOR-LEE owns the evidence follow-up; nothing here proves that any repair, replacement or refund happened."
+    }
+  ],
+  "report": {
+    "title": "Seller Return Reconciler session handoff",
+    "summary": "Two authorized units are not evidenced received and one received unit lacks disposition evidence. Recorded disposition does not prove repair, replacement, refund approval or payment. Conflicts and holds remain explicit.",
+    "output": "outputs/seller-return-reconciler-handoff.md",
+    "items": [
+      {
+        "title": "Return-line authorization, receipt and disposition reconciliation",
+        "summary": "RETURN-A / ITEM-1: 5 EA authorized, 3 received, 2 disposition-evidenced, 2 not evidenced received and 1 awaiting disposition evidence.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source revision and event ledger",
+        "summary": "AUTHORIZER-PAT authorized the return on October 2; RECEIPT-A records 3 EA on October 3. REVIEWER-SAM recorded repair for units 1-2 on October 4. Current sources: AUTHORIZATIONS r2, RECEIPTS r1, DISPOSITIONS r1.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Unmatched, excess, duplicate, held and missing-evidence exception queue",
+        "summary": "COORDINATOR-LEE must obtain evidence for the 2 unreceived units and the 1 received unit without disposition. No holds were supplied. Missing receipt evidence is not proof of loss; no repair completion is inferred.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Draft return backlog and human-owned downstream handoff",
+        "summary": "The JSON and Markdown balances agree. Route recorded repair decisions to the responsible human workflow; this Claw does not inspect goods, select dispositions, adjust inventory, issue credits or contact customers.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

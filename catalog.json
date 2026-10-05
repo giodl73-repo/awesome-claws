@@ -15000,6 +15000,206 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "order-fulfillment-reconciler",
+      "name": "Order Fulfillment Reconciler",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-04"
+      },
+      "description": "Reconciles seller order lines with supplied shipment and delivery evidence into a draft open-order and exception handoff without releasing goods or contacting customers.",
+      "audience": "Seller operations coordinators reconciling a bounded batch of customer orders after order acceptance.",
+      "principles": [
+        "Preserve customer order and line identity through partial shipments and deliveries",
+        "Keep accepted order changes, shipment events and delivery confirmations separate",
+        "Expose unknown or conflicting evidence instead of declaring completion"
+      ],
+      "boundaries": [
+        "Do not release, allocate, pick, pack, ship, book carriers, create labels, contact customers, change orders or update an ERP",
+        "Do not issue invoices, authorize returns or refunds, classify freight or customs, determine tax, or infer delivery from a label or ETA",
+        "Use approved order and customer aliases; exclude addresses, payment details, credentials and unrestricted tracking links"
+      ],
+      "intake": [
+        "Bounded order batch, as-of timestamp, accountable coordinator and exact source revisions",
+        "Accepted order lines with stable identities, SKU, unit, ordered quantities, explicitly authorized cancellations and supplied promised dates",
+        "Shipment lines linked to order lines, departure evidence, quantities, void or supersession records, and delivery confirmations with explicit quantities",
+        "Supplied holds, exception owners and escalation rules; missing and conflicting records remain visible"
+      ],
+      "workflow": [
+        "Confirm order-line identities, units, revisions and event cutoffs without inferring accepted changes",
+        "Match shipment and delivery records to exact order lines; expose duplicates, orphan records, conflicting revisions and over-quantities",
+        "Reconcile net ordered, shipped, delivery-confirmed, not-shipped and shipped-without-delivery-confirmation quantities for every line",
+        "Prepare an open-order table, source ledger and owned exception handoff with concrete customer-update drafts for human review",
+        "Reconcile new revisions without inheriting earlier completion or release approval"
+      ],
+      "deliverables": [
+        "Order-line fulfillment reconciliation with separate shipment and delivery balances",
+        "Source-linked shipment and delivery register",
+        "Missing, conflicting, held and overdue evidence exception queue",
+        "Draft operational handoff and customer-status wording for owner review"
+      ],
+      "example": {
+        "request": "Reconcile two orders for the same SKU. A ordered ten and cancelled two; six shipped and four are delivery-confirmed. B ordered eight; all eight shipped and are delivery-confirmed.",
+        "outcome": "A has two not shipped and two shipped without delivery confirmation; B has no outstanding quantity. Aggregate totals do not erase A's exception, and no shipment or customer contact is performed."
+      },
+      "doneWhen": [
+        "Every supplied order line and shipment or delivery record is reconciled or explicitly blocked with its source identity",
+        "Quantity balances use compatible supplied units and accepted revisions without double-counting duplicates, voids or cancellations",
+        "Missing delivery proof never becomes delivered, and quantity completion never overrides an unresolved hold or evidence conflict",
+        "Markdown handoff and structured output agree and every external action remains with the accountable human"
+      ],
+      "capabilityGuidance": [
+        "Write `outputs/fulfillment.json` using `schemas/fulfillment.schema.json`; follow `references/fulfillment-contract.md`. Use supplied workspace records only.",
+        "Write the matching Markdown handoff at `outputs/order-fulfillment-reconciler-handoff.md` using `templates/session-handoff.md`; retain source coordinates, balances, holds, blockers and human ownership.",
+        "Returns, replacements, inventory allocation, invoice production, transport optimization and customs documentation remain separate owner workflows."
+      ],
+      "resources": [
+        {
+          "source": "schemas/fulfillment.schema.json",
+          "path": "schemas/fulfillment.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/fulfillment-input.example.json",
+          "path": "fixtures/fulfillment-input.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/fulfillment.example.json",
+          "path": "fixtures/fulfillment.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/fulfillment-handoff.example.md",
+          "path": "fixtures/fulfillment-handoff.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "references/fulfillment-contract.md",
+          "path": "references/fulfillment-contract.md",
+          "role": "reference"
+        },
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        }
+      ]
+    },
+    {
+      "id": "seller-return-reconciler",
+      "name": "Seller Return Reconciler",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-04"
+      },
+      "description": "Reconciles supplied seller return authorizations, physical receipts and recorded human dispositions into a draft return backlog and exception handoff without approving returns or refunds.",
+      "audience": "Seller return coordinators reviewing a bounded batch of already-authorized product returns and repairs.",
+      "principles": [
+        "Keep return authorization, physical receipt and human disposition as separate evidence states",
+        "Preserve return-line identity, compatible units and exact source revisions across partial receipts",
+        "Expose conflicting or missing evidence without inferring inspection results, customer entitlement or financial closure"
+      ],
+      "boundaries": [
+        "Do not authorize or deny returns, decide warranty coverage, inspect or diagnose products, choose a disposition, or declare goods safe or resalable; escalate supplied recall or safety holds to the accountable human",
+        "Do not issue credit memos or refunds, adjust customer accounts or inventory, create shipping labels, book carriers, ship replacements, contact customers or write to an ERP",
+        "Use approved customer and product aliases; exclude addresses, payment details, credentials, raw serial numbers and unrestricted customer records"
+      ],
+      "intake": [
+        "Bounded return batch, as-of timestamp, accountable coordinator and exact source revisions",
+        "Supplied human-authorized return lines with stable identities, quantities, units and accepted amendments",
+        "Physical receipt records linked to return lines, including partial receipts, voids, corrections and unmatched goods",
+        "Recorded human disposition evidence linked to received units or lots, supplied holds and repair or replacement handoff status"
+      ],
+      "workflow": [
+        "Validate return-line identities, source revisions, compatible units, authorization evidence and observation cutoffs",
+        "Match physical receipts to authorized return lines while preserving duplicates, unmatched goods and excess quantities as exceptions",
+        "Reconcile authorized quantities, evidenced receipts and quantities with recorded human disposition without treating disposition as executed repair or refund",
+        "Prepare a source-linked return backlog, unresolved evidence queue and owner-reviewable repair, replacement or accounting handoff",
+        "Compare revised records without inheriting prior clearance, disposition authority or financial closure"
+      ],
+      "deliverables": [
+        "Return-line authorization, receipt and disposition reconciliation",
+        "Source revision and event ledger",
+        "Unmatched, excess, duplicate, held and missing-evidence exception queue",
+        "Draft return backlog and human-owned downstream handoff"
+      ],
+      "example": {
+        "request": "Review a return line with five units authorized, three evidenced received and two received units with recorded human disposition. Prepare the return backlog without authorizing refunds or replacements.",
+        "outcome": "Two authorized units are not evidenced received and one received unit lacks disposition evidence. Recorded disposition does not prove repair, replacement, refund approval or payment. Conflicts and holds remain explicit."
+      },
+      "doneWhen": [
+        "Every supplied return line, receipt and disposition record is reconciled or explicitly blocked with its source identity",
+        "Partial quantities reconcile in compatible units without double-counting duplicate, voided, superseded or overlapping records",
+        "Missing receipt evidence is not called a lost shipment, and recorded disposition is not called completed repair, refund or closure",
+        "Structured output and Markdown agree on balances, holds, evidence gaps, owners and all prohibited external actions"
+      ],
+      "capabilityGuidance": [
+        "Write `outputs/seller-return.json` using `schemas/seller-return.schema.json`; follow `references/return-contract.md`. Use supplied workspace records only.",
+        "Write the matching Markdown backlog at `outputs/seller-return-reconciler-handoff.md` using `templates/session-handoff.md`; retain record coverage, holds, evidence gaps and human ownership.",
+        "Inspection, warranty entitlement, disposition decisions, repair execution, outbound replacement fulfillment and accounting transactions remain with their accountable owners."
+      ],
+      "resources": [
+        {
+          "source": "schemas/seller-return.schema.json",
+          "path": "schemas/seller-return.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/return-input.example.json",
+          "path": "fixtures/return-input.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/seller-return.example.json",
+          "path": "fixtures/seller-return.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/return-handoff.example.md",
+          "path": "fixtures/return-handoff.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "references/return-contract.md",
+          "path": "references/return-contract.md",
+          "role": "reference"
+        },
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }
