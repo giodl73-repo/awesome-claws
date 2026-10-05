@@ -1,0 +1,19 @@
+{
+  "synthetic": true,
+  "revision": "inventory-example-r1",
+  "owner": "Synthetic inventory owner (not a real approval)",
+  "asOf": "2026-10-05T10:30:00Z",
+  "scope": "Synthetic warehouse W1, listed item/bin/lot only; physical company-owned units including holds",
+  "fields": ["Case", "Item", "Bin", "Lot", "Unit", "Book time UTC", "Count time UTC", "Book physical", "Movement units", "Movement time UTC", "Snapshot inclusion", "Movement completeness", "Ownership", "Status basis", "Count 1", "Count 2", "Owner selection", "Basis decision", "Revision", "Held units"],
+  "rows": [
+    ["bin-a", "SKU-1", "A", "L1", "each", "2026-10-05T10:00:00Z", "2026-10-05T10:30:00Z", 10, 0, "2026-10-05T10:15:00Z", "excluded", "complete", "company", "physical-including-held", 8, null, "first", "supplied", "r1", 0],
+    ["bin-b", "SKU-1", "B", "L1", "each", "2026-10-05T10:00:00Z", "2026-10-05T10:30:00Z", 10, 0, "2026-10-05T10:15:00Z", "excluded", "complete", "company", "physical-including-held", 12, null, "first", "supplied", "r1", 0],
+    ["receipt", "SKU-2", "C", "L2", "each", "2026-10-05T10:00:00Z", "2026-10-05T10:30:00Z", 10, 3, "2026-10-05T10:15:00Z", "excluded", "complete", "company", "physical-including-held", 12, null, "first", "supplied", "r1", 0],
+    ["no-rule", "SKU-3", "D", "L3", "each", "2026-10-05T10:00:00Z", "2026-10-05T10:30:00Z", 10, 3, "2026-10-05T10:15:00Z", null, "complete", "company", "physical-including-held", 12, null, "first", "supplied", "r1", 0],
+    ["held", "SKU-4", "E", "L4", "each", "2026-10-05T10:00:00Z", "2026-10-05T10:30:00Z", 10, 0, "2026-10-05T10:15:00Z", "excluded", "complete", "company", "physical-including-held", 10, null, "first", "supplied", "r1", 2],
+    ["no-basis", "SKU-5", "F", "L5", "each", "2026-10-05T10:00:00Z", "2026-10-05T10:30:00Z", 10, 0, "2026-10-05T10:15:00Z", "excluded", "complete", null, null, 10, null, "first", null, "r1", 2],
+    ["missing", "SKU-6", "G", "L6", "each", "2026-10-05T10:00:00Z", "2026-10-05T10:30:00Z", 10, 0, "2026-10-05T10:15:00Z", "excluded", "complete", "company", "physical-including-held", null, null, "first", "supplied", "r1", 0],
+    ["zero", "SKU-7", "H", "L7", "each", "2026-10-05T10:00:00Z", "2026-10-05T10:30:00Z", 10, 0, "2026-10-05T10:15:00Z", "excluded", "complete", "company", "physical-including-held", 0, null, "first", "supplied", "r1", 0],
+    ["recount", "SKU-8", "I", "L8", "each", "2026-10-05T10:00:00Z", "2026-10-05T10:30:00Z", 10, 0, "2026-10-05T10:15:00Z", "excluded", "complete", "company", "physical-including-held", 8, 10, null, "supplied", "r1", 0]
+  ]
+}
