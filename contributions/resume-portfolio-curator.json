@@ -92,6 +92,11 @@
     "proofPlan": "Prove an X3 resume portfolio handoff that preserves source references, flags unsupported or stale claims, blocks fabricated credentials, and keeps publication/application authority with the owner.",
     "existingAlternatives": [
       {
+        "id": "certification-renewal-planner",
+        "overlap": "Both preserve credential evidence, source freshness, gaps and owner-controlled decisions without asserting unsupported professional qualifications.",
+        "difference": "Certification Renewal Planner maps renewal windows, continuing-education requirements and packet readiness; Resume Portfolio Curator maps career claims and portfolio proof into role-fit material drafts without deciding renewal eligibility or filing credentials."
+      },
+      {
         "id": "job-application-tracker",
         "overlap": "Both serve job seekers and may reference resumes, cover letters, postings, recruiters, interviews, and follow-up material.",
         "difference": "Job Application Tracker manages the application pipeline and per-opportunity logistics; Resume Portfolio Curator maintains candidate-owned source-backed materials before or alongside any specific application."

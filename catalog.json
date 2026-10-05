@@ -5452,9 +5452,9 @@
         "maintainers": [
           "@giodl73"
         ],
-        "lastVerified": "2026-08-29"
+        "lastVerified": "2026-10-04"
       },
-      "description": "Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money.",
+      "description": "Tracks supplied invoices, payment evidence, receipt allocations, unapplied cash, disputes, and reminder drafts without changing balances, posting entries, sending messages, or moving money.",
       "audience": "Freelancers, consultants, small-business owners, and operators reconciling receivables from supplied records.",
       "principles": [
         "Tie every balance, due date, payment state, and follow-up draft to supplied evidence",
@@ -5469,28 +5469,32 @@
       "intake": [
         "Owner-supplied invoices, statements, contracts, delivery evidence, client notes, and payment records",
         "Invoice amounts, currencies, issue and due dates, partial payments, credits, disputes, and follow-up history",
-        "Owner policies for reminders, escalation, sensitive details, write-offs, and review"
+        "Owner policies for reminders, escalation, sensitive details, write-offs, and review",
+        "For receipt work: owner-scoped source revisions, stable receipt and allocation identities, exact minor-unit amounts and currency scales, plus explicit legacy-payment mappings when linking artifacts"
       ],
       "workflow": [
         "Inventory invoices and source every amount, date, client, and payment fact",
         "Reconcile open, paid, partial, disputed, stale, and unknown states against current evidence",
+        "For receipt work, conserve each supplied receipt, distinguish remittance from application, retain unallocated cash and unresolved evidence, and check legacy equivalence without combining amounts",
         "Draft owner-review follow-ups and flag conflicts, missing delivery proof, overdue risk, and escalation questions",
         "Prepare a receivables handoff without issuing invoices, contacting clients, or moving money"
       ],
       "deliverables": [
         "Invoice and receivables ledger",
         "Payment evidence and discrepancy register",
+        "Receipt conservation workpaper and optional legacy-payment equivalence review",
         "Owner-review follow-up draft queue",
         "Escalation and action-gate handoff"
       ],
       "example": {
-        "request": "Reconcile these invoices and payment notes, then draft what I should review before following up with clients.",
-        "outcome": "A source-backed receivables ledger with payment states, discrepancies, overdue items, draft follow-ups, and explicit owner action gates."
+        "request": "Review receipt R1: USD 1,000 received, with remittance for USD 600 against invoice A and USD 300 against invoice B. Keep the USD 100 remainder unallocated. Do not apply cash, change balances, contact clients, or move money.",
+        "outcome": "An owner-review receipt workpaper with source-backed allocations, USD 100 explicitly unallocated, unchanged invoice balances, and questions before any accounting or external action."
       },
       "doneWhen": [
-        "Every invoice has a current, paid, partial, overdue, disputed, stale, conflicting, or unknown evidence state",
+        "For invoice-ledger reviews, every invoice has a current, paid, partial, overdue, disputed, stale, conflicting, or unknown evidence state",
         "Every amount, due date, payment, credit, dispute, and follow-up draft points to supplied evidence or a visible gap",
-        "The handoff names owner decisions before any invoice change, client contact, collection, fee, refund, write-off, account, or payment action"
+        "The handoff names owner decisions before any invoice change, client contact, collection, fee, refund, write-off, account, or payment action",
+        "For receipt work, every record is retained and totals conserve exact minor units or remain unknown behind visible blockers; linked payments are checked for equivalence, never added twice"
       ],
       "capabilityGuidance": [
         "The base starter works from supplied records and grants no messaging, accounting-system, payment, banking, or client-account authority.",
@@ -5526,6 +5530,66 @@
           "source": "templates/invoice-receivables.md",
           "path": "templates/invoice-receivables.md",
           "role": "template"
+        },
+        {
+          "source": "schemas/receipt-workpaper.schema.json",
+          "path": "schemas/receipt-workpaper.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "schemas/receipt-legacy-map.schema.json",
+          "path": "schemas/receipt-legacy-map.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "references/receipt-workpaper.md",
+          "path": "references/receipt-workpaper.md",
+          "role": "reference"
+        },
+        {
+          "source": "fixtures/receipt-workpaper.example.json",
+          "path": "fixtures/receipt-workpaper.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/receipt-application.example.json",
+          "path": "fixtures/receipt-application.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/receipt-legacy-map.example.json",
+          "path": "fixtures/receipt-legacy-map.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "schemas/receipt-workpaper-report.schema.json",
+          "path": "schemas/receipt-workpaper-report.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "schemas/receipt-legacy-review.schema.json",
+          "path": "schemas/receipt-legacy-review.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/receipt-workpaper-report.example.json",
+          "path": "fixtures/receipt-workpaper-report.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/receipt-legacy-review.example.json",
+          "path": "fixtures/receipt-legacy-review.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/receipt-handoff.example.md",
+          "path": "fixtures/receipt-handoff.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/receipt-legacy-handoff.example.md",
+          "path": "fixtures/receipt-legacy-handoff.example.md",
+          "role": "fixture"
         }
       ]
     },

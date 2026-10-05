@@ -1967,7 +1967,7 @@
         "screenshot": true,
         "experienceTarget": 3,
         "capabilityClasses": [],
-        "maintenanceAgeDays": 36
+        "maintenanceAgeDays": 0
       },
       "recommendations": [],
       "rank": 49
@@ -3601,7 +3601,7 @@
       },
       "evidence": {
         "contributionRecord": true,
-        "comparedAlternatives": 5,
+        "comparedAlternatives": 6,
         "schema": true,
         "semanticValidator": true,
         "screenshot": true,

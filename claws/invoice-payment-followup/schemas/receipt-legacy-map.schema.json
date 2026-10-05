@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/receipt-legacy-map.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "owner", "ownerEvidenceRef", "scopeRef", "ledgerRef", "cutoffCompatibilityConfirmed", "invoiceMappings", "payments"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.receiptLegacyMap.v1" },
+    "owner": { "$ref": "#/$defs/id" },
+    "ownerEvidenceRef": { "$ref": "#/$defs/id" },
+    "scopeRef": { "$ref": "#/$defs/id" },
+    "ledgerRef": { "$ref": "#/$defs/id" },
+    "cutoffCompatibilityConfirmed": { "type": "boolean" },
+    "invoiceMappings": { "type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["legacyInvoiceRef", "workpaperInvoiceRef"],
+      "properties": { "legacyInvoiceRef": { "$ref": "#/$defs/id" }, "workpaperInvoiceRef": { "$ref": "#/$defs/id" } }
+    } },
+    "payments": { "type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["paymentRef", "disposition", "scopeRef", "evidenceRef", "allocationRefs"],
+      "properties": {
+        "paymentRef": { "$ref": "#/$defs/id" },
+        "disposition": { "enum": ["represented", "outside-scope", "unresolved"] },
+        "scopeRef": { "$ref": "#/$defs/id" },
+        "evidenceRef": { "$ref": "#/$defs/id" },
+        "allocationRefs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
+      }
+    } }
+  },
+  "$defs": { "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$" } }
+}

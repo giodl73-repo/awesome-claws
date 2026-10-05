@@ -1,35 +1,3 @@
-# Receipt allocation workpaper
-
-State: ready-for-owner-review. Owner: AR-OWNER. Scope: LEDGER-ACCOUNT-1. As of: 2026-10-04T10:00:00Z.
-
-Owner-supplied identity and scope references are assertions, not source authentication.
-Allocation evidence is not posting authority. Invoice balances and accounting entries are unchanged.
-Amounts below use the supplied currency scale. Unknown means blocked, never zero.
-
-## Receipts
-
-| Record | Identity | Status | Currency | Received | Allocated evidence | Unallocated | Source / revision / record |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| R1 | CASH-1 | current | USD | 1000.00 | 900.00 | 100.00 | BANK / V1 / ROW-1 |
-
-## Allocation evidence
-
-| Record | Identity | Receipt | Invoice | Basis | Status | Currency | Amount | Source / revision / record |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| L1 | ALLOCATION-L1 | R1 | A | remittance | current | USD | 600.00 | REMIT / V1 / L1 |
-| L2 | ALLOCATION-L2 | R1 | B | remittance | current | USD | 300.00 | REMIT / V1 / L2 |
-
-## Owner review
-
-- AR-OWNER: Retain the unallocated remainder of R1; obtain allocation evidence without inventing an invoice or refund.
-- AR-OWNER: L1 records remittance, not accounting application; do not change an invoice balance.
-- AR-OWNER: L2 records remittance, not accounting application; do not change an invoice balance.
-
-## Complete workpaper record
-
-The record below retains every supplied source, invoice, receipt and allocation, including unresolved evidence.
-
-```json
 {
   "schemaVersion": "awesomeClaws.receiptWorkpaperReport.v1",
   "state": "ready-for-owner-review",
@@ -196,4 +164,3 @@ The record below retains every supplied source, invoice, receipt and allocation,
   "invoiceBalancesChanged": false,
   "accountingEntriesPosted": false
 }
-```

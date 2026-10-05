@@ -2142,7 +2142,7 @@
     {
       "id": "invoice-payment-followup",
       "name": "Invoice and payment follow-up",
-      "description": "Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money.",
+      "description": "Tracks supplied invoices, payment evidence, receipt allocations, unapplied cash, disputes, and reminder drafts without changing balances, posting entries, sending messages, or moving money.",
       "audience": "Freelancers, consultants, small-business owners, and operators reconciling receivables from supplied records.",
       "category": "productivity",
       "maintenance": {
@@ -2150,7 +2150,7 @@
         "maintainers": [
           "@giodl73"
         ],
-        "lastVerified": "2026-08-29"
+        "lastVerified": "2026-10-04"
       },
       "setup": {
         "level": "low",

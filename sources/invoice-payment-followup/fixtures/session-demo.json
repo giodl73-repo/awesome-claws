@@ -1,57 +1,57 @@
 {
   "schemaVersion": "awesomeClaws.sessionDemo.v1",
   "claw": "invoice-payment-followup",
-  "scenario": "Reconcile these invoices and payment notes, then draft what I should review before following up with clients.",
+  "scenario": "Review receipt R1: USD 1,000 received, with remittance for USD 600 against invoice A and USD 300 against invoice B. Keep the USD 100 remainder unallocated. Do not apply cash, change balances, contact clients, or move money.",
   "messages": [
     {
       "role": "user",
-      "text": "Reconcile these invoices and payment notes, then draft what I should review before following up with clients."
+      "text": "Review receipt R1: USD 1,000 received, with remittance for USD 600 against invoice A and USD 300 against invoice B. Keep the USD 100 remainder unallocated. Do not apply cash, change balances, contact clients, or move money."
     },
     {
       "role": "agent",
-      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+      "text": "Receipt R1 is source-linked; remittance is not accounting application."
     },
     {
       "role": "user",
-      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+      "text": "Keep the unallocated amount visible and leave the complete JSON and Markdown for owner review."
     },
     {
       "role": "agent",
-      "text": "I produced outputs/invoice-payment-followup-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+      "text": "Prepared outputs/invoice-receivables.json and outputs/invoice-payment-followup-handoff.md. No invoice balance or accounting entry changed."
     }
   ],
   "report": {
-    "title": "Invoice and payment follow-up session handoff",
-    "summary": "A source-backed receivables ledger with payment states, discrepancies, overdue items, draft follow-ups, and explicit owner action gates.",
+    "title": "Receipt allocation: owner review",
+    "summary": "An owner-review receipt workpaper with source-backed allocations, USD 100 explicitly unallocated, unchanged invoice balances, and questions before any accounting or external action.",
     "output": "outputs/invoice-payment-followup-handoff.md",
     "items": [
       {
-        "title": "Invoice and receivables ledger",
-        "summary": "Every invoice has a current, paid, partial, overdue, disputed, stale, conflicting, or unknown evidence state",
+        "title": "Receipt R1",
+        "summary": "USD 1000.00 received; evidence BANK / V1 / ROW-1.",
         "tags": [
           "evidence",
           "reviewable"
         ]
       },
       {
-        "title": "Payment evidence and discrepancy register",
-        "summary": "Every amount, due date, payment, credit, dispute, and follow-up draft points to supplied evidence or a visible gap",
+        "title": "Allocation evidence",
+        "summary": "USD 600.00 for invoice A (remittance; REMIT / L1); USD 300.00 for invoice B (remittance; REMIT / L2). Remittance does not establish posting.",
         "tags": [
           "evidence",
           "reviewable"
         ]
       },
       {
-        "title": "Owner-review follow-up draft queue",
-        "summary": "The handoff names owner decisions before any invoice change, client contact, collection, fee, refund, write-off, account, or payment action",
+        "title": "Unallocated cash",
+        "summary": "USD 100.00 remains unallocated. No invoice, refund or adjustment invented.",
         "tags": [
           "evidence",
           "reviewable"
         ]
       },
       {
-        "title": "Escalation and action-gate handoff",
-        "summary": "Every invoice has a current, paid, partial, overdue, disputed, stale, conflicting, or unknown evidence state",
+        "title": "Owner action gate",
+        "summary": "AR-OWNER reviews 3 questions. Invoice balances and accounting entries are unchanged; no message or money movement.",
         "tags": [
           "handoff",
           "owner-visible"

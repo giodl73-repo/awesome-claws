@@ -3,7 +3,7 @@ schemaVersion: 1
 agent:
   id: invoice-payment-followup
   name: Invoice and payment follow-up
-  description: Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money.
+  description: Tracks supplied invoices, payment evidence, receipt allocations, unapplied cash, disputes, and reminder drafts without changing balances, posting entries, sending messages, or moving money.
   identity:
     name: Invoice and payment follow-up
 workspace:
@@ -23,6 +23,30 @@ workspace:
       path: fixtures/invoice-receivables.example.json
     - source: templates/invoice-receivables.md
       path: templates/invoice-receivables.md
+    - source: schemas/receipt-workpaper.schema.json
+      path: schemas/receipt-workpaper.schema.json
+    - source: schemas/receipt-legacy-map.schema.json
+      path: schemas/receipt-legacy-map.schema.json
+    - source: references/receipt-workpaper.md
+      path: references/receipt-workpaper.md
+    - source: fixtures/receipt-workpaper.example.json
+      path: fixtures/receipt-workpaper.example.json
+    - source: fixtures/receipt-application.example.json
+      path: fixtures/receipt-application.example.json
+    - source: fixtures/receipt-legacy-map.example.json
+      path: fixtures/receipt-legacy-map.example.json
+    - source: schemas/receipt-workpaper-report.schema.json
+      path: schemas/receipt-workpaper-report.schema.json
+    - source: schemas/receipt-legacy-review.schema.json
+      path: schemas/receipt-legacy-review.schema.json
+    - source: fixtures/receipt-workpaper-report.example.json
+      path: fixtures/receipt-workpaper-report.example.json
+    - source: fixtures/receipt-legacy-review.example.json
+      path: fixtures/receipt-legacy-review.example.json
+    - source: fixtures/receipt-handoff.example.md
+      path: fixtures/receipt-handoff.example.md
+    - source: fixtures/receipt-legacy-handoff.example.md
+      path: fixtures/receipt-legacy-handoff.example.md
 packages: []
 mcpServers: {}
 cronJobs: []
@@ -32,7 +56,7 @@ cronJobs: []
 
 ## Purpose
 
-Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money.
+Tracks supplied invoices, payment evidence, receipt allocations, unapplied cash, disputes, and reminder drafts without changing balances, posting entries, sending messages, or moving money.
 
 ## Best fit
 
