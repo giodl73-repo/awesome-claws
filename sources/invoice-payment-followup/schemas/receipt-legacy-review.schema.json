@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/receipt-legacy-review.schema.json",
+  "title": "Legacy payment equivalence review; neither ledger nor cash totals are combined",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "state", "evidence", "findings", "reviewQuestions", "workpaper", "legacyHandoffState", "paymentCoverage", "invoiceBalancesChanged", "accountingEntriesPosted", "combinedCashTotal"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.receiptLegacyReview.v1" },
+    "state": { "enum": ["blocked", "ready-for-owner-review"] },
+    "evidence": {
+      "type": "object", "additionalProperties": false, "required": ["legacy", "receiptInput", "mapping"],
+      "properties": {
+        "legacy": { "$ref": "https://awesome-claws.local/schemas/invoice-receivables.schema.json" },
+        "receiptInput": { "$ref": "https://awesome-claws.local/schemas/receipt-workpaper.schema.json" },
+        "mapping": { "$ref": "https://awesome-claws.local/schemas/receipt-legacy-map.schema.json" }
+      }
+    },
+    "findings": { "type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["code", "ref"],
+      "properties": {
+        "code": { "$ref": "https://awesome-claws.local/schemas/receipt-workpaper-report.schema.json#/$defs/code" },
+        "ref": { "type": "string", "minLength": 1 }
+      }
+    } },
+    "reviewQuestions": { "type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["owner", "code", "ref", "question"],
+      "properties": {
+        "owner": { "$ref": "https://awesome-claws.local/schemas/receipt-workpaper-report.schema.json#/$defs/id" },
+        "code": { "$ref": "https://awesome-claws.local/schemas/receipt-workpaper-report.schema.json#/$defs/code" },
+        "ref": { "type": "string", "minLength": 1 },
+        "question": { "type": "string", "minLength": 1 }
+      }
+    } },
+    "workpaper": { "$ref": "https://awesome-claws.local/schemas/receipt-workpaper-report.schema.json" },
+    "legacyHandoffState": { "enum": ["blocked", "ready-for-owner-review"] },
+    "paymentCoverage": { "type": "array", "items": { "type": "string", "pattern": "^payment-[a-z0-9-]+$" } },
+    "invoiceBalancesChanged": { "const": false },
+    "accountingEntriesPosted": { "const": false },
+    "combinedCashTotal": { "type": "null" }
+  }
+}

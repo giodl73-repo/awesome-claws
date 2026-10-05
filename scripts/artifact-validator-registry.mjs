@@ -3,6 +3,7 @@ import { extname, join } from "node:path";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
+import { invoiceReceiptReportDefinition, invoiceReceiptReportFindings } from "./invoice-receipt-reports.mjs";
 import { root } from "./catalog-source.mjs";
 
 export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
@@ -155,24 +156,28 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "workflow-operator": "workflow-execution-reconciliation.schema.json",
 });
 
-export function artifactSchemaName(id) {
-  return ARTIFACT_SCHEMA_NAMES[id] ?? null;
+export function artifactSchemaName(id, schemaVersion) {
+  return invoiceReceiptReportDefinition(id, schemaVersion)?.schemaName ?? ARTIFACT_SCHEMA_NAMES[id] ?? null;
 }
 
 const validatorCache = new Map();
 
-async function registeredValidator(id, targetRoot) {
-  const schemaName = ARTIFACT_SCHEMA_NAMES[id];
+async function registeredValidator(id, targetRoot, schemaVersion) {
+  const receiptDefinition = invoiceReceiptReportDefinition(id, schemaVersion);
+  const schemaName = artifactSchemaName(id, schemaVersion);
   if (!schemaName) return null;
-  const key = `${targetRoot}\0${id}`;
+  const key = `${targetRoot}\0${id}\0${schemaName}`;
   if (!validatorCache.has(key)) {
     validatorCache.set(
       key,
       readFile(join(targetRoot, "claws", id, "schemas", schemaName), "utf8").then(
-        (text) => {
+        async (text) => {
           const ajv = new Ajv2020({ allErrors: true, strict: true });
           addFormats(ajv);
-          return { schemaName, validate: ajv.compile(JSON.parse(text)) };
+          for (const dependency of receiptDefinition?.dependencies ?? []) {
+            ajv.addSchema(JSON.parse(await readFile(join(targetRoot, "claws", id, "schemas", dependency), "utf8")));
+          }
+          return { schemaName, validate: ajv.compile(JSON.parse(text)), receiptReport: Boolean(receiptDefinition) };
         },
       ),
     );
@@ -287,7 +292,7 @@ export async function validateArtifact({
     };
   }
 
-  const registered = await registeredValidator(id, targetRoot);
+  const registered = await registeredValidator(id, targetRoot, value?.schemaVersion);
   if (!registered) {
     const valid = extname(artifactPath).toLowerCase() !== ".json";
     return {
@@ -308,7 +313,7 @@ export async function validateArtifact({
 
   const schemaValid = registered.validate(value);
   const semanticFindings = schemaValid
-    ? validateArtifactSemantics(id, value, semanticOptions)
+    ? registered.receiptReport ? invoiceReceiptReportFindings(value) : validateArtifactSemantics(id, value, semanticOptions)
     : [];
   return {
     performed: true,

@@ -81,7 +81,23 @@ conservation. The legacy handoff remains unchanged, including when blocked.
 No combined cash total is produced. Both handoffs require controlled owner-only
 storage; the embedded legacy record is not a redacted sharing artifact.
 
-The current helper and renderer changes passed independent manual review. They
-still need report schema/registry,
-packaged resources, current Control UI proof and full validation before the
+## Validation and output selection
+
+Invoice-only reviews retain the original schema. Receipt-only reviews use
+`schemas/receipt-workpaper-report.schema.json`; linked legacy reviews use
+`schemas/receipt-legacy-review.schema.json`. The runtime selects by the exact
+schemaVersion. All three formats use `outputs/invoice-receivables.json` with
+the corresponding Markdown at `outputs/invoice-payment-followup-handoff.md`.
+Do not substitute an input or a mapping sidecar for a complete report.
+
+Load each report schema's declared `$ref` dependencies from this package into
+a draft-2020-12 JSON Schema validator; no network schema retrieval is needed.
+The repository's artifact validator performs schema validation and then exact
+recomputation from the complete embedded inputs. Removed blockers, changed
+coverage, altered derived totals and changed legacy handoff state are invalid.
+A correctly represented blocked workpaper is a valid artifact, not clearance.
+Recomputation proves internal agreement, not the truth of owner-supplied input.
+
+The current helper and renderer changes passed independent manual review.
+Current Control UI proof and final full validation remain required before this
 extension is ready to merge or publish.

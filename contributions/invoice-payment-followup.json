@@ -113,6 +113,36 @@
         "source": "fixtures/receipt-legacy-map.example.json",
         "path": "fixtures/receipt-legacy-map.example.json",
         "role": "fixture"
+      },
+      {
+        "source": "schemas/receipt-workpaper-report.schema.json",
+        "path": "schemas/receipt-workpaper-report.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "schemas/receipt-legacy-review.schema.json",
+        "path": "schemas/receipt-legacy-review.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/receipt-workpaper-report.example.json",
+        "path": "fixtures/receipt-workpaper-report.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/receipt-legacy-review.example.json",
+        "path": "fixtures/receipt-legacy-review.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/receipt-handoff.example.md",
+        "path": "fixtures/receipt-handoff.example.md",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/receipt-legacy-handoff.example.md",
+        "path": "fixtures/receipt-legacy-handoff.example.md",
+        "role": "fixture"
       }
     ]
   },

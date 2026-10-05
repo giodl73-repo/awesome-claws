@@ -35,6 +35,18 @@ workspace:
       path: fixtures/receipt-application.example.json
     - source: fixtures/receipt-legacy-map.example.json
       path: fixtures/receipt-legacy-map.example.json
+    - source: schemas/receipt-workpaper-report.schema.json
+      path: schemas/receipt-workpaper-report.schema.json
+    - source: schemas/receipt-legacy-review.schema.json
+      path: schemas/receipt-legacy-review.schema.json
+    - source: fixtures/receipt-workpaper-report.example.json
+      path: fixtures/receipt-workpaper-report.example.json
+    - source: fixtures/receipt-legacy-review.example.json
+      path: fixtures/receipt-legacy-review.example.json
+    - source: fixtures/receipt-handoff.example.md
+      path: fixtures/receipt-handoff.example.md
+    - source: fixtures/receipt-legacy-handoff.example.md
+      path: fixtures/receipt-legacy-handoff.example.md
 packages: []
 mcpServers: {}
 cronJobs: []

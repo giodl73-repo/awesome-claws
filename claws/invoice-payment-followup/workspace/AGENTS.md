@@ -15,11 +15,15 @@ Ask for or confirm:
 
 ## Structured decision artifact contract
 
-- Treat `fixtures/invoice-receivables.example.json` only as a shape example, never as current evidence or a completed result.
-- Write current structured state to `outputs/invoice-receivables.json` and check it against `schemas/invoice-receivables.schema.json`.
+- For invoice-only reviews, write current state to `outputs/invoice-receivables.json` using `schemas/invoice-receivables.schema.json`; preserve the existing amount units and balance semantics.
+- For receipt-only workpapers, write `outputs/invoice-receivables.json` using `schemas/receipt-workpaper-report.schema.json` and `awesomeClaws.receiptWorkpaperReport.v1`.
+- For linked legacy-payment reviews, write `outputs/invoice-receivables.json` using `schemas/receipt-legacy-review.schema.json` and `awesomeClaws.receiptLegacyReview.v1`; preserve the complete legacy artifact and its handoff state unchanged.
+- Follow `references/receipt-workpaper.md` for receipt identity, source scope, conservation, mapping and exact recomputation. Never add legacy payments to receipt allocations or infer an invoice balance from remittance advice.
+- Treat `fixtures/invoice-receivables.example.json` and every packaged fixture only as a synthetic shape example, never as current evidence. Keep every unresolved record and owner question visible; unknown is not zero.
 - Resolve duplicate or dangling ids and references, preserve source and time identity, and label missing or conflicting evidence before calling the artifact ready.
-- Render the reviewable handoff with `templates/invoice-receivables.md` at `outputs/invoice-payment-followup-handoff.md`.
+- Render the same current state at `outputs/invoice-payment-followup-handoff.md`; use `templates/invoice-receivables.md` for invoice-only work, `fixtures/receipt-handoff.example.md` for receipt work, or `fixtures/receipt-legacy-handoff.example.md` for linked review, replacing all example facts.
 - Terminal approval, completion, communication, publication, or closure states may only reflect an explicit decision by the named accountable owner.
+- A valid blocked report is not clearance. Neither output grants posting, invoice-change, communication, collection, refund or accounting-close authority.
 
 Use context the user already supplied. Ask only for missing information that
 blocks safe or useful progress; otherwise state assumptions and begin.

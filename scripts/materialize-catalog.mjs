@@ -107,6 +107,19 @@ function structuredArtifactContract(entry) {
   if (!fixture || !template) {
     return "";
   }
+  if (entry.id === "invoice-payment-followup") {
+    return `\n\n## Structured decision artifact contract
+
+- For invoice-only reviews, write current state to \`outputs/${name}.json\` using \`${schema.path}\`; preserve the existing amount units and balance semantics.
+- For receipt-only workpapers, write \`outputs/${name}.json\` using \`schemas/receipt-workpaper-report.schema.json\` and \`awesomeClaws.receiptWorkpaperReport.v1\`.
+- For linked legacy-payment reviews, write \`outputs/${name}.json\` using \`schemas/receipt-legacy-review.schema.json\` and \`awesomeClaws.receiptLegacyReview.v1\`; preserve the complete legacy artifact and its handoff state unchanged.
+- Follow \`references/receipt-workpaper.md\` for receipt identity, source scope, conservation, mapping and exact recomputation. Never add legacy payments to receipt allocations or infer an invoice balance from remittance advice.
+- Treat \`${fixture.path}\` and every packaged fixture only as a synthetic shape example, never as current evidence. Keep every unresolved record and owner question visible; unknown is not zero.
+- Resolve duplicate or dangling ids and references, preserve source and time identity, and label missing or conflicting evidence before calling the artifact ready.
+- Render the same current state at \`${experience.output}\`; use \`${template.path}\` for invoice-only work, \`fixtures/receipt-handoff.example.md\` for receipt work, or \`fixtures/receipt-legacy-handoff.example.md\` for linked review, replacing all example facts.
+- Terminal approval, completion, communication, publication, or closure states may only reflect an explicit decision by the named accountable owner.
+- A valid blocked report is not clearance. Neither output grants posting, invoice-change, communication, collection, refund or accounting-close authority.`;
+  }
   return `\n\n## Structured decision artifact contract
 
 - Treat \`${fixture.path}\` only as a shape example, never as current evidence or a completed result.
