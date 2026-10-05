@@ -42,6 +42,19 @@ test("all supplied references remain covered, with explicit handoff dependencies
   assert(project.milestones.every(m => m.dueDate === supplied.ownerTaskDate));
 });
 
+test("manually authored case/payment/order aliases agree without claiming authentication", () => {
+  for (const id of [supplied.caseId, supplied.paymentId, supplied.orderId]) {
+    assert(handoff.includes(id), id);
+    assert(project.scope.in.some(text => text.includes(id)), id);
+  }
+  for (const row of supplied.records) {
+    if (row.paymentId) assert.equal(row.paymentId, supplied.paymentId);
+    if (row.orderId) assert.equal(row.orderId, supplied.orderId);
+  }
+  assert.equal(record("ORDER-17-V1").assessment, "supplied-link-awaiting-owner-confirmation");
+  assert.equal(project.milestones.find(m => m.id === "MAP").state, "blocked");
+});
+
 test("notice requirements and proposed attachment references preserve both adverse records", () => {
   assert.deepEqual(supplied.requirements.map(r => r.id), current.requirements);
   assert.deepEqual(supplied.proposedAttachments.map(a => a.requirement), current.requirements);
