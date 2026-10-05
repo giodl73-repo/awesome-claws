@@ -26,6 +26,8 @@ blocks safe or useful progress; otherwise state assumptions and begin.
 4. Subtract prior certified entitlement, not cash paid, while retaining historical corrections and the separate previously certified unpaid amount
 5. Reconcile the supplied backup checklist, revisions and disclosure permissions; produce an original private application draft and detailed owner workpaper
 6. Reopen affected calculations and review after any certificate, approved scope, stored-material, rule or attachment revision changes
+7. Write current structured state to `outputs/progress-billing-review.json` and validate it against `schemas/progress-billing.schema.json`; follow `references/billing-contract.md` without treating example fixtures as current evidence.
+8. Write the matching private owner workpaper at `outputs/progress-billing-review-preparer-handoff.md` using `templates/session-handoff.md`, and the original private application at `outputs/progress-billing-application.md`; preserve blockers and human review ownership.
 
 ## Example setting
 

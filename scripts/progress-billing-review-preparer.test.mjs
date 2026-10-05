@@ -6,6 +6,9 @@ import addFormats from "ajv-formats";
 import { deriveProgressBilling, progressBillingFindings, renderProgressBilling } from "./progress-billing-review-preparer.mjs";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { ARTIFACT_SCHEMA_NAMES } from "./artifact-validator-registry.mjs";
+import { readCatalog } from "./catalog-source.mjs";
+import { readExperienceCases } from "./experience-cases.mjs";
+import { resolveArtifactContract } from "./runtime-evidence-lib.mjs";
 
 const base = new URL("../sources/progress-billing-review-preparer/", import.meta.url);
 const read = async path => JSON.parse(await readFile(new URL(path, base), "utf8"));
@@ -15,6 +18,17 @@ addFormats(ajv);
 const validate = ajv.compile(await read("schemas/progress-billing.schema.json"));
 const clone = () => structuredClone(fixture.input);
 const ready = input => { const r = deriveProgressBilling(input); assert.equal(r.state, "ready-for-owner-review", JSON.stringify(r.blockers)); return r; };
+
+test("progress billing: generated instructions expose the runtime artifact contract", async () => {
+  const catalog = await readCatalog({ loadResources: false });
+  const id = "progress-billing-review-preparer";
+  const entry = catalog.entries.find(entry => entry.id === id);
+  const experience = (await readExperienceCases(catalog)).find(item => item.id === id);
+  const contract = await resolveArtifactContract({ entry, experience });
+  assert.equal(contract.structuredPath, "outputs/progress-billing-review.json");
+  assert.equal(contract.handoffPath, "outputs/progress-billing-review-preparer-handoff.md");
+  assert.equal(contract.schemaName, "progress-billing.schema.json");
+});
 
 test("progress billing: strict packaged report, actual Markdown and semantic registration agree", async () => {
   for (const path of ["progress-billing.example.json", "progress-billing-corrected.example.json", "progress-billing-blocked.example.json"]) {
