@@ -1,0 +1,368 @@
+{
+  "schemaVersion": "awesomeClaws.receiptLegacyReview.v1",
+  "state": "ready-for-owner-review",
+  "evidence": {
+    "legacy": {
+      "schemaVersion": "awesomeClaws.invoiceReceivables.v1",
+      "ledger": {
+        "id": "invoice-ledger-august",
+        "owner": "Gio",
+        "asOf": "2026-08-29",
+        "timezone": "America/Los_Angeles"
+      },
+      "sources": [
+        {
+          "id": "source-atlas-invoice",
+          "kind": "invoice",
+          "label": "Atlas Labs invoice INV-1042",
+          "freshness": "current",
+          "privacy": "owner-only",
+          "asOf": "2026-08-20"
+        },
+        {
+          "id": "source-bank-record",
+          "kind": "payment-record",
+          "label": "Owner-supplied bank record for partial payment",
+          "freshness": "current",
+          "privacy": "owner-only",
+          "asOf": "2026-08-28"
+        },
+        {
+          "id": "source-delivery-note",
+          "kind": "delivery-evidence",
+          "label": "Accepted dashboard delivery note",
+          "freshness": "current",
+          "privacy": "redact-before-sharing",
+          "asOf": "2026-08-18"
+        },
+        {
+          "id": "source-contract-note",
+          "kind": "contract",
+          "label": "Payment timing term excerpt",
+          "freshness": "current",
+          "privacy": "owner-only",
+          "asOf": "2026-08-01"
+        },
+        {
+          "id": "source-old-statement",
+          "kind": "statement",
+          "label": "Older client statement retained for comparison",
+          "freshness": "stale",
+          "privacy": "owner-only",
+          "asOf": "2026-07-15"
+        }
+      ],
+      "clients": [
+        {
+          "id": "client-atlas-labs",
+          "name": "Atlas Labs",
+          "relationship": "active-client",
+          "privacy": "redact-before-sharing",
+          "sourceRefs": [
+            "source-atlas-invoice",
+            "source-contract-note"
+          ]
+        }
+      ],
+      "invoices": [
+        {
+          "id": "invoice-atlas-1042",
+          "clientRef": "client-atlas-labs",
+          "invoiceNumber": "INV-1042",
+          "issueDate": "2026-08-20",
+          "dueDate": "2026-08-27",
+          "currency": "USD",
+          "originalAmount": 2400,
+          "balanceDue": 900,
+          "status": "partial",
+          "sourceRefs": [
+            "source-atlas-invoice",
+            "source-bank-record",
+            "source-contract-note"
+          ]
+        }
+      ],
+      "paymentEvidence": [
+        {
+          "id": "payment-atlas-partial",
+          "invoiceRef": "invoice-atlas-1042",
+          "label": "Partial payment recorded by owner",
+          "amount": 1500,
+          "currency": "USD",
+          "state": "confirmed",
+          "sourceRefs": [
+            "source-bank-record"
+          ]
+        }
+      ],
+      "adjustments": [],
+      "discrepancies": [],
+      "followUps": [
+        {
+          "id": "followup-atlas-owner-draft",
+          "invoiceRef": "invoice-atlas-1042",
+          "label": "Owner-review note summarizing remaining balance and delivery evidence",
+          "state": "draft-for-owner-review",
+          "sourceRefs": [
+            "source-atlas-invoice",
+            "source-bank-record",
+            "source-delivery-note"
+          ]
+        }
+      ],
+      "reviewQuestions": [
+        {
+          "id": "question-atlas-balance",
+          "question": "Does the owner want to use the supplied partial-payment record when reviewing the remaining balance?",
+          "reason": "The Claw can reconcile supplied evidence, while financial truth and client communication remain owner-controlled.",
+          "refs": [
+            "invoice-atlas-1042",
+            "payment-atlas-partial",
+            "followup-atlas-owner-draft"
+          ],
+          "owner": "Gio"
+        }
+      ],
+      "blockedActions": [
+        "issue-invoice",
+        "alter-invoice",
+        "send-reminder",
+        "contact-client",
+        "collect-payment",
+        "initiate-refund",
+        "apply-fee",
+        "write-off-balance",
+        "change-account",
+        "change-payment-instructions",
+        "financial-advice"
+      ],
+      "handoff": {
+        "state": "blocked",
+        "owner": "Gio",
+        "reviewQuestionRefs": [
+          "question-atlas-balance"
+        ],
+        "prohibitedActions": [
+          "Do not issue or alter invoices, send reminders, contact clients, collect payment, initiate refunds, apply fees, write off balances, change accounts or payment instructions, invent financial facts, or provide professional advice."
+        ]
+      }
+    },
+    "receiptInput": {
+      "schemaVersion": "awesomeClaws.receiptWorkpaperInput.v1",
+      "asOf": "2026-08-29T12:00:00Z",
+      "owner": "AR-OWNER",
+      "scopeRef": "LEDGER-ACCOUNT-1",
+      "currencies": [
+        {
+          "code": "USD",
+          "scale": 2
+        }
+      ],
+      "sources": [
+        {
+          "id": "BANK",
+          "revision": "V1",
+          "capturedAt": "2026-08-29T12:00:00Z",
+          "kind": "receipt",
+          "scopeRef": "LEDGER-ACCOUNT-1"
+        },
+        {
+          "id": "APPLICATION",
+          "revision": "V1",
+          "capturedAt": "2026-08-29T12:00:00Z",
+          "kind": "application",
+          "scopeRef": "LEDGER-ACCOUNT-1"
+        }
+      ],
+      "invoices": [
+        {
+          "id": "A",
+          "currency": "USD"
+        }
+      ],
+      "receipts": [
+        {
+          "id": "R1",
+          "identityRef": "CASH-1",
+          "sourceRef": "BANK",
+          "sourceRevision": "V1",
+          "sourceRecord": "ROW-1",
+          "at": "2026-08-29T12:00:00Z",
+          "currency": "USD",
+          "amountMinor": 200000,
+          "status": "current"
+        }
+      ],
+      "allocations": [
+        {
+          "id": "L1",
+          "identityRef": "APPLIED-1",
+          "receiptRef": "R1",
+          "invoiceRef": "A",
+          "sourceRef": "APPLICATION",
+          "sourceRevision": "V1",
+          "sourceRecord": "ROW-1",
+          "at": "2026-08-29T12:00:00Z",
+          "currency": "USD",
+          "amountMinor": 150000,
+          "basis": "application",
+          "status": "current"
+        }
+      ]
+    },
+    "mapping": {
+      "schemaVersion": "awesomeClaws.receiptLegacyMap.v1",
+      "owner": "AR-OWNER",
+      "ownerEvidenceRef": "OWNER-MAPPING-1",
+      "scopeRef": "LEDGER-ACCOUNT-1",
+      "ledgerRef": "invoice-ledger-august",
+      "cutoffCompatibilityConfirmed": true,
+      "invoiceMappings": [
+        {
+          "legacyInvoiceRef": "invoice-atlas-1042",
+          "workpaperInvoiceRef": "A"
+        }
+      ],
+      "payments": [
+        {
+          "paymentRef": "payment-atlas-partial",
+          "disposition": "represented",
+          "scopeRef": "LEDGER-ACCOUNT-1",
+          "evidenceRef": "OWNER-LINK-1",
+          "allocationRefs": [
+            "L1"
+          ]
+        }
+      ]
+    }
+  },
+  "findings": [],
+  "reviewQuestions": [],
+  "workpaper": {
+    "schemaVersion": "awesomeClaws.receiptWorkpaperReport.v1",
+    "state": "ready-for-owner-review",
+    "owner": "AR-OWNER",
+    "evidence": {
+      "schemaVersion": "awesomeClaws.receiptWorkpaperInput.v1",
+      "asOf": "2026-08-29T12:00:00Z",
+      "owner": "AR-OWNER",
+      "scopeRef": "LEDGER-ACCOUNT-1",
+      "currencies": [
+        {
+          "code": "USD",
+          "scale": 2
+        }
+      ],
+      "sources": [
+        {
+          "id": "BANK",
+          "revision": "V1",
+          "capturedAt": "2026-08-29T12:00:00Z",
+          "kind": "receipt",
+          "scopeRef": "LEDGER-ACCOUNT-1"
+        },
+        {
+          "id": "APPLICATION",
+          "revision": "V1",
+          "capturedAt": "2026-08-29T12:00:00Z",
+          "kind": "application",
+          "scopeRef": "LEDGER-ACCOUNT-1"
+        }
+      ],
+      "invoices": [
+        {
+          "id": "A",
+          "currency": "USD"
+        }
+      ],
+      "receipts": [
+        {
+          "id": "R1",
+          "identityRef": "CASH-1",
+          "sourceRef": "BANK",
+          "sourceRevision": "V1",
+          "sourceRecord": "ROW-1",
+          "at": "2026-08-29T12:00:00Z",
+          "currency": "USD",
+          "amountMinor": 200000,
+          "status": "current"
+        }
+      ],
+      "allocations": [
+        {
+          "id": "L1",
+          "identityRef": "APPLIED-1",
+          "receiptRef": "R1",
+          "invoiceRef": "A",
+          "sourceRef": "APPLICATION",
+          "sourceRevision": "V1",
+          "sourceRecord": "ROW-1",
+          "at": "2026-08-29T12:00:00Z",
+          "currency": "USD",
+          "amountMinor": 150000,
+          "basis": "application",
+          "status": "current"
+        }
+      ]
+    },
+    "findings": [],
+    "reviewQuestions": [
+      {
+        "owner": "AR-OWNER",
+        "code": "unallocated_cash",
+        "ref": "R1",
+        "question": "Retain the unallocated remainder of R1; obtain allocation evidence without inventing an invoice or refund."
+      }
+    ],
+    "receiptCoverage": [
+      "R1"
+    ],
+    "allocationCoverage": [
+      "L1"
+    ],
+    "receipts": [
+      {
+        "id": "R1",
+        "identityRef": "CASH-1",
+        "sourceRef": "BANK",
+        "sourceRevision": "V1",
+        "sourceRecord": "ROW-1",
+        "at": "2026-08-29T12:00:00Z",
+        "currency": "USD",
+        "amountMinor": 200000,
+        "status": "current",
+        "scale": 2,
+        "allocatedMinor": 150000,
+        "unallocatedMinor": 50000,
+        "allocationRefs": [
+          "L1"
+        ]
+      }
+    ],
+    "allocations": [
+      {
+        "id": "L1",
+        "identityRef": "APPLIED-1",
+        "receiptRef": "R1",
+        "invoiceRef": "A",
+        "sourceRef": "APPLICATION",
+        "sourceRevision": "V1",
+        "sourceRecord": "ROW-1",
+        "at": "2026-08-29T12:00:00Z",
+        "currency": "USD",
+        "amountMinor": 150000,
+        "basis": "application",
+        "status": "current"
+      }
+    ],
+    "invoiceBalancesChanged": false,
+    "accountingEntriesPosted": false
+  },
+  "legacyHandoffState": "blocked",
+  "paymentCoverage": [
+    "payment-atlas-partial"
+  ],
+  "invoiceBalancesChanged": false,
+  "accountingEntriesPosted": false,
+  "combinedCashTotal": null
+}

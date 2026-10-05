@@ -1,0 +1,782 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/payroll-review.schema.json",
+  "title": "Private payroll comparison workpaper",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "scope",
+    "expectedEmployees",
+    "expectedComponents",
+    "prior",
+    "draft",
+    "expectations",
+    "declaredExpectedTotal",
+    "workpaper",
+    "summary",
+    "handoff"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "employer",
+        "payGroup",
+        "currency",
+        "minorDigits",
+        "runType",
+        "currentPeriod",
+        "priorPeriod",
+        "periodStart",
+        "periodEnd",
+        "asOf",
+        "cutoff",
+        "reviewer",
+        "inputOwner",
+        "recipient",
+        "policyRef"
+      ],
+      "properties": {
+        "employer": {
+          "$ref": "#/$defs/id"
+        },
+        "payGroup": {
+          "$ref": "#/$defs/id"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "minorDigits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "runType": {
+          "$ref": "#/$defs/id"
+        },
+        "currentPeriod": {
+          "$ref": "#/$defs/id"
+        },
+        "priorPeriod": {
+          "$ref": "#/$defs/id"
+        },
+        "periodStart": {
+          "$ref": "#/$defs/date"
+        },
+        "periodEnd": {
+          "$ref": "#/$defs/date"
+        },
+        "asOf": {
+          "$ref": "#/$defs/time"
+        },
+        "cutoff": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reviewer": {
+          "$ref": "#/$defs/text"
+        },
+        "inputOwner": {
+          "$ref": "#/$defs/text"
+        },
+        "recipient": {
+          "$ref": "#/$defs/text"
+        },
+        "policyRef": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "expectedEmployees": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {
+        "$ref": "#/$defs/employee"
+      },
+      "uniqueItems": true
+    },
+    "expectedComponents": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "employee",
+          "component",
+          "tolerance"
+        ],
+        "properties": {
+          "employee": {
+            "$ref": "#/$defs/employee"
+          },
+          "component": {
+            "$ref": "#/$defs/id"
+          },
+          "tolerance": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000
+          }
+        }
+      }
+    },
+    "prior": {
+      "$ref": "#/$defs/register"
+    },
+    "draft": {
+      "$ref": "#/$defs/register"
+    },
+    "expectations": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "$ref": "#/$defs/expectation"
+      }
+    },
+    "declaredExpectedTotal": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/total"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "workpaper": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2000,
+      "items": {
+        "$ref": "#/$defs/workRow"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prior",
+        "draft",
+        "expected",
+        "observedMovement",
+        "expectedMovement",
+        "variance",
+        "absoluteExceptionAmount",
+        "exceptionCount",
+        "missingDraftCount"
+      ],
+      "properties": {
+        "prior": {
+          "$ref": "#/$defs/control"
+        },
+        "draft": {
+          "$ref": "#/$defs/control"
+        },
+        "expected": {
+          "$ref": "#/$defs/control"
+        },
+        "observedMovement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expectedMovement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "variance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "absoluteExceptionAmount": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exceptionCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2000
+        },
+        "missingDraftCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2000
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reviewedDraftRevision",
+        "unresolvedKeys",
+        "sourceQuestions",
+        "cutoffState",
+        "cutoffQuestion",
+        "revisionQuestion",
+        "unavailableChecks",
+        "correctness",
+        "approval",
+        "funding",
+        "release",
+        "systemChanges",
+        "contacts"
+      ],
+      "properties": {
+        "state": {
+          "const": "private-review-draft"
+        },
+        "reviewedDraftRevision": {
+          "$ref": "#/$defs/label"
+        },
+        "unresolvedKeys": {
+          "type": "array",
+          "maxItems": 2000,
+          "items": {
+            "type": "string",
+            "maxLength": 124,
+            "pattern": "^E-[A-Za-z0-9_-]{1,40}/[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$"
+          },
+          "uniqueItems": true
+        },
+        "sourceQuestions": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source",
+              "question"
+            ],
+            "properties": {
+              "source": {
+                "enum": [
+                  "prior",
+                  "draft",
+                  "expected"
+                ]
+              },
+              "question": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        },
+        "cutoffState": {
+          "enum": [
+            "not-supplied",
+            "before-cutoff",
+            "at-or-after-cutoff"
+          ]
+        },
+        "cutoffQuestion": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/text"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revisionQuestion": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/text"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unavailableChecks": {
+          "type": "array",
+          "const": [
+            "tax",
+            "deductions",
+            "net-pay",
+            "benefits",
+            "statutory"
+          ]
+        },
+        "correctness": {
+          "const": "not-determined"
+        },
+        "approval": {
+          "const": "not-granted"
+        },
+        "funding": {
+          "const": "not-performed"
+        },
+        "release": {
+          "const": "not-performed"
+        },
+        "systemChanges": {
+          "const": "not-performed"
+        },
+        "contacts": {
+          "const": "not-performed"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,79}$"
+    },
+    "employee": {
+      "type": "string",
+      "pattern": "^E-[A-Za-z0-9_-]{1,40}$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "\\S"
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "\\S"
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "amount": {
+      "type": "integer",
+      "minimum": -1000000000000,
+      "maximum": 1000000000000
+    },
+    "total": {
+      "type": "integer",
+      "minimum": -1000000000000000,
+      "maximum": 1000000000000000
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "employee",
+        "component",
+        "amount"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "employee": {
+          "$ref": "#/$defs/employee"
+        },
+        "component": {
+          "$ref": "#/$defs/id"
+        },
+        "amount": {
+          "$ref": "#/$defs/amount"
+        }
+      }
+    },
+    "register": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "employer",
+        "payGroup",
+        "currency",
+        "minorDigits",
+        "runType",
+        "period",
+        "revision",
+        "reference",
+        "observedAt",
+        "complete",
+        "declaredTotal",
+        "rows"
+      ],
+      "properties": {
+        "employer": {
+          "$ref": "#/$defs/id"
+        },
+        "payGroup": {
+          "$ref": "#/$defs/id"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "minorDigits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "runType": {
+          "$ref": "#/$defs/id"
+        },
+        "period": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "$ref": "#/$defs/label"
+        },
+        "reference": {
+          "$ref": "#/$defs/id"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/time"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "declaredTotal": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rows": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "$ref": "#/$defs/row"
+          }
+        }
+      }
+    },
+    "expectation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "employer",
+        "payGroup",
+        "currency",
+        "minorDigits",
+        "runType",
+        "id",
+        "employee",
+        "component",
+        "period",
+        "draftRevision",
+        "amount",
+        "kind",
+        "decision",
+        "owner",
+        "effectiveFrom",
+        "effectiveThrough",
+        "decidedAt",
+        "reference",
+        "supportRefs"
+      ],
+      "properties": {
+        "employer": {
+          "$ref": "#/$defs/id"
+        },
+        "payGroup": {
+          "$ref": "#/$defs/id"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "minorDigits": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "runType": {
+          "$ref": "#/$defs/id"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "employee": {
+          "$ref": "#/$defs/employee"
+        },
+        "component": {
+          "$ref": "#/$defs/id"
+        },
+        "period": {
+          "$ref": "#/$defs/id"
+        },
+        "draftRevision": {
+          "$ref": "#/$defs/label"
+        },
+        "amount": {
+          "$ref": "#/$defs/amount"
+        },
+        "kind": {
+          "enum": [
+            "baseline",
+            "approved-change",
+            "one-off-expiry"
+          ]
+        },
+        "decision": {
+          "enum": [
+            "approved",
+            "requested",
+            "withdrawn"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "effectiveFrom": {
+          "$ref": "#/$defs/date"
+        },
+        "effectiveThrough": {
+          "$ref": "#/$defs/date"
+        },
+        "decidedAt": {
+          "$ref": "#/$defs/time"
+        },
+        "reference": {
+          "$ref": "#/$defs/id"
+        },
+        "supportRefs": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "issue": {
+      "enum": [
+        "unexpected-component",
+        "duplicate-prior",
+        "duplicate-draft",
+        "incomplete-prior",
+        "incomplete-draft",
+        "expectation-missing",
+        "expectation-invalid",
+        "expectation-conflict",
+        "missing-draft",
+        "amount-difference"
+      ]
+    },
+    "workRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "employee",
+        "component",
+        "priorRowIds",
+        "draftRowIds",
+        "expectationIds",
+        "priorAmount",
+        "draftAmount",
+        "expectedAmount",
+        "observedMovement",
+        "expectedMovement",
+        "variance",
+        "issues",
+        "owner",
+        "question"
+      ],
+      "properties": {
+        "employee": {
+          "$ref": "#/$defs/employee"
+        },
+        "component": {
+          "$ref": "#/$defs/id"
+        },
+        "priorRowIds": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "draftRowIds": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "expectationIds": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "priorAmount": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/amount"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "draftAmount": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/amount"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expectedAmount": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/amount"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedMovement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expectedMovement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "variance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "issues": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "$ref": "#/$defs/issue"
+          },
+          "uniqueItems": true
+        },
+        "owner": {
+          "$ref": "#/$defs/text"
+        },
+        "question": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/text"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "computed",
+        "declared",
+        "state"
+      ],
+      "properties": {
+        "computed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "declared": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/total"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "matched",
+            "mismatched",
+            "unavailable"
+          ]
+        }
+      }
+    }
+  }
+}

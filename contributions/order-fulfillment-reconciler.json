@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "order-fulfillment-reconciler",
+    "name": "Order Fulfillment Reconciler",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-04"
+    },
+    "description": "Reconciles seller order lines with supplied shipment and delivery evidence into a draft open-order and exception handoff without releasing goods or contacting customers.",
+    "audience": "Seller operations coordinators reconciling a bounded batch of customer orders after order acceptance.",
+    "principles": [
+      "Preserve customer order and line identity through partial shipments and deliveries",
+      "Keep accepted order changes, shipment events and delivery confirmations separate",
+      "Expose unknown or conflicting evidence instead of declaring completion"
+    ],
+    "boundaries": [
+      "Do not release, allocate, pick, pack, ship, book carriers, create labels, contact customers, change orders or update an ERP",
+      "Do not issue invoices, authorize returns or refunds, classify freight or customs, determine tax, or infer delivery from a label or ETA",
+      "Use approved order and customer aliases; exclude addresses, payment details, credentials and unrestricted tracking links"
+    ],
+    "intake": [
+      "Bounded order batch, as-of timestamp, accountable coordinator and exact source revisions",
+      "Accepted order lines with stable identities, SKU, unit, ordered quantities, explicitly authorized cancellations and supplied promised dates",
+      "Shipment lines linked to order lines, departure evidence, quantities, void or supersession records, and delivery confirmations with explicit quantities",
+      "Supplied holds, exception owners and escalation rules; missing and conflicting records remain visible"
+    ],
+    "workflow": [
+      "Confirm order-line identities, units, revisions and event cutoffs without inferring accepted changes",
+      "Match shipment and delivery records to exact order lines; expose duplicates, orphan records, conflicting revisions and over-quantities",
+      "Reconcile net ordered, shipped, delivery-confirmed, not-shipped and shipped-without-delivery-confirmation quantities for every line",
+      "Prepare an open-order table, source ledger and owned exception handoff with concrete customer-update drafts for human review",
+      "Reconcile new revisions without inheriting earlier completion or release approval"
+    ],
+    "deliverables": [
+      "Order-line fulfillment reconciliation with separate shipment and delivery balances",
+      "Source-linked shipment and delivery register",
+      "Missing, conflicting, held and overdue evidence exception queue",
+      "Draft operational handoff and customer-status wording for owner review"
+    ],
+    "example": {
+      "request": "Reconcile two orders for the same SKU. A ordered ten and cancelled two; six shipped and four are delivery-confirmed. B ordered eight; all eight shipped and are delivery-confirmed.",
+      "outcome": "A has two not shipped and two shipped without delivery confirmation; B has no outstanding quantity. Aggregate totals do not erase A's exception, and no shipment or customer contact is performed."
+    },
+    "doneWhen": [
+      "Every supplied order line and shipment or delivery record is reconciled or explicitly blocked with its source identity",
+      "Quantity balances use compatible supplied units and accepted revisions without double-counting duplicates, voids or cancellations",
+      "Missing delivery proof never becomes delivered, and quantity completion never overrides an unresolved hold or evidence conflict",
+      "Markdown handoff and structured output agree and every external action remains with the accountable human"
+    ],
+    "capabilityGuidance": [
+        "Write `outputs/fulfillment.json` using `schemas/fulfillment.schema.json`; follow `references/fulfillment-contract.md`. Use supplied workspace records only.",
+        "Write the matching Markdown handoff at `outputs/order-fulfillment-reconciler-handoff.md` using `templates/session-handoff.md`; retain source coordinates, balances, holds, blockers and human ownership.",
+      "Returns, replacements, inventory allocation, invoice production, transport optimization and customs documentation remain separate owner workflows."
+    ],
+    "resources": [
+      {
+        "source": "schemas/fulfillment.schema.json",
+        "path": "schemas/fulfillment.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/fulfillment-input.example.json",
+        "path": "fixtures/fulfillment-input.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/fulfillment.example.json",
+        "path": "fixtures/fulfillment.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/fulfillment-handoff.example.md",
+        "path": "fixtures/fulfillment-handoff.example.md",
+        "role": "fixture"
+      },
+      {
+        "source": "references/fulfillment-contract.md",
+        "path": "references/fulfillment-contract.md",
+        "role": "reference"
+      },
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Part-level shipment totals can be correct while an individual customer order remains short or lacks delivery evidence.",
+    "repeatableJob": "Reconcile accepted seller order lines to outbound shipment and delivery records, preserving partial quantities and unresolved exceptions for a coordinator.",
+    "proofPlan": "After admission, implement strict structured input/output schemas and an actual Markdown artifact with fixtures. Test partial and multiple shipments, partial delivery confirmations, incompatible units, duplicate and orphan events, shared shipment across order lines, over-shipment, over-delivery, accepted cancellation limits, stale or conflicting revisions, void versus departed events, missing delivery evidence, promised-date timezone boundaries, holds, source omissions, privacy and unapproved external actions. Require current Control UI screenshot, generated agreement, full npm run check, regression, Mock+ and independent review. Current three synthetic distinction tests prove only example arithmetic and a schema gap, not model quality or sufficient grounds for admission.",
+    "existingAlternatives": [
+      {
+        "id": "service-dispatch-planner",
+        "overlap": "Both preserve supplied revisions, operational identities, holds, incomplete work and human-owned exception handoffs without executing external actions.",
+        "difference": "Service Dispatch Planner proposes future technician appointments using skills, time windows and travel constraints. This reconciles observed goods shipment and delivery quantities against accepted customer order lines. It neither schedules technicians nor treats a proposed itinerary as fulfillment evidence."
+      },
+      {
+        "id": "invoice-draft-producer",
+        "overlap": "Both use customer order identities, supplied delivery evidence, item quantities and revisions, with duplicate detection and an owner-reviewable artifact.",
+        "difference": "Invoice Draft Producer converts approved billable work to monetary lines and prior-billing coverage. This reconciles physical fulfillment, including unshipped quantities that must never become billable merely because they were ordered. It supplies evidence to billing rather than calculating an invoice."
+      },
+      {
+        "id": "customer-success-program-manager",
+        "overlap": "Both reconcile customer-linked receipts, current source revisions, incomplete obligations and owned exceptions.",
+        "difference": "Customer Success reconciles adoption, service health and success-plan milestones. This needs order-line quantity conservation across outbound shipment and delivery events, not account outcome metrics."
+      },
+      {
+        "id": "commercial-deal-desk-coordinator",
+        "overlap": "Both preserve exact commercial line identities, accepted revisions and evidence-backed handoffs.",
+        "difference": "Deal Desk verifies quote configuration, pricing and commercial approval before order review. This begins after order acceptance and reconciles actual physical shipment and delivery quantities without revisiting pricing approval."
+      },
+      {
+        "id": "supplier-capacity-assurance-manager",
+        "overlap": "Both reconcile quantities, shipment and receipt evidence, shortages, revisions and human-owned exceptions; existing allocation proposals already bind demand references.",
+        "difference": "Existing shipment and receipt schemas bind supplier/site/part/time bucket, not customer order lines. This output follows accepted seller order lines through outbound partial shipments and customer delivery confirmation. Extending the existing owner is still a legitimate maintainer option; the distinction is not merely SMB vocabulary."
+      },
+      {
+        "id": "manufacturing-operations-planner",
+        "overlap": "Both use demand, quantities, due dates and operational constraints.",
+        "difference": "Production feasibility is based on line rates and changeovers; this reconciles observed outbound fulfillment after order acceptance, without proposing production or allocating stock."
+      },
+      {
+        "id": "customer-support",
+        "overlap": "Both prepare evidence-backed customer-status wording and owner escalation.",
+        "difference": "Support diagnoses a technical case; this balances every order line across multiple shipment and delivery events, independent of a complaint or support case."
+      },
+      {
+        "id": "warranty-returns-manager",
+        "overlap": "Both preserve purchase, product and shipment evidence without contacting external parties.",
+        "difference": "Warranty/Returns organizes buyer claim readiness; this is seller outbound order reconciliation. Reverse logistics and refund eligibility are excluded."
+      },
+      {
+        "id": "project-document-controller",
+        "overlap": "Both retain exact revisions and do not infer authority from received documents.",
+        "difference": "Document Controller tracks authorized document use, submittals and RFIs; this balances physical order-line quantities and delivery evidence rather than transmittal completeness."
+      }
+    ]
+  }
+}

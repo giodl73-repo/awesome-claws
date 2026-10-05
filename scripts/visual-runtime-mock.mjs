@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { appendFile, readFile } from "node:fs/promises";
 import http from "node:http";
 import { join } from "node:path";
+import { isActivityRecap } from "./portfolio-application-request.mjs";
+import { widgetInvocation } from "./visual-runtime-tool-proof.mjs";
 
 const port = Number(process.env.MOCK_PORT);
 const requestLog = process.env.MOCK_REQUEST_LOG;
@@ -165,11 +167,13 @@ const steps = [
   },
   {
     tool: "show_widget",
-    events: () =>
-      toolEvents("show_widget", {
-      title: "Data Analyst current readout",
-      widget_code: widgetCode,
-    }),
+    events: (body) => {
+      const invocation = widgetInvocation(body, {
+        title: "Data Analyst current readout",
+        widget_code: widgetCode,
+      });
+      return toolEvents(invocation.name, invocation.args);
+    },
   },
   {
     events: () => textEvents(`${successMarker}\n${expectedOutcome ?? ""}`),
@@ -195,8 +199,21 @@ const server = http.createServer((request, response) => {
       return;
     }
     const bodyText = await readBody(request);
+    const body = JSON.parse(bodyText);
+    if (isActivityRecap(body)) {
+      await appendFile(requestLog, `${JSON.stringify({
+        method: request.method,
+        path: url.pathname,
+        body: bodyText,
+        inferenceFacts: { purpose: "activity-recap" },
+      })}\n`);
+      writeEvents(response, textEvents("Activity recap fixture response."), body.stream);
+      return;
+    }
     const step = Math.min(responseStep, steps.length - 1);
     const responsePlan = steps[step];
+    const events = responsePlan.events(body);
+    const call = events.at(-1).response.output.find((item) => item.type === "function_call");
     await appendFile(
       requestLog,
       `${JSON.stringify({
@@ -205,10 +222,10 @@ const server = http.createServer((request, response) => {
         body: bodyText,
         step,
         emittedTool: responsePlan.tool,
+        emittedFunction: call?.name,
+        emittedCallId: call?.call_id,
       })}\n`,
     );
-    const body = JSON.parse(bodyText);
-    const events = responsePlan.events();
     responseStep += 1;
     writeEvents(response, events, body.stream);
   })().catch((error) => {

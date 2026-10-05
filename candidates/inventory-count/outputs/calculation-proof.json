@@ -1,0 +1,135 @@
+{
+  "engine": "@oai/artifact-tool",
+  "nativeExcel": "not-tested",
+  "inputSha256": "5cd022a16e6c60a361b72a521202bcab08d278b754dcddda6df1498516f1e4bd",
+  "sourceSha256": "ee1135463fd0214d35c70e522ca07ec300e07906d819d1b9ebc860bf024e12f7",
+  "outputSha256": "bf53c1945758743fea206597f390dd81802e4a05afd48967f7de8b4e85873b95",
+  "manifestSha256": "391e9ce89294645822da0af73b9b3f6b29f4cb5e6e830824f881d2d823421e90",
+  "variances": [
+    -2,
+    2,
+    -1,
+    "n.a.",
+    0,
+    "n.a.",
+    "n.a.",
+    -10,
+    "n.a."
+  ],
+  "mutations": [
+    {
+      "name": "receipt changes",
+      "result": -2,
+      "status": "passed"
+    },
+    {
+      "name": "receipt already included",
+      "result": 2,
+      "status": "passed"
+    },
+    {
+      "name": "missing movement",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "incomplete movements",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "movement after count",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "movement before book",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "missing rule",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "wrong units",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "changed lot",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "changed bin",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "changed item",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "stale row revision",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "stale global revision",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "changed scope",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "unknown ownership",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "eligible not physical",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "zero is not missing",
+      "result": -10,
+      "status": "passed"
+    },
+    {
+      "name": "blank is not zero",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "recount chosen by owner",
+      "result": -2,
+      "status": "passed"
+    },
+    {
+      "name": "second chosen by owner",
+      "result": 0,
+      "status": "passed"
+    },
+    {
+      "name": "selection alone does not fix basis",
+      "result": "n.a.",
+      "status": "passed"
+    },
+    {
+      "name": "no auto favorable recount",
+      "result": "n.a.",
+      "status": "passed"
+    }
+  ],
+  "sourcePreserved": true,
+  "reopened": true,
+  "reopenedMutationPassed": true,
+  "formulaErrorScan": "{\"kind\":\"notice\",\"message\":\"Cell search matched 0 entries.\"}"
+}

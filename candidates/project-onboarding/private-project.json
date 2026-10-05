@@ -1,0 +1,28 @@
+{
+  "project": "H-17 start-plan v2 private owner handoff",
+  "sponsor": "Onboarding owner",
+  "outcome": "Review supplied post-offer prerequisites without clearing the worker to start",
+  "targetDate": "2026-10-12",
+  "scope": {
+    "in": ["Accepted offer O-17 and approved PLAN-V2", "Equipment, access, HR, workspace and orientation evidence"],
+    "out": ["Worker distribution of this private artifact", "Eligibility decisions, provisioning, issuance, HRIS/payroll writes, booking and messaging"],
+    "acceptanceCriteria": ["Retain every gap with its accountable owner", "Historical confirmations never silently become current", "Missing impact rules stay unresolved", "Worker draft requires separate owner review"]
+  },
+  "milestones": [
+    { "id": "EQUIPMENT", "name": "Laptop requested; delivery evidence missing", "owner": "Equipment owner", "dueDate": "2026-10-12", "state": "blocked", "dependencies": [], "evidenceRefs": ["REQUEST-17", "PLAN-V2"] },
+    { "id": "ACCESS", "name": "Historical v1 confirmation; supplied date-change rule requires v2 reconfirmation", "owner": "IT owner", "dueDate": "2026-10-12", "state": "blocked", "dependencies": [], "evidenceRefs": ["IT-V1", "PLAN-V1", "PLAN-V2", "CHANGE-RULE-1"] },
+    { "id": "HR", "name": "Private prerequisite pending qualified owner review", "owner": "HR owner", "dueDate": "2026-10-12", "state": "blocked", "dependencies": [], "evidenceRefs": ["HR-STATUS-17", "PLAN-V2"] },
+    { "id": "WORKSPACE", "name": "Historical v1 workspace confirmation; impact rule missing, applicability unresolved", "owner": "Facilities owner", "dueDate": "2026-10-12", "state": "blocked", "dependencies": [], "evidenceRefs": ["WORKSPACE-V1", "PLAN-V1", "PLAN-V2"] },
+    { "id": "ORIENTATION", "name": "October 12 09:00 America/Chicago arrangement confirmed, not attendance", "owner": "Orientation owner", "dueDate": "2026-10-12", "state": "ready-for-acceptance", "dependencies": [], "evidenceRefs": ["ORIENTATION-17", "PLAN-V2"] },
+    { "id": "HANDOFF", "name": "Owner reviews blocked start plan; no clearance or publication", "owner": "Onboarding owner", "dueDate": "2026-10-12", "state": "blocked", "dependencies": ["EQUIPMENT", "ACCESS", "HR", "WORKSPACE", "ORIENTATION"], "evidenceRefs": ["O-17", "PLAN-V2"] }
+  ],
+  "risks": [
+    { "risk": "Historical confirmations or a request may be mistaken for current completion", "likelihood": "medium", "impact": "high", "owner": "Onboarding owner", "trigger": "Missing current evidence or impact rules", "response": "Retain blocked owner handoff and request scoped evidence" }
+  ],
+  "decisions": [
+    { "decision": "Resolve or retain the five prerequisite assessments", "owner": "Onboarding owner", "state": "needed", "rationale": "Current plan approval is not prerequisite acceptance", "downstreamImpact": "No automatic start clearance" },
+    { "decision": "Supply workspace change-impact rule for v1 to v2", "owner": "Facilities owner", "state": "needed", "rationale": "WORKSPACE-V1 applicability remains unresolved", "downstreamImpact": "Historical workspace confirmation cannot count as current" },
+    { "decision": "Review the separately constructed worker itinerary before any publication", "owner": "Onboarding owner", "state": "needed", "rationale": "Private status references must not be distributed", "downstreamImpact": "No message sent and no publication authorized" }
+  ],
+  "statusState": "blocked"
+}

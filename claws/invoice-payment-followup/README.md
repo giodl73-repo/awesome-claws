@@ -1,14 +1,14 @@
 # Invoice and payment follow-up
 
-Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money.
+Tracks supplied invoices, payment evidence, receipt allocations, unapplied cash, disputes, and reminder drafts without changing balances, posting entries, sending messages, or moving money.
 
 **Best for:** Freelancers, consultants, small-business owners, and operators reconciling receivables from supplied records.
 
 ## Example
 
-**Request:** Reconcile these invoices and payment notes, then draft what I should review before following up with clients.
+**Request:** Review receipt R1: USD 1,000 received, with remittance for USD 600 against invoice A and USD 300 against invoice B. Keep the USD 100 remainder unallocated. Do not apply cash, change balances, contact clients, or move money.
 
-**Expected outcome:** A source-backed receivables ledger with payment states, discrepancies, overdue items, draft follow-ups, and explicit owner action gates.
+**Expected outcome:** An owner-review receipt workpaper with source-backed allocations, USD 100 explicitly unallocated, unchanged invoice balances, and questions before any accounting or external action.
 
 ## Package contents
 

@@ -65,6 +65,41 @@ killed, zero survivors. The committed canonical profile digest is
 `sha256:4f2f2914d2ca40eb3f347d727fc576f93517ed53ec2bbf04815472ce92618e83`.
 This is deterministic mock evidence, not live model or provider validation.
 
+## Refresh on 2026-10-05
+
+Refreshed against main `7d8f8448455c2d29cb8c7d630ee0388e9d685f98`.
+This branch adds College Application to the 145-Claw main catalog, retaining
+the Civic Services comparison required for admission coverage. College source,
+validator, focused tests, and screenshot are unchanged from PR head
+`be3b9ce1b8d58a7b61ce0fe06d7316fc26d0b57d`.
+
+- `npm ci --ignore-scripts`: passed; lockfile unchanged. npm reported two
+  existing high-severity audit findings; no dependency override was added.
+- Build: 146 packages and chooser views generated.
+- Focused College tests: 20 passed.
+- Contribution review: same advisory nearest matches above.
+- Semantic recipes: 146 validators, 398 recipes, 541 finding codes.
+- Mock+ regeneration: 4 profiles, 60,115 cases, 57,028 mutants killed.
+  Canonical digest:
+  `sha256:efbcf270e0e31745cec7998554af80d96377093b56b630fb51a3739c4db3afea`.
+- Catalog scoring: 146 Claws, average 99.1, median 100. Repository evidence
+  only, not live-model performance.
+- Documentation-count tests: 3 passed after score generation completed. An
+  earlier invocation read the old scorecard while generation was still running;
+  no assertion change was needed.
+- Final `npm run check`: 3,253 passed, zero failed, one existing Windows
+  file-link permission skip. All downstream gates passed, including 146
+  package/contribution/regression contracts and 438 deterministic mock trials.
+  Default concurrency was used; no assertions or timeouts were weakened.
+- Independent manual refresh review found no actionable issues. All 145
+  existing catalog entries are unchanged, source/package pairs agree, and
+  Civic Services has only its expected new comparison. Review was scoped,
+  not an exhaustive validator audit or successful standalone CLI review.
+- `git diff --check`: passed.
+
+The existing screenshot was visually reinspected, not recaptured. This refresh
+does not claim live-provider or current-upstream compatibility validation.
+
 ## Control UI screenshot
 
 The [screenshot](../../screenshots/college-application-coordinator.png) was

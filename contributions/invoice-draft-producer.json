@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "invoice-draft-producer",
+    "name": "Invoice draft producer",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-02"
+    },
+    "description": "Turns approved billable work, rates, expenses, and billing terms into an itemized invoice draft with checked calculations and a source-linked billing workpaper, without issuing invoices or posting to accounting systems.",
+    "audience": "Small-business owners, service administrators, and bookkeepers preparing one customer invoice for owner review before issuance.",
+    "principles": [
+      "Produce the invoice itself, not only a readiness checklist",
+      "Bill only supported, approved work under the supplied customer agreement",
+      "Keep a draft distinct from an issued invoice, receivable, payment demand, or accounting entry",
+      "Use supplied tax treatment and rounding rules without determining legal or tax obligations"
+    ],
+    "boundaries": [
+      "Do not issue or send invoices, reserve official invoice numbers, post receivables, charge customers, move money, contact clients, or change source systems",
+      "Do not invent customer identities, completion evidence, rates, payment instructions, tax treatment, tax identifiers, exemptions, or approval",
+      "Do not decide legal enforceability, tax compliance, revenue recognition, disputed charges, or credit entitlement",
+      "Keep unapproved work, unsupported credits, ambiguous prior billing, and conflicting revisions out of a ready-for-owner-review invoice; preserve them in the workpaper",
+      "Exclude progress-payment certification, statutory e-invoicing, complex retainage, trust accounting, and mixed-currency conversion from this base contract"
+    ],
+    "intake": [
+      "Seller and customer billing identities, private destination, draft reference, currency, invoice date, billing period, and accountable reviewer",
+      "Current customer agreement, purchase order where required, approved rates and discounts, billing frequency, payment terms, and explicit tax and rounding instructions including an explicit no-tax decision when applicable",
+      "Approved billable time, delivered items, completed service records, reimbursable expenses, and required customer acceptance, each with a stable source identifier and revision",
+      "Owner-declared complete prior-billing history for the same work, unapplied deposit and credit balances with customer and currency scope, and authorization for any proposed application"
+    ],
+    "workflow": [
+      "Confirm one seller, customer, currency, period, source revisions, and required billing fields; identify unsupported invoice types and missing owner instructions",
+      "Account for every proposed billable source item once as included, already billed, deferred, or blocked; reconcile prior billed quantities and prevent duplicate billing",
+      "Calculate supported quantity-times-rate lines, approved adjustments, supplied tax bases and rounding, invoice total, and authorized deposits or credits without applying them to a live ledger",
+      "Write a complete itemized customer-facing invoice draft using only disclosure-approved billing details, with internal source notes and unresolved items in a separate workpaper",
+      "Check line totals, subtotals, total, proposed credit applications, amount due, billing dates and terms, mandatory references, and agreement between the draft and workpaper",
+      "Deliver the exact draft for owner review; invalidate affected calculations after a source revision and require actual issuance evidence before handing an invoice to Invoice and payment follow-up"
+    ],
+    "deliverables": [
+      "Itemized invoice draft explicitly marked DRAFT - NOT ISSUED",
+      "Source-linked billable-item coverage and calculation workpaper",
+      "Deposit, credit, prior-billing, and unresolved-item register",
+      "Owner review handoff with current draft revision and missing inputs"
+    ],
+    "doneWhen": [
+      "Every proposed source item is accounted for without duplicate billing or hidden exclusions",
+      "All included amounts, tax treatment, rounding, dates, credits, deposits, and terms trace to current supplied evidence and recompute exactly",
+      "The customer-facing draft contains an actual itemized invoice and no internal-only material",
+      "Any missing required source, rule, or approval blocks ready-for-owner-review status, and no issued, sent, posted, or paid state is claimed"
+    ],
+    "example": {
+      "request": "Draft the October 2 service invoice from six approved labor hours at USD 125/hour, USD 180 materials, USD 45 reimbursable travel, and a USD 75 labor discount. Apply the owner's explicit 8 percent materials-only tax rule, USD 200 unapplied deposit, and USD 50 approved credit. Exclude a previously billed two-hour record and flag one unapproved extra hour.",
+      "outcome": "The actual draft shows USD 975.00 gross charges, USD 900.00 after discount, USD 14.40 supplied tax, USD 914.40 invoice total, and USD 664.40 proposed amount due after deposit and credit. The workpaper retains the prior-billed and unapproved items, and the unapproved proposed charge blocks readiness pending owner disposition. Nothing is issued or posted."
+    },
+    "capabilityGuidance": [
+      "X3 base uses supplied workspace records and produces Markdown artifacts; no accounting, banking, messaging, or external integration is required",
+      "This prepares an invoice under owner-supplied rules, not a general bookkeeping service or tax engine",
+      "Any future accounting export or issue/send capability needs a separately approved exact-payload action and applicable installed proof; it is not part of this proposal"
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "references/billing-contract.md",
+        "path": "references/billing-contract.md",
+        "role": "reference"
+      },
+      {
+        "source": "references/example-source-pack.md",
+        "path": "references/example-source-pack.md",
+        "role": "reference"
+      },
+      {
+        "source": "templates/invoice-draft.md",
+        "path": "templates/invoice-draft.md",
+        "role": "template"
+      },
+      {
+        "source": "templates/customer-invoice.md",
+        "path": "templates/customer-invoice.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/invoice-draft.schema.json",
+        "path": "schemas/invoice-draft.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/invoice-draft.example.json",
+        "path": "fixtures/invoice-draft.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/invoice.example.md",
+        "path": "fixtures/invoice.example.md",
+        "role": "fixture"
+      },
+      {
+        "source": "fixtures/workpaper.example.md",
+        "path": "fixtures/workpaper.example.md",
+        "role": "fixture"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Invoice and payment follow-up begins with existing invoices, leaving SMB owners to turn approved service records and billing rules into the invoice before that Claw is useful.",
+    "repeatableJob": "Prepare one source-backed invoice draft from approved unbilled work, validate its amounts and prior-billing coverage, and hand it to the owner for issuance review.",
+    "proofPlan": "After admission, prove an actual X3 invoice plus separate workpaper in ordinary Control UI chat. Verify time-and-materials, fixed-fee, and owner-defined recurring-period cases. Recompute all amounts and test duplicate or previously billed work, missing completion, missing tax treatment, changed rates, customer or currency mismatch, over-applied deposits, stale credits, mixed currencies, source revisions, disclosure leakage, and unapproved issue/send attempts. Require current screenshot, contribution and regression contracts, generated agreement, npm run check, and semantic mutations. Synthetic arithmetic examples are not live accounting or tax proof.",
+    "existingAlternatives": [
+      {
+        "id": "job-estimate-producer",
+        "overlap": "Closest match in the combined catalog; both produce customer-facing amount drafts and separate private source workpapers.",
+        "difference": "Job Estimate Producer prices planned scope from supplied costs and markup or target margin before approval. Invoice Draft Producer requires billable work and terms, reconciles prior billing, discounts, tax inputs and proposed credit/deposit use. An estimate or quote is not completed-work evidence or permission to invoice."
+      },
+      {
+        "id": "invoice-payment-followup",
+        "overlap": "Both handle invoice amounts, customer evidence, credits, and owner-controlled financial communication.",
+        "difference": "The existing owner inventories already supplied invoices and drafts reminders. This proposal constructs the itemized invoice from unbilled work and terms, with quantity coverage, prior-billing checks, and calculation rules. The handoff occurs only after separate owner issuance evidence."
+      },
+      {
+        "id": "commercial-deal-desk-coordinator",
+        "overlap": "Both validate commercial line items, prices, discounts, and exact source revisions.",
+        "difference": "Deal Desk reconciles a seller quote before an order. Invoice Draft Producer uses evidence of billable delivery, time, expenses, and prior billing to create a billing artifact after work; a reviewed quote alone cannot authorize billing."
+      },
+      {
+        "id": "spreadsheet-analyst",
+        "overlap": "Both can produce reviewable calculations and preserve source lineage.",
+        "difference": "Spreadsheet Analyst owns workbook transformation and recalculation, not the customer billing lifecycle, billable-item coverage, invoice terms, and separation of drafts from issued receivables."
+      },
+      {
+        "id": "financial-account-reconciliation-coordinator",
+        "overlap": "Both preserve financial evidence and avoid ledger mutation.",
+        "difference": "That Claw matches existing ledger and statement rows; this creates a proposed invoice before a receivable exists and cannot treat a calculated amount as a posted transaction."
+      },
+      {
+        "id": "payroll-review-preparer",
+        "overlap": "A top-five lexical match; both use private amount workpapers, explicit periods, change evidence, and a release boundary.",
+        "difference": "Payroll Review checks provider-calculated employee pay against approved changes. Invoice Draft Producer constructs customer billable lines, supplied tax and credit calculations, and a customer-facing invoice from unbilled work, without employee-pay processing."
+      },
+      {
+        "id": "supplier-onboarding-preparer",
+        "overlap": "A top-five lexical match; both produce a private financial-administration draft with required fields, evidence and owner questions.",
+        "difference": "Supplier Onboarding prepares a selected supplier's master-data setup packet and keeps payment verification separate. This produces a seller-to-customer billing document for completed work and checks prior billing, not supplier setup or payment-account verification."
+      },
+      {
+        "id": "rfp-response-producer",
+        "overlap": "A top-five lexical match; both write substantive customer-facing commercial drafts with separate private source notes.",
+        "difference": "RFP Response Producer covers buyer-authored questions before a commercial award. An invoice draft instead covers billable delivery records, line calculations, prior billing and proposed balances after work. Narrative response coverage cannot establish a billable quantity or amount due."
+      }
+    ]
+  }
+}

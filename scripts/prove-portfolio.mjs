@@ -18,6 +18,9 @@ import {
 } from "./openclaw-proof-lib.mjs";
 import { validateArtifactSemantics } from "./artifact-semantics.mjs";
 import { readExperienceCases } from "./experience-cases.mjs";
+import { writePortfolioSummary } from "./portfolio-summary-file.mjs";
+import { selectApplicationRequest } from "./portfolio-application-request.mjs";
+import { assertWidgetToolResult } from "./visual-runtime-tool-proof.mjs";
 
 const { cliEntry, openClawEntry } = resolveProofConfig();
 const openClawRoot = dirname(openClawEntry);
@@ -717,7 +720,7 @@ async function assertApplicationTurn({ entry, marker, requestLog, turn }) {
     .split("\n")
     .filter(Boolean)
     .map((line) => JSON.parse(line));
-  const request = requestLines.find((item) => item.path === "/v1/responses");
+  const request = selectApplicationRequest(requestLines);
   if (!request || typeof request.body !== "string") {
     throw new Error(`${entry.id} agent turn did not reach the OpenAI-compatible runtime.`);
   }
@@ -772,17 +775,7 @@ async function assertVisualRuntime({ entry, env, requestLog, turn }) {
     .split("\n")
     .filter(Boolean)
     .map((line) => JSON.parse(line));
-  const showWidgetRecord = requestRecords.find((record) => record.emittedTool === "show_widget");
-  const postWidgetRecord = requestRecords.find((record) => record.step > showWidgetRecord?.step);
-  if (!showWidgetRecord || !postWidgetRecord) {
-    throw new Error(`${entry.id} did not execute show_widget.`);
-  }
-  const postWidgetRequest = JSON.parse(postWidgetRecord.body);
-  if (
-    !(postWidgetRequest.input ?? []).some((item) => item?.type === "function_call_output")
-  ) {
-    throw new Error(`${entry.id} show_widget did not return an executed tool result.`);
-  }
+  assertWidgetToolResult(requestRecords);
   const config = JSON.parse(await readFile(env.OPENCLAW_CONFIG_PATH, "utf8"));
   const agentEntries = config.agents?.entries;
   const installed = Array.isArray(agentEntries)
@@ -1606,34 +1599,38 @@ for (const entry of entries) {
 
   await writeFile(join(evidenceRoot, "result.json"), `${JSON.stringify(result, null, 2)}\n`);
   results.push(result);
+  await writePortfolioSummary(proofRoot, buildPortfolioSummary());
   process.stderr.write(`${result.status === "lifecycle-passed" ? "PASS" : "FAIL"} ${entry.id}\n`);
 }
 
-const summary = {
-  schemaVersion: "awesomeClaws.portfolioProof.v1",
-  generatedAt: new Date().toISOString(),
-  proofRoot,
-  revisions,
-  packageCount: results.length,
-  evidenceClaims: {
-    materialization: "byte-for-byte generated-output check",
-    lifecycle:
-      "isolated local inspect/add/status/update/rollback/export/remove with declared reinstall proof",
-    applicationRuntime: "deterministic OpenAI-compatible fixture",
-    providerLive: false,
-  },
-  lifecyclePassed: results.filter((result) => result.status === "lifecycle-passed").length,
-  lifecycleFailed: results.filter((result) => result.status === "lifecycle-failed").length,
-  applicationScenariosPassed: results.filter(
-    (result) =>
-      result.applicationScenario.status === "runtime-wiring-passed" ||
-      result.applicationScenario.status === "installed-visual-runtime-passed",
-  ).length,
-  results,
-};
+function buildPortfolioSummary() {
+  return {
+    schemaVersion: "awesomeClaws.portfolioProof.v1",
+    generatedAt: new Date().toISOString(),
+    proofRoot,
+    revisions,
+    packageCount: results.length,
+    evidenceClaims: {
+      materialization: "byte-for-byte generated-output check",
+      lifecycle:
+        "isolated local inspect/add/status/update/rollback/export/remove with declared reinstall proof",
+      applicationRuntime: "deterministic OpenAI-compatible fixture",
+      providerLive: false,
+    },
+    lifecyclePassed: results.filter((result) => result.status === "lifecycle-passed").length,
+    lifecycleFailed: results.filter((result) => result.status === "lifecycle-failed").length,
+    applicationScenariosPassed: results.filter(
+      (result) =>
+        result.applicationScenario.status === "runtime-wiring-passed" ||
+        result.applicationScenario.status === "installed-visual-runtime-passed",
+    ).length,
+    results,
+  };
+}
+const summary = buildPortfolioSummary();
 await rm(runtimeRoot, { recursive: true, force: true });
 summary.disposableRuntimeRemoved = true;
-await writeFile(join(proofRoot, "summary.json"), `${JSON.stringify(summary, null, 2)}\n`);
+await writePortfolioSummary(proofRoot, summary);
 console.log(
   JSON.stringify(
     {

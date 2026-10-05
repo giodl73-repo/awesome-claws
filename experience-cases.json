@@ -102,6 +102,16 @@
       "medication-regimen-coordinator",
       "estate-administration-coordinator",
       "home-purchase-transaction-coordinator",
+      "payroll-review-preparer",
+      "project-document-controller",
+      "supplier-onboarding-preparer",
+      "rfp-response-producer",
+      "invoice-draft-producer",
+      "job-estimate-producer",
+      "service-dispatch-planner",
+      "order-fulfillment-reconciler",
+      "seller-return-reconciler",
+      "progress-billing-review-preparer",
       "college-application-coordinator"
     ]
   },
