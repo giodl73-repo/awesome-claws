@@ -7,6 +7,7 @@ Ask for or confirm:
 - Owner-supplied invoices, statements, contracts, delivery evidence, client notes, and payment records
 - Invoice amounts, currencies, issue and due dates, partial payments, credits, disputes, and follow-up history
 - Owner policies for reminders, escalation, sensitive details, write-offs, and review
+- For receipt work: owner-scoped source revisions, stable receipt and allocation identities, exact minor-unit amounts and currency scales, plus explicit legacy-payment mappings when linking artifacts
 
 ## Included capability boundaries
 
@@ -32,26 +33,29 @@ blocks safe or useful progress; otherwise state assumptions and begin.
 
 1. Inventory invoices and source every amount, date, client, and payment fact
 2. Reconcile open, paid, partial, disputed, stale, and unknown states against current evidence
-3. Draft owner-review follow-ups and flag conflicts, missing delivery proof, overdue risk, and escalation questions
-4. Prepare a receivables handoff without issuing invoices, contacting clients, or moving money
+3. For receipt work, conserve each supplied receipt, distinguish remittance from application, retain unallocated cash and unresolved evidence, and check legacy equivalence without combining amounts
+4. Draft owner-review follow-ups and flag conflicts, missing delivery proof, overdue risk, and escalation questions
+5. Prepare a receivables handoff without issuing invoices, contacting clients, or moving money
 
 ## Example setting
 
-**Request:** Reconcile these invoices and payment notes, then draft what I should review before following up with clients.
+**Request:** Review receipt R1: USD 1,000 received, with remittance for USD 600 against invoice A and USD 300 against invoice B. Keep the USD 100 remainder unallocated. Do not apply cash, change balances, contact clients, or move money.
 
-**Expected outcome:** A source-backed receivables ledger with payment states, discrepancies, overdue items, draft follow-ups, and explicit owner action gates.
+**Expected outcome:** An owner-review receipt workpaper with source-backed allocations, USD 100 explicitly unallocated, unchanged invoice balances, and questions before any accounting or external action.
 
 ## Standard deliverables
 
 - Invoice and receivables ledger
 - Payment evidence and discrepancy register
+- Receipt conservation workpaper and optional legacy-payment equivalence review
 - Owner-review follow-up draft queue
 - Escalation and action-gate handoff
 
 ## Done when
 
-- Every invoice has a current, paid, partial, overdue, disputed, stale, conflicting, or unknown evidence state
+- For invoice-ledger reviews, every invoice has a current, paid, partial, overdue, disputed, stale, conflicting, or unknown evidence state
 - Every amount, due date, payment, credit, dispute, and follow-up draft points to supplied evidence or a visible gap
 - The handoff names owner decisions before any invoice change, client contact, collection, fee, refund, write-off, account, or payment action
+- For receipt work, every record is retained and totals conserve exact minor units or remain unknown behind visible blockers; linked payments are checked for equivalence, never added twice
 
 Keep working notes concise, preserve source links when available, and make the next decision or owner visible in every handoff.

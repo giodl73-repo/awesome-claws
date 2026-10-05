@@ -100,7 +100,7 @@ export function reconcileInvoiceReceipts(input) {
   };
 }
 
-function money(amount, scale) {
+export function formatReceiptAmount(amount, scale) {
   if (amount === null || scale === null) return "unknown";
   const digits = String(amount).padStart(scale + 1, "0");
   return scale === 0 ? digits : `${digits.slice(0, -scale)}.${digits.slice(-scale)}`;
@@ -118,11 +118,11 @@ export function renderInvoiceReceiptWorkpaper(input) {
     "## Receipts", "",
     "| Record | Identity | Status | Currency | Received | Allocated evidence | Unallocated | Source / revision / record |",
     "| --- | --- | --- | --- | --- | --- | --- | --- |",
-    ...report.receipts.map((r) => `| ${r.id} | ${r.identityRef ?? "unresolved"} | ${r.status} | ${r.currency} | ${money(r.amountMinor, r.scale)} | ${money(r.allocatedMinor, r.scale)} | ${money(r.unallocatedMinor, r.scale)} | ${r.sourceRef} / ${r.sourceRevision} / ${r.sourceRecord} |`),
+    ...report.receipts.map((r) => `| ${r.id} | ${r.identityRef ?? "unresolved"} | ${r.status} | ${r.currency} | ${formatReceiptAmount(r.amountMinor, r.scale)} | ${formatReceiptAmount(r.allocatedMinor, r.scale)} | ${formatReceiptAmount(r.unallocatedMinor, r.scale)} | ${r.sourceRef} / ${r.sourceRevision} / ${r.sourceRecord} |`),
     "", "## Allocation evidence", "",
     "| Record | Identity | Receipt | Invoice | Basis | Status | Currency | Amount | Source / revision / record |",
     "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
-    ...report.allocations.map((r) => `| ${r.id} | ${r.identityRef ?? "unresolved"} | ${r.receiptRef} | ${r.invoiceRef} | ${r.basis} | ${r.status} | ${r.currency} | ${money(r.amountMinor, scales.get(r.currency) ?? null)} | ${r.sourceRef} / ${r.sourceRevision} / ${r.sourceRecord} |`),
+    ...report.allocations.map((r) => `| ${r.id} | ${r.identityRef ?? "unresolved"} | ${r.receiptRef} | ${r.invoiceRef} | ${r.basis} | ${r.status} | ${r.currency} | ${formatReceiptAmount(r.amountMinor, scales.get(r.currency) ?? null)} | ${r.sourceRef} / ${r.sourceRevision} / ${r.sourceRecord} |`),
     ...(report.allocations.length ? [] : ["No allocation evidence supplied."]),
     "", "## Owner review", "",
     ...report.reviewQuestions.map((q) => `- ${q.owner}: ${q.question}`),

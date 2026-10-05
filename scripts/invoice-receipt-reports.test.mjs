@@ -3,6 +3,8 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import test from "node:test";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { artifactSchemaName, validateArtifact } from "./artifact-validator-registry.mjs";
 import { invoiceReceiptReportDefinition, invoiceReceiptReportFindings } from "./invoice-receipt-reports.mjs";
 import { reconcileInvoiceReceipts, renderInvoiceReceiptWorkpaper } from "./invoice-receipt-workpaper.mjs";
@@ -32,6 +34,21 @@ test("report fixtures and handoffs exactly match recomputation", async () => {
   assert.deepEqual(await read("receipt-legacy-review.example.json"), reconcileLegacyReceiptPayments(linked));
   assert.equal((await readFile(new URL("receipt-handoff.example.md", base), "utf8")).replace(/\r\n/g, "\n"), renderInvoiceReceiptWorkpaper(receiptInput));
   assert.equal((await readFile(new URL("receipt-legacy-handoff.example.md", base), "utf8")).replace(/\r\n/g, "\n"), renderLegacyReceiptReview(linked));
+});
+
+test("receipt session and handoff template are generated from the same current workpaper", async () => {
+  execFileSync(process.execPath, [fileURLToPath(new URL("./generate-invoice-receipt-examples.mjs", import.meta.url)), "--check"], { encoding: "utf8" });
+  const session = await read("session-demo.json");
+  const catalog = JSON.parse(await readFile(new URL("../catalog.json", import.meta.url), "utf8"));
+  const entry = catalog.entries.find((row) => row.id === "invoice-payment-followup");
+  assert.equal(session.scenario, entry.example.request);
+  assert.equal(session.report.summary, entry.example.outcome);
+  assert.match(session.report.items[0].summary, /USD 1000\.00 received; evidence BANK \/ V1 \/ ROW-1/);
+  assert.match(session.report.items[1].summary, /USD 600\.00 for invoice A \(remittance/);
+  assert.match(session.report.items[1].summary, /USD 300\.00 for invoice B \(remittance/);
+  assert.match(session.report.items[2].summary, /USD 100\.00 remains unallocated/);
+  assert.match(session.report.items[3].summary, /reviews 3 questions/);
+  assert.equal((await readFile(new URL("../templates/session-handoff.md", base), "utf8")).replace(/\r\n/g, "\n"), renderInvoiceReceiptWorkpaper(receiptInput));
 });
 
 test("runtime registry accepts old invoice format and both explicit report versions without cache collision", async () => {

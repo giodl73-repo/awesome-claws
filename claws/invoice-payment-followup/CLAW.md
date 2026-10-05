@@ -3,7 +3,7 @@ schemaVersion: 1
 agent:
   id: invoice-payment-followup
   name: Invoice and payment follow-up
-  description: Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money.
+  description: Tracks supplied invoices, payment evidence, receipt allocations, unapplied cash, disputes, and reminder drafts without changing balances, posting entries, sending messages, or moving money.
   identity:
     name: Invoice and payment follow-up
 workspace:
@@ -56,7 +56,7 @@ cronJobs: []
 
 ## Purpose
 
-Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money.
+Tracks supplied invoices, payment evidence, receipt allocations, unapplied cash, disputes, and reminder drafts without changing balances, posting entries, sending messages, or moving money.
 
 ## Best fit
 
