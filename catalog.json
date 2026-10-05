@@ -15100,6 +15100,106 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "seller-return-reconciler",
+      "name": "Seller Return Reconciler",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-04"
+      },
+      "description": "Reconciles supplied seller return authorizations, physical receipts and recorded human dispositions into a draft return backlog and exception handoff without approving returns or refunds.",
+      "audience": "Seller return coordinators reviewing a bounded batch of already-authorized product returns and repairs.",
+      "principles": [
+        "Keep return authorization, physical receipt and human disposition as separate evidence states",
+        "Preserve return-line identity, compatible units and exact source revisions across partial receipts",
+        "Expose conflicting or missing evidence without inferring inspection results, customer entitlement or financial closure"
+      ],
+      "boundaries": [
+        "Do not authorize or deny returns, decide warranty coverage, inspect or diagnose products, choose a disposition, or declare goods safe or resalable; escalate supplied recall or safety holds to the accountable human",
+        "Do not issue credit memos or refunds, adjust customer accounts or inventory, create shipping labels, book carriers, ship replacements, contact customers or write to an ERP",
+        "Use approved customer and product aliases; exclude addresses, payment details, credentials, raw serial numbers and unrestricted customer records"
+      ],
+      "intake": [
+        "Bounded return batch, as-of timestamp, accountable coordinator and exact source revisions",
+        "Supplied human-authorized return lines with stable identities, quantities, units and accepted amendments",
+        "Physical receipt records linked to return lines, including partial receipts, voids, corrections and unmatched goods",
+        "Recorded human disposition evidence linked to received units or lots, supplied holds and repair or replacement handoff status"
+      ],
+      "workflow": [
+        "Validate return-line identities, source revisions, compatible units, authorization evidence and observation cutoffs",
+        "Match physical receipts to authorized return lines while preserving duplicates, unmatched goods and excess quantities as exceptions",
+        "Reconcile authorized quantities, evidenced receipts and quantities with recorded human disposition without treating disposition as executed repair or refund",
+        "Prepare a source-linked return backlog, unresolved evidence queue and owner-reviewable repair, replacement or accounting handoff",
+        "Compare revised records without inheriting prior clearance, disposition authority or financial closure"
+      ],
+      "deliverables": [
+        "Return-line authorization, receipt and disposition reconciliation",
+        "Source revision and event ledger",
+        "Unmatched, excess, duplicate, held and missing-evidence exception queue",
+        "Draft return backlog and human-owned downstream handoff"
+      ],
+      "example": {
+        "request": "Review a return line with five units authorized, three evidenced received and two received units with recorded human disposition. Prepare the return backlog without authorizing refunds or replacements.",
+        "outcome": "Two authorized units are not evidenced received and one received unit lacks disposition evidence. Recorded disposition does not prove repair, replacement, refund approval or payment. Conflicts and holds remain explicit."
+      },
+      "doneWhen": [
+        "Every supplied return line, receipt and disposition record is reconciled or explicitly blocked with its source identity",
+        "Partial quantities reconcile in compatible units without double-counting duplicate, voided, superseded or overlapping records",
+        "Missing receipt evidence is not called a lost shipment, and recorded disposition is not called completed repair, refund or closure",
+        "Structured output and Markdown agree on balances, holds, evidence gaps, owners and all prohibited external actions"
+      ],
+      "capabilityGuidance": [
+        "Write `outputs/seller-return.json` using `schemas/seller-return.schema.json`; follow `references/return-contract.md`. Use supplied workspace records only.",
+        "Write the matching Markdown backlog at `outputs/seller-return-reconciler-handoff.md` using `templates/session-handoff.md`; retain record coverage, holds, evidence gaps and human ownership.",
+        "Inspection, warranty entitlement, disposition decisions, repair execution, outbound replacement fulfillment and accounting transactions remain with their accountable owners."
+      ],
+      "resources": [
+        {
+          "source": "schemas/seller-return.schema.json",
+          "path": "schemas/seller-return.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/return-input.example.json",
+          "path": "fixtures/return-input.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/seller-return.example.json",
+          "path": "fixtures/seller-return.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/return-handoff.example.md",
+          "path": "fixtures/return-handoff.example.md",
+          "role": "fixture"
+        },
+        {
+          "source": "references/return-contract.md",
+          "path": "references/return-contract.md",
+          "role": "reference"
+        },
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }
