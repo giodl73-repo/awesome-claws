@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "awesomeClaws.receiptWorkpaperInput.v1",
+  "asOf": "2026-10-04T10:00:00Z",
+  "owner": "AR-OWNER",
+  "scopeRef": "LEDGER-ACCOUNT-1",
+  "currencies": [{ "code": "USD", "scale": 2 }],
+  "sources": [
+    { "id": "BANK", "revision": "V1", "capturedAt": "2026-10-04T10:00:00Z", "kind": "receipt", "scopeRef": "LEDGER-ACCOUNT-1" },
+    { "id": "REMIT", "revision": "V1", "capturedAt": "2026-10-04T10:00:00Z", "kind": "remittance", "scopeRef": "LEDGER-ACCOUNT-1" }
+  ],
+  "invoices": [{ "id": "A", "currency": "USD" }, { "id": "B", "currency": "USD" }],
+  "receipts": [
+    { "id": "R1", "identityRef": "CASH-1", "sourceRef": "BANK", "sourceRevision": "V1", "sourceRecord": "ROW-1", "at": "2026-10-04T10:00:00Z", "currency": "USD", "amountMinor": 100000, "status": "current" }
+  ],
+  "allocations": [
+    { "id": "L1", "identityRef": "ALLOCATION-L1", "receiptRef": "R1", "invoiceRef": "A", "sourceRef": "REMIT", "sourceRevision": "V1", "sourceRecord": "L1", "at": "2026-10-04T10:00:00Z", "currency": "USD", "amountMinor": 60000, "basis": "remittance", "status": "current" },
+    { "id": "L2", "identityRef": "ALLOCATION-L2", "receiptRef": "R1", "invoiceRef": "B", "sourceRef": "REMIT", "sourceRevision": "V1", "sourceRecord": "L2", "at": "2026-10-04T10:00:00Z", "currency": "USD", "amountMinor": 30000, "basis": "remittance", "status": "current" }
+  ]
+}

@@ -19,6 +19,22 @@ workspace:
       path: templates/change-delivery-record.md
     - source: references/change-contract.md
       path: references/change-contract.md
+    - source: references/documentation-change.md
+      path: references/documentation-change.md
+    - source: fixtures/documentation-change/input.json
+      path: fixtures/documentation-change/input.json
+    - source: fixtures/documentation-change/guide.md
+      path: fixtures/documentation-change/guide.md
+    - source: fixtures/documentation-change/reference.md
+      path: fixtures/documentation-change/reference.md
+    - source: fixtures/documentation-change/request-v1.json
+      path: fixtures/documentation-change/request-v1.json
+    - source: fixtures/documentation-change/request-v2.json
+      path: fixtures/documentation-change/request-v2.json
+    - source: fixtures/documentation-change/documentation.patch
+      path: fixtures/documentation-change/documentation.patch
+    - source: fixtures/documentation-change/handoff.md
+      path: fixtures/documentation-change/handoff.md
     - source: templates/reviewer-handoff.md
       path: templates/reviewer-handoff.md
     - source: fixtures/session-demo.json

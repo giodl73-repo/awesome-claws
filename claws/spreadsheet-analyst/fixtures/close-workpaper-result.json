@@ -1,0 +1,64 @@
+{
+  "gaps": [],
+  "analysis": {
+    "entity": "Northwind Example Co",
+    "accountId": "accruals-2100",
+    "period": "2026-08",
+    "currency": "USD",
+    "basis": "owner-supplied accrual basis",
+    "sourceSnapshot": "3c96c184585d49e837f57a91f90624b17fa8181b1063c98af401ea5d9890bb1a",
+    "reconciliationSnapshot": "c78514f75fd1dd3ba94ff7a20f3441312bd946ec599d48ba6da4562bfedfa426",
+    "opening": 12000,
+    "closing": 15500,
+    "change": 3500,
+    "explained": 3000,
+    "unexplained": 500,
+    "sources": [
+      {
+        "reference": "TB-OPEN",
+        "revision": "r1",
+        "usd": 12000
+      },
+      {
+        "reference": "TB-CLOSE",
+        "revision": "r2",
+        "usd": 15500
+      },
+      {
+        "reference": "SCHED-SUPPLIER",
+        "revision": "r1",
+        "usd": 2100
+      },
+      {
+        "reference": "SCHED-PAYROLL",
+        "revision": "r1",
+        "usd": 900
+      }
+    ],
+    "residuals": [
+      {
+        "id": "residual-ledger-review",
+        "accountId": "operating-001",
+        "side": "ledger",
+        "rowRef": "ledger-row-residual",
+        "usd": 1.25,
+        "reason": "owner-review-needed",
+        "nextOwner": "Ruth Abara"
+      },
+      {
+        "id": "residual-statement-timing",
+        "accountId": "operating-001",
+        "side": "statement",
+        "rowRef": "statement-row-residual",
+        "usd": -0.9,
+        "reason": "timing-difference",
+        "nextOwner": "Ruth Abara"
+      }
+    ],
+    "owner": "Morgan Lee, Controller",
+    "state": "accountant-review-pending",
+    "journalPosting": "not-performed",
+    "bookClosure": "not-performed",
+    "certification": "not-claimed"
+  }
+}

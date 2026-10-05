@@ -1,0 +1,401 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "scope",
+    "technicians",
+    "jobs",
+    "travel",
+    "plan"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.serviceDispatch.v1"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date",
+        "timeZone",
+        "revision",
+        "owner",
+        "priorityRule"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "timeZone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "priorityRule": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "technicians": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "revision",
+          "skills",
+          "startSite",
+          "endSite",
+          "shift",
+          "breaks"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+          },
+          "sourceRef": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "skills": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+            }
+          },
+          "startSite": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+          },
+          "endSite": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+          },
+          "shift": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start",
+              "end"
+            ],
+            "properties": {
+              "start": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+              },
+              "end": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+              }
+            }
+          },
+          "breaks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "site",
+                "start",
+                "end"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+                },
+                "site": {
+                  "type": "string",
+                  "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+                },
+                "start": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+                },
+                "end": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceRef",
+          "revision",
+          "site",
+          "skill",
+          "priority",
+          "durationMinutes",
+          "window",
+          "readiness",
+          "readinessReason",
+          "locked"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+          },
+          "sourceRef": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "site": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+          },
+          "skill": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "durationMinutes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "window": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "start",
+              "end"
+            ],
+            "properties": {
+              "start": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+              },
+              "end": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+              }
+            }
+          },
+          "readiness": {
+            "enum": [
+              "ready",
+              "held",
+              "unknown",
+              "emergency"
+            ]
+          },
+          "readinessReason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "locked": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "technicianId",
+                  "start"
+                ],
+                "properties": {
+                  "technicianId": {
+                    "type": "string",
+                    "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+                  },
+                  "start": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "travel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceRef",
+        "revision",
+        "validOn",
+        "bufferMinutes",
+        "legs"
+      ],
+      "properties": {
+        "sourceRef": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "validOn": {
+          "type": "string",
+          "format": "date"
+        },
+        "bufferMinutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "legs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "from",
+              "to",
+              "minutes"
+            ],
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+              },
+              "to": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+              },
+              "minutes": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputDigest",
+        "status",
+        "approved",
+        "dispatched",
+        "assignments",
+        "unassigned"
+      ],
+      "properties": {
+        "inputDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "status": {
+          "const": "draft"
+        },
+        "approved": {
+          "const": false
+        },
+        "dispatched": {
+          "const": false
+        },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "jobId",
+              "technicianId",
+              "start",
+              "end"
+            ],
+            "properties": {
+              "jobId": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+              },
+              "technicianId": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+              },
+              "start": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+              },
+              "end": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"
+              }
+            }
+          }
+        },
+        "unassigned": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "jobId",
+              "code",
+              "reason"
+            ],
+            "properties": {
+              "jobId": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9-]{0,63}$"
+              },
+              "code": {
+                "enum": [
+                  "readiness",
+                  "duration",
+                  "human-escalation",
+                  "dispatcher-decision"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

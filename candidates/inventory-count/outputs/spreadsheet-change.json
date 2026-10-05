@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "awesomeClaws.spreadsheetChange.v1",
+  "workbook": {
+    "id": "workbook-inventory",
+    "owner": "Synthetic inventory owner (not a real approval)",
+    "asOf": "2026-10-05T10:30:00Z",
+    "sourcePath": "inputs/inventory-source.xlsx",
+    "sourceSha256": "ee1135463fd0214d35c70e522ca07ec300e07906d819d1b9ebc860bf024e12f7",
+    "outputPath": "outputs/inventory-review.xlsx",
+    "recalculationEngine": "Artifact Tool; native Excel not tested",
+    "sensitivity": "internal",
+    "state": "blocked"
+  },
+  "sheets": [
+    {
+      "id": "sheet-sources",
+      "name": "Sources",
+      "role": "source",
+      "sourcePreserved": true,
+      "formulaCountBefore": 0,
+      "formulaCountAfter": 0
+    },
+    {
+      "id": "sheet-review",
+      "name": "Count review",
+      "role": "output",
+      "sourcePreserved": true,
+      "formulaCountBefore": 0,
+      "formulaCountAfter": 54
+    }
+  ],
+  "transformations": [
+    {
+      "id": "transform-review",
+      "kind": "add-sheet",
+      "targetSheetRef": "sheet-review",
+      "inputRefs": [
+        "sheet-sources"
+      ],
+      "outputRange": "Count review!A1:H19",
+      "logic": "Preserve source rows. Compare physical book plus explicitly excluded movement with owner-selected count; block missing basis and counts, retain separate bin variances.",
+      "formulaPolicy": "add-only",
+      "state": "verified"
+    }
+  ],
+  "checks": [
+    {
+      "id": "check-source-hash",
+      "kind": "source-hash",
+      "status": "passed",
+      "details": "Original XLSX bytes and source JSON hash bound in calculation-proof.json.",
+      "refs": [
+        "workbook-inventory"
+      ]
+    },
+    {
+      "id": "check-formula-preservation",
+      "kind": "formula-preservation",
+      "status": "passed",
+      "details": "Source values preserved on export/reimport; 54 formulas added only to review.",
+      "refs": [
+        "workbook-inventory"
+      ]
+    },
+    {
+      "id": "check-recalculation",
+      "kind": "recalculation",
+      "status": "passed",
+      "details": "22 restored input mutations in Artifact Tool. Native Excel not tested.",
+      "refs": [
+        "workbook-inventory"
+      ]
+    },
+    {
+      "id": "check-formatting",
+      "kind": "formatting",
+      "status": "not-run",
+      "details": "Both previews rendered. See private-handoff.md for manual visual review; regeneration requires fresh inspection.",
+      "refs": [
+        "workbook-inventory"
+      ]
+    },
+    {
+      "id": "check-links",
+      "kind": "links",
+      "status": "not-applicable",
+      "details": "No external workbook links.",
+      "refs": [
+        "workbook-inventory"
+      ]
+    },
+    {
+      "id": "check-charts",
+      "kind": "charts",
+      "status": "not-applicable",
+      "details": "No charts required.",
+      "refs": [
+        "workbook-inventory"
+      ]
+    },
+    {
+      "id": "check-macros",
+      "kind": "macros",
+      "status": "not-applicable",
+      "details": "Generated macro-free XLSX files.",
+      "refs": [
+        "workbook-inventory"
+      ]
+    },
+    {
+      "id": "check-validation",
+      "kind": "validation",
+      "status": "passed",
+      "details": "Exact-example basis, identity, revision, time, numeric and selection guards tested.",
+      "refs": [
+        "workbook-inventory"
+      ]
+    },
+    {
+      "id": "check-output-open",
+      "kind": "output-open",
+      "status": "passed",
+      "details": "Artifact Tool reimport/recalculation preserves expected variances and source values.",
+      "refs": [
+        "workbook-inventory"
+      ]
+    }
+  ],
+  "exceptions": [
+    {
+      "id": "exception-review",
+      "severity": "high",
+      "refs": [
+        "sheet-review"
+      ],
+      "description": "Human inventory review pending on every row; no-rule, no-basis, missing and recount lack required evidence or decisions. Separate -2/+2 variances remain unresolved.",
+      "state": "open"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "id": "question-owner",
+      "question": "What supplied evidence resolves missing basis, movement rules, counts and recount selection?",
+      "reason": "Synthetic assertions are not real inventory approval. Every row needs owner review.",
+      "refs": [
+        "exception-review"
+      ]
+    }
+  ],
+  "blockedActions": [
+    "overwrite-source",
+    "replace-formulas-with-values",
+    "execute-macros",
+    "upload-workbook",
+    "disclose-sensitive-data",
+    "infer-missing-facts",
+    "accept-output"
+  ],
+  "handoff": {
+    "state": "blocked",
+    "owner": "Synthetic inventory owner (not a real approval)",
+    "transformationRefs": [
+      "transform-review"
+    ],
+    "checkRefs": [
+      "check-source-hash",
+      "check-formula-preservation",
+      "check-recalculation",
+      "check-formatting",
+      "check-links",
+      "check-charts",
+      "check-macros",
+      "check-validation",
+      "check-output-open"
+    ],
+    "exceptionRefs": [
+      "exception-review"
+    ],
+    "reviewQuestionRefs": [
+      "question-owner"
+    ],
+    "blockingRefs": [
+      "exception-review",
+      "check-formatting"
+    ],
+    "prohibitedActions": [
+      "overwrite-source",
+      "replace-formulas-with-values",
+      "execute-macros",
+      "upload-workbook",
+      "disclose-sensitive-data",
+      "infer-missing-facts",
+      "accept-output"
+    ]
+  }
+}

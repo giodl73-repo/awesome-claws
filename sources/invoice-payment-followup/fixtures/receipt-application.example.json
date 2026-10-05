@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "awesomeClaws.receiptWorkpaperInput.v1",
+  "asOf": "2026-08-29T12:00:00Z",
+  "owner": "AR-OWNER",
+  "scopeRef": "LEDGER-ACCOUNT-1",
+  "currencies": [{ "code": "USD", "scale": 2 }],
+  "sources": [
+    { "id": "BANK", "revision": "V1", "capturedAt": "2026-08-29T12:00:00Z", "kind": "receipt", "scopeRef": "LEDGER-ACCOUNT-1" },
+    { "id": "APPLICATION", "revision": "V1", "capturedAt": "2026-08-29T12:00:00Z", "kind": "application", "scopeRef": "LEDGER-ACCOUNT-1" }
+  ],
+  "invoices": [{ "id": "A", "currency": "USD" }],
+  "receipts": [
+    { "id": "R1", "identityRef": "CASH-1", "sourceRef": "BANK", "sourceRevision": "V1", "sourceRecord": "ROW-1", "at": "2026-08-29T12:00:00Z", "currency": "USD", "amountMinor": 200000, "status": "current" }
+  ],
+  "allocations": [
+    { "id": "L1", "identityRef": "APPLIED-1", "receiptRef": "R1", "invoiceRef": "A", "sourceRef": "APPLICATION", "sourceRevision": "V1", "sourceRecord": "ROW-1", "at": "2026-08-29T12:00:00Z", "currency": "USD", "amountMinor": 150000, "basis": "application", "status": "current" }
+  ]
+}

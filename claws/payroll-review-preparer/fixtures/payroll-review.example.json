@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 1,
+  "scope": {
+    "employer": "EMPLOYER-DEMO",
+    "payGroup": "DEMO-USD",
+    "currency": "USD",
+    "minorDigits": 2,
+    "runType": "regular",
+    "currentPeriod": "2026-10",
+    "priorPeriod": "2026-09",
+    "periodStart": "2026-10-01",
+    "periodEnd": "2026-10-31",
+    "asOf": "2026-10-02T12:00:00-07:00",
+    "cutoff": null,
+    "reviewer": "Payroll owner",
+    "inputOwner": "Payroll input owner",
+    "recipient": "Payroll owner private review",
+    "policyRef": "GROSS-REVIEW-1"
+  },
+  "expectedEmployees": [
+    "E-01",
+    "E-02",
+    "E-03"
+  ],
+  "expectedComponents": [
+    {
+      "employee": "E-01",
+      "component": "BASE",
+      "tolerance": 0
+    },
+    {
+      "employee": "E-02",
+      "component": "BASE",
+      "tolerance": 0
+    },
+    {
+      "employee": "E-02",
+      "component": "BONUS",
+      "tolerance": 0
+    },
+    {
+      "employee": "E-03",
+      "component": "BASE",
+      "tolerance": 0
+    },
+    {
+      "employee": "E-03",
+      "component": "HOURS-ADJUSTMENT",
+      "tolerance": 0
+    }
+  ],
+  "prior": {
+    "employer": "EMPLOYER-DEMO",
+    "payGroup": "DEMO-USD",
+    "currency": "USD",
+    "minorDigits": 2,
+    "runType": "regular",
+    "period": "2026-09",
+    "revision": "FINAL-SEP",
+    "reference": "PRIOR-REGISTER",
+    "observedAt": "2026-09-30T12:00:00-07:00",
+    "complete": true,
+    "declaredTotal": 870000,
+    "rows": [
+      {
+        "id": "P1",
+        "employee": "E-01",
+        "component": "BASE",
+        "amount": 300000
+      },
+      {
+        "id": "P2",
+        "employee": "E-02",
+        "component": "BASE",
+        "amount": 250000
+      },
+      {
+        "id": "P3",
+        "employee": "E-02",
+        "component": "BONUS",
+        "amount": 20000
+      },
+      {
+        "id": "P4",
+        "employee": "E-03",
+        "component": "BASE",
+        "amount": 300000
+      }
+    ]
+  },
+  "draft": {
+    "employer": "EMPLOYER-DEMO",
+    "payGroup": "DEMO-USD",
+    "currency": "USD",
+    "minorDigits": 2,
+    "runType": "regular",
+    "period": "2026-10",
+    "revision": "1",
+    "reference": "DRAFT-REGISTER-1",
+    "observedAt": "2026-10-02T10:00:00-07:00",
+    "complete": true,
+    "declaredTotal": 900000,
+    "rows": [
+      {
+        "id": "D1",
+        "employee": "E-01",
+        "component": "BASE",
+        "amount": 330000
+      },
+      {
+        "id": "D2",
+        "employee": "E-02",
+        "component": "BASE",
+        "amount": 250000
+      },
+      {
+        "id": "D3",
+        "employee": "E-02",
+        "component": "BONUS",
+        "amount": 20000
+      },
+      {
+        "id": "D4",
+        "employee": "E-03",
+        "component": "BASE",
+        "amount": 300000
+      }
+    ]
+  },
+  "expectations": [
+    {
+      "employer": "EMPLOYER-DEMO",
+      "payGroup": "DEMO-USD",
+      "currency": "USD",
+      "minorDigits": 2,
+      "runType": "regular",
+      "id": "CHANGE-1",
+      "employee": "E-01",
+      "component": "BASE",
+      "period": "2026-10",
+      "draftRevision": "1",
+      "amount": 330000,
+      "kind": "approved-change",
+      "decision": "approved",
+      "owner": "Payroll input owner",
+      "effectiveFrom": "2026-10-01",
+      "effectiveThrough": "2026-10-31",
+      "decidedAt": "2026-10-01T09:00:00-07:00",
+      "reference": "SOURCE-CHANGE-1",
+      "supportRefs": [
+        "OWNER-CHANGE-1"
+      ]
+    },
+    {
+      "employer": "EMPLOYER-DEMO",
+      "payGroup": "DEMO-USD",
+      "currency": "USD",
+      "minorDigits": 2,
+      "runType": "regular",
+      "id": "BASELINE-2",
+      "employee": "E-02",
+      "component": "BASE",
+      "period": "2026-10",
+      "draftRevision": "1",
+      "amount": 250000,
+      "kind": "baseline",
+      "decision": "approved",
+      "owner": "Payroll input owner",
+      "effectiveFrom": "2026-10-01",
+      "effectiveThrough": "2026-10-31",
+      "decidedAt": "2026-10-01T09:00:00-07:00",
+      "reference": "SOURCE-BASELINE-2",
+      "supportRefs": [
+        "OWNER-BASELINE"
+      ]
+    },
+    {
+      "employer": "EMPLOYER-DEMO",
+      "payGroup": "DEMO-USD",
+      "currency": "USD",
+      "minorDigits": 2,
+      "runType": "regular",
+      "id": "NO-REPEAT-2",
+      "employee": "E-02",
+      "component": "BONUS",
+      "period": "2026-10",
+      "draftRevision": "1",
+      "amount": 0,
+      "kind": "one-off-expiry",
+      "decision": "approved",
+      "owner": "Payroll input owner",
+      "effectiveFrom": "2026-10-01",
+      "effectiveThrough": "2026-10-31",
+      "decidedAt": "2026-10-01T09:00:00-07:00",
+      "reference": "SOURCE-NO-REPEAT-2",
+      "supportRefs": [
+        "BONUS-SEP",
+        "OWNER-NO-REPEAT-RULE"
+      ]
+    },
+    {
+      "employer": "EMPLOYER-DEMO",
+      "payGroup": "DEMO-USD",
+      "currency": "USD",
+      "minorDigits": 2,
+      "runType": "regular",
+      "id": "BASELINE-3",
+      "employee": "E-03",
+      "component": "BASE",
+      "period": "2026-10",
+      "draftRevision": "1",
+      "amount": 300000,
+      "kind": "baseline",
+      "decision": "approved",
+      "owner": "Payroll input owner",
+      "effectiveFrom": "2026-10-01",
+      "effectiveThrough": "2026-10-31",
+      "decidedAt": "2026-10-01T09:00:00-07:00",
+      "reference": "SOURCE-BASELINE-3",
+      "supportRefs": [
+        "OWNER-BASELINE"
+      ]
+    },
+    {
+      "employer": "EMPLOYER-DEMO",
+      "payGroup": "DEMO-USD",
+      "currency": "USD",
+      "minorDigits": 2,
+      "runType": "regular",
+      "id": "CHANGE-3",
+      "employee": "E-03",
+      "component": "HOURS-ADJUSTMENT",
+      "period": "2026-10",
+      "draftRevision": "1",
+      "amount": -10000,
+      "kind": "approved-change",
+      "decision": "approved",
+      "owner": "Payroll input owner",
+      "effectiveFrom": "2026-10-01",
+      "effectiveThrough": "2026-10-31",
+      "decidedAt": "2026-10-01T09:00:00-07:00",
+      "reference": "SOURCE-CHANGE-3",
+      "supportRefs": [
+        "OWNER-CHANGE-3"
+      ]
+    }
+  ],
+  "declaredExpectedTotal": 870000,
+  "workpaper": [
+    {
+      "employee": "E-01",
+      "component": "BASE",
+      "priorRowIds": [
+        "P1"
+      ],
+      "draftRowIds": [
+        "D1"
+      ],
+      "expectationIds": [
+        "CHANGE-1"
+      ],
+      "priorAmount": 300000,
+      "draftAmount": 330000,
+      "expectedAmount": 330000,
+      "observedMovement": 30000,
+      "expectedMovement": 30000,
+      "variance": 0,
+      "issues": [],
+      "owner": "Payroll owner",
+      "question": null
+    },
+    {
+      "employee": "E-02",
+      "component": "BASE",
+      "priorRowIds": [
+        "P2"
+      ],
+      "draftRowIds": [
+        "D2"
+      ],
+      "expectationIds": [
+        "BASELINE-2"
+      ],
+      "priorAmount": 250000,
+      "draftAmount": 250000,
+      "expectedAmount": 250000,
+      "observedMovement": 0,
+      "expectedMovement": 0,
+      "variance": 0,
+      "issues": [],
+      "owner": "Payroll owner",
+      "question": null
+    },
+    {
+      "employee": "E-02",
+      "component": "BONUS",
+      "priorRowIds": [
+        "P3"
+      ],
+      "draftRowIds": [
+        "D3"
+      ],
+      "expectationIds": [
+        "NO-REPEAT-2"
+      ],
+      "priorAmount": 20000,
+      "draftAmount": 20000,
+      "expectedAmount": 0,
+      "observedMovement": 0,
+      "expectedMovement": -20000,
+      "variance": 20000,
+      "issues": [
+        "amount-difference"
+      ],
+      "owner": "Payroll owner",
+      "question": "Explain or correct the repeated October bonus. BONUS-SEP is September-only; SOURCE-NO-REPEAT-2 supplies zero for October. An unchanged amount is not evidence of recurrence approval."
+    },
+    {
+      "employee": "E-03",
+      "component": "BASE",
+      "priorRowIds": [
+        "P4"
+      ],
+      "draftRowIds": [
+        "D4"
+      ],
+      "expectationIds": [
+        "BASELINE-3"
+      ],
+      "priorAmount": 300000,
+      "draftAmount": 300000,
+      "expectedAmount": 300000,
+      "observedMovement": 0,
+      "expectedMovement": 0,
+      "variance": 0,
+      "issues": [],
+      "owner": "Payroll owner",
+      "question": null
+    },
+    {
+      "employee": "E-03",
+      "component": "HOURS-ADJUSTMENT",
+      "priorRowIds": [],
+      "draftRowIds": [],
+      "expectationIds": [
+        "CHANGE-3"
+      ],
+      "priorAmount": null,
+      "draftAmount": null,
+      "expectedAmount": -10000,
+      "observedMovement": 0,
+      "expectedMovement": -10000,
+      "variance": 10000,
+      "issues": [
+        "missing-draft",
+        "amount-difference"
+      ],
+      "owner": "Payroll owner",
+      "question": "Reconcile the missing CHANGE-3 adjustment with the provider draft. Supply the corrected register or an explicit revised input decision; an absent row is not an observed zero."
+    }
+  ],
+  "summary": {
+    "prior": {
+      "computed": 870000,
+      "declared": 870000,
+      "state": "matched"
+    },
+    "draft": {
+      "computed": 900000,
+      "declared": 900000,
+      "state": "matched"
+    },
+    "expected": {
+      "computed": 870000,
+      "declared": 870000,
+      "state": "matched"
+    },
+    "observedMovement": 30000,
+    "expectedMovement": 0,
+    "variance": 30000,
+    "absoluteExceptionAmount": 30000,
+    "exceptionCount": 2,
+    "missingDraftCount": 1
+  },
+  "handoff": {
+    "state": "private-review-draft",
+    "reviewedDraftRevision": "1",
+    "unresolvedKeys": [
+      "E-02/BONUS",
+      "E-03/HOURS-ADJUSTMENT"
+    ],
+    "sourceQuestions": [],
+    "cutoffState": "not-supplied",
+    "cutoffQuestion": "Supply the payroll review cutoff with timezone and remaining provider dependencies; cutoff readiness cannot be determined.",
+    "revisionQuestion": "Supply a corrected exact provider draft revision or an explicit revised owner input decision, then repeat component coverage and amount checks.",
+    "unavailableChecks": [
+      "tax",
+      "deductions",
+      "net-pay",
+      "benefits",
+      "statutory"
+    ],
+    "correctness": "not-determined",
+    "approval": "not-granted",
+    "funding": "not-performed",
+    "release": "not-performed",
+    "systemChanges": "not-performed",
+    "contacts": "not-performed"
+  }
+}

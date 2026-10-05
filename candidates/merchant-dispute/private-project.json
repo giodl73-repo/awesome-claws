@@ -1,0 +1,22 @@
+{
+  "project": "CASE-17 merchant dispute evidence review, NOTICE-1-V2",
+  "sponsor": "Alex, merchant operations owner",
+  "outcome": "Prepare a private owner review; do not determine liability or submit a response",
+  "targetDate": "2026-10-13",
+  "scope": {
+    "in": ["Supplied CASE-17/PAY-17/ORDER-17 mapping and NOTICE-1-V2", "Conflicting delivery statements, separate refund records and permission gaps"],
+    "out": ["Processor submission, customer messaging, refunds or accounting changes", "Network-rule interpretation, liability decisions and recovery predictions"],
+    "acceptanceCriteria": ["Owner reviews exact case and record links", "All conflicts and missing permissions remain visible", "Historical review is not current readiness"]
+  },
+  "milestones": [
+    { "id": "MAP", "name": "Confirm supplied case/payment/order map", "owner": "Alex, merchant operations owner", "dueDate": "2026-10-13", "state": "blocked", "dependencies": [], "evidenceRefs": ["NOTICE-1-V2", "ORDER-17-V1"] },
+    { "id": "DELIVERY", "name": "Review both delivery statements; return authorization is not receipt", "owner": "Alex, merchant operations owner", "dueDate": "2026-10-13", "state": "blocked", "dependencies": ["MAP"], "evidenceRefs": ["DELIVERY-17-V1", "MESSAGE-17-V1", "RETURN-17-V1"] },
+    { "id": "REFUNDS", "name": "Reconcile notice amount and separate requested/executed refund evidence", "owner": "Alex, merchant operations owner", "dueDate": "2026-10-13", "state": "blocked", "dependencies": ["MAP"], "evidenceRefs": ["NOTICE-1-V2", "REFUND-REQUEST-17-V1", "REFUND-17-V1"] },
+    { "id": "ATTACHMENTS", "name": "Obtain permitted bytes and review redaction, format and size", "owner": "Alex, merchant operations owner", "dueDate": "2026-10-13", "state": "blocked", "dependencies": ["DELIVERY", "REFUNDS"], "evidenceRefs": ["NOTICE-1-V2", "MESSAGE-17-V1"] },
+    { "id": "REVISION", "name": "Review v2 stage, requirements and deadline; v1 review stays historical", "owner": "Alex, merchant operations owner", "dueDate": "2026-10-13", "state": "blocked", "dependencies": [], "evidenceRefs": ["NOTICE-1-V1", "NOTICE-1-V2", "REVIEW-V1"] },
+    { "id": "HANDOFF", "name": "Owner reviews private handoff; no processor-ready claim", "owner": "Alex, merchant operations owner", "dueDate": "2026-10-13", "state": "blocked", "dependencies": ["MAP", "DELIVERY", "REFUNDS", "ATTACHMENTS", "REVISION"], "evidenceRefs": ["NOTICE-1-V2"] }
+  ],
+  "risks": [{ "risk": "Unsupported response or stale review used after notice revision", "likelihood": "medium", "impact": "high", "owner": "Alex, merchant operations owner", "trigger": "Unconfirmed mapping, missing bytes or review applicability", "response": "Keep handoff private and blocked for owner review" }],
+  "decisions": [{ "decision": "Resolve or retain the case mapping, amount, disclosure and revision gaps", "owner": "Alex, merchant operations owner", "state": "needed", "rationale": "Supplied records are not sufficient for automatic readiness", "downstreamImpact": "No submission, refund, communication or accounting action" }],
+  "statusState": "blocked"
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "invoice-draft-producer",
+  "scenario": "Draft the October 2 service invoice from six approved labor hours at USD 125/hour, USD 180 materials, USD 45 reimbursable travel, and a USD 75 labor discount. Apply the owner's explicit 8 percent materials-only tax rule, USD 200 unapplied deposit, and USD 50 approved credit. Exclude a previously billed two-hour record and flag one unapproved extra hour.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Draft the October 2 service invoice from six approved labor hours at USD 125/hour, USD 180 materials, USD 45 reimbursable travel, and a USD 75 labor discount. Apply the owner's explicit 8 percent materials-only tax rule, USD 200 unapplied deposit, and USD 50 approved credit. Exclude a previously billed two-hour record and flag one unapproved extra hour."
+    },
+    {
+      "role": "agent",
+      "text": "I checked the supplied agreement, completion evidence, prior billing, explicit tax rules and exact-draft balance authorization. WORK-099 is already billed; WORK-102 lacks approval and remains unresolved."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I prepared outputs/invoice-draft.md and the separate private outputs/invoice-draft-producer-handoff.md. The proposed amount due is USD 664.40; this working draft is blocked pending the owner's disposition of WORK-102. Nothing is issued, sent, posted or collected."
+    }
+  ],
+  "report": {
+    "title": "Service invoice draft and private billing handoff",
+    "summary": "Synthetic supplied-record example; not a live accounting or model run.\n\n# DRAFT - NOT ISSUED\n\nDraft: DEMO-INV-01 revision 1\n\n**BLOCKED WORKING DRAFT - incomplete; not a request for payment.**\n\nSeller: Demo Field Services, 10 Example Street\n\nBill to: Demo Studio, 20 Example Street\n\nProposed date: 2026-10-02. Service period: 2026-10-01 through 2026-10-01.\n\nCustomer PO: DEMO-PO-17.\n\nTerms: Net 14 calendar days. Proposed due date: 2026-10-16.\n\n| Description | Quantity/unit | Rate | Gross | Discount | Net | Tax rate | Tax | Total |\n| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n| Completed service labor | 6 hours | USD 125.00 | USD 750.00 | USD 75.00 | USD 675.00 | 0% | USD 0.00 | USD 675.00 |\n| Approved replacement materials | 1 lot | USD 180.00 | USD 180.00 | USD 0.00 | USD 180.00 | 8% | USD 14.40 | USD 194.40 |\n| Approved travel reimbursement | 1 expense | USD 45.00 | USD 45.00 | USD 0.00 | USD 45.00 | 0% | USD 0.00 | USD 45.00 |\n\ngross: USD 975.00\n\ndiscount: USD 75.00\n\nnet: USD 900.00\n\ntax: USD 14.40\n\nInvoice total: USD 914.40\n\nProposed deposit application: USD 200.00\n\nProposed credit application: USD 50.00\n\n**Proposed amount due: USD 664.40**\n\nTax uses the owner's supplied per-line rates on discounted charges, rounded half-up to the supplied currency precision. No legal or tax determination is made.\n\nNo invoice was issued, sent or posted. No balance was consumed or payment collected. Official numbering and payment instructions remain with the issuing owner.\n",
+    "output": "outputs/invoice-draft-producer-handoff.md",
+    "items": [
+      {
+        "title": "Itemized invoice draft explicitly marked DRAFT - NOT ISSUED",
+        "summary": "The separate outputs/invoice-draft.md contains three approved charges, a USD 75 labor discount, USD 14.40 supplied tax and USD 664.40 proposed due. It is a blocked working draft, not a payment request.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Source-linked billable-item coverage and calculation workpaper",
+        "summary": "The private workpaper accounts for all five source records. WORK-099's two hours were billed earlier; WORK-102's unapproved hour is retained but not charged.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Deposit, credit, prior-billing, and unresolved-item register",
+        "summary": "USD 200 deposit and USD 50 credit are proposed under OWNER-APPLICATION-1 for draft revision 1. Balances remain unconsumed; internal references stay in the private workpaper.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner review handoff with current draft revision and missing inputs",
+        "summary": "Demo billing owner must approve, reject or defer WORK-102 and review the resulting exact revision. Changed evidence requires recalculation; collections receives only an actually issued invoice later.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

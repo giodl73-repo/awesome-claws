@@ -47,6 +47,40 @@ identity, clinical correctness, coverage, liability, or guaranteed redaction.
   and the canonical Mock+ profile check.
 - `git diff --check`: passed.
 
+## Refresh on 2026-10-05
+
+Refreshed against main `7d8f8448455c2d29cb8c7d630ee0388e9d685f98`.
+All 145 existing catalog entries are unchanged; this branch adds only the
+Medical Bill Claw and required registrations, generated outputs, and counts.
+Medical source resources, semantic validator, focused tests, and screenshot
+are unchanged from PR head `fec214524d912344e73843c3c6c9c1454df8a125`.
+
+- `npm ci --ignore-scripts`: passed; lockfile unchanged. npm reported two
+  existing high-severity audit findings; no dependency override was added.
+- `npm run build`: passed, 146 packages and chooser views.
+- Focused medical tests: 18 passed.
+- Contribution review: passed with the same advisory nearest matches above.
+- Semantic recipes: 146 validators, 398 recipes, 541 finding codes.
+- Canonical Mock+ regeneration: 4 profiles, 59,680 cases, 56,593 mutants killed.
+- Catalog score: Medical Bill 100/100; portfolio average 99.1, median 100.
+  These are repository-evidence scores, not live-model quality measurements.
+- Initial full check: 3,250 passed, one failed, one Windows skip. The failure
+  was a stale 145-Claw count in `docs/mock-plus.md`; corrected to 146. All
+  three focused documentation-count tests then passed.
+- Final `npm run check`: 3,251 passed, zero failed, one existing Windows
+  file-link permission skip. All downstream gates passed: public validators,
+  semantic recipes, 146 packages, chooser views, quality scorecard, 438
+  deterministic mock runtime trials, contribution policy, and regression
+  contracts. No assertions or timeouts were weakened.
+- Independent in-session manual refresh review: no actionable findings.
+  Checked integration, source/package agreement, contribution consistency,
+  and counts. Standalone Codex CLI remains absent from Windows PATH; this is
+  not a successful CLI review or live-provider evaluation.
+- `git diff --check`: passed.
+
+The existing screenshot was visually reinspected, not recaptured. No new
+live-agent or current-upstream compatibility claim is made by this refresh.
+
 ## Control UI screenshot
 
 The [screenshot](../../screenshots/medical-bill-reconciliation-coordinator.png)

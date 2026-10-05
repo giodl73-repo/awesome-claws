@@ -1,0 +1,221 @@
+{
+  "schemaVersion": "awesomeClaws.jobEstimate.v1",
+  "scope": {
+    "job": "DEMO-JOB-12",
+    "revision": "2",
+    "quoteRef": "DEMO-QUOTE-12",
+    "quoteRevision": "1",
+    "customer": "Demo Studio",
+    "customerScope": "One installation visit with approved labor, listed materials and equipment under SCOPE-2.",
+    "owner": "Demo estimating owner",
+    "privateDestination": "Owner-only estimating workspace",
+    "terms": "Owner review required; no acceptance, mobilization or completion date is promised",
+    "asOf": "2026-10-02",
+    "validUntil": "2026-10-09",
+    "currency": "USD",
+    "minorDigits": 2,
+    "reviewed": true,
+    "disclosureApproved": true
+  },
+  "scopeItems": [
+    {
+      "id": "INSTALL",
+      "costLineIds": [
+        "LABOR",
+        "MATERIAL"
+      ],
+      "description": "Installation labor and agreed materials",
+      "disposition": "priced",
+      "decisionRef": "SCOPE-2",
+      "disclosureApproved": true
+    },
+    {
+      "id": "RENTAL",
+      "costLineIds": [
+        "EQUIPMENT"
+      ],
+      "description": "Equipment rental allowance",
+      "disposition": "allowance",
+      "decisionRef": "OWNER-ALLOWANCE-1",
+      "disclosureApproved": true
+    },
+    {
+      "id": "EXTRA",
+      "costLineIds": [],
+      "description": "Additional work and items outside the agreed installation scope",
+      "disposition": "excluded",
+      "decisionRef": "SCOPE-2-EXCLUSIONS",
+      "disclosureApproved": true
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "BASE",
+      "label": "Proposed installation",
+      "scopeRevision": "2",
+      "equivalentScope": true,
+      "decisionRef": "SCOPE-2",
+      "pricing": {
+        "sourceRef": "PRICING-2",
+        "revision": "2",
+        "confirmed": true,
+        "rounding": "half-up-per-line",
+        "method": "markup",
+        "basis": "direct-cost",
+        "bps": 2500,
+        "overheadMinor": 0,
+        "contingencyMinor": 0,
+        "taxBps": null,
+        "maxPreTaxMinor": null
+      },
+      "lines": [
+        {
+          "id": "LABOR",
+          "scopeId": "INSTALL",
+          "sourceRef": "LABOR-2#installation",
+          "sourceRevision": "2",
+          "job": "DEMO-JOB-12",
+          "scopeRevision": "2",
+          "customer": "Demo Studio",
+          "currency": "USD",
+          "category": "labor",
+          "quantity": "8",
+          "quantityUnit": "hours",
+          "rateMinor": 5000,
+          "rateUnit": "hours",
+          "conversion": "1",
+          "conversionRef": null,
+          "observedOn": "2026-10-01",
+          "validThrough": "2026-10-09",
+          "approved": true,
+          "current": true,
+          "approvalRef": "OWNER-COST-2",
+          "allowance": false
+        },
+        {
+          "id": "MATERIAL",
+          "scopeId": "INSTALL",
+          "sourceRef": "MATERIAL-6#installation",
+          "sourceRevision": "6",
+          "job": "DEMO-JOB-12",
+          "scopeRevision": "2",
+          "customer": "Demo Studio",
+          "currency": "USD",
+          "category": "material",
+          "quantity": "1",
+          "quantityUnit": "lot",
+          "rateMinor": 30000,
+          "rateUnit": "lot",
+          "conversion": "1",
+          "conversionRef": null,
+          "observedOn": "2026-10-01",
+          "validThrough": "2026-10-09",
+          "approved": true,
+          "current": true,
+          "approvalRef": "OWNER-COST-2",
+          "allowance": false
+        },
+        {
+          "id": "EQUIPMENT",
+          "scopeId": "RENTAL",
+          "sourceRef": "EQUIPMENT-1#rental",
+          "sourceRevision": "1",
+          "job": "DEMO-JOB-12",
+          "scopeRevision": "2",
+          "customer": "Demo Studio",
+          "currency": "USD",
+          "category": "equipment",
+          "quantity": "1",
+          "quantityUnit": "rental",
+          "rateMinor": 10000,
+          "rateUnit": "rental",
+          "conversion": "1",
+          "conversionRef": null,
+          "observedOn": "2026-10-01",
+          "validThrough": "2026-10-09",
+          "approved": true,
+          "current": true,
+          "approvalRef": "OWNER-ALLOWANCE-1",
+          "allowance": true
+        }
+      ]
+    }
+  ],
+  "result": {
+    "inputDigest": "sha256:71a18486f2f56d1f72af04620ca24133b9b3c2de3f98c56d79c6e17a2be4fd74",
+    "quoteRevision": "1",
+    "scenarios": [
+      {
+        "id": "BASE",
+        "state": "blocked",
+        "costs": [
+          {
+            "id": "LABOR",
+            "scopeId": "INSTALL",
+            "sourceRevision": "2",
+            "cost": 40000,
+            "state": "priced"
+          },
+          {
+            "id": "MATERIAL",
+            "scopeId": "INSTALL",
+            "sourceRevision": "6",
+            "cost": 30000,
+            "state": "priced"
+          },
+          {
+            "id": "EQUIPMENT",
+            "scopeId": "RENTAL",
+            "sourceRevision": "1",
+            "cost": 10000,
+            "state": "allowance"
+          }
+        ],
+        "coverage": [
+          {
+            "scopeId": "INSTALL",
+            "disposition": "priced",
+            "lineIds": [
+              "LABOR",
+              "MATERIAL"
+            ]
+          },
+          {
+            "scopeId": "RENTAL",
+            "disposition": "allowance",
+            "lineIds": [
+              "EQUIPMENT"
+            ]
+          },
+          {
+            "scopeId": "EXTRA",
+            "disposition": "excluded",
+            "lineIds": []
+          }
+        ],
+        "knownCost": 80000,
+        "directCost": 80000,
+        "totalCost": 80000,
+        "preTax": 100000,
+        "tax": null,
+        "total": null,
+        "grossMarginBps": 2000,
+        "blockers": [
+          {
+            "id": "PRICING-2",
+            "code": "tax-treatment",
+            "reason": "Supply explicit tax treatment; final quote total remains unknown."
+          }
+        ]
+      }
+    ],
+    "comparisons": []
+  },
+  "authority": {
+    "quote": "draft-not-binding",
+    "bid": "not-submitted",
+    "purchase": "not-placed",
+    "contact": "not-performed",
+    "price": "not-approved"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Job estimate producer session report",
+  "output": "outputs/job-estimate-producer-handoff.md",
+  "sections": [
+    "job_and_scope_revision",
+    "customer_quote_draft",
+    "private_cost_workpaper",
+    "scope_coverage_and_sources",
+    "pricing_policy_and_alternatives",
+    "allowances_exclusions_and_missing_inputs",
+    "unperformed_external_actions",
+    "owner_review_and_recalculation_triggers"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same sections as Markdown when widgets or rich clients are unavailable."
+}

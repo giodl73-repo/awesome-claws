@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "awesomeClaws.receiptLegacyMap.v1",
+  "owner": "AR-OWNER",
+  "ownerEvidenceRef": "OWNER-MAPPING-1",
+  "scopeRef": "LEDGER-ACCOUNT-1",
+  "ledgerRef": "invoice-ledger-august",
+  "cutoffCompatibilityConfirmed": true,
+  "invoiceMappings": [{ "legacyInvoiceRef": "invoice-atlas-1042", "workpaperInvoiceRef": "A" }],
+  "payments": [
+    { "paymentRef": "payment-atlas-partial", "disposition": "represented", "scopeRef": "LEDGER-ACCOUNT-1", "evidenceRef": "OWNER-LINK-1", "allocationRefs": ["L1"] }
+  ]
+}

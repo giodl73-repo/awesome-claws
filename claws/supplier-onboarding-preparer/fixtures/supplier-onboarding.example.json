@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "supplier": "SUP-17",
+  "buyingEntity": "BUY-US",
+  "packetRevision": "R1",
+  "asOf": "2026-10-02T12:00:00-07:00",
+  "owner": "Procurement owner",
+  "recipient": "Supplier activation owner",
+  "policy": {
+    "id": "POLICY",
+    "revision": "ONB-3",
+    "reference": "POLICY-ONB-3",
+    "owner": "Procurement policy owner"
+  },
+  "scope": {
+    "id": "SCOPE",
+    "revision": "S2",
+    "reference": "SERVICE-SCOPE-2",
+    "description": "Invoice routing including employee names",
+    "personalData": true
+  },
+  "selection": {
+    "id": "SELECTION",
+    "reference": "OWNER-SELECTION-1",
+    "supplier": "SUP-17",
+    "buyingEntity": "BUY-US",
+    "selectedBy": "Business owner"
+  },
+  "identities": [
+    {
+      "id": "INTAKE",
+      "kind": "intake",
+      "legalEntity": "Example Services LLC",
+      "revision": "I2",
+      "reference": "INTAKE-2"
+    },
+    {
+      "id": "CONTRACT",
+      "kind": "contract",
+      "legalEntity": "Example Services Holdings LLC",
+      "revision": "C1",
+      "reference": "CONTRACT-DRAFT-1"
+    }
+  ],
+  "entityDecision": null,
+  "setup": {
+    "legalEntity": null,
+    "entityState": "unresolved",
+    "service": "Invoice routing including employee names",
+    "personalData": true
+  },
+  "requirements": [
+    {
+      "id": "ENTITY",
+      "label": "Selected and contracting entity must agree",
+      "kind": "entity",
+      "owner": "Procurement owner",
+      "applicability": "required"
+    },
+    {
+      "id": "SERVICE",
+      "label": "Record the current service scope",
+      "kind": "scope",
+      "owner": "Business owner",
+      "applicability": "required"
+    },
+    {
+      "id": "SELECTED",
+      "label": "Retain the supplied selection decision",
+      "kind": "selection",
+      "owner": "Business owner",
+      "applicability": "required"
+    },
+    {
+      "id": "PRIVACY",
+      "label": "Current-scope Privacy review for personal-data handling",
+      "kind": "privacy",
+      "owner": "Privacy owner",
+      "applicability": "required"
+    },
+    {
+      "id": "PAYMENT",
+      "label": "Controlled Finance verification receipt",
+      "kind": "payment",
+      "owner": "Finance owner",
+      "applicability": "required"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "PRIVACY-P1",
+      "requirementId": "PRIVACY",
+      "kind": "privacy",
+      "reference": "CONTROLLED-PRIVACY-P1",
+      "supplier": "SUP-17",
+      "buyingEntity": "BUY-US",
+      "legalEntity": "Example Services LLC",
+      "scopeRevision": "S1",
+      "policyRevision": "ONB-3",
+      "reviewer": "Privacy owner",
+      "decidedAt": "2026-09-28T09:00:00-07:00",
+      "validUntil": "2026-12-31T23:59:59-08:00",
+      "result": "satisfied"
+    }
+  ],
+  "coverage": [
+    {
+      "requirementId": "ENTITY",
+      "state": "gap",
+      "evidenceRefs": [
+        "INTAKE",
+        "CONTRACT"
+      ],
+      "requestId": "ASK-ENTITY"
+    },
+    {
+      "requirementId": "SERVICE",
+      "state": "satisfied",
+      "evidenceRefs": [
+        "SCOPE"
+      ],
+      "requestId": null
+    },
+    {
+      "requirementId": "SELECTED",
+      "state": "satisfied",
+      "evidenceRefs": [
+        "SELECTION"
+      ],
+      "requestId": null
+    },
+    {
+      "requirementId": "PRIVACY",
+      "state": "reopened",
+      "evidenceRefs": [
+        "PRIVACY-P1"
+      ],
+      "requestId": "ASK-PRIVACY"
+    },
+    {
+      "requirementId": "PAYMENT",
+      "state": "gap",
+      "evidenceRefs": [],
+      "requestId": "ASK-PAYMENT"
+    }
+  ],
+  "requests": [
+    {
+      "id": "ASK-ENTITY",
+      "requirementId": "ENTITY",
+      "owner": "Procurement owner",
+      "question": "Which legal entity is selected and contracting: Example Services LLC or Example Services Holdings LLC? Supply authoritative corrected records, a scoped resolution and any existing-master match observation; do not merge by name similarity."
+    },
+    {
+      "id": "ASK-PRIVACY",
+      "requirementId": "PRIVACY",
+      "owner": "Privacy owner",
+      "question": "Review the resolved entity and exact S2 scope including employee names. P1 covered S1 without personal data and cannot carry forward. Provide only a minimized controlled decision reference."
+    },
+    {
+      "id": "ASK-PAYMENT",
+      "requirementId": "PAYMENT",
+      "owner": "Finance owner",
+      "question": "After entity resolution, provide a controlled payment-verification receipt reference for that entity and S2 scope under ONB-3. Do not send account numbers, tax identifiers or credentials to this packet."
+    }
+  ],
+  "handoff": {
+    "state": "blocked",
+    "activation": "not-performed",
+    "paymentVerification": "not-performed",
+    "contact": "not-performed",
+    "specialistApproval": "not-granted",
+    "blockingRequirementIds": [
+      "ENTITY",
+      "PRIVACY",
+      "PAYMENT"
+    ]
+  }
+}

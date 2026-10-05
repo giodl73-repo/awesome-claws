@@ -741,7 +741,7 @@
     {
       "id": "content-operations",
       "name": "Content operations",
-      "description": "Builds an evidence- and approval-bound publication readiness record for a versioned editorial package without publishing it.",
+      "description": "Produces source-backed briefs and versioned editorial drafts with an evidence- and approval-bound readiness record, without publishing them.",
       "audience": "Content leads coordinating a source-backed article, announcement, campaign asset, or documentation update who need exact claim, review, and handoff state.",
       "category": "operations",
       "maintenance": {
@@ -749,7 +749,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-31"
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "low",
@@ -900,7 +900,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-19"
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "low",
@@ -2142,7 +2142,7 @@
     {
       "id": "invoice-payment-followup",
       "name": "Invoice and payment follow-up",
-      "description": "Tracks owner-supplied invoices, due dates, payment evidence, disputes, and reminder drafts without issuing invoices, sending messages, or collecting money.",
+      "description": "Tracks supplied invoices, payment evidence, receipt allocations, unapplied cash, disputes, and reminder drafts without changing balances, posting entries, sending messages, or moving money.",
       "audience": "Freelancers, consultants, small-business owners, and operators reconciling receivables from supplied records.",
       "category": "productivity",
       "maintenance": {
@@ -2150,7 +2150,41 @@
         "maintainers": [
           "@giodl73"
         ],
-        "lastVerified": "2026-08-29"
+        "lastVerified": "2026-10-04"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "invoice-draft-producer",
+      "name": "Invoice draft producer",
+      "description": "Turns approved billable work, rates, expenses, and billing terms into an itemized invoice draft with checked calculations and a source-linked billing workpaper, without issuing invoices or posting to accounting systems.",
+      "audience": "Small-business owners, service administrators, and bookkeepers preparing one customer invoice for owner review before issuance.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "low",
@@ -2185,6 +2219,40 @@
           "@giodl73-repo"
         ],
         "lastVerified": "2026-08-28"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "job-estimate-producer",
+      "name": "Job estimate producer",
+      "description": "Builds a source-backed job cost estimate and customer quote draft from an owner-defined scope, checked quantities, labor allowances, and current supplier prices without bidding, committing prices, or making engineering judgments.",
+      "audience": "Small and midsize contractors and service businesses pricing a defined customer job before owner approval.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "low",
@@ -2930,6 +2998,40 @@
       }
     },
     {
+      "id": "order-fulfillment-reconciler",
+      "name": "Order Fulfillment Reconciler",
+      "description": "Reconciles seller order lines with supplied shipment and delivery evidence into a draft open-order and exception handoff without releasing goods or contacting customers.",
+      "audience": "Seller operations coordinators reconciling a bounded batch of customer orders after order acceptance.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-04"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "partner-business-manager",
       "name": "Partner business manager",
       "description": "Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority.",
@@ -2959,6 +3061,40 @@
       "capabilityClasses": [
         "visual"
       ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "payroll-review-preparer",
+      "name": "Payroll review preparer",
+      "description": "Prepares a private pre-release payroll comparison and exception workpaper from minimized draft registers, approved change inputs, and supplied review rules without calculating statutory entitlements or releasing payroll.",
+      "audience": "Payroll administrators and payroll review owners checking one employer, pay group, currency, and pay period before provider or finance release.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
@@ -3333,6 +3469,74 @@
         "level": "standard",
         "reasons": [
           "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "progress-billing-review-preparer",
+      "name": "Progress Billing Review Preparer",
+      "description": "Reconciles cumulative construction pay-application evidence, stored-material transitions, retainage and prior certificates into a private review draft without certifying work or submitting claims.",
+      "audience": "Construction billing coordinators preparing a bounded contract-period pay application from owner-approved financial and progress records.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-05"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "project-document-controller",
+      "name": "Project document controller",
+      "description": "Produces an exact-revision project document register, submittal and RFI follow-up package, and draft transmittal manifest from supplied project records without issuing documents or authorizing construction.",
+      "audience": "Project document controllers and engineering or construction teams reviewing a bounded project's drawings, specifications, submittals, RFIs, and transmittals.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
         ]
       }
     },
@@ -4040,6 +4244,40 @@
       }
     },
     {
+      "id": "rfp-response-producer",
+      "name": "RFP response producer",
+      "description": "Produces a source-backed commercial RFP or RFI response draft from a buyer's request, amendments, and authorized seller material, with complete question coverage, explicit capability gaps, attachment checks, and specialist review requests without submitting or making commitments.",
+      "audience": "Proposal managers, bid teams, sales engineers, and subject-matter contributors preparing one seller response to a commercial buyer's RFP or RFI.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
       "id": "sales-operations",
       "name": "Sales operations",
       "description": "Improves pipeline decisions through clean definitions, evidence, and accountable follow-up.",
@@ -4183,6 +4421,74 @@
       }
     },
     {
+      "id": "seller-return-reconciler",
+      "name": "Seller Return Reconciler",
+      "description": "Reconciles supplied seller return authorizations, physical receipts and recorded human dispositions into a draft return backlog and exception handoff without approving returns or refunds.",
+      "audience": "Seller return coordinators reviewing a bounded batch of already-authorized product returns and repairs.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-04"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "service-dispatch-planner",
+      "name": "Service Dispatch Planner",
+      "description": "Builds a feasible draft technician appointment schedule from supplied job, availability, skill, travel and readiness constraints without dispatching anyone.",
+      "audience": "Service-office dispatchers planning one day's ordinary field-service appointments for a bounded technician roster.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-04"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "software-maintainer",
       "name": "Software maintainer",
       "description": "Delivers a bounded repository change as an auditable record of scope, evidence, verification, review, and delivery authority.",
@@ -4193,7 +4499,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-30"
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "high",
@@ -4318,7 +4624,7 @@
         "maintainers": [
           "@giodl73-repo"
         ],
-        "lastVerified": "2026-08-29"
+        "lastVerified": "2026-10-02"
       },
       "setup": {
         "level": "medium",
@@ -4448,6 +4754,40 @@
       "capabilityClasses": [
         "visual"
       ],
+      "boundaryAttention": {
+        "level": "guarded",
+        "reasons": [
+          "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "supplier-onboarding-preparer",
+      "name": "Supplier onboarding preparer",
+      "description": "Prepares one selected supplier's setup packet from authorized intake and owner-supplied onboarding rules, reconciling identity, required evidence, specialist routes, and outstanding questions without activating the supplier.",
+      "audience": "Procurement operations and supplier onboarding teams preparing a selected supplier for accountable finance and diligence review.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
       "boundaryAttention": {
         "level": "guarded",
         "reasons": [
