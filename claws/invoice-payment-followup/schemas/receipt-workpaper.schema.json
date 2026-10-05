@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.local/schemas/receipt-workpaper.schema.json",
+  "title": "Receipt workpaper input, independent of invoice balance application",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "asOf", "owner", "scopeRef", "currencies", "sources", "invoices", "receipts", "allocations"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.receiptWorkpaperInput.v1" },
+    "asOf": { "$ref": "#/$defs/time" },
+    "owner": { "$ref": "#/$defs/id" },
+    "scopeRef": { "$ref": "#/$defs/id" },
+    "currencies": { "type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false, "required": ["code", "scale"],
+      "properties": { "code": { "$ref": "#/$defs/currency" }, "scale": { "type": "integer", "minimum": 0, "maximum": 6 } }
+    } },
+    "sources": { "type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false, "required": ["id", "revision", "capturedAt", "kind", "scopeRef"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "revision": { "$ref": "#/$defs/id" }, "capturedAt": { "$ref": "#/$defs/time" }, "kind": { "enum": ["receipt", "remittance", "owner-decision", "application"] }, "scopeRef": { "$ref": "#/$defs/identity" } }
+    } },
+    "invoices": { "type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["id", "currency"],
+      "properties": { "id": { "$ref": "#/$defs/id" }, "currency": { "$ref": "#/$defs/currency" } }
+    } },
+    "receipts": { "type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "identityRef", "sourceRef", "sourceRevision", "sourceRecord", "at", "currency", "amountMinor", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" }, "identityRef": { "$ref": "#/$defs/identity" }, "sourceRef": { "$ref": "#/$defs/id" }, "sourceRevision": { "$ref": "#/$defs/id" }, "sourceRecord": { "$ref": "#/$defs/id" }, "at": { "$ref": "#/$defs/time" },
+        "currency": { "$ref": "#/$defs/currency" }, "amountMinor": { "$ref": "#/$defs/amount" },
+        "status": { "enum": ["current", "conflicting", "reversed", "superseded"] }
+      }
+    } },
+    "allocations": { "type": "array", "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "identityRef", "receiptRef", "invoiceRef", "sourceRef", "sourceRevision", "sourceRecord", "at", "currency", "amountMinor", "basis", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" }, "identityRef": { "$ref": "#/$defs/identity" }, "receiptRef": { "$ref": "#/$defs/id" }, "invoiceRef": { "$ref": "#/$defs/id" },
+        "sourceRef": { "$ref": "#/$defs/id" }, "sourceRevision": { "$ref": "#/$defs/id" }, "sourceRecord": { "$ref": "#/$defs/id" }, "at": { "$ref": "#/$defs/time" },
+        "currency": { "$ref": "#/$defs/currency" }, "amountMinor": { "$ref": "#/$defs/amount" },
+        "basis": { "enum": ["remittance", "owner-decision", "application"] },
+        "status": { "enum": ["current", "conflicting", "reversed", "superseded"] }
+      }
+    } }
+  },
+  "$defs": {
+    "identity": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$" },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "time": { "type": "string", "format": "date-time", "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$" },
+    "amount": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
+  }
+}

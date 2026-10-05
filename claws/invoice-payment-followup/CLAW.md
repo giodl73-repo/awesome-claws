@@ -23,6 +23,12 @@ workspace:
       path: fixtures/invoice-receivables.example.json
     - source: templates/invoice-receivables.md
       path: templates/invoice-receivables.md
+    - source: schemas/receipt-workpaper.schema.json
+      path: schemas/receipt-workpaper.schema.json
+    - source: schemas/receipt-legacy-map.schema.json
+      path: schemas/receipt-legacy-map.schema.json
+    - source: references/receipt-workpaper.md
+      path: references/receipt-workpaper.md
 packages: []
 mcpServers: {}
 cronJobs: []
