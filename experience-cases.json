@@ -114,6 +114,7 @@
       "progress-billing-review-preparer",
       "medical-bill-reconciliation-coordinator",
       "college-application-coordinator",
+      "merchant-payout-reconciler",
       "sales-commission-review-preparer"
     ]
   },

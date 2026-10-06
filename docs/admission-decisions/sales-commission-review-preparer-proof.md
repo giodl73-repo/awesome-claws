@@ -5,8 +5,8 @@
 Separate X3 approved by Gio in issue #232:
 https://github.com/giodl73-repo/awesome-claws/issues/232#issuecomment-6007491037
 
-Base: 5f9ebe46bfff154046bb63b5f49ce9018e57682d, 147 merged Claws.
-All 147 existing catalog entries are structurally unchanged. This branch adds
+Base: 9a80dc673977cfd0b526a1898d93d1b752434f36, 148 merged Claws.
+All 148 existing catalog entries are structurally unchanged. This branch adds
 one Commission Claw. Payroll's contribution record gains a required explicit
 comparison, not runtime or behavioral changes. No dependency changes.
 
@@ -23,18 +23,18 @@ not the lexical result, authorizes the separate operating contract.
 
 ## Validation
 
-- Main147 full npm run check: 3,323 passed, zero failed, one existing Windows
-  permission skip. All downstream gates pass for 148 Claws and 137 post-policy
-  records, including 444 deterministic mock trials.
+- Main148 full npm run check: 3,341 tests passed, zero failed, one existing Windows
+  permission skip. All downstream gates pass for 149 Claws and 138 post-policy
+  records, including 447 deterministic mock trials.
 - Parent reran 52 focused Commission tests plus three documentation tests:
   all 55 pass. Five generated Commission artifacts pass their check command.
-- Canonical Mock+: 60,999 cases, 57,870 mutants killed, zero survivors and
+- Canonical Mock+: 61,347 cases, 58,197 mutants killed, zero survivors and
   safety blockers. Digest:
-  sha256:11ae7d1d7278c2684d8b29c43de37d70bc89092e0f929d5110734f4e230c4d27
-- 148 validators, 402 semantic recipes and 546 finding codes.
+  sha256:5d7f295a9e7035c1e20734d0832821412eac7d353016f3d8a9ae88dc359f6b02
+- 149 validators, 405 semantic recipes and 555 finding codes.
 - Deterministic repository quality rubric: 100/100. This is not a rating of
   live-model performance, payroll accuracy or source authenticity.
-- Full log: .tmp/commission-main147-full-check.log.
+- Full log: .tmp/commission-main148-full-check.log.
 
 Tests cover marginal tier crossings, flat/zero rates, once-per-credit half-up
 rounding, exact split conservation, ordered attainment, effective plan scope,
@@ -60,5 +60,7 @@ supplied assertions, not authenticated facts. Unsupported plans remain blocked.
 No payment, deduction, payroll release, entitlement, CRM mutation or employee
 contact is authorized. No provider integration or publishing is included.
 
-Draft CI and exact-head artifact review remain required. Admission does not
-authorize merge; obtain a separate maintainer merge decision.
+Gio separately approved merge after final checks and proof pass:
+https://github.com/giodl73-repo/awesome-claws/pull/235#issuecomment-6008702290
+The main147 Control UI proof passed and was reviewed, but is historical after
+this refresh. Fresh exact-head CI and artifact review remain required before merge.

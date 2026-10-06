@@ -8,6 +8,7 @@ import { root } from "./catalog-source.mjs";
 
 export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "sales-commission-review-preparer": "commission.schema.json",
+  "merchant-payout-reconciler": "merchant-payout.schema.json",
   "order-fulfillment-reconciler": "fulfillment.schema.json",
   "seller-return-reconciler": "seller-return.schema.json",
   "service-dispatch-planner": "service-dispatch.schema.json",

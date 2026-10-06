@@ -15583,6 +15583,101 @@
       ]
     },
     {
+      "id": "merchant-payout-reconciler",
+      "name": "Merchant Payout Reconciler",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-10-05"
+      },
+      "description": "Prepares a private processor-transaction-to-payout reconciliation with separate bank-receipt evidence, preserving gross, fees, net, unsettled activity and failed payout attempts without moving funds or claiming settlement from arithmetic alone.",
+      "audience": "Merchant finance and payment-operations owners reconciling processor exports and bank receipt evidence for a bounded settlement period.",
+      "principles": [
+        "Preserve transaction membership separately from payout status and bank receipt",
+        "Use supplied processor identities, signed amount conventions and currency scales",
+        "Keep unsettled transactions, failed attempts and every residual visible"
+      ],
+      "boundaries": [
+        "Do not infer payout membership from dates or matching amounts, especially for manual or instant payouts",
+        "Do not move funds, retry payouts, change bank details, release reserves, issue refunds, post accounting entries or contact processors",
+        "Do not decide fee legality, chargeback liability, reserve availability or accounting treatment"
+      ],
+      "intake": [
+        "Merchant and processor account aliases, one settlement currency and scale, report cutoff and timezone, source revisions, completeness assertions and private reviewer destination",
+        "Itemized processor balance transactions with native IDs, reporting categories, gross, signed fees, net and explicit payout membership or unsettled disposition",
+        "Payout records with stable attempt IDs, exact membership evidence, amounts, source-reported status and linked failed or returned attempts",
+        "Independent bank receipt rows and explicit owner mappings to payout attempts, retaining unmatched or ambiguous records"
+      ],
+      "workflow": [
+        "Bind the declared transaction and payout populations to current processor report scope and native identities",
+        "Reconcile row gross minus signed fee to net under the supplied convention, then reconcile member net amounts to each payout without re-subtracting fees",
+        "Partition every source transaction into exactly one current payout membership, unsettled record or unresolved membership question",
+        "Compare source payout status and independently mapped bank receipt evidence without treating expected arrival or a matched amount as receipt",
+        "Retain failed or returned attempts and retry lineage without double counting; prepare the private discrepancy workpaper and reviewer questions"
+      ],
+      "deliverables": [
+        "Processor transaction and membership ledger",
+        "Per-payout gross-fee-net reconciliation",
+        "Independent bank receipt and failed-attempt comparison",
+        "Unsettled activity and private owner handoff"
+      ],
+      "example": {
+        "request": "Reconcile synthetic payout P1 with a charge gross1000 fee30 net970, refund gross-100 fee0 net-100, and separate fee gross0 fee5 net-5; compare declared payout865 with bank receipt860 and retain a separate unsettled net194 transaction.",
+        "outcome": "P1's member net is865 and its bank receipt residual is-5. Unsettled194 remains separate. Matching the processor payout does not clear the bank residual or settle the remaining transaction."
+      },
+      "doneWhen": [
+        "Every declared processor transaction, payout attempt and bank receipt has explicit coverage or an unresolved disposition",
+        "Each payout workpaper preserves row arithmetic, member-net comparison, bank receipt comparison and source status separately",
+        "Changed memberships, source revisions or receipt mappings invalidate prior review",
+        "The handoff contains no movement, accounting-close or settlement-certification claim"
+      ],
+      "capabilityGuidance": [
+        "X3 using minimized supplied exports only, with no payment-provider integration or execution authority.",
+        "Manual and instant payouts require supplied attributable membership evidence; unsupported or ambiguous reports stay blocked.",
+        "Write `outputs/merchant-payout-review.json` using `schemas/merchant-payout.schema.json` and `references/reconciliation-contract.md`, then the private Markdown handoff. Validate both schema and arithmetic; supplied completeness assertions are not independent source authentication."
+      ],
+      "resources": [
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        },
+        {
+          "source": "schemas/merchant-payout.schema.json",
+          "path": "schemas/merchant-payout.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/merchant-payout.example.json",
+          "path": "fixtures/merchant-payout.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "references/reconciliation-contract.md",
+          "path": "references/reconciliation-contract.md",
+          "role": "reference"
+        },
+        {
+          "source": "fixtures/workpaper.example.md",
+          "path": "fixtures/workpaper.example.md",
+          "role": "fixture"
+        }
+      ]
+    },
+    {
       "id": "sales-commission-review-preparer",
       "name": "Sales Commission Review Preparer",
       "category": "operations",

@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (148)
+### Active (149)
 
 | Claw | Detail |
 | --- | --- |
@@ -90,6 +90,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Medical bill reconciliation coordinator](claws/medical-bill-reconciliation-coordinator) | @giodl73-repo; last verified 2026-10-02 |
 | [Medication regimen coordinator](claws/medication-regimen-coordinator) | @giodl73-repo; last verified 2026-09-25 |
 | [Meeting intelligence](claws/meeting-intelligence) | @giodl73-repo; last verified 2026-08-30 |
+| [Merchant Payout Reconciler](claws/merchant-payout-reconciler) | @giodl73; last verified 2026-10-05 |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | @giodl73-repo; last verified 2026-08-19 |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | @giodl73-repo; last verified 2026-08-21 |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | @giodl73; last verified 2026-08-29 |
@@ -175,7 +176,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (116)
+### Low setup (117)
 
 | Claw | Detail |
 | --- | --- |
@@ -241,6 +242,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Medical appointment prep](claws/medical-appointment-prep) | no bootstrap, external dependency, or schedule |
 | [Medical bill reconciliation coordinator](claws/medical-bill-reconciliation-coordinator) | no bootstrap, external dependency, or schedule |
 | [Medication regimen coordinator](claws/medication-regimen-coordinator) | no bootstrap, external dependency, or schedule |
+| [Merchant Payout Reconciler](claws/merchant-payout-reconciler) | no bootstrap, external dependency, or schedule |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | no bootstrap, external dependency, or schedule |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | no bootstrap, external dependency, or schedule |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | no bootstrap, external dependency, or schedule |
@@ -342,7 +344,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (125)
+### No external dependencies (126)
 
 | Claw | Detail |
 | --- | --- |
@@ -416,6 +418,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Medical appointment prep](claws/medical-appointment-prep) | None |
 | [Medical bill reconciliation coordinator](claws/medical-bill-reconciliation-coordinator) | None |
 | [Medication regimen coordinator](claws/medication-regimen-coordinator) | None |
+| [Merchant Payout Reconciler](claws/merchant-payout-reconciler) | None |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | None |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | None |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | None |
@@ -504,7 +507,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (109)
+### X3 (110)
 
 | Claw | Detail |
 | --- | --- |
@@ -565,6 +568,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Medical bill reconciliation coordinator](claws/medical-bill-reconciliation-coordinator) | Reconciles owner-supplied provider bills, insurer explanations of benefits, claim revisions, adjustments, payments, refunds, and correspondence into a private service-line discrepancy ledger without determining coverage, patient liability, coding correctness, legal rights, or an amount to pay, contacting anyone, submitting claims or appeals, or moving money. |
 | [Medication regimen coordinator](claws/medication-regimen-coordinator) | Maintains a private, evidence-bound medication regimen ledger across supplied clinician or pharmacist orders, exact medication identity and directions, regimen revisions, owner-recorded administration observations, supply and expiry state, refill attempts, independent dispensing receipts, attributed warnings, discrepancies, and unresolved questions without diagnosing, interpreting, recommending, dispensing, administering, or changing medication. |
 | [Meeting intelligence](claws/meeting-intelligence) | Turns a consented meeting recording into a consent-bound transcript, decision, and action record with a reviewable document draft. |
+| [Merchant Payout Reconciler](claws/merchant-payout-reconciler) | Prepares a private processor-transaction-to-payout reconciliation with separate bank-receipt evidence, preserving gross, fees, net, unsettled activity and failed payout attempts without moving funds or claiming settlement from arithmetic alone. |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | Coordinates blinded model-output evaluation, rubric calibration, and disagreement adjudication without selecting or deploying a model. |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | Organizes a personal or household movie and show watchlist with sourced availability, watched history, favorites, preferences, and watch-night shortlists without renting, buying, subscribing, rating publicly, or bypassing restrictions. |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
@@ -733,7 +737,7 @@ Categories come directly from the catalog entry.
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
-### Operations (41)
+### Operations (42)
 
 | Claw | Detail |
 | --- | --- |
@@ -755,6 +759,7 @@ Categories come directly from the catalog entry.
 | [Invoice draft producer](claws/invoice-draft-producer) | X3; Turns approved billable work, rates, expenses, and billing terms into an itemized invoice draft with checked calculations and a source-linked billing workpaper, without issuing invoices or posting to accounting systems. |
 | [Job estimate producer](claws/job-estimate-producer) | X3; Builds a source-backed job cost estimate and customer quote draft from an owner-defined scope, checked quantities, labor allowances, and current supplier prices without bidding, committing prices, or making engineering judgments. |
 | [Manufacturing operations planner](claws/manufacturing-operations-planner) | X5; Builds a constraint-led production plan and exception handoff from approved demand, capacity, material, quality, and maintenance evidence. |
+| [Merchant Payout Reconciler](claws/merchant-payout-reconciler) | X3; Prepares a private processor-transaction-to-payout reconciliation with separate bank-receipt evidence, preserving gross, fees, net, unsettled activity and failed payout attempts without moving funds or claiming settlement from arithmetic alone. |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | X3; Coordinates a household move across dates, inventory, services, documents, vendors, and dependencies without booking, paying, contacting parties, or changing addresses or accounts. |
 | [Order Fulfillment Reconciler](claws/order-fulfillment-reconciler) | X3; Reconciles seller order lines with supplied shipment and delivery evidence into a draft open-order and exception handoff without releasing goods or contacting customers. |
 | [Partner business manager](claws/partner-business-manager) | X4; Reconciles one partner's exact joint-business-plan revision into an evidence-bound operating record without exercising partner-program, opportunity, financial, customer, agreement, or risk authority. |
@@ -853,7 +858,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (77)
+### Standard attention (78)
 
 | Claw | Detail |
 | --- | --- |
@@ -900,6 +905,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Medical appointment prep](claws/medical-appointment-prep) | portable workspace artifacts only |
 | [Medical bill reconciliation coordinator](claws/medical-bill-reconciliation-coordinator) | portable workspace artifacts only |
 | [Medication regimen coordinator](claws/medication-regimen-coordinator) | portable workspace artifacts only |
+| [Merchant Payout Reconciler](claws/merchant-payout-reconciler) | portable workspace artifacts only |
 | [Model evaluation adjudicator](claws/model-evaluation-adjudicator) | portable workspace artifacts only |
 | [Movie and streaming organizer](claws/movie-streaming-organizer) | portable workspace artifacts only |
 | [Moving checklist coordinator](claws/moving-checklist-coordinator) | portable workspace artifacts only |
