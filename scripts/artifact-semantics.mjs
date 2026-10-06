@@ -18,6 +18,7 @@ import {
 } from "./benefits-realization-manager.mjs";
 import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.mjs";
 import { collegeApplicationFindings } from "./college-application-coordinator.mjs";
+import { flightDisruptionFindings } from "./flight-disruption-coordinator.mjs";
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { consumerProductRecallFindings } from "./consumer-product-recall-coordinator.mjs";
 import { medicationRegimenFindings } from "./medication-regimen-coordinator.mjs";
@@ -53252,6 +53253,7 @@ function infrastructureDriftFindings(input) {
 }
 
 const validators = {
+  "flight-disruption-coordinator": flightDisruptionFindings,
   "access-entitlement-review-coordinator": accessEntitlementReviewFindings,
   "accessibility-review-coordinator": accessibilityReviewFindings,
   "api-integration-engineer": apiIntegrationReadinessFindings,

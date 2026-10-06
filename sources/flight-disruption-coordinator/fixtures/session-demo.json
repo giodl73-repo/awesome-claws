@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "flight-disruption-coordinator",
+  "scenario": "Our booked Seattle-Chicago-Boston outbound journey has a cancelled first leg. The airline offered a replacement for both traveler aliases, but the agency confirmation covers only one. The separate onward ticket still shows the original departure. Reconcile the supplied notices, offer expiry, ticket revisions, and connection evidence. Show what is confirmed and what still needs our review; do not accept, rebook, cancel, contact anyone, pay, or make a passenger-rights claim.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Our booked Seattle-Chicago-Boston outbound journey has a cancelled first leg. The airline offered a replacement for both traveler aliases, but the agency confirmation covers only one. The separate onward ticket still shows the original departure. Reconcile the supplied notices, offer expiry, ticket revisions, and connection evidence. Show what is confirmed and what still needs our review; do not accept, rebook, cancel, contact anyone, pay, or make a passenger-rights claim."
+    },
+    {
+      "role": "agent",
+      "text": "The supplied cancellation is for NX101 on 11 October, SEA to ORD. I preserved all four original traveler-leg allocations. The two carrier offers and two traveler acceptances are separate from the agency's single reissue for traveler-a."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "Review remains blocked. Traveler-a has issuer reissue evidence; traveler-b does not. Traveler-a's replacement arrives at ORD at 15:00, after the separately ticketed 14:00 departure: the recorded interval is -60 minutes. No supplied minimum-connection evidence exists for either traveler. Six exact questions remain with traveler-a. I have not accepted, booked, contacted, paid, or determined ticket validity or passenger rights."
+    }
+  ],
+  "report": {
+    "title": "Flight disruption coordinator session handoff",
+    "summary": "A blocked recovery handoff preserves the cancelled original leg, separates the two-person offer from the one-person confirmed reissue, identifies the uncovered traveler and affected separate-ticket connection, and names the exact carrier or ticket-issuer evidence still needed.",
+    "output": "outputs/flight-disruption-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Four original allocations preserved",
+        "summary": "Two traveler aliases each retain SEA-ORD and the separate ORD-BOS ticket. The cancelled first leg remains in history; traveler-a has one exact successor.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Two offers, two acceptances, one reissue",
+        "summary": "Both offers expire at 20:00 UTC on 10 October. Each traveler accepted at 13:00 UTC. Only traveler-a has independent agency reissue evidence at 14:00 UTC.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Partial-party outcome: traveler-b unresolved",
+        "summary": "Traveler-b's acceptance is not a ticket. The original allocation still carries the operating cancellation and an exact missing-reissue question.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Connection intervals: -60 and 120 minutes",
+        "summary": "Recomputed from current ticket leaves and exact instants. Both onward legs are separately ticketed. Neither has supplied minimum-connection evidence; no feasibility or protection claim is made.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked: six traveler-owned questions",
+        "summary": "One operating change, one missing reissue, two unknown connection constraints, and two separate-ticket dependencies. All external actions remain none.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

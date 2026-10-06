@@ -1,0 +1,524 @@
+{
+  "schemaVersion": "awesomeClaws.flightDisruption.v1",
+  "scope": {
+    "ownerRef": "traveler-a",
+    "travelerRefs": [
+      "traveler-a",
+      "traveler-b"
+    ],
+    "helperRefs": [],
+    "asOf": "2026-10-10T19:00:00Z",
+    "originalAllocationRefs": [
+      "allocation-a-in",
+      "allocation-a-out",
+      "allocation-b-in",
+      "allocation-b-out"
+    ],
+    "connectionRefs": [
+      "connection-a",
+      "connection-b"
+    ],
+    "sourceRefs": [
+      "source-a-in",
+      "source-a-out",
+      "source-offer-a",
+      "source-decision-a",
+      "source-b-in",
+      "source-b-out",
+      "source-offer-b",
+      "source-decision-b",
+      "source-reissue-a",
+      "source-cancellation",
+      "source-connection-a",
+      "source-connection-b"
+    ],
+    "destination": "private-owner-workspace"
+  },
+  "authorities": [
+    {
+      "id": "traveler-a",
+      "kind": "traveler",
+      "airportCode": null
+    },
+    {
+      "id": "traveler-b",
+      "kind": "traveler",
+      "airportCode": null
+    },
+    {
+      "id": "carrier-north",
+      "kind": "operating-carrier",
+      "airportCode": null
+    },
+    {
+      "id": "agency-one",
+      "kind": "ticket-issuer",
+      "airportCode": null
+    },
+    {
+      "id": "issuer-onward",
+      "kind": "ticket-issuer",
+      "airportCode": null
+    },
+    {
+      "id": "airport-ord",
+      "kind": "airport",
+      "airportCode": "ORD"
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-a-in",
+      "kind": "ticket-original",
+      "issuerRef": "agency-one",
+      "subjectRef": "allocation-a-in",
+      "relatedRefs": [
+        "traveler-a",
+        "leg-sea-ord"
+      ],
+      "assertedAt": "2026-10-10T10:00:00Z",
+      "observedAt": "2026-10-10T10:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-a-in"
+    },
+    {
+      "id": "source-a-out",
+      "kind": "ticket-original",
+      "issuerRef": "issuer-onward",
+      "subjectRef": "allocation-a-out",
+      "relatedRefs": [
+        "traveler-a",
+        "leg-ord-bos"
+      ],
+      "assertedAt": "2026-10-10T10:00:00Z",
+      "observedAt": "2026-10-10T10:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-a-out"
+    },
+    {
+      "id": "source-offer-a",
+      "kind": "carrier-offer",
+      "issuerRef": "carrier-north",
+      "subjectRef": "offer-a",
+      "relatedRefs": [
+        "traveler-a",
+        "allocation-a-in",
+        "leg-replacement"
+      ],
+      "assertedAt": "2026-10-10T12:00:00Z",
+      "observedAt": "2026-10-10T12:00:00Z",
+      "expiresAt": "2026-10-10T20:00:00Z",
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-offer-a"
+    },
+    {
+      "id": "source-decision-a",
+      "kind": "traveler-decision",
+      "issuerRef": "traveler-a",
+      "subjectRef": "decision-a",
+      "relatedRefs": [
+        "offer-a"
+      ],
+      "assertedAt": "2026-10-10T13:00:00Z",
+      "observedAt": "2026-10-10T13:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-decision-a"
+    },
+    {
+      "id": "source-b-in",
+      "kind": "ticket-original",
+      "issuerRef": "agency-one",
+      "subjectRef": "allocation-b-in",
+      "relatedRefs": [
+        "traveler-b",
+        "leg-sea-ord"
+      ],
+      "assertedAt": "2026-10-10T10:00:00Z",
+      "observedAt": "2026-10-10T10:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-b-in"
+    },
+    {
+      "id": "source-b-out",
+      "kind": "ticket-original",
+      "issuerRef": "issuer-onward",
+      "subjectRef": "allocation-b-out",
+      "relatedRefs": [
+        "traveler-b",
+        "leg-ord-bos"
+      ],
+      "assertedAt": "2026-10-10T10:00:00Z",
+      "observedAt": "2026-10-10T10:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-b-out"
+    },
+    {
+      "id": "source-offer-b",
+      "kind": "carrier-offer",
+      "issuerRef": "carrier-north",
+      "subjectRef": "offer-b",
+      "relatedRefs": [
+        "traveler-b",
+        "allocation-b-in",
+        "leg-replacement"
+      ],
+      "assertedAt": "2026-10-10T12:00:00Z",
+      "observedAt": "2026-10-10T12:00:00Z",
+      "expiresAt": "2026-10-10T20:00:00Z",
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-offer-b"
+    },
+    {
+      "id": "source-decision-b",
+      "kind": "traveler-decision",
+      "issuerRef": "traveler-b",
+      "subjectRef": "decision-b",
+      "relatedRefs": [
+        "offer-b"
+      ],
+      "assertedAt": "2026-10-10T13:00:00Z",
+      "observedAt": "2026-10-10T13:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-decision-b"
+    },
+    {
+      "id": "source-reissue-a",
+      "kind": "ticket-reissue",
+      "issuerRef": "agency-one",
+      "subjectRef": "allocation-a-new",
+      "relatedRefs": [
+        "traveler-a",
+        "leg-replacement",
+        "allocation-a-in",
+        "offer-a",
+        "decision-a"
+      ],
+      "assertedAt": "2026-10-10T14:00:00Z",
+      "observedAt": "2026-10-10T14:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-reissue-a"
+    },
+    {
+      "id": "source-cancellation",
+      "kind": "operating-notice",
+      "issuerRef": "carrier-north",
+      "subjectRef": "notice-cancelled",
+      "relatedRefs": [
+        "leg-sea-ord"
+      ],
+      "assertedAt": "2026-10-10T11:00:00Z",
+      "observedAt": "2026-10-10T11:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-cancellation"
+    },
+    {
+      "id": "source-connection-a",
+      "kind": "connection-dependency",
+      "issuerRef": "traveler-a",
+      "subjectRef": "connection-a",
+      "relatedRefs": [
+        "allocation-a-in",
+        "allocation-a-out"
+      ],
+      "assertedAt": "2026-10-10T10:00:00Z",
+      "observedAt": "2026-10-10T10:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-connection-a"
+    },
+    {
+      "id": "source-connection-b",
+      "kind": "connection-dependency",
+      "issuerRef": "traveler-b",
+      "subjectRef": "connection-b",
+      "relatedRefs": [
+        "allocation-b-in",
+        "allocation-b-out"
+      ],
+      "assertedAt": "2026-10-10T10:00:00Z",
+      "observedAt": "2026-10-10T10:00:00Z",
+      "expiresAt": null,
+      "minimumMinutes": null,
+      "state": "current",
+      "supersedesRef": null,
+      "controlledRef": "controlled://flight/source-connection-b"
+    }
+  ],
+  "legs": [
+    {
+      "id": "leg-sea-ord",
+      "operatingCarrierRef": "carrier-north",
+      "flightNumber": "NX101",
+      "serviceDate": "2026-10-11",
+      "origin": "SEA",
+      "destination": "ORD",
+      "departureAt": "2026-10-11T06:00:00-07:00",
+      "arrivalAt": "2026-10-11T12:00:00-05:00",
+      "departureZone": "America/Los_Angeles",
+      "arrivalZone": "America/Chicago"
+    },
+    {
+      "id": "leg-ord-bos",
+      "operatingCarrierRef": "carrier-north",
+      "flightNumber": "NX202",
+      "serviceDate": "2026-10-11",
+      "origin": "ORD",
+      "destination": "BOS",
+      "departureAt": "2026-10-11T14:00:00-05:00",
+      "arrivalAt": "2026-10-11T17:00:00-04:00",
+      "departureZone": "America/Chicago",
+      "arrivalZone": "America/New_York"
+    },
+    {
+      "id": "leg-replacement",
+      "operatingCarrierRef": "carrier-north",
+      "flightNumber": "NX103",
+      "serviceDate": "2026-10-11",
+      "origin": "SEA",
+      "destination": "ORD",
+      "departureAt": "2026-10-11T09:00:00-07:00",
+      "arrivalAt": "2026-10-11T15:00:00-05:00",
+      "departureZone": "America/Los_Angeles",
+      "arrivalZone": "America/Chicago"
+    }
+  ],
+  "allocations": [
+    {
+      "id": "allocation-a-in",
+      "travelerRef": "traveler-a",
+      "legRef": "leg-sea-ord",
+      "ticketIssuerRef": "agency-one",
+      "ticketGroupRef": "ticket-outbound",
+      "predecessorRef": null,
+      "sourceRef": "source-a-in",
+      "offerRef": null,
+      "acceptanceRef": null
+    },
+    {
+      "id": "allocation-a-out",
+      "travelerRef": "traveler-a",
+      "legRef": "leg-ord-bos",
+      "ticketIssuerRef": "issuer-onward",
+      "ticketGroupRef": "ticket-separate",
+      "predecessorRef": null,
+      "sourceRef": "source-a-out",
+      "offerRef": null,
+      "acceptanceRef": null
+    },
+    {
+      "id": "allocation-b-in",
+      "travelerRef": "traveler-b",
+      "legRef": "leg-sea-ord",
+      "ticketIssuerRef": "agency-one",
+      "ticketGroupRef": "ticket-outbound",
+      "predecessorRef": null,
+      "sourceRef": "source-b-in",
+      "offerRef": null,
+      "acceptanceRef": null
+    },
+    {
+      "id": "allocation-b-out",
+      "travelerRef": "traveler-b",
+      "legRef": "leg-ord-bos",
+      "ticketIssuerRef": "issuer-onward",
+      "ticketGroupRef": "ticket-separate",
+      "predecessorRef": null,
+      "sourceRef": "source-b-out",
+      "offerRef": null,
+      "acceptanceRef": null
+    },
+    {
+      "id": "allocation-a-new",
+      "travelerRef": "traveler-a",
+      "legRef": "leg-replacement",
+      "ticketIssuerRef": "agency-one",
+      "ticketGroupRef": "ticket-outbound",
+      "predecessorRef": "allocation-a-in",
+      "offerRef": "offer-a",
+      "acceptanceRef": "decision-a",
+      "sourceRef": "source-reissue-a"
+    }
+  ],
+  "notices": [
+    {
+      "id": "notice-cancelled",
+      "legRef": "leg-sea-ord",
+      "operatingCarrierRef": "carrier-north",
+      "flightNumber": "NX101",
+      "serviceDate": "2026-10-11",
+      "origin": "SEA",
+      "destination": "ORD",
+      "event": "cancelled",
+      "sourceRef": "source-cancellation"
+    }
+  ],
+  "offers": [
+    {
+      "id": "offer-a",
+      "travelerRef": "traveler-a",
+      "predecessorRef": "allocation-a-in",
+      "replacementLegRef": "leg-replacement",
+      "sourceRef": "source-offer-a",
+      "expiresAt": "2026-10-10T20:00:00Z"
+    },
+    {
+      "id": "offer-b",
+      "travelerRef": "traveler-b",
+      "predecessorRef": "allocation-b-in",
+      "replacementLegRef": "leg-replacement",
+      "sourceRef": "source-offer-b",
+      "expiresAt": "2026-10-10T20:00:00Z"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-a",
+      "offerRef": "offer-a",
+      "travelerRef": "traveler-a",
+      "state": "accepted",
+      "decidedAt": "2026-10-10T13:00:00Z",
+      "sourceRef": "source-decision-a"
+    },
+    {
+      "id": "decision-b",
+      "offerRef": "offer-b",
+      "travelerRef": "traveler-b",
+      "state": "accepted",
+      "decidedAt": "2026-10-10T13:00:00Z",
+      "sourceRef": "source-decision-b"
+    }
+  ],
+  "connections": [
+    {
+      "id": "connection-a",
+      "originalFromRef": "allocation-a-in",
+      "originalToRef": "allocation-a-out",
+      "currentFromRef": "allocation-a-new",
+      "currentToRef": "allocation-a-out",
+      "dependencySourceRef": "source-connection-a",
+      "relationship": "separate-ticket",
+      "constraintSourceRef": null,
+      "minimumMinutes": null,
+      "intervalMinutes": -60,
+      "state": "unknown-constraint"
+    },
+    {
+      "id": "connection-b",
+      "originalFromRef": "allocation-b-in",
+      "originalToRef": "allocation-b-out",
+      "currentFromRef": "allocation-b-in",
+      "currentToRef": "allocation-b-out",
+      "dependencySourceRef": "source-connection-b",
+      "relationship": "separate-ticket",
+      "constraintSourceRef": null,
+      "minimumMinutes": null,
+      "intervalMinutes": 120,
+      "state": "unknown-constraint"
+    }
+  ],
+  "coverage": [
+    {
+      "originalRef": "allocation-a-in",
+      "currentRef": "allocation-a-new",
+      "state": "reissue-observed"
+    },
+    {
+      "originalRef": "allocation-a-out",
+      "currentRef": "allocation-a-out",
+      "state": "unchanged-record"
+    },
+    {
+      "originalRef": "allocation-b-in",
+      "currentRef": "allocation-b-in",
+      "state": "operating-change"
+    },
+    {
+      "originalRef": "allocation-b-out",
+      "currentRef": "allocation-b-out",
+      "state": "unchanged-record"
+    }
+  ],
+  "questions": [
+    {
+      "id": "question-1",
+      "targetRef": "allocation-b-in",
+      "reason": "operating-change",
+      "ownerRef": "traveler-a"
+    },
+    {
+      "id": "question-2",
+      "targetRef": "offer-b",
+      "reason": "missing-reissue",
+      "ownerRef": "traveler-a"
+    },
+    {
+      "id": "question-3",
+      "targetRef": "connection-a",
+      "reason": "connection-review",
+      "ownerRef": "traveler-a"
+    },
+    {
+      "id": "question-4",
+      "targetRef": "connection-a",
+      "reason": "separate-ticket-review",
+      "ownerRef": "traveler-a"
+    },
+    {
+      "id": "question-5",
+      "targetRef": "connection-b",
+      "reason": "connection-review",
+      "ownerRef": "traveler-a"
+    },
+    {
+      "id": "question-6",
+      "targetRef": "connection-b",
+      "reason": "separate-ticket-review",
+      "ownerRef": "traveler-a"
+    }
+  ],
+  "review": {
+    "state": "blocked",
+    "reissuedOriginalRefs": [
+      "allocation-a-in"
+    ],
+    "unresolvedOriginalRefs": [
+      "allocation-b-in"
+    ],
+    "partialParty": true,
+    "externalActions": "none",
+    "ticketValidity": "not-determined",
+    "connectionFeasibility": "not-determined",
+    "passengerRights": "not-determined",
+    "recoveryClaim": false
+  }
+}

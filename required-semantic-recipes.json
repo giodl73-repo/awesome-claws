@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 147,
-    "coveredCount": 147,
-    "recipeCount": 401,
-    "findingCodeCount": 545
+    "validatorCount": 148,
+    "coveredCount": 148,
+    "recipeCount": 404,
+    "findingCodeCount": 549
   },
   "entries": [
     {
@@ -6335,6 +6335,49 @@
           "replacement": "2099-12-31T23:59:59Z",
           "expectedCodes": [
             "invalid_portfolio_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "flight-disruption-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-hidden-flight-gap-1",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "ownerRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "hidden_flight_gap",
+            "invalid_traveler_authority"
+          ]
+        },
+        {
+          "id": "semantic-invalid-flight-chronology-2",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "asOf"
+          ],
+          "replacement": "2000-01-01T00:00:00Z",
+          "expectedCodes": [
+            "invalid_flight_chronology"
+          ]
+        },
+        {
+          "id": "semantic-incomplete-journey-index-3",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "originalAllocationRefs",
+            "0"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incomplete_journey_index"
           ]
         }
       ]

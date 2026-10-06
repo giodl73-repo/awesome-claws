@@ -3660,6 +3660,28 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "flight-disruption-coordinator",
+      "acceptedRequest": "Our booked Seattle-Chicago-Boston outbound journey has a cancelled first leg. The airline offered a replacement for both traveler aliases, but the agency confirmation covers only one. The separate onward ticket still shows the original departure. Reconcile the supplied notices, offer expiry, ticket revisions, and connection evidence. Show what is confirmed and what still needs our review; do not accept, rebook, cancel, contact anyone, pay, or make a passenger-rights claim.",
+      "requiredEvidence": [
+        "Traveler owner, authorized helpers, covered traveler aliases, confirmed journey scope, ticketing and operating carriers, private destination, and as-of time",
+        "Supplied ticketed segment revisions, airport identifiers, dated departures and arrivals, cancellation or schedule-change notices, and existing separate-ticket dependencies",
+        "Carrier replacement offers and expiry times, traveler decision evidence, independent ticket reissue or cancellation confirmations, and official connection constraints or explicit missing-evidence questions"
+      ],
+      "authorityBoundaries": [
+        "Do not book, rebook, cancel, exchange a ticket, accept a carrier offer, check in, select a seat, contact a provider, submit a claim, pay, or change an account",
+        "Do not infer ticket validity, protected connections, transfer feasibility, entry eligibility, refund or compensation entitlement, insurance coverage, live flight status, or a guaranteed recovery outcome",
+        "Use traveler aliases and controlled private references; do not retain booking locators, ticket numbers, passport values, boarding-pass barcodes, payment details, credentials, or precise live traveler locations"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/flight-disruption-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
