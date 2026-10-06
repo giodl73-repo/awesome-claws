@@ -53240,12 +53240,180 @@ function infrastructureDriftFindings(input) {
   return findings;
 }
 
+const simpleX3HandoffIds = new Set([
+  "api-deprecation-coordinator",
+  "board-meeting-governance-coordinator",
+  "clinical-trial-participation-coordinator",
+  "community-moderation-coordinator",
+  "creator-content-calendar-coordinator",
+  "donation-receipt-coordinator",
+  "event-sponsorship-coordinator",
+  "hardware-asset-lifecycle-coordinator",
+  "home-energy-upgrade-coordinator",
+  "insurance-appeal-coordinator",
+  "permit-application-coordinator",
+  "scholarship-award-coordinator",
+  "training-compliance-coordinator",
+  "vendor-offboarding-coordinator",
+]);
+
+function simpleX3HandoffFindings(value) {
+  const findings = [];
+  const add = (code, path, message) => findings.push(finding(code, path, message));
+  if (!isRecord(value)) {
+    return [
+      finding(
+        "invalid_x3_handoff_shape",
+        "",
+        "The X3 handoff must be a structured object.",
+      ),
+    ];
+  }
+
+  if (!simpleX3HandoffIds.has(value.claw)) {
+    add(
+      "invalid_x3_handoff_identity",
+      "claw",
+      "The handoff must name one registered simple X3 coordinator Claw.",
+    );
+  }
+
+  const evidence = recordArray(value.evidence, "evidence", "Evidence");
+  const blockers = recordArray(value.blockers, "blockers", "Blocker");
+  const ownerActions = recordArray(value.ownerActions, "ownerActions", "Owner action");
+  findings.push(...evidence.findings, ...blockers.findings, ...ownerActions.findings);
+
+  const idOwners = [
+    ...evidence.entries.map(([index, item]) => [item.id, `evidence[${index}].id`]),
+    ...blockers.entries.map(([index, item]) => [item.id, `blockers[${index}].id`]),
+    ...ownerActions.entries.map(([index, item]) => [
+      item.id,
+      `ownerActions[${index}].id`,
+    ]),
+  ].filter(([id]) => typeof id === "string");
+  const seenIds = new Map();
+  for (const [id, path] of idOwners) {
+    if (seenIds.has(id)) {
+      add(
+        "duplicate_x3_handoff_id",
+        path,
+        `Handoff id ${JSON.stringify(id)} is reused at ${seenIds.get(id)}.`,
+      );
+    } else {
+      seenIds.set(id, path);
+    }
+  }
+
+  const evidenceStatuses = evidence.items
+    .map((item) => item.status)
+    .filter((status) => typeof status === "string");
+  const hasCurrentEvidence = evidenceStatuses.includes("current");
+  const hasUnresolvedEvidence = evidenceStatuses.some((status) =>
+    ["stale", "missing", "conflicting", "blocked"].includes(status),
+  );
+  if (!hasCurrentEvidence) {
+    add(
+      "invalid_x3_handoff_evidence",
+      "evidence",
+      "The handoff needs at least one current evidence row.",
+    );
+  }
+  if (
+    value.readyState === "review-ready" &&
+    (hasUnresolvedEvidence || blockers.items.length > 0)
+  ) {
+    add(
+      "invalid_x3_handoff_readiness",
+      "readyState",
+      "A review-ready handoff cannot retain blockers or unresolved evidence.",
+    );
+  }
+  if (value.readyState === "blocked" && blockers.items.length === 0) {
+    add(
+      "invalid_x3_handoff_readiness",
+      "blockers",
+      "A blocked handoff must expose at least one blocker.",
+    );
+  }
+  if (hasUnresolvedEvidence && blockers.items.length === 0) {
+    add(
+      "invalid_x3_handoff_readiness",
+      "blockers",
+      "Missing, stale, conflicting, or blocked evidence must remain blocked.",
+    );
+  }
+
+  const ownerFields = [
+    ["nextOwner", value.nextOwner],
+    ...blockers.entries.map(([index, item]) => [
+      `blockers[${index}].owner`,
+      item.owner,
+    ]),
+    ...ownerActions.entries.map(([index, item]) => [
+      `ownerActions[${index}].owner`,
+      item.owner,
+    ]),
+  ];
+  for (const [path, owner] of ownerFields) {
+    if (typeof owner !== "string" || owner.trim().length === 0 || isAgentIdentityName(owner)) {
+      add(
+        "invalid_x3_handoff_owner",
+        path,
+        "Accountability fields must name a non-agent owner.",
+      );
+    }
+  }
+
+  const prohibitedActions = Array.isArray(value.prohibitedActions)
+    ? value.prohibitedActions
+    : [];
+  if (
+    prohibitedActions.length < 2 ||
+    !prohibitedActions.some(
+      (action) => typeof action === "string" && /\b(?:do not|must not|cannot)\b/iu.test(action),
+    )
+  ) {
+    add(
+      "invalid_x3_handoff_prohibited_actions",
+      "prohibitedActions",
+      "The handoff must preserve explicit prohibited-action boundaries.",
+    );
+  }
+
+  const narrativeTexts = [
+    value.request,
+    value.scope,
+    ...evidence.items.flatMap((item) => [item.title, item.source, item.summary]),
+    ...blockers.items.flatMap((item) => [item.owner, item.reason]),
+    ...ownerActions.items.flatMap((item) => [item.owner, item.action]),
+    ...prohibitedActions,
+  ].filter((text) => typeof text === "string");
+  const prohibitedNarrative =
+    /\b(?:the\s+)?(?:claw|agent|assistant|we|i)\s+(?:completed|submitted|sent|notified|contacted|approved|certified|changed|mutated|deleted|revoked|published|filed|paid|enrolled|disabled|executed|performed)\b/giu;
+  if (hasUnnegatedNarrativeMatch(narrativeTexts, prohibitedNarrative)) {
+    add(
+      "prohibited_x3_handoff_authority_narrative",
+      "handoff",
+      "The handoff cannot claim the Claw performed external actions or owner decisions.",
+    );
+  }
+
+  return findings.sort(
+    (left, right) =>
+      left.path.localeCompare(right.path) ||
+      left.code.localeCompare(right.code) ||
+      left.message.localeCompare(right.message),
+  );
+}
+
 const validators = {
   "access-entitlement-review-coordinator": accessEntitlementReviewFindings,
   "accessibility-review-coordinator": accessibilityReviewFindings,
+  "api-deprecation-coordinator": simpleX3HandoffFindings,
   "api-integration-engineer": apiIntegrationReadinessFindings,
   "appliance-care-coordinator": applianceCareFindings,
   "backup-restore-verification-coordinator": backupRestoreVerificationFindings,
+  "board-meeting-governance-coordinator": simpleX3HandoffFindings,
   "business-continuity-program-manager": businessContinuityProgramFindings,
   "benefits-realization-manager": benefitsRealizationFindings,
   "benefits-open-enrollment-planner": benefitsEnrollmentFindings,
@@ -53253,6 +53421,7 @@ const validators = {
   "case-continuity-coordinator": caseContinuityFindings,
   "civic-services-navigator": civicServiceAccessFindings,
   "certification-renewal-planner": certificationRenewalFindings,
+  "clinical-trial-participation-coordinator": simpleX3HandoffFindings,
   "conference-opportunity-scout": conferenceOpportunityFindings,
   "contract-obligation-tracker": contractObligationTrackerFindings,
   "change-control-operator": changeControlFindings,
@@ -53260,7 +53429,9 @@ const validators = {
   "civic-data-analyst": civicDataFindings,
   "cloud-cost-analyst": cloudCostAnalysisFindings,
   "commercial-deal-desk-coordinator": commercialDealDeskFindings,
+  "community-moderation-coordinator": simpleX3HandoffFindings,
   "compliance-reviewer": complianceAssessmentFindings,
+  "creator-content-calendar-coordinator": simpleX3HandoffFindings,
   "data-migration-planner": dataMigrationReadinessFindings,
   "content-operations": publicationReadinessRecordFindings,
   "customer-support": customerSupportCaseFindings,
@@ -53270,7 +53441,9 @@ const validators = {
   "delegation-coordinator": delegationFindings,
   "document-renewal-tracker": documentRenewalFindings,
   "document-intake-analyst": documentIntakeFindings,
+  "donation-receipt-coordinator": simpleX3HandoffFindings,
   "enterprise-license-entitlement-reconciler": enterpriseLicenseEntitlementFindings,
+  "event-sponsorship-coordinator": simpleX3HandoffFindings,
   "event-operations-director": eventOperationsFindings,
   "executive-assistant": executiveCommitmentLedgerFindings,
   "executive-briefing": executiveBriefingSnapshotFindings,
@@ -53287,7 +53460,9 @@ const validators = {
   "gift-relationship-manager": giftRelationshipFindings,
   "grant-portfolio-manager": grantPortfolioFindings,
   "green-thumb-coordinator": greenThumbFindings,
+  "hardware-asset-lifecycle-coordinator": simpleX3HandoffFindings,
   "health-records-binder": healthRecordsFindings,
+  "home-energy-upgrade-coordinator": simpleX3HandoffFindings,
   "home-repair-coordinator": homeRepairFindings,
   "household-budget-steward": householdBudgetFindings,
   "household-emergency-preparedness-coordinator": householdEmergencyPreparednessFindings,
@@ -53303,6 +53478,7 @@ const validators = {
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,
   "incident-response": incidentResponseFindings,
+  "insurance-appeal-coordinator": simpleX3HandoffFindings,
   "invoice-payment-followup": invoiceReceivablesFindings,
   "job-application-tracker": jobApplicationFindings,
   "knowledge-curator": knowledgeCollectionIndexFindings,
@@ -53325,6 +53501,7 @@ const validators = {
   "neighborhood-operations-watcher": neighborhoodOperationsFindings,
   "personal-archive-curator": personalArchiveFindings,
   "partner-business-manager": partnerBusinessPlanFindings,
+  "permit-application-coordinator": simpleX3HandoffFindings,
   "pet-care-coordinator": petCareFindings,
   "pond-water-feature-coordinator": pondWaterFeatureFindings,
   "professional-networking-followup": professionalNetworkingFindings,
@@ -53354,6 +53531,7 @@ const validators = {
   "restaurant-venue-scout": restaurantVenueFindings,
   "research-briefing": researchFindings,
   "sales-operations": salesOperationsFindings,
+  "scholarship-award-coordinator": simpleX3HandoffFindings,
   "school-coordinator": schoolCoordinatorFindings,
   "security-analyst": securityAssessmentFindings,
   "software-maintainer": changeDeliveryRecordFindings,
@@ -53364,6 +53542,7 @@ const validators = {
   "subscription-manager": subscriptionManagerFindings,
   "supplier-capacity-assurance-manager": supplierCapacityAssuranceFindings,
   "tax-document-organizer": taxDocumentFindings,
+  "training-compliance-coordinator": simpleX3HandoffFindings,
   "travel-concierge": travelShortlistFindings,
   "travel-planner": itineraryPlanFindings,
   "travel-loyalty-points-organizer": travelLoyaltyFindings,
@@ -53371,6 +53550,7 @@ const validators = {
     tlsCertificateRotationVerificationFindings,
   "ux-research-synthesizer": researchSynthesisFindings,
   "vehicle-service-coordinator": vehicleServiceFindings,
+  "vendor-offboarding-coordinator": simpleX3HandoffFindings,
   "video-concept-producer": videoConceptGenerationManifestFindings,
   "vulnerability-disposition-coordinator": vulnerabilityDispositionFindings,
   "wardrobe-organizer": wardrobeFindings,

@@ -47,7 +47,7 @@ highest-value portfolio work is depth rather than count:
 | --- | ---: | --- |
 | Retrospective admission records | 139 of 150 | Make legacy distinctness decisions reviewable without reopening accepted admissions |
 | Structured artifact schemas | 150 of 150 | Add schemas only where a durable structured decision artifact improves the job |
-| Semantic artifact validators | 136 of 150 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
+| Semantic artifact validators | 150 of 150 | Enforce provenance, reconciliation, chronology, and authority invariants beyond JSON shape |
 | Domain privacy and sensitive-data handling | Manual review, not keyword-scored | Add proportional handling rules where the job touches sensitive material |
 
 The dated [solid-band review](catalog-quality-solid-review.md) separates

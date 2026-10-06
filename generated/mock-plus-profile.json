@@ -12,7 +12,7 @@
   "profiles": [
     {
       "name": "vertical",
-      "canonicalDigest": "sha256:fa283125a65c7b40907b8932eec3bd1db079503bd9a80273a62ffe8aef1b9dc8",
+      "canonicalDigest": "sha256:05221e921785851c120a01ff9c25125464db98897b10f2d9e9e310d5405f9e70",
       "clawCount": 3,
       "caseCount": 53,
       "controlsPassed": 21,
@@ -26,7 +26,7 @@
     },
     {
       "name": "schema-portfolio",
-      "canonicalDigest": "sha256:3a35db4d3b566d0ada9bd195b537d058416c688411db350059281af61b4efcfe",
+      "canonicalDigest": "sha256:0ba296c7d78f87dceb811241ab5b6917284ef40e390f4a24ee25ecb4393848e1",
       "clawCount": 150,
       "caseCount": 52653,
       "controlsPassed": 1050,
@@ -40,12 +40,12 @@
     },
     {
       "name": "semantic-portfolio",
-      "canonicalDigest": "sha256:c3ce01595b8a3cb972e0c49f7c109018996a7e723a9285664073020bec1baf9d",
+      "canonicalDigest": "sha256:6b12953af1aeb4b2dba40bc133b8534ca3000f096c519cd1e70975014e3c0e78",
       "clawCount": 150,
-      "caseCount": 2326,
+      "caseCount": 2354,
       "controlsPassed": 1050,
       "controlsFailed": 0,
-      "mutantsKilled": 1276,
+      "mutantsKilled": 1304,
       "mutantsSurvived": 0,
       "unsupportedOracles": 0,
       "invalidRecipes": 0,
@@ -54,7 +54,7 @@
     },
     {
       "name": "lifecycle-portfolio",
-      "canonicalDigest": "sha256:259cd28d3b5af1abd138d93d9da5e78f58e4f450fdf94a49a333cdaf58ff9423",
+      "canonicalDigest": "sha256:0499956906d209b4b7f54bd99de8348890fd47cb169c1572922b0dc0bd966492",
       "clawCount": 150,
       "caseCount": 2793,
       "controlsPassed": 1050,
@@ -69,11 +69,11 @@
   ],
   "totals": {
     "profileCount": 4,
-    "caseCount": 57825,
+    "caseCount": 57853,
     "controlsPassed": 3171,
-    "mutantsKilled": 54654,
+    "mutantsKilled": 54682,
     "mutantsSurvived": 0,
     "safetyBlockers": 0
   },
-  "profileDigest": "sha256:0623274b316a5b11793e25e796f98bdd8cc6349a06110602be3644c47bab9782"
+  "profileDigest": "sha256:8e5bb278b2a92be50e8f26297fa3977d6e6f772e730ae2987c6528f6043fe95b"
 }

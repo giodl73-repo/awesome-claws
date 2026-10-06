@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 136,
-    "coveredCount": 136,
-    "recipeCount": 376,
-    "findingCodeCount": 511
+    "validatorCount": 150,
+    "coveredCount": 150,
+    "recipeCount": 404,
+    "findingCodeCount": 513
   },
   "entries": [
     {
@@ -5955,6 +5955,412 @@
           "replacement": "2099-12-31T23:59:59Z",
           "expectedCodes": [
             "invalid_portfolio_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "permit-application-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "insurance-appeal-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clinical-trial-participation-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scholarship-award-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "board-meeting-governance-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "training-compliance-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vendor-offboarding-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "donation-receipt-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "home-energy-upgrade-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "event-sponsorship-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "api-deprecation-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hardware-asset-lifecycle-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "creator-content-calendar-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "community-moderation-coordinator",
+      "recipes": [
+        {
+          "id": "semantic-prohibited-x3-handoff-authority-narrative-1",
+          "operator": "replace",
+          "path": [
+            "request"
+          ],
+          "replacement": "The agent completed and submitted this action.",
+          "expectedCodes": [
+            "prohibited_x3_handoff_authority_narrative"
+          ]
+        },
+        {
+          "id": "semantic-invalid-x3-handoff-owner-2",
+          "operator": "replace",
+          "path": [
+            "blockers",
+            "0",
+            "owner"
+          ],
+          "replacement": "agent-owned",
+          "expectedCodes": [
+            "invalid_x3_handoff_owner"
           ]
         }
       ]

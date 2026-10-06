@@ -8,9 +8,12 @@ import { root } from "./catalog-source.mjs";
 export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "access-entitlement-review-coordinator": "access-entitlement-review.schema.json",
   "accessibility-review-coordinator": "accessibility-finding.schema.json",
+  "api-deprecation-coordinator": "api-deprecation-coordinator-handoff.schema.json",
   "api-integration-engineer": "integration-readiness.schema.json",
   "appliance-care-coordinator": "appliance-care.schema.json",
   "backup-restore-verification-coordinator": "backup-restore-verification.schema.json",
+  "board-meeting-governance-coordinator":
+    "board-meeting-governance-coordinator-handoff.schema.json",
   "business-continuity-program-manager": "business-continuity-program.schema.json",
   "benefits-open-enrollment-planner": "benefits-enrollment.schema.json",
   "benefits-realization-manager": "benefits-realization-ledger.schema.json",
@@ -18,6 +21,10 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "case-continuity-coordinator": "case-checkpoint.schema.json",
   "civic-services-navigator": "service-access.schema.json",
   "certification-renewal-planner": "certification-renewal.schema.json",
+  "clinical-trial-participation-coordinator":
+    "clinical-trial-participation-coordinator-handoff.schema.json",
+  "community-moderation-coordinator":
+    "community-moderation-coordinator-handoff.schema.json",
   "conference-opportunity-scout": "conference-opportunities.schema.json",
   "contract-obligation-tracker": "contract-obligation-tracker.schema.json",
   "change-control-operator": "change-plan.schema.json",
@@ -28,6 +35,8 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "college-application-coordinator": "college-application-portfolio.schema.json",
   "consumer-product-recall-coordinator": "consumer-recall-ledger.schema.json",
   "compliance-reviewer": "control-assessment.schema.json",
+  "creator-content-calendar-coordinator":
+    "creator-content-calendar-coordinator-handoff.schema.json",
   "data-migration-planner": "mapping.schema.json",
   "infrastructure-drift-reconciliation-coordinator":
     "infrastructure-drift-reconciliation.schema.json",
@@ -39,8 +48,11 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "delegation-coordinator": "delegation-ledger.schema.json",
   "document-intake-analyst": "document-intake.schema.json",
   "document-renewal-tracker": "document-renewal.schema.json",
+  "donation-receipt-coordinator": "donation-receipt-coordinator-handoff.schema.json",
   "enterprise-license-entitlement-reconciler":
     "license-entitlement-reconciliation.schema.json",
+  "event-sponsorship-coordinator":
+    "event-sponsorship-coordinator-handoff.schema.json",
   "event-operations-director": "run-of-show.schema.json",
   "executive-assistant": "executive-commitment-ledger.schema.json",
   "executive-briefing": "executive-briefing-snapshot.schema.json",
@@ -57,12 +69,17 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "gift-relationship-manager": "gift-plan.schema.json",
   "grant-portfolio-manager": "grant-opportunity.schema.json",
   "green-thumb-coordinator": "garden-plan.schema.json",
+  "hardware-asset-lifecycle-coordinator":
+    "hardware-asset-lifecycle-coordinator-handoff.schema.json",
   "health-records-binder": "health-records.schema.json",
+  "home-energy-upgrade-coordinator":
+    "home-energy-upgrade-coordinator-handoff.schema.json",
   "home-repair-coordinator": "home-repair.schema.json",
   "household-budget-steward": "household-budget.schema.json",
   "home-inventory-binder": "home-inventory.schema.json",
   "household-steward": "household-operations.schema.json",
   "insurance-policy-organizer": "insurance-policy.schema.json",
+  "insurance-appeal-coordinator": "insurance-appeal-coordinator-handoff.schema.json",
   "incident-response": "incident-state.schema.json",
   "invoice-payment-followup": "invoice-receivables.schema.json",
   "job-application-tracker": "job-application.schema.json",
@@ -90,6 +107,8 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "personal-archive-curator": "archive-index.schema.json",
   "partner-business-manager": "partner-business-plan.schema.json",
   "pet-care-coordinator": "pet-care.schema.json",
+  "permit-application-coordinator":
+    "permit-application-coordinator-handoff.schema.json",
   "pond-water-feature-coordinator": "pond-system.schema.json",
   "presentation-producer": "presentation-evidence-manifest.schema.json",
   "privacy-request-coordinator": "privacy-request.schema.json",
@@ -120,6 +139,8 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "restaurant-venue-scout": "venue-shortlist.schema.json",
   "research-briefing": "research-brief.schema.json",
   "sales-operations": "pipeline-review.schema.json",
+  "scholarship-award-coordinator":
+    "scholarship-award-coordinator-handoff.schema.json",
   "school-coordinator": "school-logistics.schema.json",
   "security-analyst": "threat-assessment.schema.json",
   "security-alert-review-reconciler": "security-alert-review.schema.json",
@@ -131,12 +152,16 @@ export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
   "subscription-manager": "subscription-ledger.schema.json",
   "supplier-capacity-assurance-manager": "supplier-capacity-assurance.schema.json",
   "tax-document-organizer": "tax-document.schema.json",
+  "training-compliance-coordinator":
+    "training-compliance-coordinator-handoff.schema.json",
   "travel-concierge": "travel-shortlist.schema.json",
   "travel-planner": "itinerary-plan.schema.json",
   "travel-loyalty-points-organizer": "travel-loyalty.schema.json",
   "tls-certificate-rotation-verification-coordinator": "tls-certificate-rotation.schema.json",
   "ux-research-synthesizer": "research-evidence.schema.json",
   "vehicle-service-coordinator": "vehicle-service.schema.json",
+  "vendor-offboarding-coordinator":
+    "vendor-offboarding-coordinator-handoff.schema.json",
   "video-concept-producer": "video-concept-generation-manifest.schema.json",
   "wardrobe-organizer": "wardrobe-plan.schema.json",
   "warranty-returns-manager": "warranty-returns.schema.json",
