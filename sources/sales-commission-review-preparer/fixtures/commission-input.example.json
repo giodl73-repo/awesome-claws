@@ -1,0 +1,233 @@
+{
+  "schemaVersion": "awesomeClaws.commissionInput.v1",
+  "scope": {
+    "employer": "EMPLOYER",
+    "cycle": "OCT-REVIEW",
+    "currency": "USD",
+    "scale": 2,
+    "periodStart": "2026-10-01T00:00:00Z",
+    "periodEnd": "2026-10-05T00:00:00Z",
+    "asOf": "2026-10-05T00:00:00Z",
+    "owner": "COMP-OWNER",
+    "privateDestination": "outputs/sales-commission-review-preparer-handoff.md",
+    "complete": true,
+    "eventOrder": [
+      "E1"
+    ],
+    "eventIds": [
+      "E1"
+    ],
+    "payeeIds": [
+      "PAYEE-A"
+    ],
+    "payoutIds": [
+      "PAYOUT1"
+    ],
+    "reversalIds": [
+      "R1"
+    ]
+  },
+  "sources": [
+    {
+      "id": "PLAN",
+      "revision": "V1",
+      "employer": "EMPLOYER",
+      "currency": "USD",
+      "capturedAt": "2026-10-05T00:00:00Z",
+      "kind": "plan"
+    },
+    {
+      "id": "OPENING",
+      "revision": "V1",
+      "employer": "EMPLOYER",
+      "currency": "USD",
+      "capturedAt": "2026-10-05T00:00:00Z",
+      "kind": "opening"
+    },
+    {
+      "id": "EVENT",
+      "revision": "V1",
+      "employer": "EMPLOYER",
+      "currency": "USD",
+      "capturedAt": "2026-10-05T00:00:00Z",
+      "kind": "event"
+    },
+    {
+      "id": "CREDIT",
+      "revision": "V1",
+      "employer": "EMPLOYER",
+      "currency": "USD",
+      "capturedAt": "2026-10-05T00:00:00Z",
+      "kind": "credit"
+    },
+    {
+      "id": "ORIGINAL",
+      "revision": "V1",
+      "employer": "EMPLOYER",
+      "currency": "USD",
+      "capturedAt": "2026-10-05T00:00:00Z",
+      "kind": "original"
+    },
+    {
+      "id": "REVERSAL",
+      "revision": "V1",
+      "employer": "EMPLOYER",
+      "currency": "USD",
+      "capturedAt": "2026-10-05T00:00:00Z",
+      "kind": "reversal"
+    },
+    {
+      "id": "PAYOUT",
+      "revision": "V1",
+      "employer": "EMPLOYER",
+      "currency": "USD",
+      "capturedAt": "2026-10-05T00:00:00Z",
+      "kind": "payout"
+    }
+  ],
+  "payees": [
+    "PAYEE-A"
+  ],
+  "plans": [
+    {
+      "id": "PLAN1",
+      "version": "V1",
+      "payee": "PAYEE-A",
+      "attainmentPeriod": "OCT",
+      "effectiveFrom": "2026-10-01T00:00:00Z",
+      "effectiveTo": "2026-11-01T00:00:00Z",
+      "mechanic": "marginal",
+      "basis": "owner-credited-amount",
+      "rounding": "half-up-per-credit",
+      "reversalPolicy": "original-amount-no-attainment-rewind",
+      "tiers": [
+        {
+          "upToMinor": 1000000,
+          "rateBps": 500
+        },
+        {
+          "upToMinor": null,
+          "rateBps": 1000
+        }
+      ],
+      "evidence": {
+        "sourceRef": "PLAN",
+        "revision": "V1",
+        "record": "PLAN1",
+        "at": "2026-10-01T00:00:00Z",
+        "state": "current",
+        "decisionOwner": "COMP-OWNER"
+      }
+    }
+  ],
+  "openings": [
+    {
+      "id": "OPEN1",
+      "payee": "PAYEE-A",
+      "planRef": "PLAN1",
+      "planVersion": "V1",
+      "asOf": "2026-10-01T00:00:00Z",
+      "amountMinor": 900000,
+      "evidence": {
+        "sourceRef": "OPENING",
+        "revision": "V1",
+        "record": "OPEN1",
+        "at": "2026-10-01T00:00:00Z",
+        "state": "current",
+        "decisionOwner": "COMP-OWNER"
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "identity": "DEAL-EVENT1",
+      "at": "2026-10-02T12:00:00Z",
+      "amountMinor": 200000,
+      "evidence": {
+        "sourceRef": "EVENT",
+        "revision": "V1",
+        "record": "E1",
+        "at": "2026-10-02T12:00:00Z",
+        "state": "current",
+        "decisionOwner": "COMP-OWNER"
+      }
+    }
+  ],
+  "credits": [
+    {
+      "id": "C1",
+      "eventRef": "E1",
+      "payee": "PAYEE-A",
+      "planRef": "PLAN1",
+      "planVersion": "V1",
+      "amountMinor": 200000,
+      "evidence": {
+        "sourceRef": "CREDIT",
+        "revision": "V1",
+        "record": "C1",
+        "at": "2026-10-02T12:00:00Z",
+        "state": "current",
+        "decisionOwner": "COMP-OWNER"
+      }
+    }
+  ],
+  "originals": [
+    {
+      "id": "OLD1",
+      "identity": "ORIGINAL-COMMISSION1",
+      "creditRef": "OLD-CREDIT1",
+      "payee": "PAYEE-A",
+      "planRef": "OLD-PLAN",
+      "planVersion": "V1",
+      "at": "2026-09-20T12:00:00Z",
+      "commissionMinor": 8000,
+      "previouslyReversedMinor": 0,
+      "historyComplete": true,
+      "reversalPolicy": "original-amount-no-attainment-rewind",
+      "evidence": {
+        "sourceRef": "ORIGINAL",
+        "revision": "V1",
+        "record": "OLD1",
+        "at": "2026-10-01T00:00:00Z",
+        "state": "current",
+        "decisionOwner": "COMP-OWNER"
+      }
+    }
+  ],
+  "reversals": [
+    {
+      "id": "R1",
+      "identity": "REV1",
+      "originalRef": "OLD1",
+      "payee": "PAYEE-A",
+      "at": "2026-10-02T12:00:00Z",
+      "amountMinor": 8000,
+      "evidence": {
+        "sourceRef": "REVERSAL",
+        "revision": "V1",
+        "record": "R1",
+        "at": "2026-10-02T12:00:00Z",
+        "state": "current",
+        "decisionOwner": "COMP-OWNER"
+      }
+    }
+  ],
+  "payouts": [
+    {
+      "id": "PAYOUT1",
+      "identity": "PAYOUT-LINE1",
+      "payee": "PAYEE-A",
+      "cycle": "OCT-REVIEW",
+      "amountMinor": 7000,
+      "evidence": {
+        "sourceRef": "PAYOUT",
+        "revision": "V1",
+        "record": "PAYOUT1",
+        "at": "2026-10-05T00:00:00Z",
+        "state": "current",
+        "decisionOwner": "COMP-OWNER"
+      }
+    }
+  ]
+}

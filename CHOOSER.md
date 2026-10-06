@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (147)
+### Active (148)
 
 | Claw | Detail |
 | --- | --- |
@@ -129,6 +129,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | @giodl73-repo; last verified 2026-08-23 |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | @giodl73; last verified 2026-08-28 |
 | [RFP response producer](claws/rfp-response-producer) | @giodl73-repo; last verified 2026-10-02 |
+| [Sales Commission Review Preparer](claws/sales-commission-review-preparer) | @giodl73; last verified 2026-10-05 |
 | [Sales operations](claws/sales-operations) | @giodl73-repo; last verified 2026-08-19 |
 | [School coordinator](claws/school-coordinator) | @giodl73-repo; last verified 2026-08-23 |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | @giodl73-repo; last verified 2026-09-17 |
@@ -174,7 +175,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (115)
+### Low setup (116)
 
 | Claw | Detail |
 | --- | --- |
@@ -271,6 +272,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | no bootstrap, external dependency, or schedule |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | no bootstrap, external dependency, or schedule |
 | [RFP response producer](claws/rfp-response-producer) | no bootstrap, external dependency, or schedule |
+| [Sales Commission Review Preparer](claws/sales-commission-review-preparer) | no bootstrap, external dependency, or schedule |
 | [Sales operations](claws/sales-operations) | no bootstrap, external dependency, or schedule |
 | [School coordinator](claws/school-coordinator) | no bootstrap, external dependency, or schedule |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | no bootstrap, external dependency, or schedule |
@@ -340,7 +342,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (124)
+### No external dependencies (125)
 
 | Claw | Detail |
 | --- | --- |
@@ -446,6 +448,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | None |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | None |
 | [RFP response producer](claws/rfp-response-producer) | None |
+| [Sales Commission Review Preparer](claws/sales-commission-review-preparer) | None |
 | [Sales operations](claws/sales-operations) | None |
 | [School coordinator](claws/school-coordinator) | None |
 | [Security alert review reconciler](claws/security-alert-review-reconciler) | None |
@@ -501,7 +504,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (108)
+### X3 (109)
 
 | Claw | Detail |
 | --- | --- |
@@ -590,6 +593,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | Compares restaurants and venues from approved sources with dietary, accessibility, hours, reservation, price, distance, and group-preference evidence without reserving, ordering, paying, messaging, or posting reviews. |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | Maintains a candidate-owned resume, portfolio, and proof ledger for role-specific review without submitting applications or inventing credentials. |
 | [RFP response producer](claws/rfp-response-producer) | Produces a source-backed commercial RFP or RFI response draft from a buyer's request, amendments, and authorized seller material, with complete question coverage, explicit capability gaps, attachment checks, and specialist review requests without submitting or making commitments. |
+| [Sales Commission Review Preparer](claws/sales-commission-review-preparer) | Prepares a private deal-to-payee commission workpaper from owner-supplied credit decisions and explicit plan versions, preserving marginal-tier calculations, splits, linked reversals and unresolved payout differences without approving compensation or releasing payments. |
 | [Sales operations](claws/sales-operations) | Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
 | [School coordinator](claws/school-coordinator) | Tracks assignments, forms, teacher notes, school calendars, supply lists, events, accommodations, and parent review questions from approved sources without submitting forms, messaging teachers, changing enrollment, or making education, medical, legal, or payment decisions. |
 | [Seller Return Reconciler](claws/seller-return-reconciler) | Reconciles supplied seller return authorizations, physical receipts and recorded human dispositions into a draft return backlog and exception handoff without approving returns or refunds. |
@@ -729,7 +733,7 @@ Categories come directly from the catalog entry.
 | [TLS Certificate Rotation Verification Coordinator](claws/tls-certificate-rotation-verification-coordinator) | X3; Coordinates one bounded metadata-only TLS certificate rotation verification round over an exact owner-supplied predecessor certificate and service/listener/endpoint binding inventory, proving each rotate certificate was issued to a successor version, deployed, independently endpoint-validated, and exactly retired or held in approved overlap while certificate authorities and inventory owners retain all issuance, deployment, revocation, and rotation authority. |
 | [Vulnerability exposure disposition coordinator](claws/vulnerability-disposition-coordinator) | X3; Reconciles one exact supplied exposure snapshot so that every deployed instance, component identity, and advisory-at-revision triple derivable from inventory carries exactly one evidence-backed terminal disposition, and reopens every disposition invalidated by a widened or withdrawn advisory revision, without scanning, patching, gating, or claiming remediation. |
 
-### Operations (40)
+### Operations (41)
 
 | Claw | Detail |
 | --- | --- |
@@ -764,6 +768,7 @@ Categories come directly from the catalog entry.
 | [Public safety monitor](claws/public-safety-monitor) | X3; Synthesizes official public alerts for declared locations and hazards while preserving urgency, provenance, and the authority of emergency services. |
 | [Recruiting coordinator](claws/recruiting-coordinator) | X3; Coordinates candidate logistics with clear handoffs, consistency, and privacy. |
 | [RFP response producer](claws/rfp-response-producer) | X3; Produces a source-backed commercial RFP or RFI response draft from a buyer's request, amendments, and authorized seller material, with complete question coverage, explicit capability gaps, attachment checks, and specialist review requests without submitting or making commitments. |
+| [Sales Commission Review Preparer](claws/sales-commission-review-preparer) | X3; Prepares a private deal-to-payee commission workpaper from owner-supplied credit decisions and explicit plan versions, preserving marginal-tier calculations, splits, linked reversals and unresolved payout differences without approving compensation or releasing payments. |
 | [Sales operations](claws/sales-operations) | X3; Improves pipeline decisions through clean definitions, evidence, and accountable follow-up. |
 | [Seller Return Reconciler](claws/seller-return-reconciler) | X3; Reconciles supplied seller return authorizations, physical receipts and recorded human dispositions into a draft return backlog and exception handoff without approving returns or refunds. |
 | [Service Dispatch Planner](claws/service-dispatch-planner) | X3; Builds a feasible draft technician appointment schedule from supplied job, availability, skill, travel and readiness constraints without dispatching anyone. |
@@ -848,7 +853,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (76)
+### Standard attention (77)
 
 | Claw | Detail |
 | --- | --- |
@@ -914,6 +919,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Repository Operations Manager](claws/repository-operations-manager) | portable workspace artifacts only |
 | [Restaurant and venue scout](claws/restaurant-venue-scout) | portable workspace artifacts only |
 | [Resume portfolio curator](claws/resume-portfolio-curator) | portable workspace artifacts only |
+| [Sales Commission Review Preparer](claws/sales-commission-review-preparer) | portable workspace artifacts only |
 | [Sales operations](claws/sales-operations) | portable workspace artifacts only |
 | [School coordinator](claws/school-coordinator) | portable workspace artifacts only |
 | [Seller Return Reconciler](claws/seller-return-reconciler) | portable workspace artifacts only |

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "sales-commission-review-preparer",
+  "scenario": "Review a synthetic commission cycle with opening credited attainment of USD 9000, a USD 2000 credited event crossing a USD 10000 tier boundary, and a separate reversal of an original USD 80 commission line.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Review a synthetic commission cycle with opening credited attainment of USD 9000, a USD 2000 credited event crossing a USD 10000 tier boundary, and a separate reversal of an original USD 80 commission line."
+    },
+    {
+      "role": "agent",
+      "text": "Prepared a private source-bound commission workpaper; no payout is approved."
+    }
+  ],
+  "report": {
+    "title": "Commission cycle: owner review",
+    "summary": "With supplied marginal rates of 5% below the boundary and 10% above, show USD 50 plus USD 100 for the event, retain the separate USD -80 original-line reversal, and leave missing credit decisions or conflicting plan versions blocked. No payout approval.",
+    "output": "outputs/sales-commission-review-preparer-handoff.md",
+    "items": [
+      {
+        "title": "Tier crossing",
+        "summary": "PAYEE-A: USD 9000 opening, USD 2000 credited. USD 50 plus USD 100 = USD 150 commission.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Original-line reversal",
+        "summary": "R1 reverses OLD1's USD 80, not a current-rate recalculation. Remaining original amount: USD 0.",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Payout comparison",
+        "summary": "Expected USD 70; proposed USD 70; difference USD 0. No entitlement or payroll approval.",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

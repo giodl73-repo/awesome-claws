@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object", "additionalProperties": false,
+  "required": ["input", "report"],
+  "properties": { "input": { "$ref": "#/$defs/input" }, "report": { "$ref": "#/$defs/report" } },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$" },
+    "time": { "type": "string", "format": "date-time", "pattern": "(?:Z|[+-][0-9]{2}:[0-9]{2})$" },
+    "amount": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "signed": { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 },
+    "nullableAmount": { "anyOf": [{ "$ref": "#/$defs/amount" }, { "type": "null" }] },
+    "nullableId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+    "refs": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sourceRef", "revision", "record", "at", "state", "decisionOwner"],
+      "properties": {
+        "sourceRef": { "$ref": "#/$defs/id" }, "revision": { "$ref": "#/$defs/id" }, "record": { "$ref": "#/$defs/id" },
+        "at": { "$ref": "#/$defs/time" }, "state": { "enum": ["current", "missing", "conflicting", "superseded", "void"] },
+        "decisionOwner": { "$ref": "#/$defs/nullableId" }
+      }
+    },
+    "tier": {
+      "type": "object", "additionalProperties": false, "required": ["upToMinor", "rateBps"],
+      "properties": { "upToMinor": { "$ref": "#/$defs/nullableAmount" }, "rateBps": { "type": "integer", "minimum": 0, "maximum": 10000 } }
+    },
+    "input": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "scope", "sources", "payees", "plans", "openings", "events", "credits", "originals", "reversals", "payouts"],
+      "properties": {
+        "schemaVersion": { "const": "awesomeClaws.commissionInput.v1" },
+        "scope": {
+          "type": "object", "additionalProperties": false,
+          "required": ["employer", "cycle", "currency", "scale", "periodStart", "periodEnd", "asOf", "owner", "privateDestination", "complete", "eventOrder", "eventIds", "payeeIds", "payoutIds", "reversalIds"],
+          "properties": {
+            "employer": { "$ref": "#/$defs/id" }, "cycle": { "$ref": "#/$defs/id" }, "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+            "scale": { "type": "integer", "minimum": 0, "maximum": 6 }, "periodStart": { "$ref": "#/$defs/time" }, "periodEnd": { "$ref": "#/$defs/time" }, "asOf": { "$ref": "#/$defs/time" },
+            "owner": { "$ref": "#/$defs/nullableId" }, "privateDestination": { "type": "string", "pattern": "^outputs/[A-Za-z0-9._-]+\\.md$" },
+            "complete": { "type": "boolean" }, "eventOrder": { "$ref": "#/$defs/refs" }, "eventIds": { "$ref": "#/$defs/refs" }, "payeeIds": { "$ref": "#/$defs/refs" }, "payoutIds": { "$ref": "#/$defs/refs" }, "reversalIds": { "$ref": "#/$defs/refs" }
+          }
+        },
+        "sources": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "revision", "employer", "currency", "capturedAt", "kind"],
+          "properties": { "id": { "$ref": "#/$defs/id" }, "revision": { "$ref": "#/$defs/id" }, "employer": { "$ref": "#/$defs/id" }, "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }, "capturedAt": { "$ref": "#/$defs/time" }, "kind": { "enum": ["plan", "opening", "event", "credit", "original", "reversal", "payout"] } }
+        } },
+        "payees": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/id" } },
+        "plans": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["id", "version", "payee", "attainmentPeriod", "effectiveFrom", "effectiveTo", "mechanic", "basis", "rounding", "reversalPolicy", "tiers", "evidence"],
+          "properties": { "id": { "$ref": "#/$defs/id" }, "version": { "$ref": "#/$defs/id" }, "payee": { "$ref": "#/$defs/id" }, "attainmentPeriod": { "$ref": "#/$defs/id" },
+            "effectiveFrom": { "$ref": "#/$defs/time" }, "effectiveTo": { "$ref": "#/$defs/time" }, "mechanic": { "enum": ["flat", "marginal", "unsupported"] }, "basis": { "enum": ["owner-credited-amount", "unsupported"] }, "rounding": { "enum": ["half-up-per-credit", "unsupported"] }, "reversalPolicy": { "enum": ["original-amount-no-attainment-rewind", "unsupported"] },
+            "tiers": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/tier" } }, "evidence": { "$ref": "#/$defs/evidence" }
+          }
+        } },
+        "openings": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "payee", "planRef", "planVersion", "asOf", "amountMinor", "evidence"],
+          "properties": { "id": { "$ref": "#/$defs/id" }, "payee": { "$ref": "#/$defs/id" }, "planRef": { "$ref": "#/$defs/id" }, "planVersion": { "$ref": "#/$defs/id" }, "asOf": { "$ref": "#/$defs/time" }, "amountMinor": { "$ref": "#/$defs/nullableAmount" }, "evidence": { "$ref": "#/$defs/evidence" } }
+        } },
+        "events": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "identity", "at", "amountMinor", "evidence"],
+          "properties": { "id": { "$ref": "#/$defs/id" }, "identity": { "$ref": "#/$defs/nullableId" }, "at": { "$ref": "#/$defs/time" }, "amountMinor": { "$ref": "#/$defs/nullableAmount" }, "evidence": { "$ref": "#/$defs/evidence" } }
+        } },
+        "credits": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "eventRef", "payee", "planRef", "planVersion", "amountMinor", "evidence"],
+          "properties": { "id": { "$ref": "#/$defs/id" }, "eventRef": { "$ref": "#/$defs/id" }, "payee": { "$ref": "#/$defs/id" }, "planRef": { "$ref": "#/$defs/id" }, "planVersion": { "$ref": "#/$defs/id" }, "amountMinor": { "$ref": "#/$defs/nullableAmount" }, "evidence": { "$ref": "#/$defs/evidence" } }
+        } },
+        "originals": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "identity", "creditRef", "payee", "planRef", "planVersion", "at", "commissionMinor", "previouslyReversedMinor", "historyComplete", "reversalPolicy", "evidence"],
+          "properties": { "id": { "$ref": "#/$defs/id" }, "identity": { "$ref": "#/$defs/nullableId" }, "creditRef": { "$ref": "#/$defs/id" }, "payee": { "$ref": "#/$defs/id" }, "planRef": { "$ref": "#/$defs/id" }, "planVersion": { "$ref": "#/$defs/id" }, "at": { "$ref": "#/$defs/time" }, "commissionMinor": { "$ref": "#/$defs/nullableAmount" }, "previouslyReversedMinor": { "$ref": "#/$defs/nullableAmount" }, "historyComplete": { "type": "boolean" }, "reversalPolicy": { "enum": ["original-amount-no-attainment-rewind", "unsupported"] }, "evidence": { "$ref": "#/$defs/evidence" } }
+        } },
+        "reversals": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "identity", "originalRef", "payee", "at", "amountMinor", "evidence"],
+          "properties": { "id": { "$ref": "#/$defs/id" }, "identity": { "$ref": "#/$defs/nullableId" }, "originalRef": { "$ref": "#/$defs/id" }, "payee": { "$ref": "#/$defs/id" }, "at": { "$ref": "#/$defs/time" }, "amountMinor": { "$ref": "#/$defs/nullableAmount" }, "evidence": { "$ref": "#/$defs/evidence" } }
+        } },
+        "payouts": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["id", "identity", "payee", "cycle", "amountMinor", "evidence"],
+          "properties": { "id": { "$ref": "#/$defs/id" }, "identity": { "$ref": "#/$defs/nullableId" }, "payee": { "$ref": "#/$defs/id" }, "cycle": { "$ref": "#/$defs/id" }, "amountMinor": { "anyOf": [{ "$ref": "#/$defs/signed" }, { "type": "null" }] }, "evidence": { "$ref": "#/$defs/evidence" } }
+        } }
+      }
+    },
+    "report": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "state", "findings", "calculations", "reversals", "payees", "coverage", "authority"],
+      "properties": {
+        "schemaVersion": { "const": "awesomeClaws.commissionReport.v1" }, "state": { "enum": ["blocked", "ready-for-owner-review"] },
+        "findings": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["code", "ref"], "properties": { "code": { "$ref": "#/$defs/id" }, "ref": { "$ref": "#/$defs/id" } } } },
+        "calculations": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["creditRef", "payee", "planRef", "planVersion", "openingMinor", "closingMinor", "commissionMinor", "segments"],
+          "properties": { "creditRef": { "$ref": "#/$defs/id" }, "payee": { "$ref": "#/$defs/id" }, "planRef": { "$ref": "#/$defs/id" }, "planVersion": { "$ref": "#/$defs/id" }, "openingMinor": { "$ref": "#/$defs/amount" }, "closingMinor": { "$ref": "#/$defs/amount" }, "commissionMinor": { "$ref": "#/$defs/amount" },
+            "segments": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["basisMinor", "rateBps", "unroundedMinor"], "properties": { "basisMinor": { "$ref": "#/$defs/amount" }, "rateBps": { "type": "integer", "minimum": 0, "maximum": 10000 }, "unroundedMinor": { "type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?$" } } } }
+        } } },
+        "reversals": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["ref", "originalRef", "amountMinor", "remainingMinor"], "properties": { "ref": { "$ref": "#/$defs/id" }, "originalRef": { "$ref": "#/$defs/id" }, "amountMinor": { "$ref": "#/$defs/signed" }, "remainingMinor": { "$ref": "#/$defs/amount" } } } },
+        "payees": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["payee", "earnedMinor", "reversedMinor", "expectedMinor", "proposedMinor", "differenceMinor"], "properties": { "payee": { "$ref": "#/$defs/id" }, "earnedMinor": { "$ref": "#/$defs/nullableAmount" }, "reversedMinor": { "$ref": "#/$defs/nullableAmount" }, "expectedMinor": { "anyOf": [{ "$ref": "#/$defs/signed" }, { "type": "null" }] }, "proposedMinor": { "anyOf": [{ "$ref": "#/$defs/signed" }, { "type": "null" }] }, "differenceMinor": { "anyOf": [{ "$ref": "#/$defs/signed" }, { "type": "null" }] } } } },
+        "coverage": { "type": "object", "additionalProperties": false, "required": ["events", "credits", "originals", "reversals", "payouts"], "properties": { "events": { "$ref": "#/$defs/refs" }, "credits": { "$ref": "#/$defs/refs" }, "originals": { "$ref": "#/$defs/refs" }, "reversals": { "$ref": "#/$defs/refs" }, "payouts": { "$ref": "#/$defs/refs" } } },
+        "authority": { "const": "draft-only-no-entitlement-payroll-payment-or-system-action" }
+      }
+    }
+  }
+}
