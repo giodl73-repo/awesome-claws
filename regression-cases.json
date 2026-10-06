@@ -3683,6 +3683,29 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "sales-commission-review-preparer",
+      "acceptedRequest": "Review a synthetic commission cycle with opening credited attainment of USD 9000, a USD 2000 credited event crossing a USD 10000 tier boundary, and a separate reversal of an original USD 80 commission line.",
+      "requiredEvidence": [
+        "Employer alias, pseudonymous payees, review period, currency and scale, trusted as-of time, private destination and named compensation reviewer",
+        "Versioned owner-supplied commission plans with effective periods, calculation basis, flat or marginal-tier rates, opening attainment and exact rounding rules",
+        "Complete declared deal-event universe, event order, source revisions and amounts, plus separately supplied owner credit decisions and payee splits",
+        "Proposed payout lines and owner-recorded reversal decisions linked to the exact original credit and commission lines"
+      ],
+      "authorityBoundaries": [
+        "Do not design or interpret compensation plans, decide entitlement, assign disputed credit or choose among conflicting approvals",
+        "Do not calculate statutory pay, taxes, recoverability or deductions, release payroll, change CRM or compensation systems, or contact employees",
+        "Unsupported plan mechanics and missing evidence remain blocked rather than approximated"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/sales-commission-review-preparer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }

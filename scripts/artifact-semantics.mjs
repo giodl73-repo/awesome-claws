@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { commissionFindings } from "./sales-commission-review-preparer.mjs";
 import { dispatchFindings } from "./service-dispatch-planner.mjs";
 import { fulfillmentFindings } from "./order-fulfillment-reconciler.mjs";
 import { sellerReturnFindings } from "./seller-return-reconciler.mjs";
@@ -53355,6 +53356,7 @@ const validators = {
   "service-dispatch-planner": dispatchFindings,
   "order-fulfillment-reconciler": fulfillmentFindings,
   "seller-return-reconciler": sellerReturnFindings,
+  "sales-commission-review-preparer": commissionFindings,
   "project-document-controller": documentControlFindings,
   "product-manager": productFindings,
   "presentation-producer": presentationEvidenceManifestFindings,

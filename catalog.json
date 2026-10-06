@@ -15676,6 +15676,111 @@
           "role": "fixture"
         }
       ]
+    },
+    {
+      "id": "sales-commission-review-preparer",
+      "name": "Sales Commission Review Preparer",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73"
+        ],
+        "lastVerified": "2026-10-05"
+      },
+      "description": "Prepares a private deal-to-payee commission workpaper from owner-supplied credit decisions and explicit plan versions, preserving marginal-tier calculations, splits, linked reversals and unresolved payout differences without approving compensation or releasing payments.",
+      "audience": "Sales compensation, revenue operations and business finance owners reviewing periodic variable compensation before payroll handoff.",
+      "principles": [
+        "Separate commercial deal evidence, owner credit decisions, calculated commission and observed proposed payout",
+        "Apply only explicit supported plan rules with exact effective versions and supplied opening attainment",
+        "Retain every credit allocation, tier segment, reversal lineage and unresolved difference separately"
+      ],
+      "boundaries": [
+        "Do not design or interpret compensation plans, decide entitlement, assign disputed credit or choose among conflicting approvals",
+        "Do not calculate statutory pay, taxes, recoverability or deductions, release payroll, change CRM or compensation systems, or contact employees",
+        "Unsupported plan mechanics and missing evidence remain blocked rather than approximated"
+      ],
+      "intake": [
+        "Employer alias, pseudonymous payees, review period, currency and scale, trusted as-of time, private destination and named compensation reviewer",
+        "Versioned owner-supplied commission plans with effective periods, calculation basis, flat or marginal-tier rates, opening attainment and exact rounding rules",
+        "Complete declared deal-event universe, event order, source revisions and amounts, plus separately supplied owner credit decisions and payee splits",
+        "Proposed payout lines and owner-recorded reversal decisions linked to the exact original credit and commission lines"
+      ],
+      "workflow": [
+        "Bind scope, source revisions, plan applicability and complete declared deal/payee populations before calculating",
+        "Reconcile owner credit allocations to each eligible deal event without creating or selecting credit decisions",
+        "Show credited basis, opening attainment, each marginal tier segment and calculated commission using explicit owner rules",
+        "Carry linked original-line reversals separately; compare proposed payout lines and preserve per-payee residuals",
+        "Prepare a private reviewer workpaper and blockers; invalidate old review after source, plan or credit revision changes"
+      ],
+      "deliverables": [
+        "Version-bound deal credit ledger",
+        "Per-payee tier calculation workpaper",
+        "Original-line reversal and payout comparison register",
+        "Private compensation-owner handoff"
+      ],
+      "example": {
+        "request": "Review a synthetic commission cycle with opening credited attainment of USD 9000, a USD 2000 credited event crossing a USD 10000 tier boundary, and a separate reversal of an original USD 80 commission line.",
+        "outcome": "With supplied marginal rates of 5% below the boundary and 10% above, show USD 50 plus USD 100 for the event, retain the separate USD -80 original-line reversal, and leave missing credit decisions or conflicting plan versions blocked. No payout approval."
+      },
+      "doneWhen": [
+        "Every declared deal event and payout line is covered once or explicitly unresolved",
+        "Each calculation traces to the exact supplied plan, credit decision, opening attainment and rounding rule",
+        "Reversals cannot exceed their remaining original-line amount or borrow a current plan rate",
+        "Every unresolved credit, unsupported rule and payout difference remains visible with a human next owner"
+      ],
+      "capabilityGuidance": [
+        "Start as X3 with supplied minimized workspace records and a durable Markdown workpaper. No integration or execution authority is required.",
+        "An XLSX export may use existing Spreadsheet Analyst but is not a substitute for the commission evidence contract.",
+        "Write outputs/commission.json as input and recomputed report using schemas/commission.schema.json, with matching private Markdown at outputs/sales-commission-review-preparer-handoff.md. Follow references/commission-contract.md; repository calculation support is not an installed runtime tool."
+      ],
+      "resources": [
+        {
+          "source": "schemas/commission.schema.json",
+          "path": "schemas/commission.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/commission.example.json",
+          "path": "fixtures/commission.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/commission-input.example.json",
+          "path": "fixtures/commission-input.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "fixtures/commission-blocked.example.json",
+          "path": "fixtures/commission-blocked.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "references/commission-contract.md",
+          "path": "references/commission-contract.md",
+          "role": "reference"
+        },
+        {
+          "source": "templates/commission.md",
+          "path": "templates/commission.md",
+          "role": "template"
+        },
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

@@ -129,6 +129,11 @@
     "proofPlan": "Use three synthetic employees in one currency with an approved base change, repeated unapproved bonus and omitted hours input. Require actual per-component amounts and totals with specific questions. Test duplicate and missing employees, wrong periods or units, offsetting unexplained deltas, expired approvals, sensitive identifiers and false release. After admission require X3 session, current Control UI screenshot, generated agreement, focused arithmetic and semantic regressions and npm run check. No live payroll-engine or compliance proof claimed.",
     "existingAlternatives": [
       {
+        "id": "sales-commission-review-preparer",
+        "overlap": "Both preserve source versions, pseudonymous payees, exact compensation amounts and per-payee residuals before a human-owned payroll handoff.",
+        "difference": "Commission Review derives upstream commission from explicit deal-credit splits, ordered attainment and marginal tiers, retaining original-line monetary reversals. Payroll Review compares already-calculated employee/component expectations with provider draft and prior registers; it does not derive commission-plan entitlement or release payments."
+      },
+      {
         "id": "progress-billing-review-preparer",
         "overlap": "Both reconcile financial source revisions, supplied rules, exact amounts and owner review boundaries in private workpapers.",
         "difference": "Progress Billing reconciles cumulative contract-line entitlement, stored-material transfers, retainage and prior certificates. Payroll Review compares provider-calculated employee pay components with prior registers and approved effective-dated changes; it neither certifies construction progress nor calculates customer applications."

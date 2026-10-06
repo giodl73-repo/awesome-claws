@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "awesomeClaws.sessionReportTemplate.v1",
+  "title": "Sales Commission Review Preparer session report",
+  "output": "outputs/sales-commission-review-preparer-handoff.md",
+  "sections": [
+    "employer_currency_scale_cycle_and_private_owner",
+    "declared_populations_source_revisions_and_unresolved_evidence",
+    "effective_plans_opening_attainment_and_ordered_split_credits",
+    "exact_tier_segments_and_per_credit_rounding",
+    "original_line_partial_and_cumulative_reversals",
+    "per_payee_payout_comparison_without_residual_netting",
+    "blocked_findings_and_named_owner_questions",
+    "structured_artifact_and_no_payout_approval"
+  ],
+  "itemShape": {
+    "title": "string",
+    "summary": "string",
+    "tags": [
+      "string"
+    ]
+  },
+  "fallback": "Render the same sections as a private Markdown draft with matching outputs/commission.json under schemas/commission.schema.json. Preserve all supplied evidence and unresolved values. Arithmetic agreement is not entitlement, deduction, payroll or payment approval."
+}
