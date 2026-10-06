@@ -60,6 +60,10 @@ next likely gaps, see the [Awesome Claws roadmap](docs/roadmap.md).
 For a repository-evidence quality baseline across all 150 Claws, see the
 [catalog quality rubric](docs/catalog-quality-rubric.md) and generated
 [scorecard](docs/catalog-quality-scorecard.md).
+For quick adoption paths, use the curated
+[catalog starter sets](docs/catalog-starter-sets.md): 30-Claw bundles for
+business operations, personal life admin, small business, enterprise governance,
+engineering and product, and public/community work.
 For the separate observed-behavior pillar, identity-bound trial schemas, and
 450-trial baseline or 3,150-trial seven-day plan, see the [Runtime Evidence
 Quality rubric](docs/runtime-evidence-quality-rubric.md). Runtime results are
