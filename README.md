@@ -52,8 +52,9 @@ coordinate specialist-Claw artifacts, conflicts, and accountable decisions
 without taking over the people or functions that own the work.
 
 Use the generated [catalog chooser](CHOOSER.md) to compare every starter by
-maintenance state, accountable maintainer, setup burden, external dependencies,
-Experience proof tier, category, and boundary-attention level. The same derived data is available as
+starter set, maintenance state, accountable maintainer, setup burden, external
+dependencies, Experience proof tier, category, and boundary-attention level. The
+same derived data is available as
 [`catalog-chooser.json`](catalog-chooser.json) for tools and other catalogs.
 For the maintainer view of current coverage, manager-Claw composition, and the
 next likely gaps, see the [Awesome Claws roadmap](docs/roadmap.md).
@@ -70,8 +71,9 @@ For the separate observed-behavior pillar, identity-bound trial schemas, and
 450-trial baseline or 3,150-trial seven-day plan, see the [Runtime Evidence
 Quality rubric](docs/runtime-evidence-quality-rubric.md). Runtime results are
 reported beside, never blended into, the unchanged Catalog Quality score.
-For interactive search and shareable filters across proof lanes, capabilities,
-authority attention, ownership, and review freshness, open the generated
+For interactive search and shareable filters across starter sets, proof lanes,
+capabilities, authority attention, ownership, and review freshness, open the
+generated
 [catalog explorer](https://giodl73-repo.github.io/awesome-claws/). Its
 self-contained source is committed as
 [`catalog-explorer.html`](catalog-explorer.html) and published from `main`.
