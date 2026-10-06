@@ -9,7 +9,8 @@ import { readExperienceCases } from "./experience-cases.mjs";
 import { root } from "./openclaw-proof-lib.mjs";
 
 const catalog = await readCatalog();
-const chooser = buildChooser(catalog, await readExperienceCases(catalog));
+const starterSets = await readFile(join(root, "catalog-starter-sets.json"), "utf8").then(JSON.parse);
+const chooser = buildChooser(catalog, await readExperienceCases(catalog), starterSets);
 const explorer = renderCatalogExplorer(chooser);
 
 test("renders a self-contained explorer over authoritative chooser data", () => {

@@ -210,7 +210,7 @@ export function renderCatalogExplorer(chooser) {
     <div class="shell hero">
       <p class="eyebrow">Awesome Claws</p>
       <h1>Find the right starter</h1>
-      <p class="lede">Compare ${chooser.entries.length} portable OpenClaw applications by setup, proof, capability, authority attention, ownership, and review freshness. Filters come from reviewed catalog metadata, not marketing claims.</p>
+      <p class="lede">Compare ${chooser.entries.length} portable OpenClaw applications by starter set, setup, proof, capability, authority attention, ownership, and review freshness. Filters come from reviewed catalog metadata, not marketing claims.</p>
     </div>
   </header>
   <main class="shell">
@@ -224,6 +224,7 @@ export function renderCatalogExplorer(chooser) {
       </div>
       <div class="filter-grid">
         <label>Category<select id="category"></select></label>
+        <label>Starter set<select id="starter"></select></label>
         <label>Setup burden<select id="setup"></select></label>
         <label>Proof tier<select id="proof"></select></label>
         <label>Proof lane<select id="lane"></select></label>
@@ -243,13 +244,13 @@ export function renderCatalogExplorer(chooser) {
     <section id="cards" class="cards" aria-label="Matching Claws"></section>
   </main>
   <footer class="shell">
-    Generated from <a href="catalog.json">catalog.json</a> and <a href="experience-cases.json">experience-cases.json</a>. Authority attention is a consent-review aid, not a security rating. Provider-live behavior is not claimed.
+    Generated from <a href="catalog.json">catalog.json</a>, <a href="experience-cases.json">experience-cases.json</a>, and <a href="catalog-starter-sets.json">catalog-starter-sets.json</a>. Authority attention is a consent-review aid, not a security rating. Provider-live behavior is not claimed.
   </footer>
   <script type="application/json" id="catalog-data">${jsonForHtml(chooser)}</script>
   <script>
     const catalog = JSON.parse(document.getElementById("catalog-data").textContent);
     const controls = Object.fromEntries(
-      ["search", "category", "setup", "proof", "lane", "capability", "authority", "dependency", "maintenance", "maintainer", "freshness", "sort"]
+      ["search", "category", "starter", "setup", "proof", "lane", "capability", "authority", "dependency", "maintenance", "maintainer", "freshness", "sort"]
         .map((id) => [id, document.getElementById(id)]),
     );
     const params = new URLSearchParams(window.location.search);
@@ -268,6 +269,10 @@ export function renderCatalogExplorer(chooser) {
       control.replaceChildren(new Option(allLabel, ""), ...values.map((value) => new Option(title(value), value)));
     };
     fill(controls.category, unique(catalog.entries.map((entry) => entry.category)), "All categories");
+    controls.starter.replaceChildren(
+      new Option("Any starter set", ""),
+      ...catalog.starterSets.map((set) => new Option(set.name, set.id)),
+    );
     fill(controls.setup, ["low", "medium", "high"], "Any setup");
     fill(controls.proof, unique(catalog.entries.map((entry) => entry.proofTier)), "Any proof tier");
     fill(controls.lane, unique(catalog.entries.flatMap((entry) => entry.proofLanes)), "Any proof lane");
@@ -291,6 +296,7 @@ export function renderCatalogExplorer(chooser) {
       (value === "older" && ageDays(entry.maintenance.lastVerified) > 90);
     const textFor = (entry) => [
       entry.id, entry.name, entry.description, entry.audience, entry.category,
+      ...entry.starterSets.map((setId) => catalog.starterSets.find((set) => set.id === setId)?.name ?? setId),
       ...entry.capabilityClasses, ...entry.proofLanes, ...entry.setup.reasons,
       ...entry.boundaryAttention.reasons, ...entry.maintenance.maintainers,
       ...entry.externalDependencies.flatMap((item) => [item.kind, item.id]),
@@ -311,6 +317,7 @@ export function renderCatalogExplorer(chooser) {
         <div class="chips">\${chips([entry.category, ...entry.capabilityClasses])}</div>
         <dl>
           <dt>Audience</dt><dd>\${escapeHtml(entry.audience)}</dd>
+          <dt>Starter sets</dt><dd>\${entry.starterSets.length ? escapeHtml(entry.starterSets.map((setId) => catalog.starterSets.find((set) => set.id === setId)?.name ?? setId).join(", ")) : "None"}</dd>
           <dt>Setup</dt><dd>\${escapeHtml(title(entry.setup.level))}: \${escapeHtml(entry.setup.reasons.join("; "))}</dd>
           <dt>Proof</dt><dd>\${escapeHtml(entry.proofLanes.map(title).join(", "))}</dd>
           <dt>Authority</dt><dd>\${escapeHtml(title(entry.boundaryAttention.level))}: \${escapeHtml(entry.boundaryAttention.reasons.join("; "))}</dd>
@@ -326,6 +333,7 @@ export function renderCatalogExplorer(chooser) {
       const entries = catalog.entries.filter((entry) =>
         (!query || textFor(entry).includes(query)) &&
         (!state.category || entry.category === state.category) &&
+        (!state.starter || entry.starterSets.includes(state.starter)) &&
         (!state.setup || entry.setup.level === state.setup) &&
         (!state.proof || entry.proofTier === state.proof) &&
         (!state.lane || entry.proofLanes.includes(state.lane)) &&

@@ -8,7 +8,8 @@ import { root } from "./openclaw-proof-lib.mjs";
 
 const check = process.argv.includes("--check");
 const catalog = await readCatalog();
-const chooser = buildChooser(catalog, await readExperienceCases(catalog));
+const starterSets = await readFile(join(root, "catalog-starter-sets.json"), "utf8").then(JSON.parse);
+const chooser = buildChooser(catalog, await readExperienceCases(catalog), starterSets);
 const outputs = new Map([
   ["catalog-chooser.json", `${JSON.stringify(chooser, null, 2)}\n`],
   ["CHOOSER.md", renderChooserMarkdown(chooser)],

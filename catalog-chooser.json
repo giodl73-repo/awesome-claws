@@ -2,7 +2,232 @@
   "schemaVersion": 1,
   "generatedFrom": [
     "catalog.json",
-    "experience-cases.json"
+    "experience-cases.json",
+    "catalog-starter-sets.json"
+  ],
+  "starterSets": [
+    {
+      "id": "business-operations",
+      "name": "Business Operations 30",
+      "description": "For teams that want general operating cadence, coordination, sales, finance, events, people, and leadership support.",
+      "claws": [
+        "work-chief-of-staff",
+        "executive-assistant",
+        "executive-briefing",
+        "meeting-intelligence",
+        "project-manager",
+        "delegation-coordinator",
+        "workflow-operator",
+        "sales-operations",
+        "customer-support",
+        "customer-success-program-manager",
+        "partner-business-manager",
+        "commercial-deal-desk-coordinator",
+        "invoice-payment-followup",
+        "procurement-evaluator",
+        "procure-to-pay-three-way-match-exception-reconciler",
+        "contract-obligation-tracker",
+        "benefits-realization-manager",
+        "workforce-planning-partner",
+        "recruiting-coordinator",
+        "training-compliance-coordinator",
+        "facilities-operations-coordinator",
+        "event-operations-director",
+        "event-sponsorship-coordinator",
+        "fundraising-campaign-manager",
+        "grant-portfolio-manager",
+        "content-operations",
+        "presentation-producer",
+        "research-briefing",
+        "spreadsheet-analyst",
+        "financial-analyst"
+      ]
+    },
+    {
+      "id": "personal-life-admin",
+      "name": "Personal Life Admin 30",
+      "description": "For household, family, health, travel, documents, purchases, money, and civic life coordination.",
+      "claws": [
+        "travel-concierge",
+        "travel-planner",
+        "travel-loyalty-points-organizer",
+        "benefits-open-enrollment-planner",
+        "health-records-binder",
+        "medical-appointment-prep",
+        "medication-regimen-coordinator",
+        "care-circle-coordinator",
+        "household-steward",
+        "household-budget-steward",
+        "meal-grocery-planner",
+        "home-inventory-binder",
+        "home-repair-coordinator",
+        "appliance-care-coordinator",
+        "vehicle-service-coordinator",
+        "warranty-returns-manager",
+        "insurance-policy-organizer",
+        "property-insurance-claim-coordinator",
+        "insurance-appeal-coordinator",
+        "document-renewal-tracker",
+        "tax-document-organizer",
+        "subscription-manager",
+        "purchase-researcher",
+        "gift-relationship-manager",
+        "personal-archive-curator",
+        "life-timeline-keeper",
+        "school-coordinator",
+        "child-activity-manager",
+        "college-application-coordinator",
+        "civic-services-navigator"
+      ]
+    },
+    {
+      "id": "small-business",
+      "name": "Small Business 30",
+      "description": "For solo operators, agencies, creators, local businesses, and small teams that need lightweight operating support without enterprise overhead.",
+      "claws": [
+        "executive-assistant",
+        "project-manager",
+        "meeting-intelligence",
+        "sales-operations",
+        "freelance-client-pipeline",
+        "professional-networking-followup",
+        "invoice-payment-followup",
+        "financial-analyst",
+        "spreadsheet-analyst",
+        "purchase-researcher",
+        "content-operations",
+        "creator-content-calendar-coordinator",
+        "video-concept-producer",
+        "presentation-producer",
+        "website-evidence-collector",
+        "web-evidence-researcher",
+        "research-scout",
+        "research-monitor",
+        "customer-support",
+        "customer-success-program-manager",
+        "procurement-evaluator",
+        "contract-obligation-tracker",
+        "certification-renewal-planner",
+        "tax-document-organizer",
+        "fundraising-campaign-manager",
+        "event-sponsorship-coordinator",
+        "donation-receipt-coordinator",
+        "community-moderation-coordinator",
+        "knowledge-curator",
+        "knowledge-gardener"
+      ]
+    },
+    {
+      "id": "enterprise-governance",
+      "name": "Enterprise Governance 30",
+      "description": "For larger organizations that need auditability, authority separation, recertification, continuity, privacy, vendor, security, and compliance controls.",
+      "claws": [
+        "access-entitlement-review-coordinator",
+        "backup-restore-verification-coordinator",
+        "business-continuity-program-manager",
+        "compliance-reviewer",
+        "data-governance-steward",
+        "enterprise-license-entitlement-reconciler",
+        "financial-account-reconciliation-coordinator",
+        "infrastructure-drift-reconciliation-coordinator",
+        "legal-matter-organizer",
+        "privacy-request-coordinator",
+        "records-retention-disposition-coordinator",
+        "recurring-third-party-review-evidence-reconciler",
+        "repository-compliance-program-manager",
+        "security-alert-review-reconciler",
+        "vulnerability-disposition-coordinator",
+        "tls-certificate-rotation-verification-coordinator",
+        "board-meeting-governance-coordinator",
+        "vendor-offboarding-coordinator",
+        "hardware-asset-lifecycle-coordinator",
+        "training-compliance-coordinator",
+        "workforce-planning-partner",
+        "contract-obligation-tracker",
+        "procure-to-pay-three-way-match-exception-reconciler",
+        "supplier-capacity-assurance-manager",
+        "manufacturing-operations-planner",
+        "release-coordinator",
+        "change-control-operator",
+        "problem-known-error-coordinator",
+        "incident-response",
+        "security-analyst"
+      ]
+    },
+    {
+      "id": "engineering-and-product",
+      "name": "Engineering And Product 30",
+      "description": "For product, platform, software, data, QA, release, architecture, and technical operations teams.",
+      "claws": [
+        "software-maintainer",
+        "repository-operations-manager",
+        "api-integration-engineer",
+        "api-deprecation-coordinator",
+        "change-control-operator",
+        "release-coordinator",
+        "incident-response",
+        "security-analyst",
+        "vulnerability-disposition-coordinator",
+        "tls-certificate-rotation-verification-coordinator",
+        "backup-restore-verification-coordinator",
+        "infrastructure-drift-reconciliation-coordinator",
+        "data-migration-planner",
+        "cloud-cost-analyst",
+        "solution-architecture-decision-advisor",
+        "quality-assurance-lead",
+        "product-manager",
+        "experimentation-lead",
+        "ux-research-synthesizer",
+        "model-evaluation-adjudicator",
+        "feed-intelligence-monitor",
+        "data-analyst",
+        "spreadsheet-analyst",
+        "research-briefing",
+        "website-evidence-collector",
+        "web-evidence-researcher",
+        "workflow-operator",
+        "knowledge-gardener",
+        "localization-program-manager",
+        "accessibility-review-coordinator"
+      ]
+    },
+    {
+      "id": "public-community-nonprofit",
+      "name": "Public, Community, And Nonprofit 30",
+      "description": "For civic, education, nonprofit, neighborhood, public-interest, and community-governed work.",
+      "claws": [
+        "civic-services-navigator",
+        "civic-data-analyst",
+        "public-safety-monitor",
+        "neighborhood-operations-watcher",
+        "community-moderation-coordinator",
+        "donation-receipt-coordinator",
+        "fundraising-campaign-manager",
+        "grant-portfolio-manager",
+        "event-sponsorship-coordinator",
+        "event-operations-director",
+        "board-meeting-governance-coordinator",
+        "school-coordinator",
+        "child-activity-manager",
+        "learning-plan-coordinator",
+        "learning-program-manager",
+        "scholarship-award-coordinator",
+        "college-application-coordinator",
+        "permit-application-coordinator",
+        "benefits-open-enrollment-planner",
+        "insurance-appeal-coordinator",
+        "property-insurance-claim-coordinator",
+        "identity-theft-recovery-coordinator",
+        "household-emergency-preparedness-coordinator",
+        "care-circle-coordinator",
+        "legal-matter-organizer",
+        "records-retention-disposition-coordinator",
+        "privacy-request-coordinator",
+        "accessibility-review-coordinator",
+        "research-scout",
+        "media-evidence-reviewer"
+      ]
+    }
   ],
   "rules": {
     "setupBurden": {
@@ -21,7 +246,8 @@
       "active": "Maintained and accepting ordinary improvements.",
       "needs-help": "Still supported, but an additional maintainer is needed.",
       "retiring": "Maintained only through a documented retirement transition."
-    }
+    },
+    "starterSets": "Editorial 30-Claw bundles for quick adoption. A Claw can belong to more than one set."
   },
   "entries": [
     {
@@ -56,7 +282,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "accessibility-review-coordinator",
@@ -93,7 +322,11 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "api-deprecation-coordinator",
@@ -127,7 +360,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "api-integration-engineer",
@@ -165,7 +401,10 @@
         "reasons": [
           "full tool profile"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "appliance-care-coordinator",
@@ -199,7 +438,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "backup-restore-verification-coordinator",
@@ -233,7 +475,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "benefits-open-enrollment-planner",
@@ -267,7 +513,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "benefits-realization-manager",
@@ -304,7 +554,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations"
+      ]
     },
     {
       "id": "board-meeting-governance-coordinator",
@@ -338,7 +591,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "business-continuity-program-manager",
@@ -376,7 +633,10 @@
         "reasons": [
           "scheduled execution"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "care-circle-coordinator",
@@ -410,7 +670,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "case-continuity-coordinator",
@@ -444,7 +708,8 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "certification-renewal-planner",
@@ -478,7 +743,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business"
+      ]
     },
     {
       "id": "change-control-operator",
@@ -514,7 +782,11 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "child-activity-manager",
@@ -548,7 +820,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "civic-data-analyst",
@@ -591,7 +867,10 @@
         "reasons": [
           "pinned skill"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "civic-services-navigator",
@@ -625,7 +904,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "clinical-trial-participation-coordinator",
@@ -659,7 +942,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "cloud-cost-analyst",
@@ -696,7 +980,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "college-application-coordinator",
@@ -730,7 +1017,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "commercial-deal-desk-coordinator",
@@ -767,7 +1058,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations"
+      ]
     },
     {
       "id": "community-moderation-coordinator",
@@ -801,7 +1095,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "compliance-reviewer",
@@ -838,7 +1136,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "conference-opportunity-scout",
@@ -872,7 +1173,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "consumer-product-recall-coordinator",
@@ -906,7 +1208,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "content-operations",
@@ -940,7 +1243,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "contract-obligation-tracker",
@@ -974,7 +1281,12 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business",
+        "enterprise-governance"
+      ]
     },
     {
       "id": "creator-content-calendar-coordinator",
@@ -1008,7 +1320,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business"
+      ]
     },
     {
       "id": "customer-success-program-manager",
@@ -1045,7 +1360,11 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "customer-support",
@@ -1091,7 +1410,11 @@
           "pinned skill",
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "data-analyst",
@@ -1128,7 +1451,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "data-governance-steward",
@@ -1165,7 +1491,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "data-migration-planner",
@@ -1202,7 +1531,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "delegation-coordinator",
@@ -1238,7 +1570,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations"
+      ]
     },
     {
       "id": "document-intake-analyst",
@@ -1281,7 +1616,8 @@
         "reasons": [
           "pinned skill"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "document-renewal-tracker",
@@ -1315,7 +1651,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "donation-receipt-coordinator",
@@ -1349,7 +1688,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "enterprise-license-entitlement-reconciler",
@@ -1386,7 +1729,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "estate-administration-coordinator",
@@ -1420,7 +1766,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "event-operations-director",
@@ -1460,7 +1807,11 @@
           "explicit tool policy",
           "persistent dashboard"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "event-sponsorship-coordinator",
@@ -1494,7 +1845,12 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "executive-assistant",
@@ -1531,7 +1887,11 @@
           "guided local setup",
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "executive-briefing",
@@ -1581,7 +1941,10 @@
         "reasons": [
           "scheduled execution"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations"
+      ]
     },
     {
       "id": "experimentation-lead",
@@ -1618,7 +1981,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "facilities-operations-coordinator",
@@ -1657,7 +2023,10 @@
           "guided local setup",
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations"
+      ]
     },
     {
       "id": "fantasy-sports-manager",
@@ -1691,7 +2060,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "feed-intelligence-monitor",
@@ -1736,7 +2106,10 @@
         "reasons": [
           "scheduled execution"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "financial-account-reconciliation-coordinator",
@@ -1770,7 +2143,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "financial-analyst",
@@ -1817,7 +2193,11 @@
           "guided local setup",
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "freelance-client-pipeline",
@@ -1851,7 +2231,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business"
+      ]
     },
     {
       "id": "fundraising-campaign-manager",
@@ -1887,7 +2270,12 @@
         "reasons": [
           "guided local setup"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "games-backlog-manager",
@@ -1921,7 +2309,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "gift-relationship-manager",
@@ -1955,7 +2344,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "grant-portfolio-manager",
@@ -1995,7 +2387,11 @@
           "explicit tool policy",
           "persistent dashboard"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "green-thumb-coordinator",
@@ -2029,7 +2425,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "hardware-asset-lifecycle-coordinator",
@@ -2063,7 +2460,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "health-records-binder",
@@ -2097,7 +2497,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "home-energy-upgrade-coordinator",
@@ -2131,7 +2534,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "home-inventory-binder",
@@ -2165,7 +2569,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "home-purchase-transaction-coordinator",
@@ -2199,7 +2606,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "home-repair-coordinator",
@@ -2233,7 +2641,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "household-budget-steward",
@@ -2267,7 +2678,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "household-emergency-preparedness-coordinator",
@@ -2301,7 +2715,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "household-steward",
@@ -2337,7 +2754,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "identity-theft-recovery-coordinator",
@@ -2371,7 +2791,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "incident-response",
@@ -2409,7 +2832,11 @@
         "reasons": [
           "scheduled execution"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "infrastructure-drift-reconciliation-coordinator",
@@ -2443,7 +2870,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "insurance-appeal-coordinator",
@@ -2477,7 +2908,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "insurance-policy-organizer",
@@ -2511,7 +2946,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "invoice-payment-followup",
@@ -2545,7 +2983,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "job-application-tracker",
@@ -2579,7 +3021,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "knowledge-curator",
@@ -2613,7 +3056,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business"
+      ]
     },
     {
       "id": "knowledge-gardener",
@@ -2647,7 +3093,11 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "learning-plan-coordinator",
@@ -2681,7 +3131,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "learning-program-manager",
@@ -2718,7 +3171,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "legal-matter-organizer",
@@ -2752,7 +3208,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "life-timeline-keeper",
@@ -2786,7 +3246,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "local-events-watcher",
@@ -2820,7 +3283,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "localization-program-manager",
@@ -2857,7 +3321,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "manufacturing-operations-planner",
@@ -2897,7 +3364,10 @@
           "explicit tool policy",
           "persistent dashboard"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "meal-grocery-planner",
@@ -2931,7 +3401,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "media-evidence-reviewer",
@@ -2979,7 +3452,10 @@
         "reasons": [
           "pinned skill"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "medical-appointment-prep",
@@ -3013,7 +3489,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "medication-regimen-coordinator",
@@ -3047,7 +3526,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "meeting-intelligence",
@@ -3097,7 +3579,11 @@
           "pinned skill",
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "model-evaluation-adjudicator",
@@ -3131,7 +3617,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "movie-streaming-organizer",
@@ -3165,7 +3654,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "moving-checklist-coordinator",
@@ -3199,7 +3689,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "music-organizer",
@@ -3233,7 +3724,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "neighborhood-operations-watcher",
@@ -3267,7 +3759,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "partner-business-manager",
@@ -3304,7 +3799,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations"
+      ]
     },
     {
       "id": "permit-application-coordinator",
@@ -3338,7 +3836,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "personal-archive-curator",
@@ -3372,7 +3873,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "pet-care-coordinator",
@@ -3406,7 +3910,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "pond-water-feature-coordinator",
@@ -3440,7 +3945,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "presentation-producer",
@@ -3483,7 +3989,11 @@
         "reasons": [
           "pinned skill"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "privacy-request-coordinator",
@@ -3521,7 +4031,11 @@
           "explicit tool policy",
           "persistent dashboard"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "problem-known-error-coordinator",
@@ -3559,7 +4073,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "procure-to-pay-three-way-match-exception-reconciler",
@@ -3597,7 +4114,11 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "enterprise-governance"
+      ]
     },
     {
       "id": "procurement-evaluator",
@@ -3637,7 +4158,11 @@
           "explicit tool policy",
           "persistent dashboard"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "product-manager",
@@ -3674,7 +4199,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "professional-networking-followup",
@@ -3708,7 +4236,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business"
+      ]
     },
     {
       "id": "project-manager",
@@ -3745,7 +4276,11 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "property-insurance-claim-coordinator",
@@ -3779,7 +4314,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "public-company-watcher",
@@ -3824,7 +4363,8 @@
         "reasons": [
           "scheduled execution"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "public-safety-monitor",
@@ -3874,7 +4414,10 @@
         "reasons": [
           "scheduled execution"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "purchase-researcher",
@@ -3908,7 +4451,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "small-business"
+      ]
     },
     {
       "id": "quality-assurance-lead",
@@ -3945,7 +4492,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "records-retention-disposition-coordinator",
@@ -3979,7 +4529,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "recruiting-coordinator",
@@ -4013,7 +4567,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations"
+      ]
     },
     {
       "id": "recurring-third-party-review-evidence-reconciler",
@@ -4051,7 +4608,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "release-coordinator",
@@ -4102,7 +4662,11 @@
           "pinned skill",
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "rental-housing-coordinator",
@@ -4136,7 +4700,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "repository-compliance-program-manager",
@@ -4181,7 +4746,10 @@
           "network MCP connection",
           "full tool profile"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "repository-operations-manager",
@@ -4215,7 +4783,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "research-briefing",
@@ -4252,7 +4823,11 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "research-monitor",
@@ -4298,7 +4873,10 @@
           "plugin runtime",
           "scheduled execution"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business"
+      ]
     },
     {
       "id": "research-scout",
@@ -4343,7 +4921,11 @@
         "reasons": [
           "scheduled execution"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "restaurant-venue-scout",
@@ -4377,7 +4959,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "resume-portfolio-curator",
@@ -4411,7 +4994,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "sales-operations",
@@ -4445,7 +5029,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business"
+      ]
     },
     {
       "id": "scholarship-award-coordinator",
@@ -4479,7 +5067,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "school-coordinator",
@@ -4513,7 +5104,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "public-community-nonprofit"
+      ]
     },
     {
       "id": "security-alert-review-reconciler",
@@ -4551,7 +5146,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "security-analyst",
@@ -4588,7 +5186,11 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "software-maintainer",
@@ -4642,7 +5244,10 @@
           "network MCP connection",
           "full tool profile"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "solution-architecture-decision-advisor",
@@ -4679,7 +5284,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "sports-team-watcher",
@@ -4713,7 +5321,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "spreadsheet-analyst",
@@ -4756,7 +5365,12 @@
         "reasons": [
           "pinned skill"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "small-business",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "stock-portfolio-monitor",
@@ -4790,7 +5404,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "subscription-manager",
@@ -4824,7 +5439,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "supplier-capacity-assurance-manager",
@@ -4861,7 +5479,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "tax-document-organizer",
@@ -4895,7 +5516,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin",
+        "small-business"
+      ]
     },
     {
       "id": "tls-certificate-rotation-verification-coordinator",
@@ -4929,7 +5554,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "training-compliance-coordinator",
@@ -4963,7 +5592,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "enterprise-governance"
+      ]
     },
     {
       "id": "travel-concierge",
@@ -5022,7 +5655,10 @@
           "network MCP connection",
           "scheduled execution"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "travel-loyalty-points-organizer",
@@ -5056,7 +5692,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "travel-planner",
@@ -5104,7 +5743,10 @@
         "reasons": [
           "pinned skill"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "ux-research-synthesizer",
@@ -5141,7 +5783,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "engineering-and-product"
+      ]
     },
     {
       "id": "vehicle-service-coordinator",
@@ -5175,7 +5820,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "vendor-offboarding-coordinator",
@@ -5209,7 +5857,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance"
+      ]
     },
     {
       "id": "video-concept-producer",
@@ -5252,7 +5903,10 @@
         "reasons": [
           "plugin runtime"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business"
+      ]
     },
     {
       "id": "vulnerability-disposition-coordinator",
@@ -5286,7 +5940,11 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "enterprise-governance",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "wardrobe-organizer",
@@ -5320,7 +5978,8 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": []
     },
     {
       "id": "warranty-returns-manager",
@@ -5354,7 +6013,10 @@
         "reasons": [
           "portable workspace artifacts only"
         ]
-      }
+      },
+      "starterSets": [
+        "personal-life-admin"
+      ]
     },
     {
       "id": "web-evidence-researcher",
@@ -5397,7 +6059,11 @@
         "reasons": [
           "plugin runtime"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "website-evidence-collector",
@@ -5440,7 +6106,11 @@
         "reasons": [
           "plugin runtime"
         ]
-      }
+      },
+      "starterSets": [
+        "small-business",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "work-chief-of-staff",
@@ -5476,7 +6146,10 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations"
+      ]
     },
     {
       "id": "workflow-operator",
@@ -5519,7 +6192,11 @@
         "reasons": [
           "plugin runtime"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "engineering-and-product"
+      ]
     },
     {
       "id": "workforce-planning-partner",
@@ -5556,7 +6233,11 @@
         "reasons": [
           "explicit tool policy"
         ]
-      }
+      },
+      "starterSets": [
+        "business-operations",
+        "enterprise-governance"
+      ]
     }
   ]
 }
