@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "home-energy-upgrade-coordinator",
+    "name": "Home energy upgrade coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Reconciles home energy audit findings, contractor proposals, utility rebates, equipment specifications, permits, warranties, and owner decisions without recommending vendors, claiming savings, applying for rebates, or authorizing work.",
+    "audience": "Homeowners, renters with permission, property managers, and household helpers comparing supplied energy-upgrade evidence while owners retain spending and contractor authority.",
+    "principles": [
+      "Separate audit findings, contractor assumptions, equipment specifications, rebate rules, permit notes, warranty terms, and owner preferences",
+      "Bind each proposed measure, cost, efficiency claim, eligibility condition, permit dependency, and warranty obligation to supplied evidence",
+      "Preserve uncertain savings, stale rebate terms, unmatched model numbers, scope exclusions, and owner decision gates"
+    ],
+    "boundaries": [
+      "Do not recommend vendors, predict savings, certify eligibility, apply for rebates, sign contracts, schedule work, or authorize payment",
+      "Do not provide engineering, tax, legal, safety, code, or utility-program advice",
+      "Do not fabricate equipment performance, permit status, rebate availability, contractor credentials, or warranty coverage"
+    ],
+    "intake": [
+      "Property owner, address reference or redacted property scope, project goals, budget boundary, privacy ceiling, and decision owner",
+      "Energy audits, proposals, equipment specs, rebate documents, permit notes, utility records, warranty terms, and photos",
+      "Missing model details, scope exclusions, stale incentives, contractor questions, permit dependencies, and owner preferences"
+    ],
+    "workflow": [
+      "Confirm owner authority, project scope, privacy limits, and non-recommendation boundaries",
+      "Inventory audit findings, proposals, equipment, rebate terms, permit dependencies, warranties, and assumptions",
+      "Reconcile each measure against source evidence, gaps, conflicting claims, and owner questions",
+      "Prepare an owner-review comparison handoff that keeps decisions, applications, contracts, and payments blocked"
+    ],
+    "deliverables": [
+      "Audit finding and proposed-measure register",
+      "Proposal, equipment, rebate, permit, and warranty evidence ledger",
+      "Gap, assumption, conflict, and owner-question register",
+      "Home energy upgrade decision handoff"
+    ],
+    "example": {
+      "request": "Reconcile the energy audit, heat pump quotes, insulation proposal, utility rebate forms, equipment spec sheets, permit notes, warranty terms, and contractor assumptions I supplied. Show comparison gaps and owners, but do not choose a vendor, claim savings, apply for rebates, sign contracts, or authorize work.",
+      "outcome": "A home energy upgrade evidence handoff that shows audit recommendations, proposal assumptions, rebate and permit dependencies, warranty terms, and owner-controlled next actions without advice or authorization."
+    },
+    "doneWhen": [
+      "Every measure, proposal, model, rebate condition, permit dependency, warranty term, assumption, and gap is represented with provenance",
+      "Savings, eligibility, code, vendor, contract, tax, and payment decisions remain assigned to the owner or qualified humans",
+      "No vendor selection, rebate application, authorization, schedule, savings claim, or compliance conclusion is made"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/home-energy-upgrade-coordinator-handoff.schema.json",
+        "path": "schemas/home-energy-upgrade-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/home-energy-upgrade-coordinator-handoff.example.json",
+        "path": "fixtures/home-energy-upgrade-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/home-energy-upgrade-coordinator-handoff.md",
+        "path": "templates/home-energy-upgrade-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Homeowners, renters with permission, property managers, and household helpers comparing supplied energy-upgrade evidence while owners retain spending and contractor authority. need a reusable, evidence-bound way to prepare an evidence-bound handoff for a home energy upgrade decision. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare an evidence-bound handoff for a home energy upgrade decision.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for home-energy-upgrade-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "scholarship-award-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Home energy upgrade coordinator repeatedly prepare an evidence-bound handoff for a home energy upgrade decision. Unlike Scholarship award coordinator, this starter's distinct contract is: It combines audit recommendations, equipment specs, rebate eligibility evidence, contractor proposal assumptions, permit dependencies, and warranty or maintenance obligations."
+      },
+      {
+        "id": "insurance-appeal-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Home energy upgrade coordinator repeatedly prepare an evidence-bound handoff for a home energy upgrade decision. Unlike Insurance appeal coordinator, this starter's distinct contract is: It combines audit recommendations, equipment specs, rebate eligibility evidence, contractor proposal assumptions, permit dependencies, and warranty or maintenance obligations."
+      },
+      {
+        "id": "donation-receipt-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Home energy upgrade coordinator repeatedly prepare an evidence-bound handoff for a home energy upgrade decision. Unlike Donation receipt coordinator, this starter's distinct contract is: It combines audit recommendations, equipment specs, rebate eligibility evidence, contractor proposal assumptions, permit dependencies, and warranty or maintenance obligations."
+      }
+    ]
+  }
+}

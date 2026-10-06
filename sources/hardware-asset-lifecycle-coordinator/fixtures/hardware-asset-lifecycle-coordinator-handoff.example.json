@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "hardware-asset-lifecycle-coordinator",
+  "request": "Reconcile the laptop asset list, purchase records, user assignments, warranty status, repair tickets, return labels, wipe attestations, disposal vendor receipts, and missing custody confirmations I supplied. Do not order, wipe, transfer, dispose, approve write-off, or certify sanitization.",
+  "scope": "IT, facilities, finance, and operations teams managing device fleets while system owners and custodians retain asset and data-handling authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Asset identity, purchase, assignment, and custody register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every asset, serial, custodian, purchase, warranty, repair, return, wipe, disposal, approval, and gap has provenance and owner"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Warranty, repair, return, sanitization, and disposal evidence ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Missing, stale, conflicting, sensitive, unverified, and approval-dependent states remain visible"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not order hardware, assign devices, wipe disks, transfer custody, approve write-offs, ship returns, or dispose assets"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "No order, assignment, wipe, transfer, disposal, write-off, or certification action is performed or implied"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not order hardware, assign devices, wipe disks, transfer custody, approve write-offs, ship returns, or dispose assets",
+    "Do not certify sanitization, chain of custody, warranty coverage, accounting treatment, or disposal compliance",
+    "Do not expose device secrets, user data, customer data, credentials, or unnecessary employee information"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "clinical-trial-participation-coordinator",
+    "name": "Clinical trial participation coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Maintains a participant-controlled trial participation ledger for protocol visits, consent versions, study contacts, windows, reimbursements, adverse-event questions, and owner tasks without medical advice or study communication.",
+    "audience": "Trial participants, caregivers, and authorized study-support helpers coordinating supplied protocol logistics while investigators and clinicians retain medical and research authority.",
+    "principles": [
+      "Separate participant notes, consent versions, protocol instructions, clinician guidance, study-site messages, and reimbursement records",
+      "Bind every visit, window, task, restriction, symptom question, and receipt to exact supplied evidence",
+      "Preserve uncertainty about eligibility, safety, adverse events, clinical meaning, and protocol interpretation"
+    ],
+    "boundaries": [
+      "Do not provide medical advice, protocol interpretation, eligibility decisions, safety determinations, or adverse-event reporting judgments",
+      "Do not contact study staff, clinicians, sponsors, labs, pharmacies, or payers; schedule visits; change medication; submit diaries; or sign consent",
+      "Do not minimize symptoms, side effects, privacy risks, withdrawal rights, or urgent-care instructions"
+    ],
+    "intake": [
+      "Participant owner, authorized helper role, study identifier or controlled reference, consent version, privacy ceiling, and escalation path",
+      "Protocol schedule, visit windows, task instructions, coordinator messages, clinician notes, diaries, reimbursement records, and restrictions",
+      "Symptoms, questions, missed windows, conflicts, missing instructions, urgent flags, and next human owner"
+    ],
+    "workflow": [
+      "Confirm participant authority, study scope, consent-version identity, privacy boundary, and medical-escalation limits",
+      "Inventory supplied protocol logistics, visit windows, tasks, restrictions, contacts, and reimbursement instructions",
+      "Map participant notes and questions to the relevant visit, window, instruction, clinician, or study-site source",
+      "Prepare a logistics handoff that highlights missed windows, conflicts, urgent questions, and blocked communication or medical decisions"
+    ],
+    "deliverables": [
+      "Consent, protocol, visit, and task source register",
+      "Visit-window, diary, lab, restriction, and reimbursement ledger",
+      "Symptom, conflict, urgent-question, and escalation register",
+      "Participant-review study logistics handoff"
+    ],
+    "example": {
+      "request": "Reconcile the consent form version, visit schedule, lab windows, diary tasks, reimbursement notes, medication restrictions, coordinator emails, and symptom questions I supplied for this study. Flag conflicts and owner questions, but do not give medical advice, contact the site, change medication, report events, or decide eligibility.",
+      "outcome": "A participant-controlled study logistics handoff with protocol windows, supplied instructions, missing evidence, reimbursement state, and clinician or study-site questions separated from medical or research decisions."
+    },
+    "doneWhen": [
+      "Every supplied consent version, visit window, task, restriction, reimbursement item, message, symptom question, and conflict is recorded with provenance",
+      "Medical, safety, eligibility, protocol, and adverse-event questions are routed to named qualified humans or study contacts",
+      "No study communication, schedule change, diary submission, consent action, medication change, or clinical conclusion is taken or implied"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/clinical-trial-participation-coordinator-handoff.schema.json",
+        "path": "schemas/clinical-trial-participation-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/clinical-trial-participation-coordinator-handoff.example.json",
+        "path": "fixtures/clinical-trial-participation-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/clinical-trial-participation-coordinator-handoff.md",
+        "path": "templates/clinical-trial-participation-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Trial participants, caregivers, and authorized study-support helpers coordinating supplied protocol logistics while investigators and clinicians retain medical and research authority. need a reusable, evidence-bound way to reconcile study participation logistics and evidence for an enrolled or screening participant. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Reconcile study participation logistics and evidence for an enrolled or screening participant.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for clinical-trial-participation-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "insurance-appeal-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Clinical trial participation coordinator repeatedly reconcile study participation logistics and evidence for an enrolled or screening participant. Unlike Insurance appeal coordinator, this starter's distinct contract is: It tracks protocol schedule windows, consent version provenance, visit tasks, supplied study instructions, reimbursement evidence, and participant questions without interpreting eligibility or safety."
+      },
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Clinical trial participation coordinator repeatedly reconcile study participation logistics and evidence for an enrolled or screening participant. Unlike Rental housing coordinator, this starter's distinct contract is: It tracks protocol schedule windows, consent version provenance, visit tasks, supplied study instructions, reimbursement evidence, and participant questions without interpreting eligibility or safety."
+      },
+      {
+        "id": "medication-regimen-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Clinical trial participation coordinator repeatedly reconcile study participation logistics and evidence for an enrolled or screening participant. Unlike Medication regimen coordinator, this starter's distinct contract is: It tracks protocol schedule windows, consent version provenance, visit tasks, supplied study instructions, reimbursement evidence, and participant questions without interpreting eligibility or safety."
+      }
+    ]
+  }
+}

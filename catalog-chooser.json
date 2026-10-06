@@ -96,6 +96,40 @@
       }
     },
     {
+      "id": "api-deprecation-coordinator",
+      "name": "API deprecation coordinator",
+      "description": "Coordinates API deprecation evidence, impacted consumers, migration guidance, deadlines, compatibility risks, communications drafts, and owner approvals without changing production systems or sending notices.",
+      "audience": "Platform, developer-relations, product, and engineering teams preparing a controlled API deprecation while service owners retain release and communication authority.",
+      "category": "engineering",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "api-integration-engineer",
       "name": "API integration engineer",
       "description": "Designs and verifies bounded API integrations from explicit contracts, fixtures, failure modes, and deployment authority.",
@@ -269,6 +303,40 @@
         "level": "guarded",
         "reasons": [
           "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "board-meeting-governance-coordinator",
+      "name": "Board meeting governance coordinator",
+      "description": "Prepares governance meeting packets, agenda evidence, motions, approvals, conflicts, minutes inputs, and follow-up registers without issuing legal advice, making decisions, noticing meetings, or recording official minutes.",
+      "audience": "Nonprofit, association, startup, and committee operators assembling board or committee materials while officers and counsel retain governance authority.",
+      "category": "governance",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
         ]
       }
     },
@@ -560,6 +628,40 @@
       }
     },
     {
+      "id": "clinical-trial-participation-coordinator",
+      "name": "Clinical trial participation coordinator",
+      "description": "Maintains a participant-controlled trial participation ledger for protocol visits, consent versions, study contacts, windows, reimbursements, adverse-event questions, and owner tasks without medical advice or study communication.",
+      "audience": "Trial participants, caregivers, and authorized study-support helpers coordinating supplied protocol logistics while investigators and clinicians retain medical and research authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "cloud-cost-analyst",
       "name": "Cloud cost analyst",
       "description": "Reconciles approved cloud billing exports into allocation, anomaly, commitment, and optimization evidence without changing cloud resources.",
@@ -597,6 +699,40 @@
       }
     },
     {
+      "id": "college-application-coordinator",
+      "name": "College application coordinator",
+      "description": "Maintains a private, evidence-bound higher-education application portfolio across institutions, programs, requirements, applicant materials, recommendations, transcripts, test records, financial-aid dependencies, deadlines, submissions, receipts, and decisions without writing applicant-authored content, contacting institutions, submitting, certifying, paying, committing enrollment, or interpreting admissions or aid outcomes.",
+      "audience": "Prospective undergraduate, graduate, transfer, and other higher-education applicants and explicitly authorized guardians or advisers coordinating multiple applications while the applicant retains authorship and decision authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-09-26"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "commercial-deal-desk-coordinator",
       "name": "Commercial Deal Desk Coordinator",
       "description": "Reconciles one exact immutable seller quote revision across approved configuration, pricing, discount, margin, licensing, legal deviations, dependencies, validity, approvals, and order-readiness handoff.",
@@ -630,6 +766,40 @@
         "level": "guarded",
         "reasons": [
           "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "community-moderation-coordinator",
+      "name": "Community moderation coordinator",
+      "description": "Organizes community moderation queues, policy evidence, user reports, action histories, escalation notes, and appeal packets without taking enforcement action, contacting users, or deciding sanctions.",
+      "audience": "Community managers, trust-and-safety teams, forum moderators, and volunteer leads preparing review packets while authorized moderators retain enforcement authority.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
         ]
       }
     },
@@ -784,6 +954,40 @@
           "@giodl73"
         ],
         "lastVerified": "2026-09-09"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "creator-content-calendar-coordinator",
+      "name": "Creator content calendar coordinator",
+      "description": "Maintains a creator-owned content calendar with briefs, asset readiness, platform constraints, sponsorship obligations, review status, and publishing gates without creating final claims, posting, or contacting partners.",
+      "audience": "Independent creators, small content teams, and creator managers organizing planned content while the creator retains editorial, legal, and publishing authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
       },
       "setup": {
         "level": "low",
@@ -1114,6 +1318,40 @@
       }
     },
     {
+      "id": "donation-receipt-coordinator",
+      "name": "Donation receipt coordinator",
+      "description": "Organizes charitable gift acknowledgments, donor restrictions, receipt evidence, pledge schedules, in-kind documentation, and tax-prep handoffs without issuing tax advice, valuing gifts, or contacting charities.",
+      "audience": "Donors, household finance helpers, bookkeepers, and nonprofit staff reconciling charitable-giving records while donors and qualified tax professionals retain decision authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "enterprise-license-entitlement-reconciler",
       "name": "Enterprise License Entitlement Reconciler",
       "description": "Reconciles one organization's versioned owner-supplied license rights and SKU mapping against assigned entitlements and measured consumption for one agreement, license program, fixed period, cutoff, and review round without interpreting contracts or changing licenses or accounts.",
@@ -1221,6 +1459,40 @@
           "guided local setup",
           "explicit tool policy",
           "persistent dashboard"
+        ]
+      }
+    },
+    {
+      "id": "event-sponsorship-coordinator",
+      "name": "Event sponsorship coordinator",
+      "description": "Tracks event sponsorship benefits, deliverables, asset deadlines, approvals, invoices, attendee entitlements, and fulfillment evidence without negotiating, promising benefits, signing agreements, or publishing sponsor assets.",
+      "audience": "Event organizers, marketing teams, nonprofit fundraisers, and sponsor-success owners fulfilling sponsorship packages while authorized business owners retain negotiation and approval authority.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
         ]
       }
     },
@@ -1760,6 +2032,40 @@
       }
     },
     {
+      "id": "hardware-asset-lifecycle-coordinator",
+      "name": "Hardware asset lifecycle coordinator",
+      "description": "Reconciles hardware procurement, assignment, warranty, repair, return, sanitization, retirement, and disposal evidence without ordering, wiping, transferring, or certifying asset state.",
+      "audience": "IT, facilities, finance, and operations teams managing device fleets while system owners and custodians retain asset and data-handling authority.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "health-records-binder",
       "name": "Health records binder",
       "description": "Organizes owner-supplied health records, portal exports, visit summaries, lab and imaging reports, medication lists, immunization records, insurance document pointers, and caregiver notes into a private longitudinal binder without diagnosing, interpreting results, changing care, messaging providers, uploading records, sharing PHI, scheduling, billing, or filing insurance claims.",
@@ -1771,6 +2077,40 @@
           "@giodl73-repo"
         ],
         "lastVerified": "2026-08-28"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "home-energy-upgrade-coordinator",
+      "name": "Home energy upgrade coordinator",
+      "description": "Reconciles home energy audit findings, contractor proposals, utility rebates, equipment specifications, permits, warranties, and owner decisions without recommending vendors, claiming savings, applying for rebates, or authorizing work.",
+      "audience": "Homeowners, renters with permission, property managers, and household helpers comparing supplied energy-upgrade evidence while owners retain spending and contractor authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
       },
       "setup": {
         "level": "low",
@@ -2083,6 +2423,40 @@
           "@giodl73"
         ],
         "lastVerified": "2026-09-07"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "insurance-appeal-coordinator",
+      "name": "Insurance appeal coordinator",
+      "description": "Organizes claim denial, coverage, medical, service, billing, deadline, and appeal evidence into an owner-reviewable insurance appeal package without giving legal, medical, coverage, or financial advice or submitting the appeal.",
+      "audience": "Policyholders, patients, caregivers, benefits administrators, and advocates preparing an appeal while licensed professionals and the insured owner retain decision authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
       },
       "setup": {
         "level": "low",
@@ -2929,6 +3303,40 @@
         "level": "guarded",
         "reasons": [
           "explicit tool policy"
+        ]
+      }
+    },
+    {
+      "id": "permit-application-coordinator",
+      "name": "Permit application coordinator",
+      "description": "Reconciles permit application requirements, jurisdiction evidence, plan revisions, comments, inspections, fees, receipts, and owner actions without submitting, certifying, paying, scheduling, or interpreting code compliance.",
+      "audience": "Property owners, small contractors, facilities teams, and project coordinators preparing permit packages while licensed professionals and jurisdiction officials retain authority.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
         ]
       }
     },
@@ -4040,6 +4448,40 @@
       }
     },
     {
+      "id": "scholarship-award-coordinator",
+      "name": "Scholarship award coordinator",
+      "description": "Tracks scholarship award conditions, renewal requirements, disbursement evidence, thank-you obligations, enrollment dependencies, and owner-controlled decisions without applying, submitting, accepting, or advising on aid strategy.",
+      "audience": "Students, families, school counselors, and authorized advisers reconciling awarded scholarships while students retain authorship, financial, and enrollment authority.",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "school-coordinator",
       "name": "School coordinator",
       "description": "Tracks assignments, forms, teacher notes, school calendars, supply lists, events, accommodations, and parent review questions from approved sources without submitting forms, messaging teachers, changing enrollment, or making education, medical, legal, or payment decisions.",
@@ -4490,6 +4932,40 @@
       }
     },
     {
+      "id": "training-compliance-coordinator",
+      "name": "Training compliance coordinator",
+      "description": "Reconciles role-based training assignments, completions, attestations, policy versions, exceptions, reminders, and audit evidence without enrolling users, certifying compliance, or modifying HR or LMS records.",
+      "audience": "Operations, HR, compliance, security, and enablement teams preparing training completion evidence while system owners retain record and enforcement authority.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
       "id": "travel-concierge",
       "name": "Travel concierge",
       "description": "Searches and compares current Expedia lodging and flight options, then prepares a traveler-controlled booking handoff without completing a transaction.",
@@ -4679,6 +5155,40 @@
           "@giodl73-repo"
         ],
         "lastVerified": "2026-08-20"
+      },
+      "setup": {
+        "level": "low",
+        "reasons": [
+          "no bootstrap, external dependency, or schedule"
+        ]
+      },
+      "externalDependencies": [],
+      "proofTier": "X3",
+      "proofLanes": [
+        "static",
+        "regression",
+        "installed"
+      ],
+      "capabilityClasses": [],
+      "boundaryAttention": {
+        "level": "standard",
+        "reasons": [
+          "portable workspace artifacts only"
+        ]
+      }
+    },
+    {
+      "id": "vendor-offboarding-coordinator",
+      "name": "Vendor offboarding coordinator",
+      "description": "Coordinates vendor termination evidence, access removal, data return or deletion, contract obligations, final invoices, transition tasks, and owner approvals without sending notices, disabling systems, or making legal determinations.",
+      "audience": "Procurement, IT, finance, security, and operations owners closing a vendor relationship while authorized business, legal, and system owners retain action authority.",
+      "category": "operations",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-06"
       },
       "setup": {
         "level": "low",

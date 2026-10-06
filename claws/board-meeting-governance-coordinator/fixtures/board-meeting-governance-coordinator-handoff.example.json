@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "board-meeting-governance-coordinator",
+  "request": "Organize the draft agenda, bylaws excerpts, prior minutes, committee reports, conflict disclosures, proposed motions, packet materials, attendance notes, and follow-up actions I supplied for next week's board meeting. Do not notice the meeting, decide quorum, provide legal advice, approve motions, or write official minutes.",
+  "scope": "Nonprofit, association, startup, and committee operators assembling board or committee materials while officers and counsel retain governance authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Agenda and packet evidence register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every agenda item, packet document, motion, disclosure, attendance note, decision, and follow-up action has provenance and owner"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Motion, disclosure, quorum, notice, and approval question ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Legal, quorum, notice, vote, minutes, privilege, publication, and approval questions remain routed to authorized humans"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not provide legal advice, determine quorum, issue notices, approve motions, certify votes, or create official minutes"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "The handoff is clearly unofficial and does not claim notice, approval, certification, or official minutes status"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not provide legal advice, determine quorum, issue notices, approve motions, certify votes, or create official minutes",
+    "Do not contact directors, members, counsel, regulators, or stakeholders or publish packet materials",
+    "Do not hide conflicts, privileged material, missing approvals, dissent, unresolved votes, or uncertain authority"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

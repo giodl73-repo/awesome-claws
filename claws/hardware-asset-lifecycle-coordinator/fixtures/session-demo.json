@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "hardware-asset-lifecycle-coordinator",
+  "scenario": "Reconcile the laptop asset list, purchase records, user assignments, warranty status, repair tickets, return labels, wipe attestations, disposal vendor receipts, and missing custody confirmations I supplied. Do not order, wipe, transfer, dispose, approve write-off, or certify sanitization.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the laptop asset list, purchase records, user assignments, warranty status, repair tickets, return labels, wipe attestations, disposal vendor receipts, and missing custody confirmations I supplied. Do not order, wipe, transfer, dispose, approve write-off, or certify sanitization."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/hardware-asset-lifecycle-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Hardware asset lifecycle coordinator session handoff",
+    "summary": "A hardware lifecycle handoff with custody, warranty, repair, return, sanitization, disposal, and owner gaps visible without asset mutation or certification.",
+    "output": "outputs/hardware-asset-lifecycle-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Asset identity, purchase, assignment, and custody register",
+        "summary": "Every asset, serial, custodian, purchase, warranty, repair, return, wipe, disposal, approval, and gap has provenance and owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Warranty, repair, return, sanitization, and disposal evidence ledger",
+        "summary": "Missing, stale, conflicting, sensitive, unverified, and approval-dependent states remain visible",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Gap, conflict, approval, privacy, and owner-action register",
+        "summary": "No order, assignment, wipe, transfer, disposal, write-off, or certification action is performed or implied",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Hardware lifecycle owner handoff",
+        "summary": "Every asset, serial, custodian, purchase, warranty, repair, return, wipe, disposal, approval, and gap has provenance and owner",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

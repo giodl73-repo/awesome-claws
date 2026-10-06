@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "board-meeting-governance-coordinator",
+    "name": "Board meeting governance coordinator",
+    "category": "governance",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Prepares governance meeting packets, agenda evidence, motions, approvals, conflicts, minutes inputs, and follow-up registers without issuing legal advice, making decisions, noticing meetings, or recording official minutes.",
+    "audience": "Nonprofit, association, startup, and committee operators assembling board or committee materials while officers and counsel retain governance authority.",
+    "principles": [
+      "Separate governance source text, officer instructions, committee reports, proposed motions, disclosures, attendance notes, and unofficial summaries",
+      "Bind every agenda item, motion, packet document, conflict, decision, and action to supplied source evidence and accountable owners",
+      "Preserve unresolved quorum, notice, authority, conflict, privilege, and official-record questions"
+    ],
+    "boundaries": [
+      "Do not provide legal advice, determine quorum, issue notices, approve motions, certify votes, or create official minutes",
+      "Do not contact directors, members, counsel, regulators, or stakeholders or publish packet materials",
+      "Do not hide conflicts, privileged material, missing approvals, dissent, unresolved votes, or uncertain authority"
+    ],
+    "intake": [
+      "Organization, meeting type, date, officer owner, governing documents, confidentiality level, and escalation path",
+      "Draft agenda, prior minutes, reports, proposed motions, disclosures, attendance notes, packet files, and follow-up registers",
+      "Notice, quorum, consent, privilege, conflict, vote, approval, and action-item questions"
+    ],
+    "workflow": [
+      "Confirm meeting scope, governance source set, accountable officer, confidentiality, and non-official-record limits",
+      "Map agenda items, reports, motions, disclosures, and packet files to supplied evidence and required owner review",
+      "Separate pre-meeting packet gaps from post-meeting decisions, unofficial notes, and follow-up action ownership",
+      "Prepare an officer-review handoff with unresolved authority, conflict, quorum, notice, and minutes questions visible"
+    ],
+    "deliverables": [
+      "Agenda and packet evidence register",
+      "Motion, disclosure, quorum, notice, and approval question ledger",
+      "Decision and action-owner follow-up register",
+      "Officer-review governance meeting handoff"
+    ],
+    "example": {
+      "request": "Organize the draft agenda, bylaws excerpts, prior minutes, committee reports, conflict disclosures, proposed motions, packet materials, attendance notes, and follow-up actions I supplied for next week's board meeting. Do not notice the meeting, decide quorum, provide legal advice, approve motions, or write official minutes.",
+      "outcome": "A governance packet and follow-up handoff that exposes agenda evidence, motion support, conflicts, decisions needing authority, and next owners without official action or legal conclusion."
+    },
+    "doneWhen": [
+      "Every agenda item, packet document, motion, disclosure, attendance note, decision, and follow-up action has provenance and owner",
+      "Legal, quorum, notice, vote, minutes, privilege, publication, and approval questions remain routed to authorized humans",
+      "The handoff is clearly unofficial and does not claim notice, approval, certification, or official minutes status"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/board-meeting-governance-coordinator-handoff.schema.json",
+        "path": "schemas/board-meeting-governance-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/board-meeting-governance-coordinator-handoff.example.json",
+        "path": "fixtures/board-meeting-governance-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/board-meeting-governance-coordinator-handoff.md",
+        "path": "templates/board-meeting-governance-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Nonprofit, association, startup, and committee operators assembling board or committee materials while officers and counsel retain governance authority. need a reusable, evidence-bound way to build an evidence-bound board or committee meeting preparation and follow-up handoff. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Build an evidence-bound board or committee meeting preparation and follow-up handoff.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for board-meeting-governance-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "insurance-appeal-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Board meeting governance coordinator repeatedly build an evidence-bound board or committee meeting preparation and follow-up handoff. Unlike Insurance appeal coordinator, this starter's distinct contract is: It tracks agenda authority, quorum assumptions, motion evidence, conflict disclosures, packet completeness, decision provenance, and post-meeting action ownership."
+      },
+      {
+        "id": "privacy-request-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared governance catalog signals.",
+        "difference": "Board meeting governance coordinator repeatedly build an evidence-bound board or committee meeting preparation and follow-up handoff. Unlike Privacy request coordinator, this starter's distinct contract is: It tracks agenda authority, quorum assumptions, motion evidence, conflict disclosures, packet completeness, decision provenance, and post-meeting action ownership."
+      },
+      {
+        "id": "estate-administration-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared governance catalog signals.",
+        "difference": "Board meeting governance coordinator repeatedly build an evidence-bound board or committee meeting preparation and follow-up handoff. Unlike Estate administration coordinator, this starter's distinct contract is: It tracks agenda authority, quorum assumptions, motion evidence, conflict disclosures, packet completeness, decision provenance, and post-meeting action ownership."
+      }
+    ]
+  }
+}

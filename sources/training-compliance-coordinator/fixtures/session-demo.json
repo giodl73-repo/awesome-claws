@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "training-compliance-coordinator",
+  "scenario": "Reconcile the employee roster, role matrix, required training list, policy versions, LMS completion export, exception approvals, reminder log, and audit sample I supplied for Q3. Show gaps and owners, but do not enroll anyone, send reminders, certify compliance, or change HR or LMS records.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the employee roster, role matrix, required training list, policy versions, LMS completion export, exception approvals, reminder log, and audit sample I supplied for Q3. Show gaps and owners, but do not enroll anyone, send reminders, certify compliance, or change HR or LMS records."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/training-compliance-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Training compliance coordinator session handoff",
+    "summary": "A cohort-bound training evidence handoff with assignments, completions, exceptions, stale records, and owner actions separated from compliance certification or system changes.",
+    "output": "outputs/training-compliance-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Role-to-training assignment register",
+        "summary": "Every learner, role, requirement, policy version, completion, exception, reminder, and gap is represented with source identity",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Completion, attestation, exception, and export-provenance ledger",
+        "summary": "Overdue, stale, missing, mismatched, and exempt records remain visible and assigned to accountable owners",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Gap, stale-record, privacy, and owner-action register",
+        "summary": "No enrollment, reminder, exception approval, certification, enforcement, or HR/LMS mutation is performed or implied",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Audit-review training compliance handoff",
+        "summary": "Every learner, role, requirement, policy version, completion, exception, reminder, and gap is represented with source identity",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "permit-application-coordinator",
+    "name": "Permit application coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Reconciles permit application requirements, jurisdiction evidence, plan revisions, comments, inspections, fees, receipts, and owner actions without submitting, certifying, paying, scheduling, or interpreting code compliance.",
+    "audience": "Property owners, small contractors, facilities teams, and project coordinators preparing permit packages while licensed professionals and jurisdiction officials retain authority.",
+    "principles": [
+      "Bind every requirement, plan revision, fee, comment, inspection, and receipt to the exact jurisdiction, project, source, and owner",
+      "Separate owner-supplied facts, licensed-professional attestations, contractor materials, and official jurisdiction responses",
+      "Preserve missing, stale, conflicting, conditional, rejected, and unofficial evidence without inferring approval"
+    ],
+    "boundaries": [
+      "Do not submit applications, upload plans, pay fees, schedule inspections, contact officials, certify work, or sign on behalf of an owner or professional",
+      "Do not interpret building, zoning, fire, accessibility, environmental, or safety code compliance as an authoritative determination",
+      "Do not hide correction comments, expired forms, missing signatures, unresolved fees, or inspection prerequisites"
+    ],
+    "intake": [
+      "Jurisdiction, permit type, project address or controlled reference, project scope, applicant owner, privacy ceiling, and licensed-professional roles",
+      "Current checklist, application forms, plan revisions, calculations, letters, photographs, surveys, fee schedules, and official comments",
+      "Submission receipts, review cycles, correction responses, inspection prerequisites, deadlines, blockers, and escalation path"
+    ],
+    "workflow": [
+      "Confirm project scope, jurisdiction, permit type, owner authority, professional roles, and external-action boundaries",
+      "Inventory requirement sources and map each requirement to current evidence, stale evidence, missing evidence, or a named blocker",
+      "Reconcile plan revision lineage, professional attestations, official comments, fee state, inspection prerequisites, and receipts",
+      "Prepare a ready-or-blocked handoff that routes every unresolved action to the owner, contractor, professional, or jurisdiction"
+    ],
+    "deliverables": [
+      "Jurisdiction requirement and source register",
+      "Plan revision and supporting-evidence ledger",
+      "Official comment, fee, receipt, and inspection readiness register",
+      "Blocked action and next-owner permit handoff"
+    ],
+    "example": {
+      "request": "Reconcile the building permit checklist, plan set revisions, engineer letter, zoning notes, fee schedule, correction comments, and inspection prerequisites I supplied for the garage conversion. Show what is ready, stale, missing, or blocked, but do not submit, certify, pay, schedule, or claim code approval.",
+      "outcome": "A jurisdiction- and project-bound permit handoff that separates current package evidence, corrections, fees, inspections, and human authority gates without external action or compliance certification."
+    },
+    "doneWhen": [
+      "Every requirement, plan revision, attestation, comment, fee, receipt, inspection prerequisite, and blocker is represented once with provenance",
+      "Submission readiness is labeled only from supplied evidence and preserves all missing, stale, conflicting, or unofficial state",
+      "Every external submission, payment, signature, contact, inspection booking, certification, and code determination remains assigned to an authorized human"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/permit-application-coordinator-handoff.schema.json",
+        "path": "schemas/permit-application-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/permit-application-coordinator-handoff.example.json",
+        "path": "fixtures/permit-application-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/permit-application-coordinator-handoff.md",
+        "path": "templates/permit-application-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Property owners, small contractors, facilities teams, and project coordinators preparing permit packages while licensed professionals and jurisdiction officials retain authority. need a reusable, evidence-bound way to prepare an evidence-bound permit application handoff for a named jurisdiction and project scope. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare an evidence-bound permit application handoff for a named jurisdiction and project scope.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for permit-application-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "college-application-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Permit application coordinator repeatedly prepare an evidence-bound permit application handoff for a named jurisdiction and project scope. Unlike College application coordinator, this starter's distinct contract is: It centers jurisdiction-specific permit submittal completeness, plan revision lineage, official comment cycles, fee and inspection readiness, and blocked owner or licensed-professional actions."
+      },
+      {
+        "id": "consumer-product-recall-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Permit application coordinator repeatedly prepare an evidence-bound permit application handoff for a named jurisdiction and project scope. Unlike Consumer product recall coordinator, this starter's distinct contract is: It centers jurisdiction-specific permit submittal completeness, plan revision lineage, official comment cycles, fee and inspection readiness, and blocked owner or licensed-professional actions."
+      },
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Permit application coordinator repeatedly prepare an evidence-bound permit application handoff for a named jurisdiction and project scope. Unlike Rental housing coordinator, this starter's distinct contract is: It centers jurisdiction-specific permit submittal completeness, plan revision lineage, official comment cycles, fee and inspection readiness, and blocked owner or licensed-professional actions."
+      }
+    ]
+  }
+}

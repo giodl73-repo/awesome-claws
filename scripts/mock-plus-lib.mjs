@@ -62,6 +62,7 @@ export const MOCK_PLUS_VERTICAL_IDS = Object.freeze([
 
 const DEFAULT_SEED = "mock-plus-v1";
 const MAX_CASE_MS = 1_000;
+const MAX_SCHEMA_TARGET_DISCOVERY_MS = 5_000;
 const MAX_INPUT_BYTES = 1_048_576;
 const MAX_OUTPUT_BYTES = 25 * 1_048_576;
 const SAFE_CANARY = "MOCKPLUS_CANARY_NONLIVE_8D31C6A4";
@@ -1079,6 +1080,7 @@ async function expandedSchemaMutants(clawId, schema, validate, fixture) {
           .map((target, targetIndex) => ({ ...target, targetIndex })),
       );
     },
+    MAX_SCHEMA_TARGET_DISCOVERY_MS,
   );
   const results = [];
   const chunkSize = 20;

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "home-energy-upgrade-coordinator",
+  "scenario": "Reconcile the energy audit, heat pump quotes, insulation proposal, utility rebate forms, equipment spec sheets, permit notes, warranty terms, and contractor assumptions I supplied. Show comparison gaps and owners, but do not choose a vendor, claim savings, apply for rebates, sign contracts, or authorize work.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the energy audit, heat pump quotes, insulation proposal, utility rebate forms, equipment spec sheets, permit notes, warranty terms, and contractor assumptions I supplied. Show comparison gaps and owners, but do not choose a vendor, claim savings, apply for rebates, sign contracts, or authorize work."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/home-energy-upgrade-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Home energy upgrade coordinator session handoff",
+    "summary": "A home energy upgrade evidence handoff that shows audit recommendations, proposal assumptions, rebate and permit dependencies, warranty terms, and owner-controlled next actions without advice or authorization.",
+    "output": "outputs/home-energy-upgrade-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Audit finding and proposed-measure register",
+        "summary": "Every measure, proposal, model, rebate condition, permit dependency, warranty term, assumption, and gap is represented with provenance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Proposal, equipment, rebate, permit, and warranty evidence ledger",
+        "summary": "Savings, eligibility, code, vendor, contract, tax, and payment decisions remain assigned to the owner or qualified humans",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Gap, assumption, conflict, and owner-question register",
+        "summary": "No vendor selection, rebate application, authorization, schedule, savings claim, or compliance conclusion is made",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Home energy upgrade decision handoff",
+        "summary": "Every measure, proposal, model, rebate condition, permit dependency, warranty term, assumption, and gap is represented with provenance",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

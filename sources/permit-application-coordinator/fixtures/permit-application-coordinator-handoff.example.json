@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "permit-application-coordinator",
+  "request": "Reconcile the building permit checklist, plan set revisions, engineer letter, zoning notes, fee schedule, correction comments, and inspection prerequisites I supplied for the garage conversion. Show what is ready, stale, missing, or blocked, but do not submit, certify, pay, schedule, or claim code approval.",
+  "scope": "Property owners, small contractors, facilities teams, and project coordinators preparing permit packages while licensed professionals and jurisdiction officials retain authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Jurisdiction requirement and source register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every requirement, plan revision, attestation, comment, fee, receipt, inspection prerequisite, and blocker is represented once with provenance"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Plan revision and supporting-evidence ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Submission readiness is labeled only from supplied evidence and preserves all missing, stale, conflicting, or unofficial state"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not submit applications, upload plans, pay fees, schedule inspections, contact officials, certify work, or sign on behalf of an owner or professional"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "Every external submission, payment, signature, contact, inspection booking, certification, and code determination remains assigned to an authorized human"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not submit applications, upload plans, pay fees, schedule inspections, contact officials, certify work, or sign on behalf of an owner or professional",
+    "Do not interpret building, zoning, fire, accessibility, environmental, or safety code compliance as an authoritative determination",
+    "Do not hide correction comments, expired forms, missing signatures, unresolved fees, or inspection prerequisites"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

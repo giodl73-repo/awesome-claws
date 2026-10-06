@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "insurance-appeal-coordinator",
+    "name": "Insurance appeal coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Organizes claim denial, coverage, medical, service, billing, deadline, and appeal evidence into an owner-reviewable insurance appeal package without giving legal, medical, coverage, or financial advice or submitting the appeal.",
+    "audience": "Policyholders, patients, caregivers, benefits administrators, and advocates preparing an appeal while licensed professionals and the insured owner retain decision authority.",
+    "principles": [
+      "Keep denial reasons, policy language, service facts, professional records, bills, and owner statements distinct",
+      "Tie every deadline, appeal level, evidence item, and asserted fact to a supplied source or explicit owner note",
+      "Preserve coverage uncertainty, medical uncertainty, legal uncertainty, missing records, and payer conflicts"
+    ],
+    "boundaries": [
+      "Do not provide legal, medical, tax, coverage, benefits, or financial advice or predict appeal outcomes",
+      "Do not submit appeals, contact insurers or providers, sign forms, authorize releases, pay balances, or alter accounts",
+      "Do not fabricate diagnoses, treatment necessity, damage facts, coverage terms, call outcomes, or professional opinions"
+    ],
+    "intake": [
+      "Insured owner, policy or plan reference, claim identifiers, appeal level, deadline, privacy ceiling, and authorized helper scope",
+      "Denial letters, EOBs, policy excerpts, bills, service records, professional notes, prior authorization records, call logs, and receipts",
+      "Missing evidence, conflicting payer statements, requested attachments, appeal forms, submission routes, and escalation contacts"
+    ],
+    "workflow": [
+      "Confirm owner authority, claim scope, appeal deadline, sensitive-data boundaries, and non-advice limits",
+      "Extract denial reasons, cited policy terms, requested evidence, deadlines, and submission instructions from supplied records",
+      "Map each appeal issue to current evidence, missing evidence, professional-owner questions, and unresolved conflicts",
+      "Prepare an owner-review handoff with packet contents, gaps, blocked actions, and questions for qualified humans"
+    ],
+    "deliverables": [
+      "Denial reason and policy-reference register",
+      "Appeal evidence and missing-record ledger",
+      "Deadline, form, attachment, and submission-route checklist",
+      "Owner-review appeal package handoff"
+    ],
+    "example": {
+      "request": "Organize the denial letter, policy excerpts, EOBs, provider notes, invoices, prior authorization records, call notes, and appeal deadline I supplied. Show appeal packet gaps and owners, but do not write medical conclusions, give legal advice, submit the appeal, call the insurer, or promise coverage.",
+      "outcome": "An appeal-readiness package with denial reasons, supporting evidence, missing records, deadlines, and owner-controlled next actions clearly separated from advice or submission."
+    },
+    "doneWhen": [
+      "Every denial issue, cited policy term, evidence item, deadline, form, attachment, and conflict is represented with provenance",
+      "The handoff separates facts, owner questions, professional questions, missing evidence, and blocked submission actions",
+      "No appeal outcome, coverage determination, medical conclusion, legal advice, or external action is claimed"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/insurance-appeal-coordinator-handoff.schema.json",
+        "path": "schemas/insurance-appeal-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/insurance-appeal-coordinator-handoff.example.json",
+        "path": "fixtures/insurance-appeal-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/insurance-appeal-coordinator-handoff.md",
+        "path": "templates/insurance-appeal-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Policyholders, patients, caregivers, benefits administrators, and advocates preparing an appeal while licensed professionals and the insured owner retain decision authority. need a reusable, evidence-bound way to prepare an evidence ledger and appeal-readiness handoff for a denied or underpaid insurance claim. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare an evidence ledger and appeal-readiness handoff for a denied or underpaid insurance claim.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for insurance-appeal-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "benefits-open-enrollment-planner",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Insurance appeal coordinator repeatedly prepare an evidence ledger and appeal-readiness handoff for a denied or underpaid insurance claim. Unlike Benefits and open enrollment planner, this starter's distinct contract is: It focuses on denial rationale, policy language, service records, medical or repair evidence, payer deadlines, appeal packet completeness, and blocked submission authority."
+      },
+      {
+        "id": "tax-document-organizer",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Insurance appeal coordinator repeatedly prepare an evidence ledger and appeal-readiness handoff for a denied or underpaid insurance claim. Unlike Tax document organizer, this starter's distinct contract is: It focuses on denial rationale, policy language, service records, medical or repair evidence, payer deadlines, appeal packet completeness, and blocked submission authority."
+      },
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Insurance appeal coordinator repeatedly prepare an evidence ledger and appeal-readiness handoff for a denied or underpaid insurance claim. Unlike Rental housing coordinator, this starter's distinct contract is: It focuses on denial rationale, policy language, service records, medical or repair evidence, payer deadlines, appeal packet completeness, and blocked submission authority."
+      }
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "vendor-offboarding-coordinator",
+  "scenario": "Reconcile the vendor contract excerpts, termination date, system access list, data export notes, deletion attestation request, final invoices, transition tasks, and owner approvals I supplied. Do not notify the vendor, revoke access, approve invoices, delete data, or interpret legal obligations.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the vendor contract excerpts, termination date, system access list, data export notes, deletion attestation request, final invoices, transition tasks, and owner approvals I supplied. Do not notify the vendor, revoke access, approve invoices, delete data, or interpret legal obligations."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/vendor-offboarding-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Vendor offboarding coordinator session handoff",
+    "summary": "A vendor-offboarding handoff with obligations, access, data, invoice, transition, and owner-approval gaps visible without external action or legal conclusion.",
+    "output": "outputs/vendor-offboarding-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Contract obligation and termination-source register",
+        "summary": "Every obligation, access item, data asset, invoice, transition task, notice, approval, and blocker has provenance and owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Access, data return or deletion, and system-owner evidence ledger",
+        "summary": "Legal, deletion, access-revocation, payment, notice, and service-transition decisions are blocked for authorized owners",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Final invoice, transition, notice, and approval gap register",
+        "summary": "The handoff does not claim termination completion, deletion certification, payment approval, or access removal beyond supplied evidence",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Vendor offboarding owner handoff",
+        "summary": "Every obligation, access item, data asset, invoice, transition task, notice, approval, and blocker has provenance and owner",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

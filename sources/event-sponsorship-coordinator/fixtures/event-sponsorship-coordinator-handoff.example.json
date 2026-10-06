@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "event-sponsorship-coordinator",
+  "request": "Reconcile the signed sponsorship grid, sponsor logo files, ad copy approvals, booth benefits, attendee passes, invoice records, social post screenshots, and fulfillment photos I supplied for the conference. Do not negotiate, promise benefits, publish assets, invoice, or approve substitutions.",
+  "scope": "Event organizers, marketing teams, nonprofit fundraisers, and sponsor-success owners fulfilling sponsorship packages while authorized business owners retain negotiation and approval authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Sponsor benefit and deadline register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every sponsor, benefit, asset, approval, placement, entitlement, invoice, substitution, and proof item has provenance and owner"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Asset, approval, placement, entitlement, and invoice evidence ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Unfulfilled, disputed, missing, late, and brand-sensitive items remain visible with next actions"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not negotiate terms, promise benefits, approve substitutions, publish sponsor assets, issue invoices, or grant attendee access"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "No negotiation, promise, publication, invoicing, access grant, or substitution approval is performed or implied"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not negotiate terms, promise benefits, approve substitutions, publish sponsor assets, issue invoices, or grant attendee access",
+    "Do not modify logos, copy, contracts, pricing, sponsorship tiers, or public materials without explicit owner approval",
+    "Do not hide unfulfilled benefits, late assets, missing approvals, invoice disputes, or brand-use restrictions"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

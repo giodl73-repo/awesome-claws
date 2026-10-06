@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "creator-content-calendar-coordinator",
+  "request": "Organize the next month of video ideas, briefs, draft captions, asset links, sponsor talking points, disclosure requirements, platform deadlines, review notes, and missing approvals I supplied. Do not write final claims, contact sponsors, upload, schedule, post, or approve disclosure compliance.",
+  "scope": "Independent creators, small content teams, and creator managers organizing planned content while the creator retains editorial, legal, and publishing authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Content calendar and brief register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every planned post, brief, asset, sponsor item, disclosure, deadline, approval, and blocker has provenance and owner"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Asset, sponsor obligation, platform constraint, and approval evidence ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Claims, rights, compliance, sponsor, and publishing questions remain visible for the creator or qualified humans"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not write final claims, publish, schedule posts, upload assets, contact sponsors, approve disclosures, or make legal or advertising compliance determinations"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "No upload, scheduling, posting, sponsor communication, final copy approval, or compliance determination is performed"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not write final claims, publish, schedule posts, upload assets, contact sponsors, approve disclosures, or make legal or advertising compliance determinations",
+    "Do not fabricate usage rights, product claims, performance metrics, audience data, approvals, or sponsorship obligations",
+    "Do not expose private sponsor terms, unreleased content, credentials, analytics, or audience data outside approved destinations"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

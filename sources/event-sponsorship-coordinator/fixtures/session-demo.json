@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "event-sponsorship-coordinator",
+  "scenario": "Reconcile the signed sponsorship grid, sponsor logo files, ad copy approvals, booth benefits, attendee passes, invoice records, social post screenshots, and fulfillment photos I supplied for the conference. Do not negotiate, promise benefits, publish assets, invoice, or approve substitutions.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the signed sponsorship grid, sponsor logo files, ad copy approvals, booth benefits, attendee passes, invoice records, social post screenshots, and fulfillment photos I supplied for the conference. Do not negotiate, promise benefits, publish assets, invoice, or approve substitutions."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/event-sponsorship-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Event sponsorship coordinator session handoff",
+    "summary": "A sponsor-by-sponsor fulfillment handoff with benefits, asset approvals, delivery evidence, invoice state, substitutions, and owner actions separated from negotiation or publication.",
+    "output": "outputs/event-sponsorship-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Sponsor benefit and deadline register",
+        "summary": "Every sponsor, benefit, asset, approval, placement, entitlement, invoice, substitution, and proof item has provenance and owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Asset, approval, placement, entitlement, and invoice evidence ledger",
+        "summary": "Unfulfilled, disputed, missing, late, and brand-sensitive items remain visible with next actions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Fulfillment gap, dispute, substitution, and owner-action register",
+        "summary": "No negotiation, promise, publication, invoicing, access grant, or substitution approval is performed or implied",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Event sponsorship fulfillment handoff",
+        "summary": "Every sponsor, benefit, asset, approval, placement, entitlement, invoice, substitution, and proof item has provenance and owner",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

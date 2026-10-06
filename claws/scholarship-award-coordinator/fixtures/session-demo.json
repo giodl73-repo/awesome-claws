@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "scholarship-award-coordinator",
+  "scenario": "Reconcile the scholarship award letters, renewal criteria, GPA and credit requirements, thank-you note instructions, enrollment verification, disbursement schedule, outside-aid reporting rules, and missing receipts I supplied. Do not apply, accept, decline, write statements, contact anyone, or advise whether to enroll.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the scholarship award letters, renewal criteria, GPA and credit requirements, thank-you note instructions, enrollment verification, disbursement schedule, outside-aid reporting rules, and missing receipts I supplied. Do not apply, accept, decline, write statements, contact anyone, or advise whether to enroll."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/scholarship-award-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Scholarship award coordinator session handoff",
+    "summary": "A scholarship obligation ledger that shows award terms, renewal conditions, disbursement state, missing evidence, and student-controlled next actions without external action or aid advice.",
+    "output": "outputs/scholarship-award-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Award term and renewal-condition register",
+        "summary": "Every award, condition, deadline, dependency, disbursement, receipt, stewardship obligation, conflict, and missing item is represented with provenance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Disbursement, receipt, enrollment, and outside-aid dependency ledger",
+        "summary": "Financial, eligibility, reporting, enrollment, and communication decisions are labeled for the student or qualified human",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Stewardship obligation and deadline checklist",
+        "summary": "The handoff does not apply, accept, decline, report, write, contact, or advise beyond supplied evidence organization",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Student-controlled scholarship handoff",
+        "summary": "Every award, condition, deadline, dependency, disbursement, receipt, stewardship obligation, conflict, and missing item is represented with provenance",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

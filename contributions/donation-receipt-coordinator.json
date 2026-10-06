@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "donation-receipt-coordinator",
+    "name": "Donation receipt coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Organizes charitable gift acknowledgments, donor restrictions, receipt evidence, pledge schedules, in-kind documentation, and tax-prep handoffs without issuing tax advice, valuing gifts, or contacting charities.",
+    "audience": "Donors, household finance helpers, bookkeepers, and nonprofit staff reconciling charitable-giving records while donors and qualified tax professionals retain decision authority.",
+    "principles": [
+      "Separate donor records, charity acknowledgments, payment evidence, restriction notes, pledge schedules, and tax-preparer questions",
+      "Bind each gift, receipt, payment, restriction, pledge, and in-kind record to exact source evidence and dates",
+      "Preserve missing acknowledgments, valuation gaps, donor-advised-fund timing, recurring-payment conflicts, and deductibility uncertainty"
+    ],
+    "boundaries": [
+      "Do not provide tax, legal, accounting, valuation, deductibility, or substantiation advice",
+      "Do not contact charities, issue receipts, alter donor records, assign fair market value, file taxes, or move funds",
+      "Do not fabricate acknowledgments, charity status, donor intent, restrictions, payment dates, or in-kind descriptions"
+    ],
+    "intake": [
+      "Donor owner, tax year or campaign, controlled destination, privacy ceiling, qualified preparer path, and household or entity scope",
+      "Receipts, acknowledgment letters, payment records, pledge schedules, donor-advised fund grants, in-kind descriptions, and restriction notes",
+      "Missing confirmations, recurring payment conflicts, refund or reversal records, valuation questions, and next-owner tasks"
+    ],
+    "workflow": [
+      "Confirm donor scope, year or campaign boundary, privacy limits, and non-advice constraints",
+      "Inventory gifts, payments, acknowledgments, restrictions, pledges, in-kind records, reversals, and missing receipts",
+      "Reconcile timing, duplicates, donor-advised-fund records, recurring gifts, restricted-purpose notes, and valuation gaps",
+      "Prepare a donor or preparer handoff with evidence, gaps, and questions for qualified tax or charity contacts"
+    ],
+    "deliverables": [
+      "Gift, payment, receipt, and acknowledgment register",
+      "Pledge, restriction, donor-advised-fund, and in-kind evidence ledger",
+      "Missing confirmation, valuation question, duplicate, and reversal register",
+      "Tax-prep donation evidence handoff"
+    ],
+    "example": {
+      "request": "Organize the donation receipts, pledge schedule, donor-advised fund grants, in-kind acknowledgment letters, recurring payment records, restriction notes, and missing charity confirmations I supplied for 2026. Do not value gifts, give tax advice, contact charities, or decide deductibility.",
+      "outcome": "A year- or campaign-bound donation evidence handoff with receipts, restrictions, pledges, in-kind gaps, and tax-preparer questions clearly separated from valuation or tax advice."
+    },
+    "doneWhen": [
+      "Every gift, payment, receipt, restriction, pledge, in-kind item, reversal, conflict, and missing confirmation is represented with provenance",
+      "Valuation, deductibility, substantiation, filing, and charity-contact questions remain assigned to the donor or qualified human",
+      "The handoff does not value gifts, certify deductibility, issue receipts, contact charities, or file anything"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/donation-receipt-coordinator-handoff.schema.json",
+        "path": "schemas/donation-receipt-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/donation-receipt-coordinator-handoff.example.json",
+        "path": "fixtures/donation-receipt-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/donation-receipt-coordinator-handoff.md",
+        "path": "templates/donation-receipt-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Donors, household finance helpers, bookkeepers, and nonprofit staff reconciling charitable-giving records while donors and qualified tax professionals retain decision authority. need a reusable, evidence-bound way to build a donation receipt and restriction evidence ledger for a defined tax year or campaign. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Build a donation receipt and restriction evidence ledger for a defined tax year or campaign.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for donation-receipt-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "scholarship-award-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Donation receipt coordinator repeatedly build a donation receipt and restriction evidence ledger for a defined tax year or campaign. Unlike Scholarship award coordinator, this starter's distinct contract is: It focuses on charitable-gift receipt completeness, pledge fulfillment, donor restriction evidence, in-kind valuation boundaries, and tax-preparer handoff state."
+      },
+      {
+        "id": "clinical-trial-participation-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Donation receipt coordinator repeatedly build a donation receipt and restriction evidence ledger for a defined tax year or campaign. Unlike Clinical trial participation coordinator, this starter's distinct contract is: It focuses on charitable-gift receipt completeness, pledge fulfillment, donor restriction evidence, in-kind valuation boundaries, and tax-preparer handoff state."
+      },
+      {
+        "id": "insurance-appeal-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Donation receipt coordinator repeatedly build a donation receipt and restriction evidence ledger for a defined tax year or campaign. Unlike Insurance appeal coordinator, this starter's distinct contract is: It focuses on charitable-gift receipt completeness, pledge fulfillment, donor restriction evidence, in-kind valuation boundaries, and tax-preparer handoff state."
+      }
+    ]
+  }
+}

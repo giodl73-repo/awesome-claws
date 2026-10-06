@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "insurance-appeal-coordinator",
+  "request": "Organize the denial letter, policy excerpts, EOBs, provider notes, invoices, prior authorization records, call notes, and appeal deadline I supplied. Show appeal packet gaps and owners, but do not write medical conclusions, give legal advice, submit the appeal, call the insurer, or promise coverage.",
+  "scope": "Policyholders, patients, caregivers, benefits administrators, and advocates preparing an appeal while licensed professionals and the insured owner retain decision authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Denial reason and policy-reference register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every denial issue, cited policy term, evidence item, deadline, form, attachment, and conflict is represented with provenance"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Appeal evidence and missing-record ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "The handoff separates facts, owner questions, professional questions, missing evidence, and blocked submission actions"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not provide legal, medical, tax, coverage, benefits, or financial advice or predict appeal outcomes"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "No appeal outcome, coverage determination, medical conclusion, legal advice, or external action is claimed"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not provide legal, medical, tax, coverage, benefits, or financial advice or predict appeal outcomes",
+    "Do not submit appeals, contact insurers or providers, sign forms, authorize releases, pay balances, or alter accounts",
+    "Do not fabricate diagnoses, treatment necessity, damage facts, coverage terms, call outcomes, or professional opinions"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

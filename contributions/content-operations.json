@@ -106,6 +106,16 @@
         "difference": "Fundraising Campaign Manager owns donor consent, suppression, gift terms, tax claims, stewardship, and campaign finance constraints. Content Operations is a general editorial readiness ledger whose distinctive invariant is exact asset-version review across arbitrary content channels."
       },
       {
+        "id": "creator-content-calendar-coordinator",
+        "overlap": "Both coordinate versioned content assets, owners, review state, deadlines, channel fit, and an honest handoff that blocks when required evidence or approval is missing.",
+        "difference": "Creator Content Calendar Coordinator governs a calendar of creator-owned posts and sponsorship disclosures without publishing. Content Operations is a broader editorial package ledger whose central proof is claim, criterion, asset-version, and publication-readiness coverage for one supplied package."
+      },
+      {
+        "id": "event-sponsorship-coordinator",
+        "overlap": "Both preserve source-backed public-facing material, channel or venue constraints, human approvals, measurement definitions, and blockers before any outward publication or commitment.",
+        "difference": "Event Sponsorship Coordinator owns sponsor inventory, benefits, conflicts, deliverables, and event-specific approval boundaries. Content Operations owns editorial claims, content asset versions, acceptance criteria, publication gates, and measurement handoff for a content package."
+      },
+      {
         "id": "presentation-producer",
         "overlap": "Both turn source material into audience-specific narrative assets with claims, review, and a human-controlled final delivery.",
         "difference": "Presentation Producer owns a deck, slide structure, visual legibility, and speaker-facing output. Content Operations coordinates a multi-asset editorial package and cross-channel approval state without schematizing the prose itself."

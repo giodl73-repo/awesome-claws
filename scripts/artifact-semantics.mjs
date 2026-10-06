@@ -7,6 +7,7 @@ import {
   BENEFITS_REALIZATION_EXAMPLE_PROFILE_OPTIONS,
 } from "./benefits-realization-manager.mjs";
 import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.mjs";
+import { collegeApplicationFindings } from "./college-application-coordinator.mjs";
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { consumerProductRecallFindings } from "./consumer-product-recall-coordinator.mjs";
 import { medicationRegimenFindings } from "./medication-regimen-coordinator.mjs";
@@ -53297,6 +53298,7 @@ const validators = {
   "medication-regimen-coordinator": medicationRegimenFindings,
   "estate-administration-coordinator": estateAdministrationFindings,
   "home-purchase-transaction-coordinator": homePurchaseTransactionFindings,
+  "college-application-coordinator": collegeApplicationFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,

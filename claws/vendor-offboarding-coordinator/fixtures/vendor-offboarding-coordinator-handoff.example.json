@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "vendor-offboarding-coordinator",
+  "request": "Reconcile the vendor contract excerpts, termination date, system access list, data export notes, deletion attestation request, final invoices, transition tasks, and owner approvals I supplied. Do not notify the vendor, revoke access, approve invoices, delete data, or interpret legal obligations.",
+  "scope": "Procurement, IT, finance, security, and operations owners closing a vendor relationship while authorized business, legal, and system owners retain action authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Contract obligation and termination-source register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every obligation, access item, data asset, invoice, transition task, notice, approval, and blocker has provenance and owner"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Access, data return or deletion, and system-owner evidence ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Legal, deletion, access-revocation, payment, notice, and service-transition decisions are blocked for authorized owners"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not send termination notices, revoke access, delete data, approve invoices, transfer services, or contact vendors"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "The handoff does not claim termination completion, deletion certification, payment approval, or access removal beyond supplied evidence"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not send termination notices, revoke access, delete data, approve invoices, transfer services, or contact vendors",
+    "Do not provide legal advice, interpret contract enforceability, waive obligations, or certify deletion or access removal",
+    "Do not expose credentials, customer data, employee data, or confidential contract terms outside approved destinations"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

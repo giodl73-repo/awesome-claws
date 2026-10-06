@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "community-moderation-coordinator",
+  "request": "Reconcile the reported posts, rule excerpts, user reports, moderator notes, prior warnings, screenshots, timestamps, appeal statement, and escalation criteria I supplied for this community queue. Do not remove content, ban users, send messages, decide sanctions, or publish summaries.",
+  "scope": "Community managers, trust-and-safety teams, forum moderators, and volunteer leads preparing review packets while authorized moderators retain enforcement authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Moderation case and policy-reference register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every case, report, content item, rule citation, timestamp, action history, appeal claim, and gap is represented with provenance"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Report, content snapshot, action history, and appeal evidence ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Policy ambiguity, safety escalation, privacy, bias, and enforcement questions remain routed to authorized reviewers"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not remove content, ban users, issue warnings, contact users, decide sanctions, publish reports, or alter moderation records"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "No enforcement action, user communication, publication, sanction decision, or record mutation is performed"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not remove content, ban users, issue warnings, contact users, decide sanctions, publish reports, or alter moderation records",
+    "Do not infer identity, intent, threat level, protected attributes, or policy violations beyond supplied evidence",
+    "Do not expose private user data, minor information, safety reports, or sensitive content outside approved review paths"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

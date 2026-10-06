@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "scholarship-award-coordinator",
+  "request": "Reconcile the scholarship award letters, renewal criteria, GPA and credit requirements, thank-you note instructions, enrollment verification, disbursement schedule, outside-aid reporting rules, and missing receipts I supplied. Do not apply, accept, decline, write statements, contact anyone, or advise whether to enroll.",
+  "scope": "Students, families, school counselors, and authorized advisers reconciling awarded scholarships while students retain authorship, financial, and enrollment authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Award term and renewal-condition register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every award, condition, deadline, dependency, disbursement, receipt, stewardship obligation, conflict, and missing item is represented with provenance"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Disbursement, receipt, enrollment, and outside-aid dependency ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Financial, eligibility, reporting, enrollment, and communication decisions are labeled for the student or qualified human"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not apply, accept, decline, report outside aid, write thank-you statements, contact schools or donors, or make enrollment decisions"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "The handoff does not apply, accept, decline, report, write, contact, or advise beyond supplied evidence organization"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not apply, accept, decline, report outside aid, write thank-you statements, contact schools or donors, or make enrollment decisions",
+    "Do not provide financial-aid, tax, legal, eligibility, or enrollment advice or predict award renewal",
+    "Do not fabricate grades, credits, enrollment status, citizenship, finances, donor communications, or receipts"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

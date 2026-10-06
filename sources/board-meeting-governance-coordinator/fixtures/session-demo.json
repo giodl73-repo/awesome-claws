@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "board-meeting-governance-coordinator",
+  "scenario": "Organize the draft agenda, bylaws excerpts, prior minutes, committee reports, conflict disclosures, proposed motions, packet materials, attendance notes, and follow-up actions I supplied for next week's board meeting. Do not notice the meeting, decide quorum, provide legal advice, approve motions, or write official minutes.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize the draft agenda, bylaws excerpts, prior minutes, committee reports, conflict disclosures, proposed motions, packet materials, attendance notes, and follow-up actions I supplied for next week's board meeting. Do not notice the meeting, decide quorum, provide legal advice, approve motions, or write official minutes."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/board-meeting-governance-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Board meeting governance coordinator session handoff",
+    "summary": "A governance packet and follow-up handoff that exposes agenda evidence, motion support, conflicts, decisions needing authority, and next owners without official action or legal conclusion.",
+    "output": "outputs/board-meeting-governance-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Agenda and packet evidence register",
+        "summary": "Every agenda item, packet document, motion, disclosure, attendance note, decision, and follow-up action has provenance and owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Motion, disclosure, quorum, notice, and approval question ledger",
+        "summary": "Legal, quorum, notice, vote, minutes, privilege, publication, and approval questions remain routed to authorized humans",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Decision and action-owner follow-up register",
+        "summary": "The handoff is clearly unofficial and does not claim notice, approval, certification, or official minutes status",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Officer-review governance meeting handoff",
+        "summary": "Every agenda item, packet document, motion, disclosure, attendance note, decision, and follow-up action has provenance and owner",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

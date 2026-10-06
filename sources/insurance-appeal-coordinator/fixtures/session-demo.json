@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "insurance-appeal-coordinator",
+  "scenario": "Organize the denial letter, policy excerpts, EOBs, provider notes, invoices, prior authorization records, call notes, and appeal deadline I supplied. Show appeal packet gaps and owners, but do not write medical conclusions, give legal advice, submit the appeal, call the insurer, or promise coverage.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize the denial letter, policy excerpts, EOBs, provider notes, invoices, prior authorization records, call notes, and appeal deadline I supplied. Show appeal packet gaps and owners, but do not write medical conclusions, give legal advice, submit the appeal, call the insurer, or promise coverage."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/insurance-appeal-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Insurance appeal coordinator session handoff",
+    "summary": "An appeal-readiness package with denial reasons, supporting evidence, missing records, deadlines, and owner-controlled next actions clearly separated from advice or submission.",
+    "output": "outputs/insurance-appeal-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Denial reason and policy-reference register",
+        "summary": "Every denial issue, cited policy term, evidence item, deadline, form, attachment, and conflict is represented with provenance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Appeal evidence and missing-record ledger",
+        "summary": "The handoff separates facts, owner questions, professional questions, missing evidence, and blocked submission actions",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Deadline, form, attachment, and submission-route checklist",
+        "summary": "No appeal outcome, coverage determination, medical conclusion, legal advice, or external action is claimed",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Owner-review appeal package handoff",
+        "summary": "Every denial issue, cited policy term, evidence item, deadline, form, attachment, and conflict is represented with provenance",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

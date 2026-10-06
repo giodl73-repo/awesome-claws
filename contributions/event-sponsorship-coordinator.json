@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "event-sponsorship-coordinator",
+    "name": "Event sponsorship coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Tracks event sponsorship benefits, deliverables, asset deadlines, approvals, invoices, attendee entitlements, and fulfillment evidence without negotiating, promising benefits, signing agreements, or publishing sponsor assets.",
+    "audience": "Event organizers, marketing teams, nonprofit fundraisers, and sponsor-success owners fulfilling sponsorship packages while authorized business owners retain negotiation and approval authority.",
+    "principles": [
+      "Separate sponsorship agreements, benefit matrices, sponsor-provided assets, approvals, fulfillment evidence, invoices, and attendee entitlements",
+      "Bind every benefit, asset, deadline, substitution, invoice, pass, and proof item to a sponsor and exact source",
+      "Preserve missing approvals, brand conflicts, unfulfilled benefits, overpromises, substitutions, and billing questions"
+    ],
+    "boundaries": [
+      "Do not negotiate terms, promise benefits, approve substitutions, publish sponsor assets, issue invoices, or grant attendee access",
+      "Do not modify logos, copy, contracts, pricing, sponsorship tiers, or public materials without explicit owner approval",
+      "Do not hide unfulfilled benefits, late assets, missing approvals, invoice disputes, or brand-use restrictions"
+    ],
+    "intake": [
+      "Event, sponsor list, sponsorship tier or agreement, accountable owner, brand-approval path, privacy ceiling, and fulfillment deadline",
+      "Benefit matrix, contracts, asset files, copy approvals, placement evidence, attendee lists, invoices, screenshots, and photos",
+      "Missing assets, late approvals, substitutions, disputes, invoice gaps, and next-owner actions"
+    ],
+    "workflow": [
+      "Confirm event scope, sponsor authority, agreement source, brand approval limits, and non-publication boundaries",
+      "Inventory sponsor benefits, deadlines, assets, approvals, entitlements, invoice state, and fulfillment evidence",
+      "Reconcile each benefit to delivered, blocked, substituted, disputed, or missing evidence with accountable owners",
+      "Prepare a fulfillment handoff that highlights sponsor-facing questions and owner-controlled external actions"
+    ],
+    "deliverables": [
+      "Sponsor benefit and deadline register",
+      "Asset, approval, placement, entitlement, and invoice evidence ledger",
+      "Fulfillment gap, dispute, substitution, and owner-action register",
+      "Event sponsorship fulfillment handoff"
+    ],
+    "example": {
+      "request": "Reconcile the signed sponsorship grid, sponsor logo files, ad copy approvals, booth benefits, attendee passes, invoice records, social post screenshots, and fulfillment photos I supplied for the conference. Do not negotiate, promise benefits, publish assets, invoice, or approve substitutions.",
+      "outcome": "A sponsor-by-sponsor fulfillment handoff with benefits, asset approvals, delivery evidence, invoice state, substitutions, and owner actions separated from negotiation or publication."
+    },
+    "doneWhen": [
+      "Every sponsor, benefit, asset, approval, placement, entitlement, invoice, substitution, and proof item has provenance and owner",
+      "Unfulfilled, disputed, missing, late, and brand-sensitive items remain visible with next actions",
+      "No negotiation, promise, publication, invoicing, access grant, or substitution approval is performed or implied"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/event-sponsorship-coordinator-handoff.schema.json",
+        "path": "schemas/event-sponsorship-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/event-sponsorship-coordinator-handoff.example.json",
+        "path": "fixtures/event-sponsorship-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/event-sponsorship-coordinator-handoff.md",
+        "path": "templates/event-sponsorship-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Event organizers, marketing teams, nonprofit fundraisers, and sponsor-success owners fulfilling sponsorship packages while authorized business owners retain negotiation and approval authority. need a reusable, evidence-bound way to prepare a sponsorship fulfillment evidence ledger for a specific event or campaign. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare a sponsorship fulfillment evidence ledger for a specific event or campaign.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for event-sponsorship-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "vendor-offboarding-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Event sponsorship coordinator repeatedly prepare a sponsorship fulfillment evidence ledger for a specific event or campaign. Unlike Vendor offboarding coordinator, this starter's distinct contract is: It centers sponsor benefit obligations, logo and copy approvals, placement evidence, attendee entitlements, invoice status, and fulfillment proof."
+      },
+      {
+        "id": "training-compliance-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Event sponsorship coordinator repeatedly prepare a sponsorship fulfillment evidence ledger for a specific event or campaign. Unlike Training compliance coordinator, this starter's distinct contract is: It centers sponsor benefit obligations, logo and copy approvals, placement evidence, attendee entitlements, invoice status, and fulfillment proof."
+      },
+      {
+        "id": "permit-application-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Event sponsorship coordinator repeatedly prepare a sponsorship fulfillment evidence ledger for a specific event or campaign. Unlike Permit application coordinator, this starter's distinct contract is: It centers sponsor benefit obligations, logo and copy approvals, placement evidence, attendee entitlements, invoice status, and fulfillment proof."
+      }
+    ]
+  }
+}

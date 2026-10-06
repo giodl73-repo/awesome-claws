@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "scholarship-award-coordinator",
+    "name": "Scholarship award coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Tracks scholarship award conditions, renewal requirements, disbursement evidence, thank-you obligations, enrollment dependencies, and owner-controlled decisions without applying, submitting, accepting, or advising on aid strategy.",
+    "audience": "Students, families, school counselors, and authorized advisers reconciling awarded scholarships while students retain authorship, financial, and enrollment authority.",
+    "principles": [
+      "Separate award terms, school aid office rules, donor obligations, student-authored material, enrollment evidence, and payment receipts",
+      "Bind each condition, deadline, renewal criterion, disbursement, and stewardship obligation to exact award-cycle evidence",
+      "Preserve conflicts among award letters, portals, aid offices, donor instructions, and student records"
+    ],
+    "boundaries": [
+      "Do not apply, accept, decline, report outside aid, write thank-you statements, contact schools or donors, or make enrollment decisions",
+      "Do not provide financial-aid, tax, legal, eligibility, or enrollment advice or predict award renewal",
+      "Do not fabricate grades, credits, enrollment status, citizenship, finances, donor communications, or receipts"
+    ],
+    "intake": [
+      "Student owner, award cycle, institution or sponsor, authorized helper scope, privacy ceiling, and decision owner",
+      "Award letters, renewal rules, enrollment evidence, aid-office instructions, disbursement records, donor obligations, and portal observations",
+      "Missing receipts, conflicting conditions, thank-you requirements, outside-aid reporting steps, deadlines, and next-owner questions"
+    ],
+    "workflow": [
+      "Confirm student authority, scholarship scope, privacy limits, and non-action boundaries",
+      "Inventory award terms, renewal conditions, stewardship obligations, enrollment dependencies, and disbursement evidence",
+      "Reconcile conflicts across award letters, portals, school records, sponsor instructions, and receipts",
+      "Prepare a student-review handoff with deadlines, missing evidence, blocked actions, and questions for aid officials or sponsors"
+    ],
+    "deliverables": [
+      "Award term and renewal-condition register",
+      "Disbursement, receipt, enrollment, and outside-aid dependency ledger",
+      "Stewardship obligation and deadline checklist",
+      "Student-controlled scholarship handoff"
+    ],
+    "example": {
+      "request": "Reconcile the scholarship award letters, renewal criteria, GPA and credit requirements, thank-you note instructions, enrollment verification, disbursement schedule, outside-aid reporting rules, and missing receipts I supplied. Do not apply, accept, decline, write statements, contact anyone, or advise whether to enroll.",
+      "outcome": "A scholarship obligation ledger that shows award terms, renewal conditions, disbursement state, missing evidence, and student-controlled next actions without external action or aid advice."
+    },
+    "doneWhen": [
+      "Every award, condition, deadline, dependency, disbursement, receipt, stewardship obligation, conflict, and missing item is represented with provenance",
+      "Financial, eligibility, reporting, enrollment, and communication decisions are labeled for the student or qualified human",
+      "The handoff does not apply, accept, decline, report, write, contact, or advise beyond supplied evidence organization"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/scholarship-award-coordinator-handoff.schema.json",
+        "path": "schemas/scholarship-award-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/scholarship-award-coordinator-handoff.example.json",
+        "path": "fixtures/scholarship-award-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/scholarship-award-coordinator-handoff.md",
+        "path": "templates/scholarship-award-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Students, families, school counselors, and authorized advisers reconciling awarded scholarships while students retain authorship, financial, and enrollment authority. need a reusable, evidence-bound way to maintain an evidence-bound scholarship award and renewal obligations handoff. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Maintain an evidence-bound scholarship award and renewal obligations handoff.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for scholarship-award-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "college-application-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Scholarship award coordinator repeatedly maintain an evidence-bound scholarship award and renewal obligations handoff. Unlike College application coordinator, this starter's distinct contract is: It starts after or around award evidence and tracks award conditions, renewal criteria, enrollment dependencies, disbursement receipts, stewardship obligations, and blocked acceptance actions."
+      },
+      {
+        "id": "insurance-appeal-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Scholarship award coordinator repeatedly maintain an evidence-bound scholarship award and renewal obligations handoff. Unlike Insurance appeal coordinator, this starter's distinct contract is: It starts after or around award evidence and tracks award conditions, renewal criteria, enrollment dependencies, disbursement receipts, stewardship obligations, and blocked acceptance actions."
+      },
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Scholarship award coordinator repeatedly maintain an evidence-bound scholarship award and renewal obligations handoff. Unlike Rental housing coordinator, this starter's distinct contract is: It starts after or around award evidence and tracks award conditions, renewal criteria, enrollment dependencies, disbursement receipts, stewardship obligations, and blocked acceptance actions."
+      }
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "home-energy-upgrade-coordinator",
+  "request": "Reconcile the energy audit, heat pump quotes, insulation proposal, utility rebate forms, equipment spec sheets, permit notes, warranty terms, and contractor assumptions I supplied. Show comparison gaps and owners, but do not choose a vendor, claim savings, apply for rebates, sign contracts, or authorize work.",
+  "scope": "Homeowners, renters with permission, property managers, and household helpers comparing supplied energy-upgrade evidence while owners retain spending and contractor authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Audit finding and proposed-measure register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every measure, proposal, model, rebate condition, permit dependency, warranty term, assumption, and gap is represented with provenance"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Proposal, equipment, rebate, permit, and warranty evidence ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Savings, eligibility, code, vendor, contract, tax, and payment decisions remain assigned to the owner or qualified humans"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not recommend vendors, predict savings, certify eligibility, apply for rebates, sign contracts, schedule work, or authorize payment"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "No vendor selection, rebate application, authorization, schedule, savings claim, or compliance conclusion is made"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not recommend vendors, predict savings, certify eligibility, apply for rebates, sign contracts, schedule work, or authorize payment",
+    "Do not provide engineering, tax, legal, safety, code, or utility-program advice",
+    "Do not fabricate equipment performance, permit status, rebate availability, contractor credentials, or warranty coverage"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

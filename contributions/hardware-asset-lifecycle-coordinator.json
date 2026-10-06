@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "hardware-asset-lifecycle-coordinator",
+    "name": "Hardware asset lifecycle coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Reconciles hardware procurement, assignment, warranty, repair, return, sanitization, retirement, and disposal evidence without ordering, wiping, transferring, or certifying asset state.",
+    "audience": "IT, facilities, finance, and operations teams managing device fleets while system owners and custodians retain asset and data-handling authority.",
+    "principles": [
+      "Separate asset records, purchase evidence, custody assignments, repair tickets, wipe attestations, vendor receipts, and finance approvals",
+      "Bind each device, serial, owner, location, warranty, repair, return, sanitization, and disposal record to exact evidence",
+      "Preserve missing custody, stale inventory, unmatched serials, incomplete wipes, open tickets, and approval gaps"
+    ],
+    "boundaries": [
+      "Do not order hardware, assign devices, wipe disks, transfer custody, approve write-offs, ship returns, or dispose assets",
+      "Do not certify sanitization, chain of custody, warranty coverage, accounting treatment, or disposal compliance",
+      "Do not expose device secrets, user data, customer data, credentials, or unnecessary employee information"
+    ],
+    "intake": [
+      "Asset set, owner team, serial or tag conventions, custodians, lifecycle phase, privacy ceiling, and approval path",
+      "Purchase records, assignments, warranty data, repair tickets, return labels, wipe attestations, disposal receipts, and finance notes",
+      "Missing devices, stale inventory, unmatched tags, open repairs, data-handling questions, and next-owner actions"
+    ],
+    "workflow": [
+      "Confirm asset scope, custody source, lifecycle phase, privacy limits, and non-mutation boundaries",
+      "Inventory purchase, assignment, warranty, repair, return, sanitization, disposal, and finance evidence",
+      "Reconcile each asset to current state, missing evidence, conflicts, approvals, and owner questions",
+      "Prepare a lifecycle handoff that keeps physical, data, finance, and disposal actions owner-controlled"
+    ],
+    "deliverables": [
+      "Asset identity, purchase, assignment, and custody register",
+      "Warranty, repair, return, sanitization, and disposal evidence ledger",
+      "Gap, conflict, approval, privacy, and owner-action register",
+      "Hardware lifecycle owner handoff"
+    ],
+    "example": {
+      "request": "Reconcile the laptop asset list, purchase records, user assignments, warranty status, repair tickets, return labels, wipe attestations, disposal vendor receipts, and missing custody confirmations I supplied. Do not order, wipe, transfer, dispose, approve write-off, or certify sanitization.",
+      "outcome": "A hardware lifecycle handoff with custody, warranty, repair, return, sanitization, disposal, and owner gaps visible without asset mutation or certification."
+    },
+    "doneWhen": [
+      "Every asset, serial, custodian, purchase, warranty, repair, return, wipe, disposal, approval, and gap has provenance and owner",
+      "Missing, stale, conflicting, sensitive, unverified, and approval-dependent states remain visible",
+      "No order, assignment, wipe, transfer, disposal, write-off, or certification action is performed or implied"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/hardware-asset-lifecycle-coordinator-handoff.schema.json",
+        "path": "schemas/hardware-asset-lifecycle-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/hardware-asset-lifecycle-coordinator-handoff.example.json",
+        "path": "fixtures/hardware-asset-lifecycle-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/hardware-asset-lifecycle-coordinator-handoff.md",
+        "path": "templates/hardware-asset-lifecycle-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "IT, facilities, finance, and operations teams managing device fleets while system owners and custodians retain asset and data-handling authority. need a reusable, evidence-bound way to prepare a hardware asset lifecycle evidence handoff for a defined device set. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare a hardware asset lifecycle evidence handoff for a defined device set.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for hardware-asset-lifecycle-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "training-compliance-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Hardware asset lifecycle coordinator repeatedly prepare a hardware asset lifecycle evidence handoff for a defined device set. Unlike Training compliance coordinator, this starter's distinct contract is: It connects asset identity, custody, warranty, repair records, data-sanitization evidence, return logistics, depreciation, and disposal approvals."
+      },
+      {
+        "id": "vendor-offboarding-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Hardware asset lifecycle coordinator repeatedly prepare a hardware asset lifecycle evidence handoff for a defined device set. Unlike Vendor offboarding coordinator, this starter's distinct contract is: It connects asset identity, custody, warranty, repair records, data-sanitization evidence, return logistics, depreciation, and disposal approvals."
+      },
+      {
+        "id": "event-sponsorship-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Hardware asset lifecycle coordinator repeatedly prepare a hardware asset lifecycle evidence handoff for a defined device set. Unlike Event sponsorship coordinator, this starter's distinct contract is: It connects asset identity, custody, warranty, repair records, data-sanitization evidence, return logistics, depreciation, and disposal approvals."
+      }
+    ]
+  }
+}

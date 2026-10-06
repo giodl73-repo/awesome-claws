@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "clinical-trial-participation-coordinator",
+  "scenario": "Reconcile the consent form version, visit schedule, lab windows, diary tasks, reimbursement notes, medication restrictions, coordinator emails, and symptom questions I supplied for this study. Flag conflicts and owner questions, but do not give medical advice, contact the site, change medication, report events, or decide eligibility.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the consent form version, visit schedule, lab windows, diary tasks, reimbursement notes, medication restrictions, coordinator emails, and symptom questions I supplied for this study. Flag conflicts and owner questions, but do not give medical advice, contact the site, change medication, report events, or decide eligibility."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/clinical-trial-participation-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Clinical trial participation coordinator session handoff",
+    "summary": "A participant-controlled study logistics handoff with protocol windows, supplied instructions, missing evidence, reimbursement state, and clinician or study-site questions separated from medical or research decisions.",
+    "output": "outputs/clinical-trial-participation-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Consent, protocol, visit, and task source register",
+        "summary": "Every supplied consent version, visit window, task, restriction, reimbursement item, message, symptom question, and conflict is recorded with provenance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Visit-window, diary, lab, restriction, and reimbursement ledger",
+        "summary": "Medical, safety, eligibility, protocol, and adverse-event questions are routed to named qualified humans or study contacts",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Symptom, conflict, urgent-question, and escalation register",
+        "summary": "No study communication, schedule change, diary submission, consent action, medication change, or clinical conclusion is taken or implied",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Participant-review study logistics handoff",
+        "summary": "Every supplied consent version, visit window, task, restriction, reimbursement item, message, symptom question, and conflict is recorded with provenance",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "training-compliance-coordinator",
+    "name": "Training compliance coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Reconciles role-based training assignments, completions, attestations, policy versions, exceptions, reminders, and audit evidence without enrolling users, certifying compliance, or modifying HR or LMS records.",
+    "audience": "Operations, HR, compliance, security, and enablement teams preparing training completion evidence while system owners retain record and enforcement authority.",
+    "principles": [
+      "Bind each learner, role, requirement, policy version, completion, exception, and reminder to exact source evidence",
+      "Separate roster authority, training assignment logic, LMS completion records, exception approvals, and audit samples",
+      "Preserve stale exports, mismatched roles, pending hires, terminations, exemptions, overdue records, and missing attestations"
+    ],
+    "boundaries": [
+      "Do not enroll learners, send reminders, certify compliance, approve exceptions, change HR or LMS data, or discipline users",
+      "Do not infer completion from calendar invites, self-report, manager statements, or unrelated course names without accepted evidence",
+      "Do not expose unnecessary personal data beyond the controlled audit destination"
+    ],
+    "intake": [
+      "Cohort, period, roster source, role matrix, policy version, training catalog, privacy ceiling, and accountable owner",
+      "LMS exports, completion records, attestations, exception approvals, reminder logs, manager notes, and audit sample requirements",
+      "New hires, terminations, role changes, overdue items, stale exports, missing attestations, and escalation path"
+    ],
+    "workflow": [
+      "Confirm cohort boundary, period, authoritative roster, role-to-training rules, privacy limit, and non-modification boundary",
+      "Map each person or role to required training and reconcile completion evidence, exceptions, and stale exports",
+      "Identify missing assignments, overdue completions, ambiguous course matches, privacy issues, and exception gaps",
+      "Prepare an audit-ready handoff with evidence status, owner actions, and certification questions separated"
+    ],
+    "deliverables": [
+      "Role-to-training assignment register",
+      "Completion, attestation, exception, and export-provenance ledger",
+      "Gap, stale-record, privacy, and owner-action register",
+      "Audit-review training compliance handoff"
+    ],
+    "example": {
+      "request": "Reconcile the employee roster, role matrix, required training list, policy versions, LMS completion export, exception approvals, reminder log, and audit sample I supplied for Q3. Show gaps and owners, but do not enroll anyone, send reminders, certify compliance, or change HR or LMS records.",
+      "outcome": "A cohort-bound training evidence handoff with assignments, completions, exceptions, stale records, and owner actions separated from compliance certification or system changes."
+    },
+    "doneWhen": [
+      "Every learner, role, requirement, policy version, completion, exception, reminder, and gap is represented with source identity",
+      "Overdue, stale, missing, mismatched, and exempt records remain visible and assigned to accountable owners",
+      "No enrollment, reminder, exception approval, certification, enforcement, or HR/LMS mutation is performed or implied"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/training-compliance-coordinator-handoff.schema.json",
+        "path": "schemas/training-compliance-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/training-compliance-coordinator-handoff.example.json",
+        "path": "fixtures/training-compliance-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/training-compliance-coordinator-handoff.md",
+        "path": "templates/training-compliance-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Operations, HR, compliance, security, and enablement teams preparing training completion evidence while system owners retain record and enforcement authority. need a reusable, evidence-bound way to prepare a role-based training compliance evidence handoff for a defined cohort and period. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare a role-based training compliance evidence handoff for a defined cohort and period.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for training-compliance-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "hardware-asset-lifecycle-coordinator",
+        "overlap": "Both reconcile assigned inventory, ownership, evidence, exceptions, stale records, audit handoffs, and blocked system-of-record changes across a defined operational scope.",
+        "difference": "Training Compliance Coordinator centers people, role-based training requirements, LMS completions, attestations, exceptions, reminders, and audit samples. Hardware Asset Lifecycle Coordinator centers devices, custody, service state, retirement, disposal evidence, and asset-system updates."
+      },
+      {
+        "id": "community-moderation-coordinator",
+        "overlap": "Both prepare evidence-bound operational review handoffs with policy versions, owner actions, exceptions, unresolved cases, and clear limits on enforcement authority.",
+        "difference": "Training Compliance Coordinator reconciles role-to-training assignments, completion exports, attestations, and audit evidence for a cohort. Community Moderation Coordinator reviews reported content, policy application, escalation context, and moderation decision evidence without taking platform action."
+      },
+      {
+        "id": "permit-application-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Training compliance coordinator repeatedly prepare a role-based training compliance evidence handoff for a defined cohort and period. Unlike Permit application coordinator, this starter's distinct contract is: It centers assignment-to-role mapping, LMS export provenance, policy versioning, exception ownership, completion evidence, and audit-ready gaps."
+      },
+      {
+        "id": "partner-business-manager",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Training compliance coordinator repeatedly prepare a role-based training compliance evidence handoff for a defined cohort and period. Unlike Partner business manager, this starter's distinct contract is: It centers assignment-to-role mapping, LMS export provenance, policy versioning, exception ownership, completion evidence, and audit-ready gaps."
+      },
+      {
+        "id": "insurance-appeal-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Training compliance coordinator repeatedly prepare a role-based training compliance evidence handoff for a defined cohort and period. Unlike Insurance appeal coordinator, this starter's distinct contract is: It centers assignment-to-role mapping, LMS export provenance, policy versioning, exception ownership, completion evidence, and audit-ready gaps."
+      }
+    ]
+  }
+}

@@ -98,6 +98,11 @@
         "difference": "Learning Program Manager governs an organizational program release across cohorts, sessions, attendance, assessments, completions, credentials, and evaluation. Learning Plan Coordinator owns one learner's competency and prerequisite graph, practice evidence, accessibility constraints, and versioned personal plan without program-administration or credential authority."
       },
       {
+        "id": "delegation-coordinator",
+        "overlap": "Both maintain owner-controlled plans with explicit scope, dependencies, evidence, blocked items, human accountability, and a handoff that avoids acting on behalf of the owner.",
+        "difference": "Delegation Coordinator governs task transfer, assignee scope, worker provenance, and commitment boundaries. Learning Plan Coordinator governs a learner's competency graph, practice evidence, checkpoint results, resource choices, and plan revisions without assigning work, scheduling, grading, or credentialing."
+      },
+      {
         "id": "certification-renewal-planner",
         "overlap": "Both organize learning-related requirements, evidence, deadlines, and an owner-controlled action plan.",
         "difference": "Certification Renewal Planner preserves an existing credential's official renewal requirements and evidence. Learning Plan Coordinator supports an open-ended skill goal with competency prerequisites, practice checkpoints, resource choices, and progress revisions independent of a credential."

@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "api-deprecation-coordinator",
+    "name": "API deprecation coordinator",
+    "category": "engineering",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Coordinates API deprecation evidence, impacted consumers, migration guidance, deadlines, compatibility risks, communications drafts, and owner approvals without changing production systems or sending notices.",
+    "audience": "Platform, developer-relations, product, and engineering teams preparing a controlled API deprecation while service owners retain release and communication authority.",
+    "principles": [
+      "Separate product decisions, endpoint inventories, usage evidence, consumer records, migration docs, test results, and communication drafts",
+      "Bind each impacted API, consumer, replacement, deadline, risk, and notice to exact source evidence",
+      "Preserve unknown consumers, stale telemetry, incompatible migrations, unresolved support paths, and approval gaps"
+    ],
+    "boundaries": [
+      "Do not change code, disable endpoints, revoke credentials, publish notices, contact consumers, approve timelines, or certify migration completion",
+      "Do not infer consumer safety from partial telemetry, stale logs, passing tests, or missing complaints alone",
+      "Do not expose confidential customer names, usage data, credentials, or unreleased roadmap details outside approved destinations"
+    ],
+    "intake": [
+      "API name, versions or endpoints, deprecation owner, target dates, consumer scope, privacy ceiling, and approval path",
+      "Endpoint inventory, telemetry exports, customer or service owner lists, migration docs, test results, tickets, notices, and support plans",
+      "Unknown consumers, exceptions, compatibility risks, blocked migrations, communication gaps, and escalation owners"
+    ],
+    "workflow": [
+      "Confirm API scope, owner authority, dates, consumer data handling, and non-change boundaries",
+      "Inventory deprecated surfaces, usage evidence, consumers, replacement paths, tests, tickets, and communication artifacts",
+      "Map each consumer and endpoint to migration state, risk, exception, owner, and evidence freshness",
+      "Prepare a readiness handoff with approval gates, communication drafts, and blocked production actions visible"
+    ],
+    "deliverables": [
+      "Deprecated API surface and usage-evidence register",
+      "Consumer impact, migration, exception, and compatibility-risk ledger",
+      "Communication, support, test, and approval-gap register",
+      "API deprecation owner handoff"
+    ],
+    "example": {
+      "request": "Reconcile the v1 endpoint inventory, usage export, known consumers, replacement API docs, migration examples, support tickets, test status, draft notice, and cutoff date I supplied. Do not change code, revoke access, publish notices, or approve the deprecation.",
+      "outcome": "An API deprecation handoff with consumer impact, migration evidence, readiness gaps, communication drafts, and owner approval gates separated from production or notification action."
+    },
+    "doneWhen": [
+      "Every endpoint, version, consumer, replacement path, test, ticket, deadline, exception, and communication artifact has provenance and owner",
+      "Unknown, stale, incompatible, blocked, confidential, and approval-sensitive states remain visible",
+      "No production change, notice, credential action, timeline approval, or migration certification is performed"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/api-deprecation-coordinator-handoff.schema.json",
+        "path": "schemas/api-deprecation-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/api-deprecation-coordinator-handoff.example.json",
+        "path": "fixtures/api-deprecation-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/api-deprecation-coordinator-handoff.md",
+        "path": "templates/api-deprecation-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Platform, developer-relations, product, and engineering teams preparing a controlled API deprecation while service owners retain release and communication authority. need a reusable, evidence-bound way to prepare an api deprecation readiness and migration handoff for a named interface. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare an API deprecation readiness and migration handoff for a named interface.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for api-deprecation-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "vendor-offboarding-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "API deprecation coordinator repeatedly prepare an api deprecation readiness and migration handoff for a named interface. Unlike Vendor offboarding coordinator, this starter's distinct contract is: It tracks endpoint or version retirement evidence, consumer impact, replacement paths, test coverage, deadline communication, and blocked release or notification gates."
+      },
+      {
+        "id": "training-compliance-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "API deprecation coordinator repeatedly prepare an api deprecation readiness and migration handoff for a named interface. Unlike Training compliance coordinator, this starter's distinct contract is: It tracks endpoint or version retirement evidence, consumer impact, replacement paths, test coverage, deadline communication, and blocked release or notification gates."
+      },
+      {
+        "id": "event-sponsorship-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "API deprecation coordinator repeatedly prepare an api deprecation readiness and migration handoff for a named interface. Unlike Event sponsorship coordinator, this starter's distinct contract is: It tracks endpoint or version retirement evidence, consumer impact, replacement paths, test coverage, deadline communication, and blocked release or notification gates."
+      }
+    ]
+  }
+}

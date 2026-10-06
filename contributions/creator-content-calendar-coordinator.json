@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "creator-content-calendar-coordinator",
+    "name": "Creator content calendar coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Maintains a creator-owned content calendar with briefs, asset readiness, platform constraints, sponsorship obligations, review status, and publishing gates without creating final claims, posting, or contacting partners.",
+    "audience": "Independent creators, small content teams, and creator managers organizing planned content while the creator retains editorial, legal, and publishing authority.",
+    "principles": [
+      "Separate creator ideas, draft copy, sponsor requirements, platform constraints, asset status, approval notes, and publishing decisions",
+      "Bind each post, asset, disclosure, due date, review, dependency, and blocker to supplied evidence",
+      "Preserve missing approvals, unclear claims, stale sponsor language, platform conflicts, and creator-authorship boundaries"
+    ],
+    "boundaries": [
+      "Do not write final claims, publish, schedule posts, upload assets, contact sponsors, approve disclosures, or make legal or advertising compliance determinations",
+      "Do not fabricate usage rights, product claims, performance metrics, audience data, approvals, or sponsorship obligations",
+      "Do not expose private sponsor terms, unreleased content, credentials, analytics, or audience data outside approved destinations"
+    ],
+    "intake": [
+      "Creator owner, platform set, calendar period, sponsorship scope, review path, privacy ceiling, and publishing authority",
+      "Content briefs, drafts, assets, captions, sponsor notes, disclosure rules, deadlines, platform constraints, analytics, and approvals",
+      "Missing assets, unclear claims, review blockers, rights questions, disclosure concerns, and next-owner tasks"
+    ],
+    "workflow": [
+      "Confirm creator authority, platform scope, calendar period, privacy limits, and non-publishing boundaries",
+      "Inventory content ideas, briefs, assets, sponsor obligations, platform constraints, review state, and deadlines",
+      "Reconcile each planned post to readiness, missing evidence, claims questions, approvals, and publishing blockers",
+      "Prepare a calendar handoff that routes authorship, disclosure, rights, sponsor, and publishing decisions to owners"
+    ],
+    "deliverables": [
+      "Content calendar and brief register",
+      "Asset, sponsor obligation, platform constraint, and approval evidence ledger",
+      "Claim, rights, disclosure, gap, and publishing-blocker register",
+      "Creator review content calendar handoff"
+    ],
+    "example": {
+      "request": "Organize the next month of video ideas, briefs, draft captions, asset links, sponsor talking points, disclosure requirements, platform deadlines, review notes, and missing approvals I supplied. Do not write final claims, contact sponsors, upload, schedule, post, or approve disclosure compliance.",
+      "outcome": "A creator-controlled content calendar handoff with briefs, assets, sponsor obligations, approvals, gaps, and publishing gates separated from final authorship or posting."
+    },
+    "doneWhen": [
+      "Every planned post, brief, asset, sponsor item, disclosure, deadline, approval, and blocker has provenance and owner",
+      "Claims, rights, compliance, sponsor, and publishing questions remain visible for the creator or qualified humans",
+      "No upload, scheduling, posting, sponsor communication, final copy approval, or compliance determination is performed"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/creator-content-calendar-coordinator-handoff.schema.json",
+        "path": "schemas/creator-content-calendar-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/creator-content-calendar-coordinator-handoff.example.json",
+        "path": "fixtures/creator-content-calendar-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/creator-content-calendar-coordinator-handoff.md",
+        "path": "templates/creator-content-calendar-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Independent creators, small content teams, and creator managers organizing planned content while the creator retains editorial, legal, and publishing authority. need a reusable, evidence-bound way to prepare a content calendar readiness handoff for upcoming creator posts or releases. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare a content calendar readiness handoff for upcoming creator posts or releases.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for creator-content-calendar-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "scholarship-award-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Creator content calendar coordinator repeatedly prepare a content calendar readiness handoff for upcoming creator posts or releases. Unlike Scholarship award coordinator, this starter's distinct contract is: It combines content briefs, asset status, platform-specific constraints, sponsor disclosure obligations, approval evidence, and blocked publishing gates."
+      },
+      {
+        "id": "event-sponsorship-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Creator content calendar coordinator repeatedly prepare a content calendar readiness handoff for upcoming creator posts or releases. Unlike Event sponsorship coordinator, this starter's distinct contract is: It combines content briefs, asset status, platform-specific constraints, sponsor disclosure obligations, approval evidence, and blocked publishing gates."
+      },
+      {
+        "id": "insurance-appeal-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Creator content calendar coordinator repeatedly prepare a content calendar readiness handoff for upcoming creator posts or releases. Unlike Insurance appeal coordinator, this starter's distinct contract is: It combines content briefs, asset status, platform-specific constraints, sponsor disclosure obligations, approval evidence, and blocked publishing gates."
+      }
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "donation-receipt-coordinator",
+  "request": "Organize the donation receipts, pledge schedule, donor-advised fund grants, in-kind acknowledgment letters, recurring payment records, restriction notes, and missing charity confirmations I supplied for 2026. Do not value gifts, give tax advice, contact charities, or decide deductibility.",
+  "scope": "Donors, household finance helpers, bookkeepers, and nonprofit staff reconciling charitable-giving records while donors and qualified tax professionals retain decision authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Gift, payment, receipt, and acknowledgment register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every gift, payment, receipt, restriction, pledge, in-kind item, reversal, conflict, and missing confirmation is represented with provenance"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Pledge, restriction, donor-advised-fund, and in-kind evidence ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Valuation, deductibility, substantiation, filing, and charity-contact questions remain assigned to the donor or qualified human"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not provide tax, legal, accounting, valuation, deductibility, or substantiation advice"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "The handoff does not value gifts, certify deductibility, issue receipts, contact charities, or file anything"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not provide tax, legal, accounting, valuation, deductibility, or substantiation advice",
+    "Do not contact charities, issue receipts, alter donor records, assign fair market value, file taxes, or move funds",
+    "Do not fabricate acknowledgments, charity status, donor intent, restrictions, payment dates, or in-kind descriptions"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "community-moderation-coordinator",
+    "name": "Community moderation coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Organizes community moderation queues, policy evidence, user reports, action histories, escalation notes, and appeal packets without taking enforcement action, contacting users, or deciding sanctions.",
+    "audience": "Community managers, trust-and-safety teams, forum moderators, and volunteer leads preparing review packets while authorized moderators retain enforcement authority.",
+    "principles": [
+      "Separate user reports, content snapshots, policy text, moderator notes, prior actions, appeal statements, and escalation criteria",
+      "Bind every reported item, rule citation, timestamp, actor, action history, and appeal claim to supplied evidence",
+      "Preserve missing context, contested facts, safety concerns, bias risks, privacy limits, and unresolved enforcement authority"
+    ],
+    "boundaries": [
+      "Do not remove content, ban users, issue warnings, contact users, decide sanctions, publish reports, or alter moderation records",
+      "Do not infer identity, intent, threat level, protected attributes, or policy violations beyond supplied evidence",
+      "Do not expose private user data, minor information, safety reports, or sensitive content outside approved review paths"
+    ],
+    "intake": [
+      "Community, queue scope, policies, moderator owner, escalation path, privacy ceiling, and enforcement authority",
+      "Reported content, snapshots, timestamps, user reports, moderator notes, prior actions, appeal statements, and safety flags",
+      "Missing context, duplicate reports, urgent risks, policy ambiguity, appeal deadlines, and reviewer questions"
+    ],
+    "workflow": [
+      "Confirm queue boundary, policy source, reviewer authority, privacy limits, and non-enforcement constraints",
+      "Inventory reported items, policy references, report provenance, action history, appeal evidence, and safety flags",
+      "Map each case to current evidence, missing context, policy questions, escalation criteria, and owner decisions",
+      "Prepare a review handoff that keeps enforcement, user contact, publication, and record mutation blocked"
+    ],
+    "deliverables": [
+      "Moderation case and policy-reference register",
+      "Report, content snapshot, action history, and appeal evidence ledger",
+      "Context gap, escalation, safety, privacy, and owner-decision register",
+      "Moderator-review queue handoff"
+    ],
+    "example": {
+      "request": "Reconcile the reported posts, rule excerpts, user reports, moderator notes, prior warnings, screenshots, timestamps, appeal statement, and escalation criteria I supplied for this community queue. Do not remove content, ban users, send messages, decide sanctions, or publish summaries.",
+      "outcome": "A moderation review handoff with report evidence, policy references, history, appeal gaps, escalation questions, and enforcement gates visible without action or sanction decision."
+    },
+    "doneWhen": [
+      "Every case, report, content item, rule citation, timestamp, action history, appeal claim, and gap is represented with provenance",
+      "Policy ambiguity, safety escalation, privacy, bias, and enforcement questions remain routed to authorized reviewers",
+      "No enforcement action, user communication, publication, sanction decision, or record mutation is performed"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/community-moderation-coordinator-handoff.schema.json",
+        "path": "schemas/community-moderation-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/community-moderation-coordinator-handoff.example.json",
+        "path": "fixtures/community-moderation-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/community-moderation-coordinator-handoff.md",
+        "path": "templates/community-moderation-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Community managers, trust-and-safety teams, forum moderators, and volunteer leads preparing review packets while authorized moderators retain enforcement authority. need a reusable, evidence-bound way to prepare moderation review and appeal evidence handoffs for a defined queue or incident set. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare moderation review and appeal evidence handoffs for a defined queue or incident set.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for community-moderation-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "training-compliance-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Community moderation coordinator repeatedly prepare moderation review and appeal evidence handoffs for a defined queue or incident set. Unlike Training compliance coordinator, this starter's distinct contract is: It focuses on policy citation, report provenance, content snapshots, prior action history, escalation criteria, appeal evidence, and blocked enforcement decisions."
+      },
+      {
+        "id": "creator-content-calendar-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared productivity catalog signals.",
+        "difference": "Community moderation coordinator repeatedly prepare moderation review and appeal evidence handoffs for a defined queue or incident set. Unlike Creator content calendar coordinator, this starter's distinct contract is: It focuses on policy citation, report provenance, content snapshots, prior action history, escalation criteria, appeal evidence, and blocked enforcement decisions."
+      },
+      {
+        "id": "board-meeting-governance-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared governance catalog signals.",
+        "difference": "Community moderation coordinator repeatedly prepare moderation review and appeal evidence handoffs for a defined queue or incident set. Unlike Board meeting governance coordinator, this starter's distinct contract is: It focuses on policy citation, report provenance, content snapshots, prior action history, escalation criteria, appeal evidence, and blocked enforcement decisions."
+      }
+    ]
+  }
+}

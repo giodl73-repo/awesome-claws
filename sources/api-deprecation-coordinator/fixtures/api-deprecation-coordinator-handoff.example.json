@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "api-deprecation-coordinator",
+  "request": "Reconcile the v1 endpoint inventory, usage export, known consumers, replacement API docs, migration examples, support tickets, test status, draft notice, and cutoff date I supplied. Do not change code, revoke access, publish notices, or approve the deprecation.",
+  "scope": "Platform, developer-relations, product, and engineering teams preparing a controlled API deprecation while service owners retain release and communication authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Deprecated API surface and usage-evidence register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every endpoint, version, consumer, replacement path, test, ticket, deadline, exception, and communication artifact has provenance and owner"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Consumer impact, migration, exception, and compatibility-risk ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Unknown, stale, incompatible, blocked, confidential, and approval-sensitive states remain visible"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not change code, disable endpoints, revoke credentials, publish notices, contact consumers, approve timelines, or certify migration completion"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "No production change, notice, credential action, timeline approval, or migration certification is performed"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not change code, disable endpoints, revoke credentials, publish notices, contact consumers, approve timelines, or certify migration completion",
+    "Do not infer consumer safety from partial telemetry, stale logs, passing tests, or missing complaints alone",
+    "Do not expose confidential customer names, usage data, credentials, or unreleased roadmap details outside approved destinations"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

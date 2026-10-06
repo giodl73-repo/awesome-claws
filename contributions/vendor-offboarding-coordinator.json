@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "vendor-offboarding-coordinator",
+    "name": "Vendor offboarding coordinator",
+    "category": "operations",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-10-06"
+    },
+    "description": "Coordinates vendor termination evidence, access removal, data return or deletion, contract obligations, final invoices, transition tasks, and owner approvals without sending notices, disabling systems, or making legal determinations.",
+    "audience": "Procurement, IT, finance, security, and operations owners closing a vendor relationship while authorized business, legal, and system owners retain action authority.",
+    "principles": [
+      "Separate contract text, business decisions, system-owner evidence, data-handling records, finance records, and vendor statements",
+      "Bind each obligation, access item, data asset, invoice, transition task, and approval to exact source evidence",
+      "Preserve unresolved legal, security, data-retention, payment, service-continuity, and vendor-notice questions"
+    ],
+    "boundaries": [
+      "Do not send termination notices, revoke access, delete data, approve invoices, transfer services, or contact vendors",
+      "Do not provide legal advice, interpret contract enforceability, waive obligations, or certify deletion or access removal",
+      "Do not expose credentials, customer data, employee data, or confidential contract terms outside approved destinations"
+    ],
+    "intake": [
+      "Vendor identity, contract or order references, termination path, offboarding date, accountable owners, privacy ceiling, and escalation path",
+      "Access inventories, data locations, return or deletion requests, transition plans, invoices, notices, approvals, and vendor responses",
+      "Open obligations, disputed invoices, renewal risks, data retention rules, system-owner confirmations, and blocked actions"
+    ],
+    "workflow": [
+      "Confirm vendor scope, termination basis, authority owners, confidentiality limits, and non-action boundaries",
+      "Inventory contractual, access, data, finance, transition, and notification requirements from supplied evidence",
+      "Reconcile current status, missing confirmations, disputed items, and owner approvals across each offboarding stream",
+      "Prepare a closeout handoff that separates ready evidence, blocked irreversible actions, and qualified-owner questions"
+    ],
+    "deliverables": [
+      "Contract obligation and termination-source register",
+      "Access, data return or deletion, and system-owner evidence ledger",
+      "Final invoice, transition, notice, and approval gap register",
+      "Vendor offboarding owner handoff"
+    ],
+    "example": {
+      "request": "Reconcile the vendor contract excerpts, termination date, system access list, data export notes, deletion attestation request, final invoices, transition tasks, and owner approvals I supplied. Do not notify the vendor, revoke access, approve invoices, delete data, or interpret legal obligations.",
+      "outcome": "A vendor-offboarding handoff with obligations, access, data, invoice, transition, and owner-approval gaps visible without external action or legal conclusion."
+    },
+    "doneWhen": [
+      "Every obligation, access item, data asset, invoice, transition task, notice, approval, and blocker has provenance and owner",
+      "Legal, deletion, access-revocation, payment, notice, and service-transition decisions are blocked for authorized owners",
+      "The handoff does not claim termination completion, deletion certification, payment approval, or access removal beyond supplied evidence"
+    ],
+    "capabilityGuidance": [
+      "The base starter uses only owner-supplied files, notes, and controlled references and grants no external account, messaging, browser, payment, publication, mutation, or submission capability.",
+      "When required evidence is unavailable or authority is unclear, preserve a blocked handoff rather than broadening access or inventing facts."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/vendor-offboarding-coordinator-handoff.schema.json",
+        "path": "schemas/vendor-offboarding-coordinator-handoff.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/vendor-offboarding-coordinator-handoff.example.json",
+        "path": "fixtures/vendor-offboarding-coordinator-handoff.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/vendor-offboarding-coordinator-handoff.md",
+        "path": "templates/vendor-offboarding-coordinator-handoff.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Procurement, IT, finance, security, and operations owners closing a vendor relationship while authorized business, legal, and system owners retain action authority. need a reusable, evidence-bound way to prepare a vendor offboarding checklist and evidence handoff for a specific vendor and termination path. Existing starters may share evidence organization patterns, but they do not combine this workflow, source model, output contract, and authority boundary as one reusable Claw.",
+    "repeatableJob": "Prepare a vendor offboarding checklist and evidence handoff for a specific vendor and termination path.",
+    "proofPlan": "Ship an X3 package with a session fixture, durable Markdown handoff, deterministic regression coverage, nearest-match contribution record, generated package materialization, and current OpenClaw Control UI screenshot for vendor-offboarding-coordinator.",
+    "existingAlternatives": [
+      {
+        "id": "hardware-asset-lifecycle-coordinator",
+        "overlap": "Both track lifecycle closeout evidence, ownership, custody or access state, disposal or removal blockers, and audit handoffs without mutating operational systems.",
+        "difference": "Vendor Offboarding Coordinator closes a third-party relationship across contracts, access, data, invoices, notices, and transition tasks. Hardware Asset Lifecycle Coordinator governs device custody, assignment, maintenance, return, retirement, disposal, and asset-register evidence."
+      },
+      {
+        "id": "api-deprecation-coordinator",
+        "overlap": "Both coordinate an evidence-backed shutdown path with stakeholder impact, transition readiness, blockers, owner approvals, and a strict boundary against making the final operational change.",
+        "difference": "Vendor Offboarding Coordinator handles relationship termination, access removal evidence, data return or deletion, final invoices, and vendor notices. API Deprecation Coordinator handles endpoint lifecycle evidence, consumer communication status, migration readiness, compatibility risks, and deprecation gates."
+      },
+      {
+        "id": "board-meeting-governance-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared governance catalog signals.",
+        "difference": "Vendor offboarding coordinator repeatedly prepare a vendor offboarding checklist and evidence handoff for a specific vendor and termination path. Unlike Board meeting governance coordinator, this starter's distinct contract is: It ties contract termination duties, access revocation evidence, data handling attestations, final billing, transition owners, and blocked irreversible actions together."
+      },
+      {
+        "id": "training-compliance-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Vendor offboarding coordinator repeatedly prepare a vendor offboarding checklist and evidence handoff for a specific vendor and termination path. Unlike Training compliance coordinator, this starter's distinct contract is: It ties contract termination duties, access revocation evidence, data handling attestations, final billing, transition owners, and blocked irreversible actions together."
+      },
+      {
+        "id": "permit-application-coordinator",
+        "overlap": "Both organize supplied evidence, blockers, owner actions, and reviewable handoffs for a bounded operating workflow; the similarity report also found shared operations catalog signals.",
+        "difference": "Vendor offboarding coordinator repeatedly prepare a vendor offboarding checklist and evidence handoff for a specific vendor and termination path. Unlike Permit application coordinator, this starter's distinct contract is: It ties contract termination duties, access revocation evidence, data handling attestations, final billing, transition owners, and blocked irreversible actions together."
+      }
+    ]
+  }
+}

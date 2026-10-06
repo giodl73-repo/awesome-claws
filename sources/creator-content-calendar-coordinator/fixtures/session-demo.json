@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "creator-content-calendar-coordinator",
+  "scenario": "Organize the next month of video ideas, briefs, draft captions, asset links, sponsor talking points, disclosure requirements, platform deadlines, review notes, and missing approvals I supplied. Do not write final claims, contact sponsors, upload, schedule, post, or approve disclosure compliance.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize the next month of video ideas, briefs, draft captions, asset links, sponsor talking points, disclosure requirements, platform deadlines, review notes, and missing approvals I supplied. Do not write final claims, contact sponsors, upload, schedule, post, or approve disclosure compliance."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/creator-content-calendar-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Creator content calendar coordinator session handoff",
+    "summary": "A creator-controlled content calendar handoff with briefs, assets, sponsor obligations, approvals, gaps, and publishing gates separated from final authorship or posting.",
+    "output": "outputs/creator-content-calendar-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Content calendar and brief register",
+        "summary": "Every planned post, brief, asset, sponsor item, disclosure, deadline, approval, and blocker has provenance and owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Asset, sponsor obligation, platform constraint, and approval evidence ledger",
+        "summary": "Claims, rights, compliance, sponsor, and publishing questions remain visible for the creator or qualified humans",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Claim, rights, disclosure, gap, and publishing-blocker register",
+        "summary": "No upload, scheduling, posting, sponsor communication, final copy approval, or compliance determination is performed",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Creator review content calendar handoff",
+        "summary": "Every planned post, brief, asset, sponsor item, disclosure, deadline, approval, and blocker has provenance and owner",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

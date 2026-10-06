@@ -101,7 +101,22 @@
       "consumer-product-recall-coordinator",
       "medication-regimen-coordinator",
       "estate-administration-coordinator",
-      "home-purchase-transaction-coordinator"
+      "home-purchase-transaction-coordinator",
+      "college-application-coordinator",
+      "permit-application-coordinator",
+      "insurance-appeal-coordinator",
+      "clinical-trial-participation-coordinator",
+      "scholarship-award-coordinator",
+      "board-meeting-governance-coordinator",
+      "training-compliance-coordinator",
+      "vendor-offboarding-coordinator",
+      "donation-receipt-coordinator",
+      "home-energy-upgrade-coordinator",
+      "event-sponsorship-coordinator",
+      "api-deprecation-coordinator",
+      "hardware-asset-lifecycle-coordinator",
+      "creator-content-calendar-coordinator",
+      "community-moderation-coordinator"
     ]
   },
   "visualCases": [

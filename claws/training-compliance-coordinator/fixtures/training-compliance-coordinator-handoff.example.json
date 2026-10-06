@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "training-compliance-coordinator",
+  "request": "Reconcile the employee roster, role matrix, required training list, policy versions, LMS completion export, exception approvals, reminder log, and audit sample I supplied for Q3. Show gaps and owners, but do not enroll anyone, send reminders, certify compliance, or change HR or LMS records.",
+  "scope": "Operations, HR, compliance, security, and enablement teams preparing training completion evidence while system owners retain record and enforcement authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Role-to-training assignment register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every learner, role, requirement, policy version, completion, exception, reminder, and gap is represented with source identity"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Completion, attestation, exception, and export-provenance ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Overdue, stale, missing, mismatched, and exempt records remain visible and assigned to accountable owners"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not enroll learners, send reminders, certify compliance, approve exceptions, change HR or LMS data, or discipline users"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "No enrollment, reminder, exception approval, certification, enforcement, or HR/LMS mutation is performed or implied"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not enroll learners, send reminders, certify compliance, approve exceptions, change HR or LMS data, or discipline users",
+    "Do not infer completion from calendar invites, self-report, manager statements, or unrelated course names without accepted evidence",
+    "Do not expose unnecessary personal data beyond the controlled audit destination"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

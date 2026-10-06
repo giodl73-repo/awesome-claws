@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "college-application-coordinator",
+  "scenario": "Reconcile the six college applications, program requirements, essay drafts, transcript and test records, recommendation requests, interview notices, fee-waiver records, submission receipts, portal updates, aid-form dependencies, and decisions I supplied for this application cycle. Show exact deadlines, current material revisions, missing third-party records, unreceipted submissions, conflicting portal state, and who must act next. Do not write my essays, contact anyone, submit or upload anything, schedule, pay, certify, predict admission or aid, accept or decline an offer, or commit enrollment.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the six college applications, program requirements, essay drafts, transcript and test records, recommendation requests, interview notices, fee-waiver records, submission receipts, portal updates, aid-form dependencies, and decisions I supplied for this application cycle. Show exact deadlines, current material revisions, missing third-party records, unreceipted submissions, conflicting portal state, and who must act next. Do not write my essays, contact anyone, submit or upload anything, schedule, pay, certify, predict admission or aid, accept or decline an offer, or commit enrollment."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/college-application-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "College application coordinator session handoff",
+    "summary": "A private institution- and program-bound application portfolio reconciles exact requirements, applicant-authored revisions, third-party records, submissions, receipts, decisions, and unresolved dependencies into an applicant-controlled review handoff without authorship substitution, external action, prediction, advice, or enrollment commitment.",
+    "output": "outputs/college-application-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Private institution, program, round, requirement, deadline, fee, and source-revision register",
+        "summary": "Every in-scope institution, program, round, requirement, deadline, material revision, transcript, test record, recommendation, interview, fee, aid dependency, submission, receipt, portal observation, decision, enrollment response, gap, and next owner is represented exactly once with complete provenance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Applicant-material revision, transcript, test-record, recommendation, interview, portfolio, and financial-aid dependency ledger",
+        "summary": "Every requirement and status follows current exact-program and exact-cycle evidence, and every claimed submission or third-party delivery has an independent same-application receipt where applicable",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Application submission, independent receipt, portal observation, official decision, and enrollment-response register",
+        "summary": "Every stale, conflicting, missing, sensitive, authorship, eligibility, aid, transfer-credit, prediction, or official-decision state remains visible and routes to the applicant or a named qualified human",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Missing-evidence, privacy, authorship, conflict, blocker, question, and next-owner register",
+        "summary": "All writing, contact, submission, upload, scheduling, payment, certification, account, offer-response, deposit, and enrollment actions remain blocked or applicant-controlled, and the handoff exactly mirrors unresolved state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked or applicant-review-ready higher-education application portfolio handoff",
+        "summary": "Every in-scope institution, program, round, requirement, deadline, material revision, transcript, test record, recommendation, interview, fee, aid dependency, submission, receipt, portal observation, decision, enrollment response, gap, and next owner is represented exactly once with complete provenance",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

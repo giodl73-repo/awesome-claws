@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "permit-application-coordinator",
+  "scenario": "Reconcile the building permit checklist, plan set revisions, engineer letter, zoning notes, fee schedule, correction comments, and inspection prerequisites I supplied for the garage conversion. Show what is ready, stale, missing, or blocked, but do not submit, certify, pay, schedule, or claim code approval.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the building permit checklist, plan set revisions, engineer letter, zoning notes, fee schedule, correction comments, and inspection prerequisites I supplied for the garage conversion. Show what is ready, stale, missing, or blocked, but do not submit, certify, pay, schedule, or claim code approval."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/permit-application-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Permit application coordinator session handoff",
+    "summary": "A jurisdiction- and project-bound permit handoff that separates current package evidence, corrections, fees, inspections, and human authority gates without external action or compliance certification.",
+    "output": "outputs/permit-application-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Jurisdiction requirement and source register",
+        "summary": "Every requirement, plan revision, attestation, comment, fee, receipt, inspection prerequisite, and blocker is represented once with provenance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Plan revision and supporting-evidence ledger",
+        "summary": "Submission readiness is labeled only from supplied evidence and preserves all missing, stale, conflicting, or unofficial state",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Official comment, fee, receipt, and inspection readiness register",
+        "summary": "Every external submission, payment, signature, contact, inspection booking, certification, and code determination remains assigned to an authorized human",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Blocked action and next-owner permit handoff",
+        "summary": "Every requirement, plan revision, attestation, comment, fee, receipt, inspection prerequisite, and blocker is represented once with provenance",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

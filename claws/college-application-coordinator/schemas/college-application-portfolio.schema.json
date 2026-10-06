@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://awesome-claws.dev/schemas/college-application-portfolio.schema.json",
+  "title": "College application portfolio",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "portfolio", "authorities", "sources", "applications", "materials", "records", "requirements",
+    "submissions", "decisions", "actions", "gaps", "review", "prohibitedActions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.collegeApplicationPortfolio.v1" },
+    "portfolio": { "$ref": "#/$defs/portfolio" },
+    "authorities": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/authority" } },
+    "sources": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/source" } },
+    "applications": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/application" } },
+    "materials": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/material" } },
+    "records": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/record" } },
+    "requirements": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/requirement" } },
+    "submissions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/submission" } },
+    "decisions": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/decision" } },
+    "actions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/action" } },
+    "gaps": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/gap" } },
+    "review": { "$ref": "#/$defs/review" },
+    "prohibitedActions": { "$ref": "#/$defs/prohibitedActions" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._:-]*$", "maxLength": 120 },
+    "shortText": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "controlledRef": { "type": "string", "pattern": "^controlled://[a-z0-9][a-z0-9._/-]*$", "maxLength": 240 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "nullableTimestamp": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+    "nullableId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+    "refArray": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "nonEmptyRefArray": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "portfolio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "cycle", "asOf", "applicantAuthorityRef", "approvedDestinationRef", "authorityRefs", "sourceRefs", "applicationRefs",
+        "materialRefs", "recordRefs", "requirementRefs", "submissionRefs", "decisionRefs", "actionRefs", "gapRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "cycle": { "$ref": "#/$defs/shortText" },
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "applicantAuthorityRef": { "$ref": "#/$defs/id" },
+        "approvedDestinationRef": { "$ref": "#/$defs/controlledRef" },
+        "authorityRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "applicationRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "materialRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "recordRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "requirementRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "submissionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "decisionRefs": { "$ref": "#/$defs/refArray" },
+        "actionRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "gapRefs": { "$ref": "#/$defs/nonEmptyRefArray" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "portfolioRef", "kind", "label", "scope", "status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["applicant", "guardian-or-adviser", "school-official", "testing-service", "recommender", "institution", "admissions-office", "financial-aid-office"] },
+        "label": { "$ref": "#/$defs/shortText" },
+        "scope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["applicant-owner", "review", "source-issuer", "material-author", "third-party-record-issuer", "submission-receipt-issuer", "decision-issuer", "question-answerer"] }
+        },
+        "status": { "enum": ["current", "stale", "revoked", "unknown"] }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "portfolioRef", "stableSourceRef", "kind", "subjectRef", "issuerAuthorityRef", "controlledRef", "revision",
+        "supersedesSourceRef", "assertedAt", "retrievedAt", "freshness", "minimized", "containsSecrets"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "stableSourceRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": [
+          "applicant-authorization", "program-requirement", "deadline-notice", "applicant-material", "school-record", "test-record",
+          "recommendation-record", "interview-notice", "fee-record", "financial-aid-record", "submission-receipt", "portal-observation",
+          "official-decision", "enrollment-notice", "owner-action-note", "gap-resolution"
+        ] },
+        "subjectRef": { "$ref": "#/$defs/id" },
+        "issuerAuthorityRef": { "$ref": "#/$defs/id" },
+        "controlledRef": { "$ref": "#/$defs/controlledRef" },
+        "revision": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "supersedesSourceRef": { "$ref": "#/$defs/nullableId" },
+        "assertedAt": { "$ref": "#/$defs/timestamp" },
+        "retrievedAt": { "$ref": "#/$defs/timestamp" },
+        "freshness": { "enum": ["current", "superseded", "stale", "unknown"] },
+        "minimized": { "const": true },
+        "containsSecrets": { "const": false }
+      }
+    },
+    "application": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "portfolioRef", "institutionRef", "programRef", "cycle", "round", "state", "sourceRefs", "materialRefs", "recordRefs",
+        "requirementRefs", "submissionRefs", "decisionRefs", "actionRefs", "gapRefs", "admissionPredictionByClaw", "fitRecommendationByClaw"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "institutionRef": { "$ref": "#/$defs/id" },
+        "programRef": { "$ref": "#/$defs/id" },
+        "cycle": { "$ref": "#/$defs/shortText" },
+        "round": { "$ref": "#/$defs/shortText" },
+        "state": { "enum": ["planning", "preparing", "submitted-receipted", "incomplete", "withdrawn", "decided", "conflicting", "unknown"] },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "materialRefs": { "$ref": "#/$defs/refArray" },
+        "recordRefs": { "$ref": "#/$defs/refArray" },
+        "requirementRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "submissionRefs": { "$ref": "#/$defs/refArray" },
+        "decisionRefs": { "$ref": "#/$defs/refArray" },
+        "actionRefs": { "$ref": "#/$defs/refArray" },
+        "gapRefs": { "$ref": "#/$defs/refArray" },
+        "admissionPredictionByClaw": { "const": false },
+        "fitRecommendationByClaw": { "const": false }
+      }
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "portfolioRef", "applicationRefs", "kind", "authorAuthorityRef", "state", "sourceRef", "supersedesMaterialRef", "authoredByClaw", "materialRewriteByClaw"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "applicationRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "kind": { "enum": ["essay", "personal-statement", "short-answer", "resume", "activities", "portfolio", "writing-sample", "other"] },
+        "authorAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["draft", "applicant-approved", "withdrawn"] },
+        "sourceRef": { "$ref": "#/$defs/id" },
+        "supersedesMaterialRef": { "$ref": "#/$defs/nullableId" },
+        "authoredByClaw": { "const": false },
+        "materialRewriteByClaw": { "const": false }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "portfolioRef", "applicationRefs", "kind", "issuerAuthorityRef", "state", "sourceRef", "gapRefs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "applicationRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "kind": { "enum": ["transcript", "test-score", "recommendation", "school-report", "interview", "fee-waiver", "financial-aid", "other"] },
+        "issuerAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["requested", "received-current", "received-stale", "missing", "conflicting", "waived-by-institution"] },
+        "sourceRef": { "$ref": "#/$defs/nullableId" },
+        "gapRefs": { "$ref": "#/$defs/refArray" }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "portfolioRef", "applicationRef", "kind", "state", "dueAt", "timezone", "sourceRefs", "materialRefs", "recordRefs", "submissionRefs", "gapRefs", "applicabilityDeterminationByClaw"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "applicationRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["application-form", "essay", "statement", "transcript", "test-score", "recommendation", "school-report", "interview", "portfolio", "fee", "fee-waiver", "financial-aid", "other"] },
+        "state": { "enum": ["missing", "ready", "submitted", "received", "waived-by-institution", "not-applicable-by-institution", "conflicting", "unknown"] },
+        "dueAt": { "$ref": "#/$defs/nullableTimestamp" },
+        "timezone": { "$ref": "#/$defs/shortText" },
+        "sourceRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "materialRefs": { "$ref": "#/$defs/refArray" },
+        "recordRefs": { "$ref": "#/$defs/refArray" },
+        "submissionRefs": { "$ref": "#/$defs/refArray" },
+        "gapRefs": { "$ref": "#/$defs/refArray" },
+        "applicabilityDeterminationByClaw": { "const": false }
+      }
+    },
+    "submission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "portfolioRef", "applicationRef", "kind", "subjectRefs", "submittedByAuthorityRef", "state", "attemptedAt", "sourceRefs", "receiptSourceRef", "externalExecution", "agentExecuted"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "applicationRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["application", "supplement", "material", "transcript", "test-score", "recommendation", "school-report", "fee", "fee-waiver", "financial-aid", "interview-response", "enrollment-response"] },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "submittedByAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["proposed", "prepared", "attempted", "submitted-receipted", "failed", "withdrawn"] },
+        "attemptedAt": { "$ref": "#/$defs/nullableTimestamp" },
+        "sourceRefs": { "$ref": "#/$defs/refArray" },
+        "receiptSourceRef": { "$ref": "#/$defs/nullableId" },
+        "externalExecution": { "enum": ["applicant-only", "third-party-only"] },
+        "agentExecuted": { "const": false }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "portfolioRef", "applicationRef", "kind", "outcome", "issuerAuthorityRef", "sourceRef", "decidedAt", "interpretationByClaw"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "applicationRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["admission", "financial-aid", "transfer-credit", "waitlist", "enrollment"] },
+        "outcome": { "enum": ["admitted", "denied", "waitlisted", "deferred", "withdrawn", "offer", "no-offer", "pending"] },
+        "issuerAuthorityRef": { "$ref": "#/$defs/id" },
+        "sourceRef": { "$ref": "#/$defs/id" },
+        "decidedAt": { "$ref": "#/$defs/timestamp" },
+        "interpretationByClaw": { "const": false }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "portfolioRef", "applicationRef", "subjectRefs", "kind", "ownerAuthorityRef", "state", "attemptedAt", "sourceRefs", "receiptSourceRef", "externalExecution", "agentExecuted"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "applicationRef": { "$ref": "#/$defs/id" },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "kind": { "enum": ["write", "contact", "upload", "submit", "schedule", "pay", "certify", "accept", "decline", "deposit", "enroll", "change-account", "withdraw", "review-record", "other"] },
+        "ownerAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["proposed", "attempted", "owner-completed-receipted", "failed", "blocked", "withdrawn"] },
+        "attemptedAt": { "$ref": "#/$defs/nullableTimestamp" },
+        "sourceRefs": { "$ref": "#/$defs/refArray" },
+        "receiptSourceRef": { "$ref": "#/$defs/nullableId" },
+        "externalExecution": { "const": "applicant-only" },
+        "agentExecuted": { "const": false }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "portfolioRef", "applicationRef", "kind", "subjectRefs", "sourceRefs", "nextOwnerAuthorityRef", "state", "resolutionSourceRef"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "portfolioRef": { "$ref": "#/$defs/id" },
+        "applicationRef": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["missing-source", "stale-source", "conflicting-requirement", "deadline", "applicant-authorship", "third-party-record", "submission-receipt", "portal-state", "official-decision", "financial-aid", "privacy", "other"] },
+        "subjectRefs": { "$ref": "#/$defs/nonEmptyRefArray" },
+        "sourceRefs": { "$ref": "#/$defs/refArray" },
+        "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+        "state": { "enum": ["open", "resolved"] },
+        "resolutionSourceRef": { "$ref": "#/$defs/nullableId" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asOf", "state", "nextOwnerAuthorityRef", "openGapRefs", "incompleteApplicationRefs", "missingRequirementRefs",
+        "unreceiptedSubmissionRefs", "unresolvedDecisionApplicationRefs", "blockedActionRefs", "authorshipClaim", "admissionPrediction",
+        "eligibilityConclusion", "financialAidConclusion", "transferCreditConclusion", "fitRecommendation", "submissionClaim", "enrollmentCommitment"
+      ],
+      "properties": {
+        "asOf": { "$ref": "#/$defs/timestamp" },
+        "state": { "enum": ["blocked", "applicant-review-ready"] },
+        "nextOwnerAuthorityRef": { "$ref": "#/$defs/id" },
+        "openGapRefs": { "$ref": "#/$defs/refArray" },
+        "incompleteApplicationRefs": { "$ref": "#/$defs/refArray" },
+        "missingRequirementRefs": { "$ref": "#/$defs/refArray" },
+        "unreceiptedSubmissionRefs": { "$ref": "#/$defs/refArray" },
+        "unresolvedDecisionApplicationRefs": { "$ref": "#/$defs/refArray" },
+        "blockedActionRefs": { "$ref": "#/$defs/refArray" },
+        "authorshipClaim": { "const": false },
+        "admissionPrediction": { "const": false },
+        "eligibilityConclusion": { "const": false },
+        "financialAidConclusion": { "const": false },
+        "transferCreditConclusion": { "const": false },
+        "fitRecommendation": { "const": false },
+        "submissionClaim": { "const": false },
+        "enrollmentCommitment": { "const": false }
+      }
+    },
+    "prohibitedActions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["writeApplicantContent", "contact", "upload", "submission", "scheduling", "payment", "certification", "accountChange", "offerResponse", "deposit", "enrollment", "advice", "prediction"],
+      "properties": {
+        "writeApplicantContent": { "const": false },
+        "contact": { "const": false },
+        "upload": { "const": false },
+        "submission": { "const": false },
+        "scheduling": { "const": false },
+        "payment": { "const": false },
+        "certification": { "const": false },
+        "accountChange": { "const": false },
+        "offerResponse": { "const": false },
+        "deposit": { "const": false },
+        "enrollment": { "const": false },
+        "advice": { "const": false },
+        "prediction": { "const": false }
+      }
+    }
+  }
+}

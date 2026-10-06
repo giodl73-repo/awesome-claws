@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "donation-receipt-coordinator",
+  "scenario": "Organize the donation receipts, pledge schedule, donor-advised fund grants, in-kind acknowledgment letters, recurring payment records, restriction notes, and missing charity confirmations I supplied for 2026. Do not value gifts, give tax advice, contact charities, or decide deductibility.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Organize the donation receipts, pledge schedule, donor-advised fund grants, in-kind acknowledgment letters, recurring payment records, restriction notes, and missing charity confirmations I supplied for 2026. Do not value gifts, give tax advice, contact charities, or decide deductibility."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/donation-receipt-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "Donation receipt coordinator session handoff",
+    "summary": "A year- or campaign-bound donation evidence handoff with receipts, restrictions, pledges, in-kind gaps, and tax-preparer questions clearly separated from valuation or tax advice.",
+    "output": "outputs/donation-receipt-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Gift, payment, receipt, and acknowledgment register",
+        "summary": "Every gift, payment, receipt, restriction, pledge, in-kind item, reversal, conflict, and missing confirmation is represented with provenance",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Pledge, restriction, donor-advised-fund, and in-kind evidence ledger",
+        "summary": "Valuation, deductibility, substantiation, filing, and charity-contact questions remain assigned to the donor or qualified human",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Missing confirmation, valuation question, duplicate, and reversal register",
+        "summary": "The handoff does not value gifts, certify deductibility, issue receipts, contact charities, or file anything",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Tax-prep donation evidence handoff",
+        "summary": "Every gift, payment, receipt, restriction, pledge, in-kind item, reversal, conflict, and missing confirmation is represented with provenance",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "awesomeClaws.x3Handoff.v1",
+  "claw": "clinical-trial-participation-coordinator",
+  "request": "Reconcile the consent form version, visit schedule, lab windows, diary tasks, reimbursement notes, medication restrictions, coordinator emails, and symptom questions I supplied for this study. Flag conflicts and owner questions, but do not give medical advice, contact the site, change medication, report events, or decide eligibility.",
+  "scope": "Trial participants, caregivers, and authorized study-support helpers coordinating supplied protocol logistics while investigators and clinicians retain medical and research authority.",
+  "evidence": [
+    {
+      "id": "supplied-context",
+      "title": "Consent, protocol, visit, and task source register",
+      "source": "Owner-supplied notes and controlled references",
+      "status": "current",
+      "summary": "Every supplied consent version, visit window, task, restriction, reimbursement item, message, symptom question, and conflict is recorded with provenance"
+    },
+    {
+      "id": "missing-evidence",
+      "title": "Visit-window, diary, lab, restriction, and reimbursement ledger",
+      "source": "Gaps identified during intake",
+      "status": "missing",
+      "summary": "Medical, safety, eligibility, protocol, and adverse-event questions are routed to named qualified humans or study contacts"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "authority-boundary",
+      "owner": "Named accountable human owner",
+      "reason": "Do not provide medical advice, protocol interpretation, eligibility decisions, safety determinations, or adverse-event reporting judgments"
+    }
+  ],
+  "ownerActions": [
+    {
+      "id": "review-handoff",
+      "owner": "Named accountable human owner",
+      "action": "No study communication, schedule change, diary submission, consent action, medication change, or clinical conclusion is taken or implied"
+    }
+  ],
+  "prohibitedActions": [
+    "Do not provide medical advice, protocol interpretation, eligibility decisions, safety determinations, or adverse-event reporting judgments",
+    "Do not contact study staff, clinicians, sponsors, labs, pharmacies, or payers; schedule visits; change medication; submit diaries; or sign consent",
+    "Do not minimize symptoms, side effects, privacy risks, withdrawal rights, or urgent-care instructions"
+  ],
+  "readyState": "blocked",
+  "nextOwner": "Named accountable human owner",
+  "generatedAt": "2026-10-06T00:00:00.000Z"
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "awesomeClaws.sessionDemo.v1",
+  "claw": "api-deprecation-coordinator",
+  "scenario": "Reconcile the v1 endpoint inventory, usage export, known consumers, replacement API docs, migration examples, support tickets, test status, draft notice, and cutoff date I supplied. Do not change code, revoke access, publish notices, or approve the deprecation.",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Reconcile the v1 endpoint inventory, usage export, known consumers, replacement API docs, migration examples, support tickets, test status, draft notice, and cutoff date I supplied. Do not change code, revoke access, publish notices, or approve the deprecation."
+    },
+    {
+      "role": "agent",
+      "text": "I identified the requested job, required evidence, and the authority boundary that remains human-owned."
+    },
+    {
+      "role": "user",
+      "text": "Make the result useful in an ordinary chat client and leave a durable handoff."
+    },
+    {
+      "role": "agent",
+      "text": "I produced outputs/api-deprecation-coordinator-handoff.md with evidence, gaps, blocked actions, and the next owner separated."
+    }
+  ],
+  "report": {
+    "title": "API deprecation coordinator session handoff",
+    "summary": "An API deprecation handoff with consumer impact, migration evidence, readiness gaps, communication drafts, and owner approval gates separated from production or notification action.",
+    "output": "outputs/api-deprecation-coordinator-handoff.md",
+    "items": [
+      {
+        "title": "Deprecated API surface and usage-evidence register",
+        "summary": "Every endpoint, version, consumer, replacement path, test, ticket, deadline, exception, and communication artifact has provenance and owner",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Consumer impact, migration, exception, and compatibility-risk ledger",
+        "summary": "Unknown, stale, incompatible, blocked, confidential, and approval-sensitive states remain visible",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "Communication, support, test, and approval-gap register",
+        "summary": "No production change, notice, credential action, timeline approval, or migration certification is performed",
+        "tags": [
+          "evidence",
+          "reviewable"
+        ]
+      },
+      {
+        "title": "API deprecation owner handoff",
+        "summary": "Every endpoint, version, consumer, replacement path, test, ticket, deadline, exception, and communication artifact has provenance and owner",
+        "tags": [
+          "handoff",
+          "owner-visible"
+        ]
+      }
+    ]
+  }
+}
