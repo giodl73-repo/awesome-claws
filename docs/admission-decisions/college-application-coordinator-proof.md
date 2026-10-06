@@ -100,6 +100,34 @@ validator, focused tests, and screenshot are unchanged from PR head
 The existing screenshot was visually reinspected, not recaptured. This refresh
 does not claim live-provider or current-upstream compatibility validation.
 
+## Post-Medical refresh on 2026-10-06 UTC
+
+Medical Bill PR #184 merged as
+`3e4e8f9fa76b2a013646e0ba300a20573bba3722`. Gio authorized merging College
+only after refreshing against that main and rechecking the final proof.
+All 146 existing catalog entries remain unchanged; College is the only
+addition. Both medical and college validator registrations are retained.
+
+- Build: 147 packages and chooser views.
+- Semantic recipes: 147 validators, 401 recipes, 545 finding codes.
+- Focused College, Medical Bill, and documentation-count tests: 41 passed.
+- Contribution review: same advisory nearest matches; no new admission issue.
+- Mock+ regeneration: 4 profiles, 60,378 cases, 57,270 mutants killed;
+  digest `sha256:c289fe6a5b472302bc0ae390f465876b721d0b307ff71f47abc8aa296027f52b`.
+- Scorecard: 147 Claws, average 99.1, median 100. Generated maintenance ages
+  advance one day at the October 6 UTC snapshot.
+- Full `npm run check`: 3,271 passed, zero failed, one existing Windows
+  file-link permission skip. All downstream gates passed for 147 Claws,
+  136 contribution records, and 441 deterministic mock runtime trials.
+  No assertions, timeouts, or concurrency settings were weakened.
+- Scoped manual merge review: only College registrations, the existing Civic
+  Services comparison, generated files and counts differ from current main.
+  College source, validator, tests, and screenshot are unchanged. Standalone
+  Codex CLI remains unavailable; no CLI-review success is claimed.
+
+Earlier CI at `8b97d90` does not qualify this refreshed head. Fresh CI and
+artifact review are still required before merge.
+
 ## Control UI screenshot
 
 The [screenshot](../../screenshots/college-application-coordinator.png) was

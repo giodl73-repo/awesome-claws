@@ -112,6 +112,7 @@
       "order-fulfillment-reconciler",
       "seller-return-reconciler",
       "progress-billing-review-preparer",
+      "medical-bill-reconciliation-coordinator",
       "college-application-coordinator"
     ]
   },

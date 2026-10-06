@@ -133,20 +133,20 @@ action-complete, and bound to a SHA-256 plan integrity value.
 
 ## Baseline and seven-day soak
 
-The current full baseline is the catalog-derived 146 Claws x 3 scenarios =
-**438 trials**. The current seven-day soak is 146 Claws x 3 scenarios x 7
-repetitions = **3,066 trials**. `--check` derives these counts from the loaded
+The current full baseline is the catalog-derived 147 Claws x 3 scenarios =
+**441 trials**. The current seven-day soak is 147 Claws x 3 scenarios x 7
+repetitions = **3,087 trials**. `--check` derives these counts from the loaded
 catalog rather than pinning a fixed count. These are run plans, not claims that
 live work is scheduled or complete.
 
 For calendar scheduling, retain one immutable harness/OpenClaw/model/settings
-identity for the window and dispatch one 438-trial baseline on each of seven
+identity for the window and dispatch one 441-trial baseline on each of seven
 days. Keep every daily manifest and report under a distinct scheduler run id;
 only compare trials whose six identity digests match, including the exact
 handoff/structured-artifact contract. The `seven-day` command
 is the bounded pre-dispatch/rehearsal form: it materializes and runs all seven
 same-identity repetitions in one job so drift classification and the full
-3,066-trial budget can be reviewed before a calendar workflow is enabled. It
+3,087-trial budget can be reviewed before a calendar workflow is enabled. It
 does not sleep between repetitions or claim temporal coverage.
 
 Deterministic offline baseline:

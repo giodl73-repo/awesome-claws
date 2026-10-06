@@ -21,6 +21,7 @@ import { collegeApplicationFindings } from "./college-application-coordinator.mj
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { consumerProductRecallFindings } from "./consumer-product-recall-coordinator.mjs";
 import { medicationRegimenFindings } from "./medication-regimen-coordinator.mjs";
+import { medicalBillingFindings } from "./medical-bill-reconciliation-coordinator.mjs";
 import { estateAdministrationFindings } from "./estate-administration-coordinator.mjs";
 import { homePurchaseTransactionFindings } from "./home-purchase-transaction-coordinator.mjs";
 import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
@@ -53310,6 +53311,7 @@ const validators = {
   "estate-administration-coordinator": estateAdministrationFindings,
   "home-purchase-transaction-coordinator": homePurchaseTransactionFindings,
   "college-application-coordinator": collegeApplicationFindings,
+  "medical-bill-reconciliation-coordinator": medicalBillingFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,
