@@ -64,6 +64,8 @@ For quick adoption paths, use the curated
 [catalog starter sets](docs/catalog-starter-sets.md): 30-Claw bundles for
 business operations, personal life admin, small business, enterprise governance,
 engineering and product, and public/community work.
+Tooling can read the same bundles from
+[`catalog-starter-sets.json`](catalog-starter-sets.json).
 For the separate observed-behavior pillar, identity-bound trial schemas, and
 450-trial baseline or 3,150-trial seven-day plan, see the [Runtime Evidence
 Quality rubric](docs/runtime-evidence-quality-rubric.md). Runtime results are

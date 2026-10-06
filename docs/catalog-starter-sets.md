@@ -7,7 +7,8 @@ small-business, or enterprise bundle at the same time.
 
 All listed Claws are active, exemplary-band catalog entries as of the generated
 scorecard dated 2026-10-06. These sets are editorial recommendations, not a
-separate admission or quality score.
+separate admission or quality score. The machine-readable set membership lives
+in [`catalog-starter-sets.json`](../catalog-starter-sets.json).
 
 ## Role Review
 
