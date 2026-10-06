@@ -20,6 +20,7 @@ import { commercialDealDeskFindings } from "./commercial-deal-desk-coordinator.m
 import { contractObligationTrackerFindings } from "./contract-obligation-tracker.mjs";
 import { consumerProductRecallFindings } from "./consumer-product-recall-coordinator.mjs";
 import { medicationRegimenFindings } from "./medication-regimen-coordinator.mjs";
+import { medicalBillingFindings } from "./medical-bill-reconciliation-coordinator.mjs";
 import { estateAdministrationFindings } from "./estate-administration-coordinator.mjs";
 import { homePurchaseTransactionFindings } from "./home-purchase-transaction-coordinator.mjs";
 import { customerSuccessReviewFindings } from "./customer-success-program-manager.mjs";
@@ -53308,6 +53309,7 @@ const validators = {
   "medication-regimen-coordinator": medicationRegimenFindings,
   "estate-administration-coordinator": estateAdministrationFindings,
   "home-purchase-transaction-coordinator": homePurchaseTransactionFindings,
+  "medical-bill-reconciliation-coordinator": medicalBillingFindings,
   "home-inventory-binder": homeInventoryFindings,
   "household-steward": householdStewardFindings,
   "insurance-policy-organizer": insurancePolicyFindings,

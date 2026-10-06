@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "scope", "documents", "lines", "associations", "comparisons", "transfers", "questions", "review"],
+  "properties": {
+    "schemaVersion": { "const": "awesomeClaws.medicalBilling.v1" },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["patientRef", "ownerRef", "helperRefs", "start", "end", "asOf", "currency", "destination", "documentRefs", "lineRefs"],
+      "properties": {
+        "patientRef": { "$ref": "#/$defs/id" },
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "helperRefs": { "$ref": "#/$defs/refs" },
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" },
+        "asOf": { "type": "string", "format": "date" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "destination": { "const": "private-owner-workspace" },
+        "documentRefs": { "$ref": "#/$defs/refs" },
+        "lineRefs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "documents": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/document" } },
+    "lines": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/line" } },
+    "associations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/association" } },
+    "comparisons": { "type": "array", "items": { "$ref": "#/$defs/comparison" } },
+    "transfers": { "type": "array", "items": { "$ref": "#/$defs/transfer" } },
+    "questions": { "type": "array", "items": { "$ref": "#/$defs/question" } },
+    "review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ownerRef", "state", "externalActions", "liabilityDetermination"],
+      "properties": {
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "state": { "const": "owner-review-required" },
+        "externalActions": { "const": "none" },
+        "liabilityDetermination": { "const": "not-made" }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+    "nullableRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+    "refs": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "amount": { "type": ["integer", "null"], "minimum": 0, "maximum": 9007199254740991 },
+    "signedAmount": { "type": ["integer", "null"], "minimum": -9007199254740991, "maximum": 9007199254740991 },
+    "document": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "issuerRef", "issuerKind", "patientRef", "providerRef", "currency", "issuedOn", "controlledRef", "seriesRef", "supersedesRef", "revision", "lineRefs", "relatedLineRefs", "transactionRef", "amountMinor", "deadline"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["bill", "eob", "link-record", "payment-receipt", "provider-posting", "refund-notice", "refund-receipt", "correspondence"] },
+        "issuerRef": { "$ref": "#/$defs/id" },
+        "issuerKind": { "enum": ["provider", "insurer", "payment-processor", "patient"] },
+        "patientRef": { "$ref": "#/$defs/id" },
+        "providerRef": { "$ref": "#/$defs/id" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+        "issuedOn": { "type": "string", "format": "date" },
+        "controlledRef": { "type": "string", "pattern": "^controlled://medical-billing/source-[a-z0-9-]{1,48}$" },
+        "seriesRef": { "$ref": "#/$defs/id" },
+        "supersedesRef": { "$ref": "#/$defs/nullableRef" },
+        "revision": { "enum": ["original", "corrected", "reversal"] },
+        "lineRefs": { "$ref": "#/$defs/refs" },
+        "relatedLineRefs": { "$ref": "#/$defs/refs" },
+        "transactionRef": { "$ref": "#/$defs/nullableRef" },
+        "amountMinor": { "$ref": "#/$defs/amount" },
+        "deadline": { "type": ["string", "null"], "format": "date" }
+      }
+    },
+    "line": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "documentRef", "serviceDate", "chargedMinor", "allowedMinor", "adjustmentMinor", "reportedResponsibilityMinor"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "documentRef": { "$ref": "#/$defs/id" },
+        "serviceDate": { "type": "string", "format": "date" },
+        "chargedMinor": { "$ref": "#/$defs/signedAmount" },
+        "allowedMinor": { "$ref": "#/$defs/signedAmount" },
+        "adjustmentMinor": { "$ref": "#/$defs/signedAmount" },
+        "reportedResponsibilityMinor": { "$ref": "#/$defs/signedAmount" }
+      }
+    },
+    "association": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "lineRefs", "evidenceRef", "state"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "lineRefs": { "type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "evidenceRef": { "$ref": "#/$defs/nullableRef" },
+        "state": { "enum": ["documented-link", "unmatched"] }
+      }
+    },
+    "comparison": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "associationRef", "field", "differenceMinor"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "associationRef": { "$ref": "#/$defs/id" },
+        "field": { "const": "provider-charge-minus-insurer-reported-charge" },
+        "differenceMinor": { "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 }
+      }
+    },
+    "transfer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "evidenceRef", "counterpartRef", "state"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["payment", "refund", "unmatched-posting", "unmatched-refund-receipt"] },
+        "evidenceRef": { "$ref": "#/$defs/id" },
+        "counterpartRef": { "$ref": "#/$defs/nullableRef" },
+        "state": { "enum": ["receipt-and-posting-observed", "posting-missing", "notice-and-receipt-observed", "refund-receipt-missing", "unmatched"] }
+      }
+    },
+    "question": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "targetRef", "reason", "ownerRef", "sourceRef", "deadline"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "targetRef": { "$ref": "#/$defs/id" },
+        "reason": { "enum": ["unmatched-line", "historical-or-reversed-link", "charge-difference", "missing-charge", "transfer-evidence-gap", "deadline-question", "correspondence-review"] },
+        "ownerRef": { "$ref": "#/$defs/id" },
+        "sourceRef": { "$ref": "#/$defs/nullableRef" },
+        "deadline": { "type": ["string", "null"], "format": "date" }
+      }
+    }
+  }
+}
