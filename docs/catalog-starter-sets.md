@@ -9,6 +9,34 @@ All listed Claws are active, exemplary-band catalog entries as of the generated
 scorecard dated 2026-10-06. These sets are editorial recommendations, not a
 separate admission or quality score.
 
+## Role Review
+
+These sets were reviewed against the Claws ecosystem role lenses used by the
+integration workspace. The role files are product and governance lenses rather
+than market segments, so they do not replace the starter sets; they explain why
+each set exists and what pressure it balances.
+
+| Role lens | What it pushed for | Where the lists answer it |
+| --- | --- | --- |
+| `founder` | Keep the catalog community-first, understandable, and useful without enterprise lock-in. | Personal Life Admin, Small Business, and Public/Community all lead with portable, owner-controlled workflows rather than compliance-only artifacts. |
+| `new-hire` | Progressive disclosure: people should be able to choose a useful path quickly. | Six 30-Claw bundles avoid making newcomers interpret the whole 150-Claw catalog before trying one lane. |
+| `power-user` | Replace recurring manual coordination work rather than adding ceremony. | Small Business and Engineering/Product emphasize repeatable operational helpers, research, evidence collection, release, and workflow reconciliation. |
+| `skill-author` | Keep examples copyable and ecosystem-friendly. | Small Business includes compact, dependency-light patterns; Engineering/Product includes the technical Claws most useful as implementation references. |
+| `ciso` | Preserve security assurance, fail-closed posture, auditability, and incident readiness. | Enterprise Governance and Engineering/Product include entitlement review, security alert, vulnerability, incident, TLS, backup, and drift coordinators. |
+| `compliance` | Make evidence complete, exportable, and auditor-legible. | Enterprise Governance emphasizes signed-style evidence, retention, privacy, third-party review, financial reconciliation, and board governance. |
+| `platform-eng` | Favor fleet consistency, upgrade safety, and drift visibility. | Enterprise Governance and Engineering/Product include repository, release, infrastructure drift, backup/restore, and change-control coordinators. |
+| `policy-steward` | Keep policy categories coherent instead of one-off rules. | Enterprise Governance groups durable categories: identity, privacy, records, third-party, security, vendor, training, and asset lifecycle. |
+| `gateway-eng` | Avoid runtime overhead and keep governance understandable at the execution boundary. | Engineering/Product favors Claws that produce evidence and handoffs rather than hidden background mutation. |
+| `aether-runtime-eng` | Enforcement decisions must be explicit and fail closed. | Enterprise Governance highlights Claws with explicit authority, approval, disposition, and blocker records. |
+| `aether-adapter-eng` | Trust artifacts need integrity and deterministic rehydration. | Enterprise Governance keeps artifact-heavy verification Claws together for buyers who care about proof transport. |
+| `lobster-container-eng` | Sidecar and hosted surfaces should earn their operational cost. | Engineering/Product prefers Claws with visible operational value: release, incident, integration, migration, and workflow reconciliation. |
+| `cowork-ux-eng` | Governance should be visible and actionable, not hidden behind minimal UI. | All bundles use plain-language "why it belongs" notes so users know what control surface they are adopting. |
+| `m365-connector-eng` | Every write path should respect validation and explain rejected changes. | Business Operations and Enterprise Governance include meeting, workflow, training, privacy, records, and vendor flows likely to cross productivity surfaces. |
+| `claws-repo-steward` | Keep repository boundaries clean and avoid hidden dependency leaks. | This document remains editorial Markdown and does not add generated catalog metadata, schemas, or cross-repo dependencies. |
+| `claws-release-eng` | Published artifacts should be installable and smoke-testable. | The sets reference existing committed Claw IDs only; they do not invent package surfaces. |
+| `lorant-reviewer` | Current-head correctness, stale docs, and repo hygiene matter. | The list was mechanically checked for 30 items per set and every ID resolving in `catalog.json`. |
+| `clawpilot-product` | Keep future session-oriented product paths open. | The sets avoid Cowork-specific assumptions and group Claws by user job, not by a current implementation surface. |
+
 ## Business Operations 30
 
 For teams that want general operating cadence, coordination, sales, finance,
@@ -236,4 +264,3 @@ community-governed work.
 | `accessibility-review-coordinator` | Tracks accessibility findings and verification. |
 | `research-scout` | Scouts public-interest research sources. |
 | `media-evidence-reviewer` | Reviews media evidence with confidence and provenance controls. |
-
