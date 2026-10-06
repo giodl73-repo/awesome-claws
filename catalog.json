@@ -15781,6 +15781,98 @@
           "role": "template"
         }
       ]
+    },
+    {
+      "id": "flight-disruption-coordinator",
+      "name": "Flight disruption coordinator",
+      "category": "productivity",
+      "maintenance": {
+        "status": "active",
+        "maintainers": [
+          "@giodl73-repo"
+        ],
+        "lastVerified": "2026-10-02"
+      },
+      "description": "Reconciles an already-ticketed air journey after a cancellation or schedule change, keeping operating-flight notices, ticket revisions, carrier offers, traveler decisions, reissue confirmations, and affected connections separate without rebooking, cancelling, checking in, paying, contacting carriers, or deciding passenger rights.",
+      "audience": "Travelers and explicitly authorized helpers recovering an existing multi-leg flight journey from supplied airline, ticketing-agency, airport, and traveler records.",
+      "principles": [
+        "An operating-flight change, a carrier replacement offer, traveler acceptance, and a ticket reissue are different events with different issuers",
+        "Account for every original journey leg and traveler allocation through exact replacement lineage, including separately ticketed downstream legs",
+        "Preserve unresolved ticket status, expired offers, schedule conflicts, missing connection evidence, and partial-party replacements instead of claiming the journey recovered"
+      ],
+      "boundaries": [
+        "Do not book, rebook, cancel, exchange a ticket, accept a carrier offer, check in, select a seat, contact a provider, submit a claim, pay, or change an account",
+        "Do not infer ticket validity, protected connections, transfer feasibility, entry eligibility, refund or compensation entitlement, insurance coverage, live flight status, or a guaranteed recovery outcome",
+        "Use traveler aliases and controlled private references; do not retain booking locators, ticket numbers, passport values, boarding-pass barcodes, payment details, credentials, or precise live traveler locations"
+      ],
+      "intake": [
+        "Traveler owner, authorized helpers, covered traveler aliases, confirmed journey scope, ticketing and operating carriers, private destination, and as-of time",
+        "Supplied ticketed segment revisions, airport identifiers, dated departures and arrivals, cancellation or schedule-change notices, and existing separate-ticket dependencies",
+        "Carrier replacement offers and expiry times, traveler decision evidence, independent ticket reissue or cancellation confirmations, and official connection constraints or explicit missing-evidence questions"
+      ],
+      "workflow": [
+        "Inventory the original booked journey and traveler-to-leg allocations, retaining ticket issuer and operating carrier as separate authorities",
+        "Bind each supplied operating notice to the exact carrier, service date, flight, route, and affected leg without treating a status notice as a ticket change",
+        "Compare supplied replacement offers against the exact displaced legs, traveler coverage, expiry, and source-stated connection constraints; leave unsupported alternatives unresolved",
+        "Reconcile traveler decisions with independent ticket-issuer confirmations and retain an acyclic predecessor-to-successor leg history without silently removing the original journey",
+        "Recompute affected inbound and outbound connections from offset-bearing instants and airport identity, preserving separate-ticket status and unknown minimum-connection or transfer evidence",
+        "Prepare a private before-and-after journey ledger with expired or unaccepted offers, missing reissues, partial traveler coverage, downstream questions, and the next traveler-owned review steps"
+      ],
+      "deliverables": [
+        "Original booked-leg and traveler-allocation register with ticket revision lineage",
+        "Operating disruption and replacement-offer timeline with source authority and expiry",
+        "Traveler decision versus independent ticket-confirmation reconciliation",
+        "Connection-impact register covering every affected predecessor and successor leg",
+        "Private recovery review handoff with unresolved questions and blocked external actions"
+      ],
+      "example": {
+        "request": "Our booked Seattle-Chicago-Boston outbound journey has a cancelled first leg. The airline offered a replacement for both traveler aliases, but the agency confirmation covers only one. The separate onward ticket still shows the original departure. Reconcile the supplied notices, offer expiry, ticket revisions, and connection evidence. Show what is confirmed and what still needs our review; do not accept, rebook, cancel, contact anyone, pay, or make a passenger-rights claim.",
+        "outcome": "A blocked recovery handoff preserves the cancelled original leg, separates the two-person offer from the one-person confirmed reissue, identifies the uncovered traveler and affected separate-ticket connection, and names the exact carrier or ticket-issuer evidence still needed."
+      },
+      "doneWhen": [
+        "Every original leg and covered traveler allocation has one evidenced current disposition or a visible unresolved gap, with complete replacement lineage",
+        "Operating notices, unaccepted offers, traveler decisions, independent ticket confirmations, and expired or conflicting evidence remain distinct",
+        "Every affected connection is represented with exact airports, offset-bearing chronology, ticket relationship, source-stated constraints, and missing-evidence state without inferring feasibility",
+        "The handoff accounts for partial-party changes, missing reissues, expired offers, schedule conflicts, and separate-ticket dependencies, and leaves all transactions and final verification with the traveler"
+      ],
+      "capabilityGuidance": [
+        "Base only: read supplied minimized records and write a private local handoff. No flight-status feed, reservation system, airline portal, travel search, messaging, payment, browser, or account capability is granted.",
+        "Use Travel Planner for a public-source itinerary or prospective disruption alternatives, Travel Concierge for current Expedia inventory, and Travel Loyalty Points Organizer for award balances. This starter reconciles an existing ticketed journey rather than searching for new travel.",
+        "The structured ledger can check consistency of supplied evidence, not authenticate a ticket or guarantee carriage, entry, connection feasibility, compensation, or safety. Conflicting or insufficient intake remains blocked for the traveler and responsible provider.",
+        "Write outputs/flight-disruption.json using schemas/flight-disruption.schema.json and templates/flight-disruption.md. The initial contract supports one-to-one leg replacements; multi-stop reroutes, split tickets, changed issuers, and cancellation dispositions remain blocked intake questions."
+      ],
+      "resources": [
+        {
+          "source": "schemas/flight-disruption.schema.json",
+          "path": "schemas/flight-disruption.schema.json",
+          "role": "schema"
+        },
+        {
+          "source": "fixtures/flight-disruption.example.json",
+          "path": "fixtures/flight-disruption.example.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/flight-disruption.md",
+          "path": "templates/flight-disruption.md",
+          "role": "template"
+        },
+        {
+          "source": "fixtures/session-demo.json",
+          "path": "fixtures/session-demo.json",
+          "role": "fixture"
+        },
+        {
+          "source": "templates/session-report.template.json",
+          "path": "templates/session-report.template.json",
+          "role": "template"
+        },
+        {
+          "source": "templates/session-handoff.md",
+          "path": "templates/session-handoff.md",
+          "role": "template"
+        }
+      ]
     }
   ]
 }

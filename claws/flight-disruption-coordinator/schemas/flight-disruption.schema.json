@@ -1,0 +1,746 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "scope",
+    "authorities",
+    "sources",
+    "legs",
+    "allocations",
+    "notices",
+    "offers",
+    "decisions",
+    "connections",
+    "coverage",
+    "questions",
+    "review"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.flightDisruption.v1"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ownerRef",
+        "travelerRefs",
+        "helperRefs",
+        "asOf",
+        "originalAllocationRefs",
+        "connectionRefs",
+        "sourceRefs",
+        "destination"
+      ],
+      "properties": {
+        "ownerRef": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$"
+        },
+        "travelerRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        },
+        "helperRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "(Z|[+-][0-9]{2}:[0-9]{2})$"
+        },
+        "originalAllocationRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        },
+        "connectionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        },
+        "destination": {
+          "const": "private-owner-workspace"
+        }
+      }
+    },
+    "authorities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "airportCode"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "kind": {
+            "enum": [
+              "traveler",
+              "helper",
+              "operating-carrier",
+              "ticket-issuer",
+              "airport"
+            ]
+          },
+          "airportCode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "issuerRef",
+          "subjectRef",
+          "relatedRefs",
+          "assertedAt",
+          "observedAt",
+          "expiresAt",
+          "minimumMinutes",
+          "state",
+          "supersedesRef",
+          "controlledRef"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "kind": {
+            "enum": [
+              "ticket-original",
+              "operating-notice",
+              "carrier-offer",
+              "traveler-decision",
+              "ticket-reissue",
+              "connection-dependency",
+              "connection-constraint"
+            ]
+          },
+          "issuerRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "subjectRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "relatedRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$"
+            }
+          },
+          "assertedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "(Z|[+-][0-9]{2}:[0-9]{2})$"
+          },
+          "observedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "(Z|[+-][0-9]{2}:[0-9]{2})$"
+          },
+          "expiresAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "(Z|[+-][0-9]{2}:[0-9]{2})$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "minimumMinutes": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10080
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "state": {
+            "enum": [
+              "current",
+              "superseded",
+              "conflicting"
+            ]
+          },
+          "supersedesRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "controlledRef": {
+            "type": "string",
+            "pattern": "^controlled://flight/source-[a-z0-9-]{1,48}$"
+          }
+        }
+      }
+    },
+    "legs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "operatingCarrierRef",
+          "flightNumber",
+          "serviceDate",
+          "origin",
+          "destination",
+          "departureAt",
+          "arrivalAt",
+          "departureZone",
+          "arrivalZone"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "operatingCarrierRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "flightNumber": {
+            "type": "string",
+            "pattern": "^[A-Z0-9]{2,8}$"
+          },
+          "serviceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "origin": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "destination": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "departureAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "(Z|[+-][0-9]{2}:[0-9]{2})$"
+          },
+          "arrivalAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "(Z|[+-][0-9]{2}:[0-9]{2})$"
+          },
+          "departureZone": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "arrivalZone": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        }
+      }
+    },
+    "allocations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "travelerRef",
+          "legRef",
+          "ticketIssuerRef",
+          "ticketGroupRef",
+          "predecessorRef",
+          "sourceRef",
+          "offerRef",
+          "acceptanceRef"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "travelerRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "legRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "ticketIssuerRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "ticketGroupRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "predecessorRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sourceRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "offerRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "acceptanceRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "notices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "legRef",
+          "sourceRef",
+          "operatingCarrierRef",
+          "flightNumber",
+          "serviceDate",
+          "origin",
+          "destination",
+          "event"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "legRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "sourceRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "operatingCarrierRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "flightNumber": {
+            "type": "string",
+            "pattern": "^[A-Z0-9]{2,8}$"
+          },
+          "serviceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "origin": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "destination": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "event": {
+            "enum": [
+              "cancelled",
+              "schedule-change"
+            ]
+          }
+        }
+      }
+    },
+    "offers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "travelerRef",
+          "predecessorRef",
+          "replacementLegRef",
+          "sourceRef",
+          "expiresAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "travelerRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "predecessorRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "replacementLegRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "sourceRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "(Z|[+-][0-9]{2}:[0-9]{2})$"
+          }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "offerRef",
+          "travelerRef",
+          "sourceRef",
+          "decidedAt",
+          "state"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "offerRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "travelerRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "sourceRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "decidedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "(Z|[+-][0-9]{2}:[0-9]{2})$"
+          },
+          "state": {
+            "enum": [
+              "accepted",
+              "declined"
+            ]
+          }
+        }
+      }
+    },
+    "connections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "originalFromRef",
+          "originalToRef",
+          "currentFromRef",
+          "currentToRef",
+          "dependencySourceRef",
+          "relationship",
+          "constraintSourceRef",
+          "minimumMinutes",
+          "intervalMinutes",
+          "state"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "originalFromRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "originalToRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "currentFromRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "currentToRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "dependencySourceRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "relationship": {
+            "enum": [
+              "same-ticket",
+              "separate-ticket"
+            ]
+          },
+          "constraintSourceRef": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "minimumMinutes": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10080
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "intervalMinutes": {
+            "type": "number",
+            "minimum": -10080,
+            "maximum": 10080
+          },
+          "state": {
+            "enum": [
+              "unknown-constraint",
+              "airport-transfer-unresolved",
+              "below-stated-minimum",
+              "meets-stated-minimum"
+            ]
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "originalRef",
+          "currentRef",
+          "state"
+        ],
+        "properties": {
+          "originalRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "currentRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "state": {
+            "enum": [
+              "unchanged-record",
+              "reissue-observed",
+              "operating-change",
+              "pending-reissue"
+            ]
+          }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "targetRef",
+          "reason",
+          "ownerRef"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "targetRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "reason": {
+            "enum": [
+              "evidence-not-current",
+              "operating-change",
+              "offer-expired",
+              "offer-awaiting-owner",
+              "missing-reissue",
+              "conflicting-decisions",
+              "connection-review",
+              "separate-ticket-review"
+            ]
+          },
+          "ownerRef": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reissuedOriginalRefs",
+        "unresolvedOriginalRefs",
+        "partialParty",
+        "externalActions",
+        "ticketValidity",
+        "connectionFeasibility",
+        "passengerRights",
+        "recoveryClaim"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "blocked",
+            "evidence-reconciled"
+          ]
+        },
+        "reissuedOriginalRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        },
+        "unresolvedOriginalRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          }
+        },
+        "partialParty": {
+          "type": "boolean"
+        },
+        "externalActions": {
+          "const": "none"
+        },
+        "ticketValidity": {
+          "const": "not-determined"
+        },
+        "connectionFeasibility": {
+          "const": "not-determined"
+        },
+        "passengerRights": {
+          "const": "not-determined"
+        },
+        "recoveryClaim": {
+          "const": false
+        }
+      }
+    }
+  }
+}

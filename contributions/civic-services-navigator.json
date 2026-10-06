@@ -135,6 +135,11 @@
         "id": "restaurant-venue-scout",
         "overlap": "Both compare local options, preserve source freshness, accessibility details, location fit, uncertainty, and human choice.",
         "difference": "Restaurant Venue Scout ranks commercial venues against dining preferences and availability evidence. Civic Services Navigator reconciles government service-area claims, official program versions, criterion-level resident evidence, channel dependencies, and agency-owned adjudication."
+      },
+      {
+        "id": "flight-disruption-coordinator",
+        "overlap": "Both reconcile versioned provider instructions, person-specific evidence, deadlines, missing confirmations, dependencies, and responsible-human questions without executing transactions or deciding eligibility or rights.",
+        "difference": "Flight Disruption Coordinator owns an already-ticketed journey across exact operating services, traveler allocations, carrier offers, traveler decisions, independent ticket reissues, and separate-ticket connections. Civic Services Navigator owns public-service jurisdiction, administering agencies, published access criteria, resident evidence, service channels, accommodations, and agency questions; it has no flight or ticket-recovery lifecycle."
       }
     ]
   }

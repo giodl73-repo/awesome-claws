@@ -7,6 +7,7 @@ import { invoiceReceiptReportDefinition, invoiceReceiptReportFindings } from "./
 import { root } from "./catalog-source.mjs";
 
 export const ARTIFACT_SCHEMA_NAMES = Object.freeze({
+  "flight-disruption-coordinator": "flight-disruption.schema.json",
   "sales-commission-review-preparer": "commission.schema.json",
   "merchant-payout-reconciler": "merchant-payout.schema.json",
   "order-fulfillment-reconciler": "fulfillment.schema.json",

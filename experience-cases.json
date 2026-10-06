@@ -115,7 +115,8 @@
       "medical-bill-reconciliation-coordinator",
       "college-application-coordinator",
       "merchant-payout-reconciler",
-      "sales-commission-review-preparer"
+      "sales-commission-review-preparer",
+      "flight-disruption-coordinator"
     ]
   },
   "visualCases": [

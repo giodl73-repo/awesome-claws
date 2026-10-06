@@ -8,7 +8,7 @@ directly. Levels are comparison aids, not security ratings or guarantees.
 
 Maintenance state, accountable GitHub maintainers, and the last reviewed proof date come from catalog metadata. Scheduled compatibility evidence is reported separately and never rewrites this reviewed state.
 
-### Active (149)
+### Active (150)
 
 | Claw | Detail |
 | --- | --- |
@@ -54,6 +54,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | @giodl73-repo; last verified 2026-08-30 |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | @giodl73; last verified 2026-09-08 |
 | [Financial analyst](claws/financial-analyst) | @giodl73-repo; last verified 2026-08-19 |
+| [Flight disruption coordinator](claws/flight-disruption-coordinator) | @giodl73-repo; last verified 2026-10-02 |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | @giodl73; last verified 2026-08-28 |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | @giodl73-repo; last verified 2026-08-29 |
 | [Games backlog manager](claws/games-backlog-manager) | @giodl73-repo; last verified 2026-08-23 |
@@ -176,7 +177,7 @@ Maintenance state, accountable GitHub maintainers, and the last reviewed proof d
 
 Setup burden counts guided bootstrap, pinned packages, native extensions, MCP connections, and schedules.
 
-### Low setup (117)
+### Low setup (118)
 
 | Claw | Detail |
 | --- | --- |
@@ -212,6 +213,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 | [Experimentation lead](claws/experimentation-lead) | no bootstrap, external dependency, or schedule |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | no bootstrap, external dependency, or schedule |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | no bootstrap, external dependency, or schedule |
+| [Flight disruption coordinator](claws/flight-disruption-coordinator) | no bootstrap, external dependency, or schedule |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | no bootstrap, external dependency, or schedule |
 | [Games backlog manager](claws/games-backlog-manager) | no bootstrap, external dependency, or schedule |
 | [Gift and relationship manager](claws/gift-relationship-manager) | no bootstrap, external dependency, or schedule |
@@ -344,7 +346,7 @@ Setup burden counts guided bootstrap, pinned packages, native extensions, MCP co
 
 External dependencies include pinned skills and plugins, native extensions, and MCP connections. Schedules and local profiles are shown under setup and boundary attention instead.
 
-### No external dependencies (126)
+### No external dependencies (127)
 
 | Claw | Detail |
 | --- | --- |
@@ -384,6 +386,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 | [Facilities operations coordinator](claws/facilities-operations-coordinator) | None |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | None |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | None |
+| [Flight disruption coordinator](claws/flight-disruption-coordinator) | None |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | None |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | None |
 | [Games backlog manager](claws/games-backlog-manager) | None |
@@ -507,7 +510,7 @@ External dependencies include pinned skills and plugins, native extensions, and 
 
 Proof tiers come directly from the authoritative Experience conformance registry.
 
-### X3 (110)
+### X3 (111)
 
 | Claw | Detail |
 | --- | --- |
@@ -537,6 +540,7 @@ Proof tiers come directly from the authoritative Experience conformance registry
 | [Feed intelligence monitor](claws/feed-intelligence-monitor) | Maintains a private feed-intelligence delta and triage ledger that reconciles owner-approved recurring feed subscriptions, cursors, item identity, lineage, signals, and queues against a prior checkpoint without subscribing, notifying, publishing, or acting. |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | Reconciles one exact owner-supplied ledger transaction export against one exact owner-supplied statement transaction export for a bounded account and period, partitioning every row exactly once into an evidence-bound 1:1, 1:n, or n:1 match group or an explicit residual, without reaching financial systems, posting entries, moving money, or claiming the account or books are closed. |
 | [Financial analyst](claws/financial-analyst) | Builds transparent financial analysis without hiding assumptions or uncertainty. |
+| [Flight disruption coordinator](claws/flight-disruption-coordinator) | Reconciles an already-ticketed air journey after a cancellation or schedule change, keeping operating-flight notices, ticket revisions, carrier offers, traveler decisions, reissue confirmations, and affected connections separate without rebooking, cancelling, checking in, paying, contacting carriers, or deciding passenger rights. |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | Tracks freelance prospects, scopes, proposals, client follow-ups, and commitment gaps without sending messages, quoting binding terms, or accepting work. |
 | [Fundraising campaign manager](claws/fundraising-campaign-manager) | Prepares an approval-bound nonprofit fundraising campaign, stewardship plan, audience assets, and measurement handoff without soliciting or sending. |
 | [Games backlog manager](claws/games-backlog-manager) | Tracks owned and wanted games across platforms, stores, play status, co-op fit, family constraints, content ratings, session fit, and what-to-play shortlists without purchasing, installing, joining sessions, messaging players, changing parental controls, or altering accounts. |
@@ -792,7 +796,7 @@ Categories come directly from the catalog entry.
 | [Product manager](claws/product-manager) | X4; Frames product decisions around user evidence, outcomes, constraints, and learning. |
 | [UX research synthesizer](claws/ux-research-synthesizer) | X4; Synthesizes consented research evidence into traceable themes, contradictions, opportunity statements, and decision questions. |
 
-### Productivity (57)
+### Productivity (58)
 
 | Claw | Detail |
 | --- | --- |
@@ -808,6 +812,7 @@ Categories come directly from the catalog entry.
 | [Executive assistant](claws/executive-assistant) | X3; Turns executive priorities into a prepared commitment ledger of ranked outcomes, meetings, decisions, and follow-through that named humans still have to act on. |
 | [Executive briefing](claws/executive-briefing) | X3; Reconciles one bounded scheduled run into a private source-timestamped executive briefing snapshot of agenda observations, decision asks, preparation needs, conflicts, weather implications, questions, and blockers. |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | X3; Manages fantasy-team rosters, league rules, matchup evidence, waiver windows, trade ideas, injury uncertainty, and owner-review lineup decisions without submitting changes, joining contests, betting, messaging managers, or giving gambling advice. |
+| [Flight disruption coordinator](claws/flight-disruption-coordinator) | X3; Reconciles an already-ticketed air journey after a cancellation or schedule change, keeping operating-flight notices, ticket revisions, carrier offers, traveler decisions, reissue confirmations, and affected connections separate without rebooking, cancelling, checking in, paying, contacting carriers, or deciding passenger rights. |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | X3; Tracks freelance prospects, scopes, proposals, client follow-ups, and commitment gaps without sending messages, quoting binding terms, or accepting work. |
 | [Games backlog manager](claws/games-backlog-manager) | X3; Tracks owned and wanted games across platforms, stores, play status, co-op fit, family constraints, content ratings, session fit, and what-to-play shortlists without purchasing, installing, joining sessions, messaging players, changing parental controls, or altering accounts. |
 | [Gift and relationship manager](claws/gift-relationship-manager) | X3; Organizes relationship notes, occasions, gift ideas, preference evidence, budgets, and owner-review reminders without buying gifts, sending messages, editing calendars, or inferring sensitive relationship meaning. |
@@ -858,7 +863,7 @@ Categories come directly from the catalog entry.
 
 Boundary attention highlights declared capabilities that deserve progressively closer consent and authority review. It is not a claim that lower-attention work is risk-free.
 
-### Standard attention (78)
+### Standard attention (79)
 
 | Claw | Detail |
 | --- | --- |
@@ -879,6 +884,7 @@ Boundary attention highlights declared capabilities that deserve progressively c
 | [Estate administration coordinator](claws/estate-administration-coordinator) | portable workspace artifacts only |
 | [Fantasy sports manager](claws/fantasy-sports-manager) | portable workspace artifacts only |
 | [Financial account reconciliation coordinator](claws/financial-account-reconciliation-coordinator) | portable workspace artifacts only |
+| [Flight disruption coordinator](claws/flight-disruption-coordinator) | portable workspace artifacts only |
 | [Freelance client pipeline](claws/freelance-client-pipeline) | portable workspace artifacts only |
 | [Games backlog manager](claws/games-backlog-manager) | portable workspace artifacts only |
 | [Gift and relationship manager](claws/gift-relationship-manager) | portable workspace artifacts only |
