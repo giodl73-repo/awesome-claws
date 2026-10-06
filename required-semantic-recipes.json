@@ -2,10 +2,10 @@
   "schemaVersion": "awesomeClaws.mockPlusSemanticRecipes.v1",
   "evidenceClass": "mock-deterministic",
   "summary": {
-    "validatorCount": 148,
-    "coveredCount": 148,
-    "recipeCount": 404,
-    "findingCodeCount": 549
+    "validatorCount": 150,
+    "coveredCount": 150,
+    "recipeCount": 408,
+    "findingCodeCount": 559
   },
   "entries": [
     {
@@ -6335,6 +6335,77 @@
           "replacement": "2099-12-31T23:59:59Z",
           "expectedCodes": [
             "invalid_portfolio_chronology"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "merchant-payout-reconciler",
+      "recipes": [
+        {
+          "id": "semantic-incorrect-payout-review-1",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "merchantRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incorrect_payout_review",
+            "invalid_bank_evidence",
+            "invalid_bank_mapping",
+            "invalid_payout_evidence",
+            "invalid_payout_source",
+            "invalid_transaction_evidence",
+            "missing_attributable_membership"
+          ]
+        },
+        {
+          "id": "semantic-incorrect-payout-review-2",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "start"
+          ],
+          "replacement": "2099-12-31T23:59:59Z",
+          "expectedCodes": [
+            "incorrect_payout_review",
+            "invalid_bank_evidence",
+            "invalid_payout_evidence",
+            "invalid_payout_scope",
+            "invalid_transaction_evidence"
+          ]
+        },
+        {
+          "id": "semantic-incorrect-payout-review-3",
+          "operator": "replace",
+          "path": [
+            "scope",
+            "reviewerRef"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "incorrect_payout_review",
+            "invalid_bank_mapping",
+            "invalid_payout_issuer"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sales-commission-review-preparer",
+      "recipes": [
+        {
+          "id": "semantic-commission-recomputation-1",
+          "operator": "replace",
+          "path": [
+            "input",
+            "scope",
+            "employer"
+          ],
+          "replacement": "mock-plus-missing",
+          "expectedCodes": [
+            "commission-recomputation"
           ]
         }
       ]

@@ -1,9 +1,11 @@
 import { createHash } from "node:crypto";
+import { commissionFindings } from "./sales-commission-review-preparer.mjs";
 import { dispatchFindings } from "./service-dispatch-planner.mjs";
 import { fulfillmentFindings } from "./order-fulfillment-reconciler.mjs";
 import { sellerReturnFindings } from "./seller-return-reconciler.mjs";
 import { invoiceDraftFindings } from "./invoice-draft-producer.mjs";
 import { progressBillingFindings } from "./progress-billing-review-preparer.mjs";
+import { merchantPayoutFindings } from "./merchant-payout-reconciler.mjs";
 import { jobEstimateFindings } from "./job-estimate-producer.mjs";
 import { payrollReviewFindings } from "./payroll-review-preparer.mjs";
 import { documentControlFindings } from "./project-document-controller.mjs";
@@ -53351,10 +53353,12 @@ const validators = {
   "payroll-review-preparer": payrollReviewFindings,
   "invoice-draft-producer": invoiceDraftFindings,
   "progress-billing-review-preparer": progressBillingFindings,
+  "merchant-payout-reconciler": merchantPayoutFindings,
   "job-estimate-producer": jobEstimateFindings,
   "service-dispatch-planner": dispatchFindings,
   "order-fulfillment-reconciler": fulfillmentFindings,
   "seller-return-reconciler": sellerReturnFindings,
+  "sales-commission-review-preparer": commissionFindings,
   "project-document-controller": documentControlFindings,
   "product-manager": productFindings,
   "presentation-producer": presentationEvidenceManifestFindings,

@@ -3662,6 +3662,52 @@
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     },
     {
+      "id": "merchant-payout-reconciler",
+      "acceptedRequest": "Reconcile synthetic payout P1 with a charge gross1000 fee30 net970, refund gross-100 fee0 net-100, and separate fee gross0 fee5 net-5; compare declared payout865 with bank receipt860 and retain a separate unsettled net194 transaction.",
+      "requiredEvidence": [
+        "Merchant and processor account aliases, one settlement currency and scale, report cutoff and timezone, source revisions, completeness assertions and private reviewer destination",
+        "Itemized processor balance transactions with native IDs, reporting categories, gross, signed fees, net and explicit payout membership or unsettled disposition",
+        "Payout records with stable attempt IDs, exact membership evidence, amounts, source-reported status and linked failed or returned attempts",
+        "Independent bank receipt rows and explicit owner mappings to payout attempts, retaining unmatched or ambiguous records"
+      ],
+      "authorityBoundaries": [
+        "Do not infer payout membership from dates or matching amounts, especially for manual or instant payouts",
+        "Do not move funds, retry payouts, change bank details, release reserves, issue refunds, post accounting entries or contact processors",
+        "Do not decide fee legality, chargeback liability, reserve availability or accounting treatment"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/merchant-payout-reconciler-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "sales-commission-review-preparer",
+      "acceptedRequest": "Review a synthetic commission cycle with opening credited attainment of USD 9000, a USD 2000 credited event crossing a USD 10000 tier boundary, and a separate reversal of an original USD 80 commission line.",
+      "requiredEvidence": [
+        "Employer alias, pseudonymous payees, review period, currency and scale, trusted as-of time, private destination and named compensation reviewer",
+        "Versioned owner-supplied commission plans with effective periods, calculation basis, flat or marginal-tier rates, opening attainment and exact rounding rules",
+        "Complete declared deal-event universe, event order, source revisions and amounts, plus separately supplied owner credit decisions and payee splits",
+        "Proposed payout lines and owner-recorded reversal decisions linked to the exact original credit and commission lines"
+      ],
+      "authorityBoundaries": [
+        "Do not design or interpret compensation plans, decide entitlement, assign disputed credit or choose among conflicting approvals",
+        "Do not calculate statutory pay, taxes, recoverability or deductions, release payroll, change CRM or compensation systems, or contact employees",
+        "Unsupported plan mechanics and missing evidence remain blocked rather than approximated"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/sales-commission-review-preparer-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
       "id": "flight-disruption-coordinator",
       "acceptedRequest": "Our booked Seattle-Chicago-Boston outbound journey has a cancelled first leg. The airline offered a replacement for both traveler aliases, but the agency confirmation covers only one. The separate onward ticket still shows the original departure. Reconcile the supplied notices, offer expiry, ticket revisions, and connection evidence. Show what is confirmed and what still needs our review; do not accept, rebook, cancel, contact anyone, pay, or make a passenger-rights claim.",
       "requiredEvidence": [

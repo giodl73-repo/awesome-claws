@@ -1,0 +1,260 @@
+{
+  "schemaVersion": "awesomeClaws.merchantPayout.v1",
+  "scope": {
+    "merchantRef": "merchant-demo",
+    "accountRef": "processor-demo",
+    "currency": "USD",
+    "scale": 2,
+    "start": "2026-09-01T00:00:00Z",
+    "asOf": "2026-09-08T23:59:00Z",
+    "reviewerRef": "reviewer-finance",
+    "destination": "private-reviewer-workspace",
+    "feeConvention": "gross-minus-signed-fee",
+    "transactionRefs": [
+      "txn-charge",
+      "txn-refund",
+      "txn-fee",
+      "txn-unsettled"
+    ],
+    "payoutRefs": [
+      "payout-one"
+    ],
+    "bankReceiptRefs": [
+      "bank-one"
+    ]
+  },
+  "sources": [
+    {
+      "id": "source-transactions",
+      "kind": "transactions",
+      "controlledRef": "controlled://merchant-payout/source-source-transactions",
+      "revision": "r1",
+      "current": true,
+      "complete": true,
+      "merchantRef": "merchant-demo",
+      "accountRef": "processor-demo",
+      "currency": "USD",
+      "scale": 2,
+      "issuedAt": "2026-09-08T12:00:00Z",
+      "issuerKind": "processor",
+      "issuerRef": "processor-demo",
+      "transactionRefs": [
+        "txn-charge",
+        "txn-refund",
+        "txn-fee",
+        "txn-unsettled"
+      ],
+      "payoutRefs": [],
+      "bankReceiptRefs": []
+    },
+    {
+      "id": "source-payouts",
+      "kind": "payouts",
+      "controlledRef": "controlled://merchant-payout/source-source-payouts",
+      "revision": "r1",
+      "current": true,
+      "complete": true,
+      "merchantRef": "merchant-demo",
+      "accountRef": "processor-demo",
+      "currency": "USD",
+      "scale": 2,
+      "issuedAt": "2026-09-08T12:00:00Z",
+      "issuerKind": "processor",
+      "issuerRef": "processor-demo",
+      "transactionRefs": [],
+      "payoutRefs": [
+        "payout-one"
+      ],
+      "bankReceiptRefs": []
+    },
+    {
+      "id": "source-members",
+      "kind": "membership",
+      "controlledRef": "controlled://merchant-payout/source-source-members",
+      "revision": "r1",
+      "current": true,
+      "complete": true,
+      "merchantRef": "merchant-demo",
+      "accountRef": "processor-demo",
+      "currency": "USD",
+      "scale": 2,
+      "issuedAt": "2026-09-08T12:00:00Z",
+      "issuerKind": "processor",
+      "issuerRef": "processor-demo",
+      "transactionRefs": [
+        "txn-charge",
+        "txn-refund",
+        "txn-fee"
+      ],
+      "payoutRefs": [
+        "payout-one"
+      ],
+      "bankReceiptRefs": []
+    },
+    {
+      "id": "source-bank",
+      "kind": "bank",
+      "controlledRef": "controlled://merchant-payout/source-source-bank",
+      "revision": "r1",
+      "current": true,
+      "complete": true,
+      "merchantRef": "merchant-demo",
+      "accountRef": "processor-demo",
+      "currency": "USD",
+      "scale": 2,
+      "issuedAt": "2026-09-08T12:00:00Z",
+      "issuerKind": "bank",
+      "issuerRef": "bank-demo",
+      "transactionRefs": [],
+      "payoutRefs": [],
+      "bankReceiptRefs": [
+        "bank-one"
+      ]
+    },
+    {
+      "id": "source-map",
+      "kind": "mapping",
+      "controlledRef": "controlled://merchant-payout/source-source-map",
+      "revision": "r1",
+      "current": true,
+      "complete": true,
+      "merchantRef": "merchant-demo",
+      "accountRef": "processor-demo",
+      "currency": "USD",
+      "scale": 2,
+      "issuedAt": "2026-09-08T12:00:00Z",
+      "issuerKind": "reviewer",
+      "issuerRef": "reviewer-finance",
+      "transactionRefs": [],
+      "payoutRefs": [
+        "payout-one"
+      ],
+      "bankReceiptRefs": [
+        "bank-one"
+      ]
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn-charge",
+      "nativeId": "native-txn-charge",
+      "sourceRef": "source-transactions",
+      "grossMinor": 100000,
+      "feeMinor": 3000,
+      "netMinor": 97000,
+      "occurredAt": "2026-09-02T12:00:00Z",
+      "category": "charge",
+      "disposition": "assigned",
+      "payoutRef": "payout-one"
+    },
+    {
+      "id": "txn-refund",
+      "nativeId": "native-txn-refund",
+      "sourceRef": "source-transactions",
+      "grossMinor": -10000,
+      "feeMinor": 0,
+      "netMinor": -10000,
+      "occurredAt": "2026-09-02T12:00:00Z",
+      "category": "refund",
+      "disposition": "assigned",
+      "payoutRef": "payout-one"
+    },
+    {
+      "id": "txn-fee",
+      "nativeId": "native-txn-fee",
+      "sourceRef": "source-transactions",
+      "grossMinor": 0,
+      "feeMinor": 500,
+      "netMinor": -500,
+      "occurredAt": "2026-09-02T12:00:00Z",
+      "category": "fee",
+      "disposition": "assigned",
+      "payoutRef": "payout-one"
+    },
+    {
+      "id": "txn-unsettled",
+      "nativeId": "native-txn-unsettled",
+      "sourceRef": "source-transactions",
+      "grossMinor": 20000,
+      "feeMinor": 600,
+      "netMinor": 19400,
+      "occurredAt": "2026-09-02T12:00:00Z",
+      "category": "charge",
+      "disposition": "unsettled",
+      "payoutRef": null
+    }
+  ],
+  "payouts": [
+    {
+      "id": "payout-one",
+      "nativeId": "native-payout-one",
+      "sourceRef": "source-payouts",
+      "occurredAt": "2026-09-03T12:00:00Z",
+      "amountMinor": 86500,
+      "status": "paid",
+      "kind": "automatic",
+      "priorAttemptRef": null,
+      "memberRefs": [
+        "txn-charge",
+        "txn-refund",
+        "txn-fee"
+      ],
+      "membershipSourceRef": "source-members"
+    }
+  ],
+  "bankReceipts": [
+    {
+      "id": "bank-one",
+      "nativeId": "native-bank-one",
+      "sourceRef": "source-bank",
+      "amountMinor": 86000,
+      "postedAt": "2026-09-05T12:00:00Z"
+    }
+  ],
+  "mappings": [
+    {
+      "id": "mapping-one",
+      "receiptRef": "bank-one",
+      "payoutRef": "payout-one",
+      "ownerRef": "reviewer-finance",
+      "sourceRef": "source-map"
+    }
+  ],
+  "review": {
+    "evidenceDigest": "sha256:58dea6a1f41dc8ff8bb5982d64ed98969f3825d98ff9e6132804ff31d9ba9354",
+    "rows": [
+      {
+        "payoutRef": "payout-one",
+        "grossMinor": 90000,
+        "feeMinor": 3500,
+        "netMinor": 86500,
+        "memberResidualMinor": 0,
+        "receiptRefs": [
+          "bank-one"
+        ],
+        "bankMinor": 86000,
+        "bankResidualMinor": -500,
+        "current": true,
+        "issues": [
+          "bank-residual"
+        ]
+      }
+    ],
+    "questions": [
+      {
+        "targetRef": "payout-one",
+        "reason": "bank-residual",
+        "ownerRef": "reviewer-finance"
+      },
+      {
+        "targetRef": "txn-unsettled",
+        "reason": "unsettled",
+        "ownerRef": "reviewer-finance"
+      }
+    ],
+    "unsettledMinor": 19400,
+    "state": "owner-review-required",
+    "externalActions": "none",
+    "settlementCertification": "not-made"
+  }
+}

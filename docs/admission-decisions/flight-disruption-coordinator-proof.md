@@ -10,10 +10,10 @@ external travel authority. This implementation is being prepared as a draft PR.
 Implementation worktree: `C:/src/awesome-claws-flight-implementation`.
 Branch: `giodl/flight-disruption-implementation`.
 Initial base: `7d8f8448455c2d29cb8c7d630ee0388e9d685f98` (145 Claws).
-Refreshed base: `5f9ebe46bfff154046bb63b5f49ce9018e57682d` (147 Claws),
-including the merged medical and college starters. All 147 main catalog entries
-remain structurally unchanged; flight is entry 148. Existing source files,
-medical/college validators and packages, and dependency manifests are unchanged
+Final refreshed base: `b131f96c05beafb417a738b553dc17096eec2da1` (149 Claws),
+including the merged medical, college, merchant payout and commission starters.
+All 149 main catalog entries remain structurally unchanged; flight is entry 150.
+Existing source files, validators and packages, and dependency manifests are unchanged
 against this base. The original proposal worktree was preserved, and the
 pre-refresh flight implementation remains in a retained stash backup.
 
@@ -145,17 +145,42 @@ quality, runtime, catalog, contribution, and regression checks passed for 148
 Claws, including 444 deterministic runtime trials. Log:
 `.tmp/flight-partial-party-full-check.log`. No live test handles remain.
 
+## Main149 final refresh
+
+- Refreshed after Merchant Payout #234 and Sales Commission #235 merged.
+  All 149 main catalog entries and regression cases are structurally unchanged.
+  Flight's validator, tests, fixtures, contract and screenshot are unchanged
+  from the reviewed partial-party correction.
+- Build and validation: 150 packages, 150 validators, 164 packaged schemas,
+  408 semantic recipes, 559 finding codes, and 139 post-policy records.
+  Current nearest-five overlap results are unchanged from the PR admission report.
+- Canonical Mock+: 61,726 cases, 58,555 killed mutants; zero failed controls,
+  survivors, unsupported oracles, invalid recipes, oracle errors or safety blockers.
+  Digest: `sha256:f0ed25c419c6a69223a8cf317d4215676033d0f3dfa8497d6b908b0bfccd83e2`.
+- The first full check, run alongside profile generation, had one existing
+  Data Migration safety-group timeout at the unchanged 1000 ms limit. No Flight
+  assertion failed. Log: `.tmp/flight-main149-full-check.log`.
+- Full check rerun without competing profile generation: exit 0, 3,371 passed,
+  zero failed, one existing Windows link-creation permission skip. All downstream
+  package, chooser, score, runtime, catalog, contribution and regression gates
+  pass, including 450 deterministic runtime trials and 150 regression contracts.
+  Log: `.tmp/flight-main149-full-check-retry.log`. No limits or assertions relaxed.
+- Manual refresh review found no actionable integration issue. Previously
+  reviewed Flight implementation and authority boundaries are preserved.
+
 ## Release limits
 
 Parent manual review inspected the validator, new regression cases, operating
 contract, current screenshot and post-fix full-check log. The confirmed
 partial-party finding is fixed; no further actionable finding was identified
 in that scope. Parent reran 30 focused and three documentation tests, all passing.
-All 147 main catalog entries were independently compared and remain unchanged.
+All 149 current main catalog entries were independently compared and remain unchanged.
 
 No successful standalone CLI review is claimed; the CLI is unavailable and no
 authentication setup was changed. Local screenshot source has unrelated
 lifecycle edits, so this is not clean current-upstream qualification.
 Repository-observable quality score: 100/100, not a live-model quality score.
-Draft exact-head CI and artifact review remain required before readiness.
-Publication and merge still require separate approval.
+Fresh exact-head CI and artifact review remain required before readiness.
+Gio separately approved merge after final checks and proof pass:
+https://github.com/giodl73-repo/awesome-claws/pull/236#issuecomment-6008702814
+Earlier main147 CI is historical after this refresh. Publication is not authorized.
