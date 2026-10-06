@@ -1,0 +1,374 @@
+{
+  "schemaVersion": "awesomeClaws.collegeApplicationPortfolio.v1",
+  "portfolio": {
+    "id": "portfolio-fall-2027",
+    "cycle": "fall-2027",
+    "asOf": "2026-09-26T09:00:00-07:00",
+    "applicantAuthorityRef": "applicant-morgan",
+    "approvedDestinationRef": "controlled://applicant/private-review",
+    "authorityRefs": ["applicant-morgan", "adviser-jordan", "school-north", "testing-board", "recommender-lee", "admissions-red", "admissions-blue", "aid-blue"],
+    "sourceRefs": [
+      "source-applicant-authority", "source-red-program-v1", "source-red-program-v2", "source-blue-program", "source-red-deadline",
+      "source-essay-v1", "source-essay-v2", "source-blue-statement", "source-transcript", "source-test", "source-recommendation-red",
+      "source-fee-waiver-blue", "source-owner-submit-red", "source-receipt-red", "source-owner-submit-blue", "source-portal-red",
+      "source-decision-red", "source-portal-blue"
+    ],
+    "applicationRefs": ["application-red", "application-blue"],
+    "materialRefs": ["material-essay-v1", "material-essay-v2", "material-blue-statement"],
+    "recordRefs": ["record-transcript", "record-test", "record-recommendation-red", "record-recommendation-blue", "record-fee-waiver-blue", "record-aid-blue"],
+    "requirementRefs": [
+      "requirement-red-form", "requirement-red-essay", "requirement-red-transcript", "requirement-red-test", "requirement-red-recommendation",
+      "requirement-blue-form", "requirement-blue-statement", "requirement-blue-transcript", "requirement-blue-test",
+      "requirement-blue-recommendation", "requirement-blue-fee-waiver", "requirement-blue-aid"
+    ],
+    "submissionRefs": ["submission-red-application", "submission-blue-application"],
+    "decisionRefs": ["decision-red-admission"],
+    "actionRefs": ["action-review-red-offer", "action-blue-contact", "action-blue-deposit"],
+    "gapRefs": ["gap-blue-recommendation", "gap-blue-receipt", "gap-blue-portal", "gap-blue-aid"]
+  },
+  "authorities": [
+    {
+      "id": "applicant-morgan", "portfolioRef": "portfolio-fall-2027", "kind": "applicant", "label": "Applicant owner",
+      "scope": ["applicant-owner", "review", "source-issuer", "material-author"], "status": "current"
+    },
+    {
+      "id": "adviser-jordan", "portfolioRef": "portfolio-fall-2027", "kind": "guardian-or-adviser", "label": "Authorized adviser",
+      "scope": ["source-issuer", "question-answerer"], "status": "current"
+    },
+    {
+      "id": "school-north", "portfolioRef": "portfolio-fall-2027", "kind": "school-official", "label": "School records office",
+      "scope": ["source-issuer", "third-party-record-issuer"], "status": "current"
+    },
+    {
+      "id": "testing-board", "portfolioRef": "portfolio-fall-2027", "kind": "testing-service", "label": "Testing service",
+      "scope": ["source-issuer", "third-party-record-issuer"], "status": "current"
+    },
+    {
+      "id": "recommender-lee", "portfolioRef": "portfolio-fall-2027", "kind": "recommender", "label": "Named recommender",
+      "scope": ["source-issuer", "third-party-record-issuer"], "status": "current"
+    },
+    {
+      "id": "admissions-red", "portfolioRef": "portfolio-fall-2027", "kind": "admissions-office", "label": "Institution Red admissions",
+      "scope": ["source-issuer", "submission-receipt-issuer", "decision-issuer", "question-answerer"], "status": "current"
+    },
+    {
+      "id": "admissions-blue", "portfolioRef": "portfolio-fall-2027", "kind": "admissions-office", "label": "Institution Blue admissions",
+      "scope": ["source-issuer", "submission-receipt-issuer", "decision-issuer", "question-answerer"], "status": "current"
+    },
+    {
+      "id": "aid-blue", "portfolioRef": "portfolio-fall-2027", "kind": "financial-aid-office", "label": "Institution Blue aid office",
+      "scope": ["source-issuer", "decision-issuer", "question-answerer"], "status": "current"
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-applicant-authority", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "applicant-authority", "kind": "applicant-authorization",
+      "subjectRef": "portfolio-fall-2027", "issuerAuthorityRef": "applicant-morgan", "controlledRef": "controlled://applicant/authority",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-08-01T09:00:00-07:00", "retrievedAt": "2026-08-01T09:01:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-red-program-v1", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "red-program", "kind": "program-requirement",
+      "subjectRef": "application-red", "issuerAuthorityRef": "admissions-red", "controlledRef": "controlled://red/program-v1",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-08-02T09:00:00-07:00", "retrievedAt": "2026-08-02T09:05:00-07:00",
+      "freshness": "superseded", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-red-program-v2", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "red-program", "kind": "program-requirement",
+      "subjectRef": "application-red", "issuerAuthorityRef": "admissions-red", "controlledRef": "controlled://red/program-v2",
+      "revision": "2", "supersedesSourceRef": "source-red-program-v1", "assertedAt": "2026-08-15T09:00:00-07:00", "retrievedAt": "2026-08-15T09:04:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-blue-program", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "blue-program", "kind": "program-requirement",
+      "subjectRef": "application-blue", "issuerAuthorityRef": "admissions-blue", "controlledRef": "controlled://blue/program-v1",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-08-10T10:00:00-07:00", "retrievedAt": "2026-08-10T10:05:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-red-deadline", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "red-deadline", "kind": "deadline-notice",
+      "subjectRef": "requirement-red-form", "issuerAuthorityRef": "admissions-red", "controlledRef": "controlled://red/deadline",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-08-15T09:10:00-07:00", "retrievedAt": "2026-08-15T09:12:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-essay-v1", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "main-essay", "kind": "applicant-material",
+      "subjectRef": "material-essay-v1", "issuerAuthorityRef": "applicant-morgan", "controlledRef": "controlled://applicant/essay-v1",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-08-20T11:00:00-07:00", "retrievedAt": "2026-08-20T11:01:00-07:00",
+      "freshness": "superseded", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-essay-v2", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "main-essay", "kind": "applicant-material",
+      "subjectRef": "material-essay-v2", "issuerAuthorityRef": "applicant-morgan", "controlledRef": "controlled://applicant/essay-v2",
+      "revision": "2", "supersedesSourceRef": "source-essay-v1", "assertedAt": "2026-09-01T11:00:00-07:00", "retrievedAt": "2026-09-01T11:01:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-blue-statement", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "blue-statement", "kind": "applicant-material",
+      "subjectRef": "material-blue-statement", "issuerAuthorityRef": "applicant-morgan", "controlledRef": "controlled://applicant/blue-statement",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-05T14:00:00-07:00", "retrievedAt": "2026-09-05T14:01:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-transcript", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "transcript-current", "kind": "school-record",
+      "subjectRef": "record-transcript", "issuerAuthorityRef": "school-north", "controlledRef": "controlled://school/transcript-current",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-02T08:00:00-07:00", "retrievedAt": "2026-09-02T08:05:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-test", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "test-current", "kind": "test-record",
+      "subjectRef": "record-test", "issuerAuthorityRef": "testing-board", "controlledRef": "controlled://testing/score-current",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-03T08:00:00-07:00", "retrievedAt": "2026-09-03T08:05:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-recommendation-red", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "recommendation-red", "kind": "recommendation-record",
+      "subjectRef": "record-recommendation-red", "issuerAuthorityRef": "recommender-lee", "controlledRef": "controlled://recommender/red-receipt",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-06T10:00:00-07:00", "retrievedAt": "2026-09-06T10:04:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-fee-waiver-blue", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "fee-waiver-blue", "kind": "fee-record",
+      "subjectRef": "record-fee-waiver-blue", "issuerAuthorityRef": "admissions-blue", "controlledRef": "controlled://blue/fee-waiver",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-07T10:00:00-07:00", "retrievedAt": "2026-09-07T10:04:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-owner-submit-red", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "owner-submit-red", "kind": "owner-action-note",
+      "subjectRef": "submission-red-application", "issuerAuthorityRef": "applicant-morgan", "controlledRef": "controlled://applicant/red-submit-note",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-10T12:00:00-07:00", "retrievedAt": "2026-09-10T12:01:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-receipt-red", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "receipt-red", "kind": "submission-receipt",
+      "subjectRef": "submission-red-application", "issuerAuthorityRef": "admissions-red", "controlledRef": "controlled://red/submission-receipt",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-10T12:03:00-07:00", "retrievedAt": "2026-09-10T12:04:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-owner-submit-blue", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "owner-submit-blue", "kind": "owner-action-note",
+      "subjectRef": "submission-blue-application", "issuerAuthorityRef": "applicant-morgan", "controlledRef": "controlled://applicant/blue-submit-note",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-18T12:00:00-07:00", "retrievedAt": "2026-09-18T12:01:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-portal-red", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "portal-red", "kind": "portal-observation",
+      "subjectRef": "application-red", "issuerAuthorityRef": "admissions-red", "controlledRef": "controlled://red/portal-current",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-20T09:00:00-07:00", "retrievedAt": "2026-09-20T09:01:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-decision-red", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "decision-red", "kind": "official-decision",
+      "subjectRef": "decision-red-admission", "issuerAuthorityRef": "admissions-red", "controlledRef": "controlled://red/decision",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-24T09:00:00-07:00", "retrievedAt": "2026-09-24T09:02:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    },
+    {
+      "id": "source-portal-blue", "portfolioRef": "portfolio-fall-2027", "stableSourceRef": "portal-blue", "kind": "portal-observation",
+      "subjectRef": "application-blue", "issuerAuthorityRef": "admissions-blue", "controlledRef": "controlled://blue/portal-conflict",
+      "revision": "1", "supersedesSourceRef": null, "assertedAt": "2026-09-25T09:00:00-07:00", "retrievedAt": "2026-09-25T09:01:00-07:00",
+      "freshness": "current", "minimized": true, "containsSecrets": false
+    }
+  ],
+  "applications": [
+    {
+      "id": "application-red", "portfolioRef": "portfolio-fall-2027", "institutionRef": "institution-red", "programRef": "program-red-computing",
+      "cycle": "fall-2027", "round": "early", "state": "decided",
+      "sourceRefs": ["source-red-program-v2", "source-portal-red", "source-decision-red"],
+      "materialRefs": ["material-essay-v1", "material-essay-v2"],
+      "recordRefs": ["record-transcript", "record-test", "record-recommendation-red"],
+      "requirementRefs": ["requirement-red-form", "requirement-red-essay", "requirement-red-transcript", "requirement-red-test", "requirement-red-recommendation"],
+      "submissionRefs": ["submission-red-application"], "decisionRefs": ["decision-red-admission"], "actionRefs": ["action-review-red-offer"], "gapRefs": [],
+      "admissionPredictionByClaw": false, "fitRecommendationByClaw": false
+    },
+    {
+      "id": "application-blue", "portfolioRef": "portfolio-fall-2027", "institutionRef": "institution-blue", "programRef": "program-blue-design",
+      "cycle": "fall-2027", "round": "regular", "state": "incomplete",
+      "sourceRefs": ["source-blue-program", "source-portal-blue"],
+      "materialRefs": ["material-blue-statement"],
+      "recordRefs": ["record-transcript", "record-test", "record-recommendation-blue", "record-fee-waiver-blue", "record-aid-blue"],
+      "requirementRefs": ["requirement-blue-form", "requirement-blue-statement", "requirement-blue-transcript", "requirement-blue-test", "requirement-blue-recommendation", "requirement-blue-fee-waiver", "requirement-blue-aid"],
+      "submissionRefs": ["submission-blue-application"], "decisionRefs": [], "actionRefs": ["action-blue-contact", "action-blue-deposit"],
+      "gapRefs": ["gap-blue-recommendation", "gap-blue-receipt", "gap-blue-portal", "gap-blue-aid"],
+      "admissionPredictionByClaw": false, "fitRecommendationByClaw": false
+    }
+  ],
+  "materials": [
+    {
+      "id": "material-essay-v1", "portfolioRef": "portfolio-fall-2027", "applicationRefs": ["application-red"], "kind": "essay",
+      "authorAuthorityRef": "applicant-morgan", "state": "withdrawn", "sourceRef": "source-essay-v1", "supersedesMaterialRef": null,
+      "authoredByClaw": false, "materialRewriteByClaw": false
+    },
+    {
+      "id": "material-essay-v2", "portfolioRef": "portfolio-fall-2027", "applicationRefs": ["application-red"], "kind": "essay",
+      "authorAuthorityRef": "applicant-morgan", "state": "applicant-approved", "sourceRef": "source-essay-v2", "supersedesMaterialRef": "material-essay-v1",
+      "authoredByClaw": false, "materialRewriteByClaw": false
+    },
+    {
+      "id": "material-blue-statement", "portfolioRef": "portfolio-fall-2027", "applicationRefs": ["application-blue"], "kind": "personal-statement",
+      "authorAuthorityRef": "applicant-morgan", "state": "applicant-approved", "sourceRef": "source-blue-statement", "supersedesMaterialRef": null,
+      "authoredByClaw": false, "materialRewriteByClaw": false
+    }
+  ],
+  "records": [
+    {
+      "id": "record-transcript", "portfolioRef": "portfolio-fall-2027", "applicationRefs": ["application-red", "application-blue"], "kind": "transcript",
+      "issuerAuthorityRef": "school-north", "state": "received-current", "sourceRef": "source-transcript", "gapRefs": []
+    },
+    {
+      "id": "record-test", "portfolioRef": "portfolio-fall-2027", "applicationRefs": ["application-red", "application-blue"], "kind": "test-score",
+      "issuerAuthorityRef": "testing-board", "state": "received-current", "sourceRef": "source-test", "gapRefs": []
+    },
+    {
+      "id": "record-recommendation-red", "portfolioRef": "portfolio-fall-2027", "applicationRefs": ["application-red"], "kind": "recommendation",
+      "issuerAuthorityRef": "recommender-lee", "state": "received-current", "sourceRef": "source-recommendation-red", "gapRefs": []
+    },
+    {
+      "id": "record-recommendation-blue", "portfolioRef": "portfolio-fall-2027", "applicationRefs": ["application-blue"], "kind": "recommendation",
+      "issuerAuthorityRef": "recommender-lee", "state": "missing", "sourceRef": null, "gapRefs": ["gap-blue-recommendation"]
+    },
+    {
+      "id": "record-fee-waiver-blue", "portfolioRef": "portfolio-fall-2027", "applicationRefs": ["application-blue"], "kind": "fee-waiver",
+      "issuerAuthorityRef": "admissions-blue", "state": "received-current", "sourceRef": "source-fee-waiver-blue", "gapRefs": []
+    },
+    {
+      "id": "record-aid-blue", "portfolioRef": "portfolio-fall-2027", "applicationRefs": ["application-blue"], "kind": "financial-aid",
+      "issuerAuthorityRef": "aid-blue", "state": "missing", "sourceRef": null, "gapRefs": ["gap-blue-aid"]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "requirement-red-form", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-red", "kind": "application-form", "state": "received",
+      "dueAt": "2026-11-01T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-red-program-v2", "source-red-deadline"],
+      "materialRefs": [], "recordRefs": [], "submissionRefs": ["submission-red-application"], "gapRefs": [], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-red-essay", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-red", "kind": "essay", "state": "received",
+      "dueAt": "2026-11-01T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-red-program-v2", "source-essay-v2"],
+      "materialRefs": ["material-essay-v2"], "recordRefs": [], "submissionRefs": ["submission-red-application"], "gapRefs": [], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-red-transcript", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-red", "kind": "transcript", "state": "received",
+      "dueAt": "2026-11-01T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-red-program-v2", "source-transcript"],
+      "materialRefs": [], "recordRefs": ["record-transcript"], "submissionRefs": ["submission-red-application"], "gapRefs": [], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-red-test", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-red", "kind": "test-score", "state": "received",
+      "dueAt": "2026-11-01T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-red-program-v2", "source-test"],
+      "materialRefs": [], "recordRefs": ["record-test"], "submissionRefs": ["submission-red-application"], "gapRefs": [], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-red-recommendation", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-red", "kind": "recommendation", "state": "received",
+      "dueAt": "2026-11-01T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-red-program-v2", "source-recommendation-red"],
+      "materialRefs": [], "recordRefs": ["record-recommendation-red"], "submissionRefs": ["submission-red-application"], "gapRefs": [], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-blue-form", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "application-form", "state": "submitted",
+      "dueAt": "2027-01-05T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-blue-program", "source-owner-submit-blue"],
+      "materialRefs": [], "recordRefs": [], "submissionRefs": ["submission-blue-application"], "gapRefs": ["gap-blue-receipt"], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-blue-statement", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "statement", "state": "ready",
+      "dueAt": "2027-01-05T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-blue-program", "source-blue-statement"],
+      "materialRefs": ["material-blue-statement"], "recordRefs": [], "submissionRefs": [], "gapRefs": [], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-blue-transcript", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "transcript", "state": "ready",
+      "dueAt": "2027-01-05T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-blue-program", "source-transcript"],
+      "materialRefs": [], "recordRefs": ["record-transcript"], "submissionRefs": [], "gapRefs": [], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-blue-test", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "test-score", "state": "ready",
+      "dueAt": "2027-01-05T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-blue-program", "source-test"],
+      "materialRefs": [], "recordRefs": ["record-test"], "submissionRefs": [], "gapRefs": [], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-blue-recommendation", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "recommendation", "state": "missing",
+      "dueAt": "2027-01-05T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-blue-program"],
+      "materialRefs": [], "recordRefs": ["record-recommendation-blue"], "submissionRefs": [], "gapRefs": ["gap-blue-recommendation"], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-blue-fee-waiver", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "fee-waiver", "state": "received",
+      "dueAt": "2027-01-05T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-blue-program", "source-fee-waiver-blue"],
+      "materialRefs": [], "recordRefs": ["record-fee-waiver-blue"], "submissionRefs": [], "gapRefs": [], "applicabilityDeterminationByClaw": false
+    },
+    {
+      "id": "requirement-blue-aid", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "financial-aid", "state": "missing",
+      "dueAt": "2027-02-01T23:59:00-08:00", "timezone": "America/Los_Angeles", "sourceRefs": ["source-blue-program"],
+      "materialRefs": [], "recordRefs": ["record-aid-blue"], "submissionRefs": [], "gapRefs": ["gap-blue-aid"], "applicabilityDeterminationByClaw": false
+    }
+  ],
+  "submissions": [
+    {
+      "id": "submission-red-application", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-red", "kind": "application",
+      "subjectRefs": ["requirement-red-form", "requirement-red-essay", "requirement-red-transcript", "requirement-red-test", "requirement-red-recommendation", "material-essay-v2", "record-transcript", "record-test", "record-recommendation-red"],
+      "submittedByAuthorityRef": "applicant-morgan", "state": "submitted-receipted", "attemptedAt": "2026-09-10T12:00:00-07:00",
+      "sourceRefs": ["source-owner-submit-red"], "receiptSourceRef": "source-receipt-red", "externalExecution": "applicant-only", "agentExecuted": false
+    },
+    {
+      "id": "submission-blue-application", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "application",
+      "subjectRefs": ["requirement-blue-form"], "submittedByAuthorityRef": "applicant-morgan", "state": "attempted", "attemptedAt": "2026-09-18T12:00:00-07:00",
+      "sourceRefs": ["source-owner-submit-blue"], "receiptSourceRef": null, "externalExecution": "applicant-only", "agentExecuted": false
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-red-admission", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-red", "kind": "admission", "outcome": "admitted",
+      "issuerAuthorityRef": "admissions-red", "sourceRef": "source-decision-red", "decidedAt": "2026-09-24T09:00:00-07:00", "interpretationByClaw": false
+    }
+  ],
+  "actions": [
+    {
+      "id": "action-review-red-offer", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-red", "subjectRefs": ["decision-red-admission"],
+      "kind": "review-record", "ownerAuthorityRef": "applicant-morgan", "state": "proposed", "attemptedAt": null, "sourceRefs": [], "receiptSourceRef": null,
+      "externalExecution": "applicant-only", "agentExecuted": false
+    },
+    {
+      "id": "action-blue-contact", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "subjectRefs": ["gap-blue-portal"],
+      "kind": "contact", "ownerAuthorityRef": "applicant-morgan", "state": "blocked", "attemptedAt": null, "sourceRefs": ["source-portal-blue"], "receiptSourceRef": null,
+      "externalExecution": "applicant-only", "agentExecuted": false
+    },
+    {
+      "id": "action-blue-deposit", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "subjectRefs": ["application-blue"],
+      "kind": "deposit", "ownerAuthorityRef": "applicant-morgan", "state": "blocked", "attemptedAt": null, "sourceRefs": [], "receiptSourceRef": null,
+      "externalExecution": "applicant-only", "agentExecuted": false
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-blue-recommendation", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "third-party-record",
+      "subjectRefs": ["application-blue", "record-recommendation-blue", "requirement-blue-recommendation"], "sourceRefs": [],
+      "nextOwnerAuthorityRef": "recommender-lee", "state": "open", "resolutionSourceRef": null
+    },
+    {
+      "id": "gap-blue-receipt", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "submission-receipt",
+      "subjectRefs": ["application-blue", "submission-blue-application", "requirement-blue-form"], "sourceRefs": ["source-owner-submit-blue"],
+      "nextOwnerAuthorityRef": "admissions-blue", "state": "open", "resolutionSourceRef": null
+    },
+    {
+      "id": "gap-blue-portal", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "portal-state",
+      "subjectRefs": ["application-blue", "action-blue-contact"], "sourceRefs": ["source-portal-blue"],
+      "nextOwnerAuthorityRef": "admissions-blue", "state": "open", "resolutionSourceRef": null
+    },
+    {
+      "id": "gap-blue-aid", "portfolioRef": "portfolio-fall-2027", "applicationRef": "application-blue", "kind": "financial-aid",
+      "subjectRefs": ["application-blue", "record-aid-blue", "requirement-blue-aid"], "sourceRefs": ["source-blue-program"],
+      "nextOwnerAuthorityRef": "aid-blue", "state": "open", "resolutionSourceRef": null
+    }
+  ],
+  "review": {
+    "asOf": "2026-09-26T09:00:00-07:00", "state": "blocked", "nextOwnerAuthorityRef": "applicant-morgan",
+    "openGapRefs": ["gap-blue-recommendation", "gap-blue-receipt", "gap-blue-portal", "gap-blue-aid"],
+    "incompleteApplicationRefs": ["application-blue"],
+    "missingRequirementRefs": ["requirement-blue-recommendation", "requirement-blue-aid"],
+    "unreceiptedSubmissionRefs": ["submission-blue-application"],
+    "unresolvedDecisionApplicationRefs": ["application-blue"],
+    "blockedActionRefs": ["action-blue-contact", "action-blue-deposit"],
+    "authorshipClaim": false, "admissionPrediction": false, "eligibilityConclusion": false, "financialAidConclusion": false,
+    "transferCreditConclusion": false, "fitRecommendation": false, "submissionClaim": false, "enrollmentCommitment": false
+  },
+  "prohibitedActions": {
+    "writeApplicantContent": false, "contact": false, "upload": false, "submission": false, "scheduling": false, "payment": false,
+    "certification": false, "accountChange": false, "offerResponse": false, "deposit": false, "enrollment": false, "advice": false, "prediction": false
+  }
+}

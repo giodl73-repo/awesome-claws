@@ -5,8 +5,10 @@
 Gio approved issue #233 as a separate X3 Claw. Decision recorded at:
 https://github.com/giodl73-repo/awesome-claws/issues/233#issuecomment-6007696833
 
-Base: 3e4e8f9fa76b2a013646e0ba300a20573bba3722 (146 merged Claws).
-This branch adds one Claw; all 146 existing catalog entries compare unchanged.
+Refreshed base: 5f9ebe46bfff154046bb63b5f49ce9018e57682d (147 merged Claws),
+including approved College Application PR #185. This branch adds one Claw;
+all 147 existing catalog entries compare unchanged. The merge review preserves
+both College and Merchant validators, resources, and generated contracts.
 Admission is not merge approval. Replenishment #208 remains outside this work.
 
 Unlike ledger-to-bank account reconciliation or invoice drafting, this Claw
@@ -25,15 +27,16 @@ six alternatives. Repository quality rubric: 97/100; deterministic evidence only
 - Strict packaged schema and synthetic integer-minor-unit workpaper.
 - Registered repository semantic validator with BigInt arithmetic and canonical
   evidence hashing; no added dependencies or packaged execution authority.
-- Sixteen focused tests pass, plus three catalog-document count tests.
+- Sixteen focused tests pass, plus twenty College tests and three
+  catalog-document count tests (39 combined).
 - Generated package resolves the exact structured artifact and Markdown handoff.
-- Mock+ regeneration passes: 60,025 cases, 56,917 mutants killed, zero survivors
+- Refreshed Mock+ passes: 60,723 cases, 57,594 mutants killed, zero survivors
   or safety blockers. Digest:
-  sha256:2ff5dddd727f053b69cb60bad14612250a0ed28d70a0ceed220033a76efe414b
-- Final full `npm run check` passes: 3,267 tests passed, zero failed, one existing
-  Windows permission skip. All downstream gates pass: 147 packages and
-  contribution checks, 136 post-policy records, regression contracts, current
-  quality scorecard, 401 semantic recipes and 441 deterministic mock trials.
+  sha256:e2a68414179099f027fd99bc11574772140041771e2fb3b0948672ff94c1ba01
+- Refreshed full `npm run check` passes: 3,287 tests passed, zero failed, one
+  existing Windows permission skip. All downstream gates pass: 148 packages and
+  contribution checks, 137 post-policy records, regression contracts, current
+  quality scorecard, 404 semantic recipes and 444 deterministic mock trials.
 
 The initial full check caught stale count assertions and a real object-key-order
 hashing defect. Canonical hashing fixes the latter without relaxing the valid
@@ -68,4 +71,4 @@ authenticated by schema or digest. Ambiguous bank splits, changed retry batches
 and questionable source completeness require owner clarification. No funds move,
 no journal is posted, and no contact, liability, settlement or close decision is
 authorized. Baseline npm audit findings remain unchanged; no dependency
-overrides, binaries, publishing or default-on changes are included.
+overrides, dependency binaries, publishing or default-on changes are included.
