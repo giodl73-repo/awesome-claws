@@ -1,0 +1,586 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "scope",
+    "sources",
+    "transactions",
+    "payouts",
+    "bankReceipts",
+    "mappings",
+    "review"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "awesomeClaws.merchantPayout.v1"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "merchantRef",
+        "accountRef",
+        "currency",
+        "scale",
+        "start",
+        "asOf",
+        "reviewerRef",
+        "destination",
+        "feeConvention",
+        "transactionRefs",
+        "payoutRefs",
+        "bankReceiptRefs"
+      ],
+      "properties": {
+        "merchantRef": {
+          "$ref": "#/$defs/ref"
+        },
+        "accountRef": {
+          "$ref": "#/$defs/ref"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "scale": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reviewerRef": {
+          "$ref": "#/$defs/ref"
+        },
+        "destination": {
+          "const": "private-reviewer-workspace"
+        },
+        "feeConvention": {
+          "const": "gross-minus-signed-fee"
+        },
+        "transactionRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "maxItems": 1000
+        },
+        "payoutRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "maxItems": 1000
+        },
+        "bankReceiptRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "maxItems": 1000
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "controlledRef",
+          "revision",
+          "current",
+          "complete",
+          "merchantRef",
+          "accountRef",
+          "currency",
+          "scale",
+          "issuedAt",
+          "issuerKind",
+          "issuerRef",
+          "transactionRefs",
+          "payoutRefs",
+          "bankReceiptRefs"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/ref"
+          },
+          "kind": {
+            "enum": [
+              "transactions",
+              "payouts",
+              "membership",
+              "bank",
+              "mapping"
+            ]
+          },
+          "controlledRef": {
+            "type": "string",
+            "pattern": "^controlled://merchant-payout/source-[a-z0-9-]{1,48}$"
+          },
+          "revision": {
+            "$ref": "#/$defs/ref"
+          },
+          "current": {
+            "const": true
+          },
+          "complete": {
+            "const": true
+          },
+          "merchantRef": {
+            "$ref": "#/$defs/ref"
+          },
+          "accountRef": {
+            "$ref": "#/$defs/ref"
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "scale": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "issuerKind": {
+            "enum": [
+              "processor",
+              "bank",
+              "reviewer"
+            ]
+          },
+          "issuerRef": {
+            "$ref": "#/$defs/ref"
+          },
+          "transactionRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/ref"
+            },
+            "maxItems": 1000
+          },
+          "payoutRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/ref"
+            },
+            "maxItems": 1000
+          },
+          "bankReceiptRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/ref"
+            },
+            "maxItems": 1000
+          }
+        }
+      }
+    },
+    "transactions": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "nativeId",
+          "sourceRef",
+          "grossMinor",
+          "feeMinor",
+          "netMinor",
+          "occurredAt",
+          "category",
+          "disposition",
+          "payoutRef"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/ref"
+          },
+          "nativeId": {
+            "$ref": "#/$defs/ref"
+          },
+          "sourceRef": {
+            "$ref": "#/$defs/ref"
+          },
+          "grossMinor": {
+            "$ref": "#/$defs/money"
+          },
+          "feeMinor": {
+            "$ref": "#/$defs/money"
+          },
+          "netMinor": {
+            "$ref": "#/$defs/money"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "category": {
+            "enum": [
+              "charge",
+              "refund",
+              "fee",
+              "adjustment",
+              "reserve",
+              "transfer"
+            ]
+          },
+          "disposition": {
+            "enum": [
+              "assigned",
+              "unsettled",
+              "unresolved"
+            ]
+          },
+          "payoutRef": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "payouts": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "nativeId",
+          "sourceRef",
+          "occurredAt",
+          "amountMinor",
+          "status",
+          "kind",
+          "priorAttemptRef",
+          "memberRefs",
+          "membershipSourceRef"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/ref"
+          },
+          "nativeId": {
+            "$ref": "#/$defs/ref"
+          },
+          "sourceRef": {
+            "$ref": "#/$defs/ref"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "amountMinor": {
+            "$ref": "#/$defs/money"
+          },
+          "status": {
+            "enum": [
+              "paid",
+              "pending",
+              "failed",
+              "returned"
+            ]
+          },
+          "kind": {
+            "enum": [
+              "automatic",
+              "manual",
+              "instant"
+            ]
+          },
+          "priorAttemptRef": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "memberRefs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/ref"
+            },
+            "maxItems": 1000
+          },
+          "membershipSourceRef": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ref"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "bankReceipts": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "nativeId",
+          "sourceRef",
+          "amountMinor",
+          "postedAt"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/ref"
+          },
+          "nativeId": {
+            "$ref": "#/$defs/ref"
+          },
+          "sourceRef": {
+            "$ref": "#/$defs/ref"
+          },
+          "amountMinor": {
+            "$ref": "#/$defs/money"
+          },
+          "postedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "mappings": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "receiptRef",
+          "payoutRef",
+          "ownerRef",
+          "sourceRef"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/ref"
+          },
+          "receiptRef": {
+            "$ref": "#/$defs/ref"
+          },
+          "payoutRef": {
+            "$ref": "#/$defs/ref"
+          },
+          "ownerRef": {
+            "$ref": "#/$defs/ref"
+          },
+          "sourceRef": {
+            "$ref": "#/$defs/ref"
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceDigest",
+        "rows",
+        "questions",
+        "unsettledMinor",
+        "state",
+        "externalActions",
+        "settlementCertification"
+      ],
+      "properties": {
+        "evidenceDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "rows": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "payoutRef",
+              "grossMinor",
+              "feeMinor",
+              "netMinor",
+              "memberResidualMinor",
+              "receiptRefs",
+              "bankMinor",
+              "bankResidualMinor",
+              "current",
+              "issues"
+            ],
+            "properties": {
+              "payoutRef": {
+                "$ref": "#/$defs/ref"
+              },
+              "grossMinor": {
+                "$ref": "#/$defs/money"
+              },
+              "feeMinor": {
+                "$ref": "#/$defs/money"
+              },
+              "netMinor": {
+                "$ref": "#/$defs/money"
+              },
+              "memberResidualMinor": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/money"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "receiptRefs": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/$defs/ref"
+                },
+                "maxItems": 1000
+              },
+              "bankMinor": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/money"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "bankResidualMinor": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/money"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "current": {
+                "type": "boolean"
+              },
+              "issues": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "membership-missing",
+                    "member-residual",
+                    "bank-evidence-missing",
+                    "bank-residual",
+                    "processor-pending",
+                    "processor-failed",
+                    "processor-returned"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "questions": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "targetRef",
+              "reason",
+              "ownerRef"
+            ],
+            "properties": {
+              "targetRef": {
+                "$ref": "#/$defs/ref"
+              },
+              "reason": {
+                "enum": [
+                  "membership-missing",
+                  "member-residual",
+                  "bank-evidence-missing",
+                  "bank-residual",
+                  "processor-pending",
+                  "processor-failed",
+                  "processor-returned",
+                  "unsettled",
+                  "unresolved",
+                  "unmapped-bank-row"
+                ]
+              },
+              "ownerRef": {
+                "$ref": "#/$defs/ref"
+              }
+            }
+          }
+        },
+        "unsettledMinor": {
+          "$ref": "#/$defs/money"
+        },
+        "state": {
+          "const": "owner-review-required"
+        },
+        "externalActions": {
+          "const": "none"
+        },
+        "settlementCertification": {
+          "const": "not-made"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "ref": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9-]{0,63}$"
+    },
+    "money": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    }
+  }
+}
