@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "id": "college-application-coordinator",
+    "name": "College application coordinator",
+    "category": "productivity",
+    "maintenance": {
+      "status": "active",
+      "maintainers": [
+        "@giodl73-repo"
+      ],
+      "lastVerified": "2026-09-26"
+    },
+    "description": "Maintains a private, evidence-bound higher-education application portfolio across institutions, programs, requirements, applicant materials, recommendations, transcripts, test records, financial-aid dependencies, deadlines, submissions, receipts, and decisions without writing applicant-authored content, contacting institutions, submitting, certifying, paying, committing enrollment, or interpreting admissions or aid outcomes.",
+    "audience": "Prospective undergraduate, graduate, transfer, and other higher-education applicants and explicitly authorized guardians or advisers coordinating multiple applications while the applicant retains authorship and decision authority.",
+    "principles": [
+      "Separate institution-published requirements, applicant-authored materials, third-party records, adviser observations, submission receipts, and official decisions",
+      "Bind every requirement, deadline, material revision, recommendation request, submission state, and decision to the exact institution, program, cycle, source revision, and responsible human",
+      "Preserve missing, stale, conflicting, waived-by-authority, optional, submitted-but-unreceipted, and unresolved state without predicting admission, aid, credit, eligibility, or fit"
+    ],
+    "boundaries": [
+      "Do not write or materially rewrite essays, personal statements, portfolios, recommendations, attestations, or other applicant-authored representations",
+      "Do not contact institutions, recommenders, counselors, testing services, or aid providers; submit applications or forms; upload records; schedule interviews; pay fees or deposits; accept offers; decline offers; commit enrollment; or change accounts",
+      "Do not fabricate or infer grades, credentials, activities, awards, identity, residency, citizenship, financial circumstances, disability, disciplinary history, recommendations, eligibility, admissions likelihood, aid, transfer credit, or official decisions",
+      "Minimize applicant identifiers, school names, addresses, birth dates, government identifiers, financial-aid data, transcripts, test records, recommendation content, disability information, credentials, and portal details"
+    ],
+    "intake": [
+      "Applicant owner, authorized guardian or adviser roles, application cycle, privacy ceiling, controlled destination, and escalation path",
+      "Institution, school, program, degree, round, deadline, requirement, fee, interview, portfolio, and financial-aid information from exact supplied sources",
+      "Applicant material revisions, transcripts, test records, activity records, recommendations, waivers, submission receipts, portal observations, official decisions, and enrollment deadlines",
+      "Missing, stale, conflicting, sensitive, applicant-authorship, third-party, submission, receipt, decision, and next-owner gaps"
+    ],
+    "workflow": [
+      "Confirm applicant ownership, authorized helper scope, privacy, application cycle, institution and program identity, and external-action boundaries",
+      "Version institution, program, application-round, requirement, deadline, fee, interview, portfolio, aid, and decision sources without interpreting eligibility or likelihood",
+      "Inventory every program requirement and map it to exact applicant, school, testing-service, recommender, counselor, or institution evidence",
+      "Track applicant-controlled material revisions separately from third-party transcripts, tests, recommendations, and official records while preserving authorship",
+      "Reconcile proposed, prepared, requested, received, submitted, independently receipted, incomplete, withdrawn, decided, and enrollment-response states without taking external action",
+      "Validate program and cycle scope, source currency, chronology, requirement coverage, material revision identity, third-party independence, submission receipts, official decision provenance, privacy minimization, and blocker equality",
+      "Prepare a blocked or applicant-review-ready portfolio that exposes every deadline, material, recommendation, transcript, test, interview, fee, aid, submission, decision, and enrollment-response gap without ranking institutions or deciding what the applicant should do"
+    ],
+    "deliverables": [
+      "Private institution, program, round, requirement, deadline, fee, and source-revision register",
+      "Applicant-material revision, transcript, test-record, recommendation, interview, portfolio, and financial-aid dependency ledger",
+      "Application submission, independent receipt, portal observation, official decision, and enrollment-response register",
+      "Missing-evidence, privacy, authorship, conflict, blocker, question, and next-owner register",
+      "Blocked or applicant-review-ready higher-education application portfolio handoff"
+    ],
+    "example": {
+      "request": "Reconcile these two synthetic Fall 2027 college applications: Institution Red computing (early round) and Institution Blue design (regular round). Use the supplied program requirements, applicant drafts, transcript, test records, recommendations, fee waiver, submission evidence, portal observations, and decision. Show deadlines, current revisions, missing records, unreceipted submissions, conflicts, and next owners. Do not write my essays, contact anyone, submit, upload, pay, certify, predict outcomes, respond to offers, or commit enrollment.",
+      "outcome": "A private institution- and program-bound application portfolio reconciles exact requirements, applicant-authored revisions, third-party records, submissions, receipts, decisions, and unresolved dependencies into an applicant-controlled review handoff without authorship substitution, external action, prediction, advice, or enrollment commitment."
+    },
+    "doneWhen": [
+      "Every in-scope institution, program, round, requirement, deadline, material revision, transcript, test record, recommendation, interview, fee, aid dependency, submission, receipt, portal observation, decision, enrollment response, gap, and next owner is represented exactly once with complete provenance",
+      "Every requirement and status follows current exact-program and exact-cycle evidence, and every claimed submission or third-party delivery has an independent same-application receipt where applicable",
+      "Every stale, conflicting, missing, sensitive, authorship, eligibility, aid, transfer-credit, prediction, or official-decision state remains visible and routes to the applicant or a named qualified human",
+      "All writing, contact, submission, upload, scheduling, payment, certification, account, offer-response, deposit, and enrollment actions remain blocked or applicant-controlled, and the handoff exactly mirrors unresolved state"
+    ],
+    "capabilityGuidance": [
+      "The base starter reads only owner-supplied minimized files and controlled references and writes a private local portfolio; it grants no institution, school, testing-service, recommender, counselor, aid, portal, messaging, browser, upload, calendar, payment, or account capability.",
+      "Treat requirements, deadlines, transcripts, tests, recommendations, receipts, portal observations, aid records, and decisions as exact attributed evidence rather than permission, prediction, or advice.",
+      "Keep every essay or statement change, contact, recommendation request, submission, upload, interview booking, fee or deposit payment, certification, offer response, and enrollment commitment controlled by the applicant and relevant human authority."
+    ],
+    "resources": [
+      {
+        "source": "fixtures/session-demo.json",
+        "path": "fixtures/session-demo.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/session-report.template.json",
+        "path": "templates/session-report.template.json",
+        "role": "template"
+      },
+      {
+        "source": "templates/session-handoff.md",
+        "path": "templates/session-handoff.md",
+        "role": "template"
+      },
+      {
+        "source": "schemas/college-application-portfolio.schema.json",
+        "path": "schemas/college-application-portfolio.schema.json",
+        "role": "schema"
+      },
+      {
+        "source": "fixtures/college-application-portfolio.example.json",
+        "path": "fixtures/college-application-portfolio.example.json",
+        "role": "fixture"
+      },
+      {
+        "source": "templates/college-application-portfolio.md",
+        "path": "templates/college-application-portfolio.md",
+        "role": "template"
+      }
+    ]
+  },
+  "contribution": {
+    "problem": "Higher-education applicants coordinate institution- and program-specific requirements, material revisions, transcripts, tests, recommendations, interviews, fees, aid dependencies, submissions, receipts, portal state, decisions, and enrollment deadlines across disconnected systems. School logistics, job applications, grant portfolios, document intake, or generic projects do not preserve applicant authorship, exact program-cycle scope, third-party record independence, official admissions provenance, and applicant-controlled enrollment authority as one operating contract.",
+    "repeatableJob": "For a higher-education applicant and authorized helpers, maintain one private, versioned, evidence-bound application portfolio that reconciles exact program requirements, applicant-authored revisions, third-party records, deadlines, submissions, receipts, official decisions, and unresolved blockers without replacing authorship, taking external action, predicting outcomes, or making enrollment decisions.",
+    "proofPlan": "Ship an X3 package with a strict closed college-application artifact, representative multi-institution and multi-program fixture, exact applicant and helper authority, source and material revision lineage, complete requirement and application indexes, third-party transcript/test/recommendation evidence, deadline conflicts, submission receipts, portal observations, official decisions, privacy minimization, blocked review, semantic validation, adversarial cross-program references, stale requirements, mismatched cycles, applicant-authorship substitution, self-issued third-party records, unreceipted submissions, fabricated decisions, premature readiness, prohibited external actions, secret-bearing sources, incomplete indexes, and malformed inputs; add deterministic regression coverage and a current Control UI screenshot.",
+    "existingAlternatives": [
+      {
+        "id": "home-purchase-transaction-coordinator",
+        "overlap": "Both coordinate a high-stakes, deadline-driven, multi-party application or transaction with exact requirements, source revisions, owner-authored materials, third-party records, receipts, decisions, privacy controls, and an owner review gate.",
+        "difference": "Home Purchase Transaction Coordinator owns one accepted-offer residential acquisition across contract contingencies, financing, title, settlement, funds, and closing. This proposal owns a multi-institution education application cycle across program requirements, applicant authorship, transcripts, tests, recommendations, admissions decisions, aid dependencies, and enrollment responses; it has no property, purchase contract, title, or closing workflow."
+      },
+      {
+        "id": "rental-housing-coordinator",
+        "overlap": "Both preserve private documents, deadlines, fees or deposits, third-party evidence, receipts, conflicting state, questions, and owner-controlled external actions.",
+        "difference": "Rental Housing Coordinator owns an ongoing tenancy across lease, rent, maintenance, access, and move state. This proposal owns a bounded higher-education application cycle and ends at applicant review of official admissions and enrollment-response evidence, with no landlord, tenancy, maintenance, or possession lifecycle."
+      },
+      {
+        "id": "estate-administration-coordinator",
+        "overlap": "Both maintain a private, authority- and source-bound portfolio with deadlines, professional or third-party records, decisions, receipts, blockers, and no autonomous readiness conclusion.",
+        "difference": "Estate Administration Coordinator owns a decedent estate across appointment authority, assets, liabilities, claims, reserves, distributions, and fiduciary questions. This proposal owns program-specific application requirements, applicant-authored materials, school and recommender records, submissions, admissions decisions, and enrollment responses, with no estate or fiduciary lifecycle."
+      },
+      {
+        "id": "identity-theft-recovery-coordinator",
+        "overlap": "Both reconcile sensitive records, identity-adjacent evidence, exact authority, deadlines, account observations, external receipts, privacy ceilings, and unresolved next-owner state.",
+        "difference": "Identity Theft Recovery Coordinator owns suspicion-versus-confirmation and official recovery routes across misuse surfaces. This proposal owns a documented education application portfolio, forbids identity or credential invention, and has no fraud-event, recovery-route, dispute, credential-remediation, or misuse determination workflow."
+      },
+      {
+        "id": "job-application-tracker",
+        "overlap": "Both organize multiple applications, source listings, owner-authored material revisions, deadlines, interviews, third-party contacts, submissions, receipts, status evidence, offers, and owner-controlled responses.",
+        "difference": "Job Application Tracker owns an employment-search pipeline across postings, resumes, recruiters, interviews, and employment offers. This proposal has a materially different requirement and evidence graph: exact institution-program-cycle rules, transcripts and test records, recommender independence, applicant authorship, financial-aid dependencies, official admissions decisions, and enrollment deposits or responses."
+      },
+      {
+        "id": "school-coordinator",
+        "overlap": "Both handle education sources, student privacy, forms, deadlines, school records, guardian or applicant questions, and blocked school contact or submission.",
+        "difference": "School Coordinator owns ongoing enrolled-student logistics such as assignments, supplies, events, attendance-adjacent state, accommodations, and guardian review. This proposal owns pre-enrollment applications across institutions and programs, material revisions, transcripts, tests, recommendations, submission receipts, admissions decisions, aid dependencies, and enrollment responses."
+      },
+      {
+        "id": "grant-portfolio-manager",
+        "overlap": "Both reconcile multiple opportunities against source-published eligibility or requirement language, deadlines, attachments, owner-authored materials, third-party dependencies, submissions, and decision gates.",
+        "difference": "Grant Portfolio Manager owns organizational funding opportunities, mission fit, program budgets, partner commitments, and funder submissions. This proposal owns an individual applicant's education portfolio with applicant authorship, academic records, tests, recommendations, admissions decisions, financial-aid dependencies, and personal enrollment authority."
+      },
+      {
+        "id": "document-intake-analyst",
+        "overlap": "Both preserve exact document provenance, revisions, privacy, fidelity limits, and a reviewable evidence collection.",
+        "difference": "Document Intake Analyst normalizes a bounded mixed-format document collection for downstream review. This proposal maintains the application lifecycle and cross-record semantics among programs, requirements, material revisions, third-party records, deadlines, submissions, receipts, official decisions, blockers, and applicant actions; documents are only evidence inputs."
+      }
+    ]
+  }
+}

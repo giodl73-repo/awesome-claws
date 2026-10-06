@@ -3636,6 +3636,30 @@
       },
       "capabilityClasses": [],
       "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
+    },
+    {
+      "id": "college-application-coordinator",
+      "acceptedRequest": "Reconcile these two synthetic Fall 2027 college applications: Institution Red computing (early round) and Institution Blue design (regular round). Use the supplied program requirements, applicant drafts, transcript, test records, recommendations, fee waiver, submission evidence, portal observations, and decision. Show deadlines, current revisions, missing records, unreceipted submissions, conflicts, and next owners. Do not write my essays, contact anyone, submit, upload, pay, certify, predict outcomes, respond to offers, or commit enrollment.",
+      "requiredEvidence": [
+        "Applicant owner, authorized guardian or adviser roles, application cycle, privacy ceiling, controlled destination, and escalation path",
+        "Institution, school, program, degree, round, deadline, requirement, fee, interview, portfolio, and financial-aid information from exact supplied sources",
+        "Applicant material revisions, transcripts, test records, activity records, recommendations, waivers, submission receipts, portal observations, official decisions, and enrollment deadlines",
+        "Missing, stale, conflicting, sensitive, applicant-authorship, third-party, submission, receipt, decision, and next-owner gaps"
+      ],
+      "authorityBoundaries": [
+        "Do not write or materially rewrite essays, personal statements, portfolios, recommendations, attestations, or other applicant-authored representations",
+        "Do not contact institutions, recommenders, counselors, testing services, or aid providers; submit applications or forms; upload records; schedule interviews; pay fees or deposits; accept offers; decline offers; commit enrollment; or change accounts",
+        "Do not fabricate or infer grades, credentials, activities, awards, identity, residency, citizenship, financial circumstances, disability, disciplinary history, recommendations, eligibility, admissions likelihood, aid, transfer credit, or official decisions",
+        "Minimize applicant identifiers, school names, addresses, birth dates, government identifiers, financial-aid data, transcripts, test records, recommendation content, disability information, credentials, and portal details"
+      ],
+      "experience": {
+        "target": 3,
+        "primary": "artifact",
+        "output": "outputs/college-application-coordinator-handoff.md",
+        "fallback": "text"
+      },
+      "capabilityClasses": [],
+      "capabilityDigest": "sha256:05010006b7a68c5374a112758e9b7208c7ff24916caf63221b1b84f06aaccb67"
     }
   ]
 }
