@@ -27,13 +27,13 @@ six alternatives. Repository quality rubric: 97/100; deterministic evidence only
 - Strict packaged schema and synthetic integer-minor-unit workpaper.
 - Registered repository semantic validator with BigInt arithmetic and canonical
   evidence hashing; no added dependencies or packaged execution authority.
-- Sixteen focused tests pass, plus twenty College tests and three
-  catalog-document count tests (39 combined).
+- Eighteen focused Merchant tests pass, including the full 5000-question case.
+  The earlier combined pass also covered twenty College and three document tests.
 - Generated package resolves the exact structured artifact and Markdown handoff.
-- Refreshed Mock+ passes: 60,723 cases, 57,594 mutants killed, zero survivors
+- Post-review Mock+ passes: 60,726 cases, 57,597 mutants killed, zero survivors
   or safety blockers. Digest:
-  sha256:e2a68414179099f027fd99bc11574772140041771e2fb3b0948672ff94c1ba01
-- Refreshed full `npm run check` passes: 3,287 tests passed, zero failed, one
+  sha256:5240bc09032b5e3bac79f72c43ec8b1cca9f5f5b47f3f72da30ebdf392147741
+- Post-review full `npm run check` passes: 3,289 tests passed, zero failed, one
   existing Windows permission skip. All downstream gates pass: 148 packages and
   contribution checks, 137 post-policy records, regression contracts, current
   quality scorecard, 404 semantic recipes and 444 deterministic mock trials.
@@ -65,6 +65,17 @@ claimed. CI proof and exact-head review remain required for merge.
 `codex review --uncommitted` was attempted but the standalone command is absent.
 Manual scoped review found and fixed unbound association evidence and reused
 processor identity for bank evidence; this is not a Codex CLI review result.
+
+Independent manual review found three additional P2 issues, all reproduced and
+fixed: negative bank rows could net away a receipt discrepancy; unknown member
+totals were zero; the question cap could reject valid large populations.
+Negative receipt mappings now fail while unmapped debit rows remain questions.
+Unknown membership totals are null. The schema permits all 5000 questions from
+the maximum supported populations. Independent re-review found all three fixes
+resolved, no further actionable issues in the changed source/schema/tests, and
+reran all 18 focused tests successfully. Full post-review log:
+`.tmp/merchant-review-fixes-check.log`. Earlier head5036275 CI is historical;
+the new commit requires fresh exact-head CI before readiness.
 
 Source completeness and issuer identity are owner-supplied assertions, not
 authenticated by schema or digest. Ambiguous bank splits, changed retry batches

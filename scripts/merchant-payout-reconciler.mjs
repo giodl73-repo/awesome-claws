@@ -26,14 +26,14 @@ export function deriveMerchantPayoutReview(value) {
   const rows = value.payouts.map((payout) => {
     const members = payout.memberRefs.map((id) => value.transactions.find((row) => row.id === id));
     if (members.some((row) => !row)) throw new Error("Unknown member");
-    const grossMinor = exact(members.map((row) => row.grossMinor));
-    const feeMinor = exact(members.map((row) => row.feeMinor));
-    const netMinor = exact(members.map((row) => row.netMinor));
+    const membershipKnown = payout.membershipSourceRef !== null && members.length > 0;
+    const grossMinor = membershipKnown ? exact(members.map((row) => row.grossMinor)) : null;
+    const feeMinor = membershipKnown ? exact(members.map((row) => row.feeMinor)) : null;
+    const netMinor = membershipKnown ? exact(members.map((row) => row.netMinor)) : null;
     const mapped = value.mappings.filter((row) => row.payoutRef === payout.id);
     const receipts = mapped.map((row) => value.bankReceipts.find((receipt) => receipt.id === row.receiptRef));
     if (receipts.some((row) => !row)) throw new Error("Unknown bank receipt");
     const bankMinor = receipts.length ? exact(receipts.map((row) => row.amountMinor)) : null;
-    const membershipKnown = payout.membershipSourceRef !== null && members.length > 0;
     const memberResidualMinor = membershipKnown ? exact([netMinor, -payout.amountMinor]) : null;
     const bankResidualMinor = bankMinor === null ? null : exact([bankMinor, -payout.amountMinor]);
     const issues = [];
@@ -198,7 +198,7 @@ export function merchantPayoutFindings(value) {
       const receipt = receiptMap.get(mapping.receiptRef);
       const payout = payoutMap.get(mapping.payoutRef);
       if (!sourceValid(mapping.sourceRef, ["mapping"]) || mapping.ownerRef !== scope.reviewerRef ||
-          !receipt || !payout || !sameSet(evidence?.payoutRefs, [mapping.payoutRef]) ||
+          !receipt || receipt.amountMinor < 0 || !payout || !sameSet(evidence?.payoutRefs, [mapping.payoutRef]) ||
           !sameSet(evidence?.bankReceiptRefs, [mapping.receiptRef]) ||
           evidence?.transactionRefs.length !== 0 ||
           Date.parse(evidence?.issuedAt) < Date.parse(receipt?.postedAt) ||

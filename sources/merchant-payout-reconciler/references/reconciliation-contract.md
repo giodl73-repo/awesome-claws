@@ -34,8 +34,12 @@ Do not convert currencies or infer accounting treatment from categories.
 
 For each attempt, sum member gross, fee and net. Member residual is member net
 minus declared payout. Separately sum mapped bank receipts: bank residual is
-bank sum minus payout. Unknown membership/receipts means null, not zero.
-Empty membership is unknown even for automatic payouts.
+bank sum minus payout. Unknown membership means null gross, fee, net and member
+residual. Unknown receipts means null bank sum and residual, not zero.
+Empty membership is unknown even for automatic payouts. Negative bank rows stay
+unmapped owner questions; this version cannot net bank debits against receipts.
+The question list permits 5000 entries: at most three per payout, plus one per
+unassigned transaction and unmapped bank row across the supported populations.
 
 Every assigned transaction has exactly one current attempt. Retry links are
 later, acyclic, nonforking, and preserve a failed/returned attempt's exact amount

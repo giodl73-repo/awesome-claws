@@ -75,6 +75,9 @@ test("merchant payout: manual and instant missing membership cannot infer transa
     f.transactions.slice(0, 3).forEach(t => { t.disposition = "unresolved"; t.payoutRef = null; });
     valid(refresh(f));
     assert.equal(f.review.rows[0].memberResidualMinor, null);
+    assert.equal(f.review.rows[0].grossMinor, null);
+    assert.equal(f.review.rows[0].feeMinor, null);
+    assert.equal(f.review.rows[0].netMinor, null);
     assert(f.review.questions.some(x => x.reason === "membership-missing"));
   }
   const f = clone(); f.payouts[0].membershipSourceRef = null;
@@ -153,6 +156,39 @@ test("merchant payout: negative fee refund is added once and unsafe arithmetic f
 test("merchant payout: changed source revisions invalidate old review even when totals agree", () => {
   const f = clone(); f.sources[0].revision = "r2";
   rejects(f, "incorrect_payout_review"); valid(refresh(f));
+});
+
+test("merchant payout: bank debits cannot net away a receipt discrepancy", () => {
+  const f = clone(); f.bankReceipts[0].amountMinor = 87000;
+  f.bankReceipts.push({ ...f.bankReceipts[0], id: "bank-debit", nativeId: "native-debit", amountMinor: -500 });
+  f.scope.bankReceiptRefs.push("bank-debit");
+  f.sources.find(s => s.kind === "bank").bankReceiptRefs.push("bank-debit");
+  const source = { ...f.sources.find(s => s.kind === "mapping"), id: "source-debit-map",
+    controlledRef: "controlled://merchant-payout/source-debit-map", bankReceiptRefs: ["bank-debit"] };
+  f.sources.push(source);
+  f.mappings.push({ ...f.mappings[0], id: "mapping-debit", receiptRef: "bank-debit", sourceRef: source.id });
+  rejects(refresh(f), "invalid_bank_mapping");
+  f.mappings.pop(); f.sources.pop(); valid(refresh(f));
+  assert.equal(f.review.rows[0].bankResidualMinor, 500);
+  assert(f.review.questions.some(q => q.targetRef === "bank-debit" && q.reason === "unmapped-bank-row"));
+});
+
+test("merchant payout: all questions fit the supported maximum populations", () => {
+  const f = clone();
+  const transaction = { ...f.transactions[3] }, receipt = { ...f.bankReceipts[0] };
+  const transactionSource = { ...f.sources[0] }, bankSource = { ...f.sources[3] };
+  f.transactions = []; f.scope.transactionRefs = []; f.bankReceipts = []; f.scope.bankReceiptRefs = []; f.mappings = [];
+  f.payouts = Array.from({ length: 1000 }, (_, i) => ({ ...f.payouts[0], id: `payout-${i}`, nativeId: `native-${i}`,
+    status: "pending", memberRefs: [], membershipSourceRef: null }));
+  f.scope.payoutRefs = f.payouts.map(p => p.id);
+  f.sources = f.sources.filter(s => s.kind === "payouts"); f.sources[0].payoutRefs = [...f.scope.payoutRefs];
+  f.transactions = Array.from({ length: 1000 }, (_, i) => ({ ...transaction, id: `unsettled-${i}`, nativeId: `native-unsettled-${i}` }));
+  f.bankReceipts = Array.from({ length: 1000 }, (_, i) => ({ ...receipt, id: `bank-${i}`, nativeId: `native-bank-${i}` }));
+  f.scope.transactionRefs = f.transactions.map(t => t.id); transactionSource.transactionRefs = [...f.scope.transactionRefs];
+  f.scope.bankReceiptRefs = f.bankReceipts.map(r => r.id); bankSource.bankReceiptRefs = [...f.scope.bankReceiptRefs];
+  f.sources.push(transactionSource, bankSource);
+  valid(refresh(f));
+  assert.equal(f.review.questions.length, 5000);
 });
 
 test("merchant payout: harmless object key reordering preserves review freshness", () => {
